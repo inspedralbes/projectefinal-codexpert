@@ -1,5 +1,11 @@
+<<<<<<< HEAD:front/src/App.js
 import logo from './EssDdR_XEAQBkN0.jpg';
 import './App.css';
+=======
+import logo from "./logo.svg";
+import "./normalize.css";
+import "./App.css";
+>>>>>>> 7cb213a822beff7b66729c3c6be2d29ec4c2a10e:front/codexpert-react/src/App.js
 
 function App() {
   return (
