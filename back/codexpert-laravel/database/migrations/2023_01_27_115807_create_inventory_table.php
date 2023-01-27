@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('object_id')->unsigned()->index();
 
             $table->string('category')->nullable();   
-            $table->bool('equipped')->default(false); 
+            $table->boolean('equipped')->default(false); 
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('object_id')->references('id')->on('objects')->onDelete('cascade'); 
