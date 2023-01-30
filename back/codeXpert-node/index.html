@@ -7,25 +7,36 @@
     <title>hola</title>
   </head>
   <body>
-    <h1>Lobby list</h1>
-    <ul id="lobbies"></ul>
-    <form id="form" action="">
-      <label
-        ><input
-          id="input"
-          autocomplete="off"
-          type="text"
-          placeholder="Nom de la lobby"
-      /></label>
-      <button>Send</button>
-    </form>
+    <div id="lobbyList">
+      <h1>Lobby list</h1>
+      <ul id="lobbiesList"></ul>
+      <form id="form" action="">
+        <label
+          ><input
+            id="input"
+            autocomplete="off"
+            type="text"
+            placeholder="Nom de la lobby"
+        /></label>
+        <button>Send</button>
+      </form>
+    </div>
+
+    <div id="lobbyJoined">
+      <h1></h1>
+      <ul id="userList"></ul>
+    </div>
+
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
       var socket = io();
 
       var form = document.getElementById("form");
       var input = document.getElementById("input");
-      var list = document.getElementById("lobbies");
+      var lobbyList = document.getElementById("lobbiesList");
+      var userList = document.getElementById("userList");
+
+      var inLobby = false;
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -35,13 +46,25 @@
         }
       });
 
+      socket.on("player joined", (id) => {
+        console.log(id + " joined the lobby");
+      });
+
       socket.on("lobbies list", function (lobbylist) {
-        console.log(lobbylist);
-        list.innerHTML = "";
+        // console.log(lobbylist);
+        lobbyList.innerHTML = "";
         lobbylist.forEach((element) => {
           var item = document.createElement("li");
           item.textContent = element;
-          list.appendChild(item);
+          lobbyList.appendChild(item);
+        });
+
+        lobbyList.addEventListener("click", (e) => {
+          socket.emit("join room", e.target.innerText);
+          lobbyList.style.display = "none";
+          document.getElementById("lobbyJoined").style.display = "block";
+          inLobby = true;
+          console.log(e.target.innerText);
         });
       });
     </script>

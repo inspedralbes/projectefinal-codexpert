@@ -39,6 +39,12 @@ io.on("connection", (socket) => {
     socket.emit("lobbies list", lobbies);
   });
 
+  socket.on("join room", (roomName) => {
+    socket.join(roomName);
+    console.log(socket.nom + " joined the lobby -> " + roomName);
+    io.to(roomName).emit("player joined", socket.nom);
+  });
+
   socket.on("disconnect", () => {
     console.log(socket.nom + " disconnected");
   });
