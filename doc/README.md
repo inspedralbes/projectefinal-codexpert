@@ -18,6 +18,8 @@ En el directori /back/codexpert-laravel, hem de fer:
 
 En el directori /back/codexpert-node, hem de fer:
 - $ npm install
+- $ cp .env.example .env
+- Omplir les credencials de la base de dades
 - $ node index.js (?)
 
 ## Instruccions per seguir codificant el projecte
