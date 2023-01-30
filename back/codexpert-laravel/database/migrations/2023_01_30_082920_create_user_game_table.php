@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->integer('hearts_remaining')->default(3);
             $table->integer('perks_used')->default(0);
-            $table->integer('position')->default(4);
+            $table->integer('question_at')->default(5);
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('game_id')->references('id')->on('game')->onDelete('cascade');
