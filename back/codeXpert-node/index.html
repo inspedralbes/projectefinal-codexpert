@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hola</title>
+  </head>
+  <body>
+    <h1>Lobby list</h1>
+    <ul id="lobbies"></ul>
+    <form id="form" action="">
+      <label
+        ><input
+          id="input"
+          autocomplete="off"
+          type="text"
+          placeholder="Nom de la lobby"
+      /></label>
+      <button>Send</button>
+    </form>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+      var socket = io();
+
+      var form = document.getElementById("form");
+      var input = document.getElementById("input");
+      var list = document.getElementById("lobbies");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("new lobby", input.value);
+          input.value = "";
+        }
+      });
+
+      socket.on("lobbies list", function (lobbylist) {
+        console.log(lobbylist);
+        list.innerHTML = "";
+        lobbylist.forEach((element) => {
+          var item = document.createElement("li");
+          item.textContent = element;
+          list.appendChild(item);
+        });
+      });
+    </script>
+  </body>
+</html>
