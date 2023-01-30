@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('xp')->default(0); 
             $table->integer('coins')->default(0); 
             $table->string('avatar')->default('https://api.dicebear.com/5.x/pixel-art/svg?seed=default'); 
-            $table->string('status')->default("Hey, there! I'm using codeXpert :)"); 
+            $table->string('status')->default("Hey, there! Using codeXpert :)"); 
             $table->boolean('banned')->default(false); 
             $table->rememberToken();
             $table->timestamps();
