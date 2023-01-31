@@ -16,14 +16,11 @@ return new class extends Migration
         Schema::create('inventory', function (Blueprint $table) {
             $table->id();
 
-
             $table->bigInteger('user_id')->unsigned()->index();
             $table->bigInteger('object_id')->unsigned()->index();
 
-
             $table->string('category')->nullable();  
             $table->boolean('equipped')->default(false);
-
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('object_id')->references('id')->on('objects')->onDelete('cascade');

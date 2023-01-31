@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('objects', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->integer('price')->nullable();
+            $table->string('category')->nullable();
+            $table->string('rarity')->nullable();
             $table->timestamps();
         });
     }
