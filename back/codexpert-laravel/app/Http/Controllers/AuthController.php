@@ -69,4 +69,11 @@ class AuthController extends Controller
 
         return json_encode($user);
     }
+
+    public function logout(Request $request)
+    {
+        Session::flush();
+
+        return json_encode("Logged out.");
+    }
 }
