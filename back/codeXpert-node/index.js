@@ -65,6 +65,8 @@ io.on("connection", (socket) => {
 
   socket.on("leave lobby", (roomName) => {
     socket.leave(roomName);
+
+    sendLobbyList(roomName);
   });
 
   socket.on("disconnect", () => {
