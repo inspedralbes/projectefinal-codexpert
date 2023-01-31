@@ -63,6 +63,10 @@ io.on("connection", (socket) => {
     sendLobbyList(roomName);
   });
 
+  socket.on("leave lobby", (roomName) => {
+    socket.leave(roomName);
+  });
+
   socket.on("disconnect", () => {
     console.log(socket.data.nom + " disconnected");
   });
@@ -75,7 +79,7 @@ async function sendLobbyList(room) {
 
   sockets.forEach((element) => {
     console.log(io.sockets.sockets.get(element.id).data.nom);
-    list.push(io.sockets.sockets.get(element.id).data.nom)
+    list.push(io.sockets.sockets.get(element.id).data.nom);
   });
 
   io.emit("lobby user list", {
