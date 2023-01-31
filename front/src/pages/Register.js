@@ -1,16 +1,17 @@
 import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import routeFetch from "../index"
+import routeFetch from "../index";
+import session from "../components/UserSession";
 
 function Register() {
-    const [registro, setRegistro] = useState(false);
+    const [registro, setRegistro] = useState(0);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordValidation, setPasswordValidation] = useState("");
     useEffect(() => {
-        if (registro) {
+        if (registro != 0) {
             const user = new FormData()
             user.append("name", username);
             user.append("email", email);
@@ -18,15 +19,15 @@ function Register() {
             user.append("password_confirmation", passwordValidation);
 
             fetch(routeFetch + "/api/register", {
-                    method: 'POST',
+                method: 'POST',
                 body: user
             })
                 .then((response) => response.json())
                 .then((data) =>
                     console.log(data)
                 );
-
         }
+
     }, [registro]);
 
     return (
@@ -39,7 +40,7 @@ function Register() {
             <Link to="/login">
                 <button>Go back</button>
             </Link>
-            <button onClick={() => setRegistro(true)}>Register</button>
+            <button onClick={() => setRegistro(registro + 1)}>Register</button>
         </div>
     );
 }
