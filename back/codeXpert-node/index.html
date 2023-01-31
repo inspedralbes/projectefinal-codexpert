@@ -50,6 +50,10 @@
         console.log(id + " joined the lobby");
       });
 
+      socket.on("hello", () => {
+        console.log("Hello, you're using CodeXpert!");
+      })
+
       socket.on("lobbies list", function (lobbylist) {
         // console.log(lobbylist);
         lobbyList.innerHTML = "";
@@ -61,7 +65,7 @@
 
         lobbyList.addEventListener("click", (e) => {
           socket.emit("join room", e.target.innerText);
-          lobbyList.style.display = "none";
+          // lobbyList.style.display = "none";
           document.getElementById("lobbyJoined").style.display = "block";
           inLobby = true;
           console.log(e.target.innerText);

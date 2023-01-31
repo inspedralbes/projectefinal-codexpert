@@ -26,6 +26,9 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
+  socket.join("room1");
+  socket.to("room1").emit("hello");
+
   console.log(i + " connected");
 
   socket.nom = i;
@@ -36,11 +39,12 @@ io.on("connection", (socket) => {
   socket.on("new lobby", (lobby) => {
     lobbies.push(lobby);
     console.log(lobbies);
-    socket.emit("lobbies list", lobbies);
+    io.emit("lobbies list", lobbies);
   });
 
   socket.on("join room", (roomName) => {
     socket.join(roomName);
+    console.log(socket.rooms);
     console.log(socket.nom + " joined the lobby -> " + roomName);
     io.to(roomName).emit("player joined", socket.nom);
   });
