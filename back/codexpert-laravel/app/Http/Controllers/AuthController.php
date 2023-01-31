@@ -5,23 +5,49 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function checkUserDuplicated($userData)
+    {
+        $canCreate = true;
+
+        $findDuplicated = User::where('email', strtolower($userData -> email))
+        ->orwhere('name', strtolower($userData -> name))
+        ->count();
+
+        if ($findDuplicated != 0) {
+            $canCreate = false;
+        }
+
+        return $canCreate;
+    }
+
     public function register(Request $request)
     {
-        $request->validate([
+        $validator =  Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:4|confirmed'
         ]);
 
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
+        if ($validator->fails()) {
+            $user = "Validation errors.";
+        } else {
+            $createUser = $this->checkUserDuplicated($request);
 
-        return $user;
+            if ($createUser) {
+                $user = new User;
+                $user->name = strtolower($request -> name);
+                $user->email = strtolower($request -> email);
+                $user->password = Hash::make($request -> password);
+                $user->save();
+            } else {
+                $user = "User already exists.";
+            }
+        } 
+
+        return json_encode($user);
     }
 }
