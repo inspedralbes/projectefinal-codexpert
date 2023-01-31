@@ -8,23 +8,21 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [mantenerSesion, setMantenerSesion] = useState(false);
-    
+
     useEffect(() => {
-        if (login) {
-            const user = new FormData()
-            user.append("email", email);
-            user.append("password", password);
+        const user = new FormData()
+        user.append("email", email);
+        user.append("password", password);
 
-            fetch(routeFetch + "/api/login", {
-                    method: 'POST',
-                body: user
-            })
-                .then((response) => response.json())
-                .then((data) =>
-                    console.log(data)
-                );
+        fetch(routeFetch + "/api/login", {
+            method: 'POST',
+            body: user
+        })
+            .then((response) => response.json())
+            .then((data) =>
+                console.log(data)
+            );
 
-        }
     }, [login]);
     return (
         <div>
@@ -36,7 +34,7 @@ function Login() {
             <Link to="/">
                 <button>Go back</button>
             </Link>
-                <button onClick={() => setLogin(!login)}>Login</button>
+            <button onClick={() => setLogin(!login)}>Login</button>
             <Link to="/forgotPassword">
                 I forgot my password
             </Link>

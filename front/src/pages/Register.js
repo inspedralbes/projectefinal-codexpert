@@ -10,23 +10,20 @@ function Register() {
     const [password, setPassword] = useState("");
     const [passwordValidation, setPasswordValidation] = useState("");
     useEffect(() => {
-        if (registro) {
-            const user = new FormData()
-            user.append("name", username);
-            user.append("email", email);
-            user.append("password", password);
-            user.append("password_confirmation", passwordValidation);
+        const user = new FormData()
+        user.append("name", username);
+        user.append("email", email);
+        user.append("password", password);
+        user.append("password_confirmation", passwordValidation);
 
-            fetch(routeFetch + "/api/register", {
-                    method: 'POST',
-                body: user
-            })
-                .then((response) => response.json())
-                .then((data) =>
-                    console.log(data)
-                );
-
-        }
+        fetch(routeFetch + "/api/register", {
+            method: 'POST',
+            body: user
+        })
+            .then((response) => response.json())
+            .then((data) =>
+                console.log(data)
+            );
     }, [registro]);
 
     return (
