@@ -1,3 +1,327 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: pink;
+    background-image: url('img/LoginBG.jpg');
+    background-size: cover;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.login {
+    margin: 15vh auto;
+    width: 30%;
+    background-color: white;
+    padding: 30px;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.login__buttons {
+    display: flex;
+    margin:0 auto;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ______________________________________________ Go back button ______________________________________________*/
+#goBack__button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    vertical-align: middle;
+    text-decoration: none;
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+    width: 13rem;
+    height: auto;
+}
+
+#goBack__button .circle {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    display: block;
+    margin: 0;
+    width: 3rem;
+    height: 3rem;
+    background: #5264AE;
+    border-radius: 1.625rem;
+    float: right;
+}
+
+#goBack__button .circle .icon {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+}
+
+#goBack__button .circle .icon.arrow {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    left: 1.1rem;
+    width: 0.9rem;
+    height: 0.125rem;
+    background: none;
+}
+
+#goBack__button .circle .icon.arrow::before {
+    position: absolute;
+    content: "";
+    top: -0.30rem;
+    right: 0.0625rem;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-top: 0.125rem solid #fff;
+    border-right: 0.125rem solid #fff;
+    transform: rotate(225deg);
+}
+
+#goBack__button .button-text {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem 0;
+    margin: 0;
+    color: #5264AE;
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#goBack__button:hover .circle {
+    width: 100%;
+}
+
+#goBack__button:hover .circle .icon.arrow {
+    background: #fff;
+    transform: translate(1rem, 0);
+}
+
+#goBack__button:hover .button-text {
+    color: #fff;
+}
+
+/* ____________________________________________________________________________________________________________________________________________________________________ */
+.login h1 {
+    margin-bottom: 20px;
+}
+
+.login__form {
+    margin: 0 auto;
+}
+
+.login__inputGroup {
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 45px;
+    justify-self: center;
+}
+
+.login__input {
+    margin: 0 auto;
+    color: #a972fc;
+    font-size: 18px;
+    padding: 10px 10px 10px 10px;
+    display: block;
+    width: 90%;
+    border: none;
+    border-bottom: 1px solid #e1d1fc;
+}
+
+.login__input:focus {
+    outline: none;
+}
+
+/* LABEL ======================================= */
+.login__inputlabel {
+    color: #c9a7fd;
+    font-size: 18px;
+    font-weight: normal;
+    position: absolute;
+    pointer-events: none;
+    left: 5px;
+    top: 10px;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+    margin: inherit;
+    padding-left: 20px;
+}
+
+/* active state */
+.login__input:focus~.login__inputlabel {
+    top: -20px;
+    font-size: 14px;
+    color: #5264AE;
+}
+
+/* BOTTOM login__inputBarS ================================= */
+.login__inputBar {
+    margin: 0 auto;
+    position: relative;
+    display: block;
+    width: 90%;
+}
+
+.login__inputBar:before,
+.login__inputBar:after {
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+    background: #5264AE;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+.login__inputBar:before {
+    left: 50%;
+}
+
+.login__inputBar:after {
+    right: 50%;
+}
+
+/* active state */
+.login__input:focus~.login__inputBar:before,
+.login__input:focus~.login__inputBar:after {
+    width: 50%;
+}
+
+
+/* ------------------------------- submit ------------------------------- */
+
+#submit__button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    vertical-align: middle;
+    text-decoration: none;
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+    width: 12rem;
+    height: auto;
+}
+
+#submit__button .circle2 {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    display: block;
+    margin: 0;
+    width: 3rem;
+    height: 3rem;
+    background: #5264AE;
+    border-radius: 1.625rem;
+}
+
+#submit__button .circle2 .icon2 {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+}
+
+#submit__button .circle2 .icon2.arrow2 {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    left: 0.9rem;
+    width: 0.9rem;
+    height: 0.125rem;
+    background: none;
+}
+
+#submit__button .circle2 .icon2.arrow2::before {
+    position: absolute;
+    content: "";
+    top: -0.30rem;
+    right: 0.0625rem;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-top: 0.125rem solid #fff;
+    border-right: 0.125rem solid #fff;
+    transform: rotate(45deg);
+}
+
+#submit__button .button-text {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem 0;
+    margin: 0;
+    color: #5264AE;
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#submit__button:hover .circle2 {
+    width: 100%;
+}
+
+#submit__button:hover .circle2 .icon2.arrow2 {
+    background: #fff;
+    transform: translate(9rem, 0);
+}
+
+#submit__button:hover .button-text {
+    color: #fff;
+}
+
+.login__checkboxLabel {
+    font-size: 10px;
+    color: #999;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.login__checkboxInput {
+    text-align: left;
+    padding-left: 20px;
+
+}
+
+.login__submit {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.login__link {
+    text-align: center;
+    margin-top: 30px;
+    text-decoration: none;
+}
+
+.login__link p {
+    font-size: 15px;
+    text-decoration: none;
+    color: #999;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.login__link p:hover {
+    transition: all 0.3s;
+    color: #5264AE;
 }
