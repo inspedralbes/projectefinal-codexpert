@@ -34,7 +34,7 @@ io.on("connection", (socket) => {
 
   console.log(socketId + " connected");
 
-  socket.nom = i;
+  socket.data.nom = i;
   i++;
 
   socket.emit("lobbies list", lobbies);
@@ -51,31 +51,35 @@ io.on("connection", (socket) => {
       lobbies.push(lobby);
     }
 
-    console.log(lobbies);
     io.emit("lobbies list", lobbies);
   });
 
   socket.on("join room", (roomName) => {
     socket.join(roomName);
     console.log(socket.rooms);
-    console.log(socket.nom + " joined the lobby -> " + roomName);
-    io.to(roomName).emit("player joined", socket.nom);
+    console.log(socket.data.nom + " joined the lobby -> " + roomName);
+    io.to(roomName).emit("player joined", socket.data.nom);
 
     sendLobbyList(roomName);
   });
 
   socket.on("disconnect", () => {
-    console.log(socket.nom + " disconnected");
+    console.log(socket.data.nom + " disconnected");
   });
 });
 
-function sendLobbyList(room) {
+async function sendLobbyList(room) {
   var list = [];
 
-  var clients = io.clients(room);
+  const sockets = await io.in(room).fetchSockets();
+
+  sockets.forEach((element) => {
+    console.log(io.sockets.sockets.get(element.id).data.nom);
+    list.push(io.sockets.sockets.get(element.id).data.nom)
+  });
 
   io.emit("lobby user list", {
-    list: clients,
+    list: list,
     message: "lista en teoria",
   });
 }

@@ -16,14 +16,14 @@
             id="input"
             autocomplete="off"
             type="text"
-            placeholder="Nom de la lobby"
+            placeholder="Lobby name"
         /></label>
         <button>Send</button>
       </form>
     </div>
 
     <div id="lobbyJoined">
-      <h1>Usuaris connectats</h1>
+      <h1>Connected users</h1>
       <ul id="userList"></ul>
     </div>
 
@@ -77,7 +77,15 @@
       });
 
       socket.on("lobby user list", (data) => {
+        var userl = document.getElementById("userList");
+        userl.innerHTML = "";
         console.log(data.message);
+        userl.innerHTML = "";
+        data.list.forEach((element) => {
+          var item = document.createElement("li");
+          item.textContent = element;
+          userl.appendChild(item);
+        });
       });
     </script>
   </body>
