@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Session;
 class AuthController extends Controller
 {
     public function checkUserDuplicated($userData)
@@ -39,10 +39,12 @@ class AuthController extends Controller
 
             if ($createUser) {
                 $user = new User;
-                $user->name = strtolower($request -> name);
-                $user->email = strtolower($request -> email);
-                $user->password = Hash::make($request -> password);
-                $user->save();
+                $user -> name = strtolower($request -> name);
+                $user -> email = strtolower($request -> email);
+                $user -> password = Hash::make($request -> password);
+                $user -> save();
+                
+                Session::put('userId', $user -> id);
             } else {
                 $user = "User already exists.";
             }
@@ -59,6 +61,7 @@ class AuthController extends Controller
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
+                Session::put('userId', $user -> id);
             } else {
                 $user = "Password and e-mail don't match.";
             }
