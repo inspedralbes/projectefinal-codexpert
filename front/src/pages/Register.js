@@ -1,6 +1,7 @@
 import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import routeFetch from "../index"
 
 function Register() {
     const [registro, setRegistro] = useState(false);
@@ -16,7 +17,7 @@ function Register() {
             user.append("password", password);
             user.append("password_confirmation", passwordValidation);
 
-            fetch("http://localhost:8000/api/register", {
+            fetch(routeFetch + "/api/register", {
                     method: 'POST',
                 body: user
             })
