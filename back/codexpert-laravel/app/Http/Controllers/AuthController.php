@@ -24,12 +24,34 @@ class AuthController extends Controller
         return $canCreate;
     }
 
+    public function findWhatIsDuplicated($userData)
+    {
+        $isDuplicated = 'name';
+
+        $emailDuplicated = User::where('email', strtolower($userData -> email))
+        ->count();
+
+        if ($emailDuplicated != 0) {
+            $isDuplicated = 'email';
+        }
+
+        return $isDuplicated;
+    }
+
     public function register(Request $request)
     {
         $validator =  Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:3|max:20',
             'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:4|confirmed'
+            'password' => [
+                'required',
+                'string',
+                'min:6',             // must be at least 6 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+                'regex:/[@$!%*#?&.]/', // must contain a special character
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -46,7 +68,13 @@ class AuthController extends Controller
                 
                 Session::put('userId', $user -> id);
             } else {
-                $user = "User already exists.";
+                $duplicated = $this->findWhatIsDuplicated($request);
+                $user = "Name already in use.";
+                
+                if ($duplicated == 'email') {
+                    $user = "Email already registered."; 
+                }
+                
             }
         } 
 
