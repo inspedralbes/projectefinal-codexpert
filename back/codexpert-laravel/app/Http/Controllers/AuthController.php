@@ -50,4 +50,20 @@ class AuthController extends Controller
 
         return json_encode($user);
     }
+
+    public function login(Request $request)
+    {
+        $user = "User not found.";
+
+        $userFound = User::where('email', strtolower($request -> email))->first();
+        if ($userFound != null) {
+            if (Hash::check($request -> password, $userFound -> password)) {
+                $user = $userFound;
+            } else {
+                $user = "Password and e-mail don't match.";
+            }
+        }
+
+        return json_encode($user);
+    }
 }
