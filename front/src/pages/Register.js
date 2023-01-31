@@ -14,7 +14,7 @@ function Register() {
             user.append("name", username);
             user.append("email", email);
             user.append("password", password);
-            user.append("passwordValidation", passwordValidation);
+            user.append("password_confirmation", passwordValidation);
 
             fetch("http://localhost:8000/api/register", {
                     method: 'POST',
