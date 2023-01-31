@@ -23,7 +23,7 @@
     </div>
 
     <div id="lobbyJoined">
-      <h1></h1>
+      <h1>Usuaris connectats</h1>
       <ul id="userList"></ul>
     </div>
 
@@ -34,9 +34,14 @@
       var form = document.getElementById("form");
       var input = document.getElementById("input");
       var lobbyList = document.getElementById("lobbiesList");
-      var userList = document.getElementById("userList");
+      var userList = document.getElementById("lobbyJoined");
 
+      userList.style.display = "none";
       var inLobby = false;
+
+      socket.on("hello", (data) => {
+        console.log(data);
+      });
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -50,10 +55,6 @@
         console.log(id + " joined the lobby");
       });
 
-      socket.on("hello", () => {
-        console.log("Hello, you're using CodeXpert!");
-      })
-
       socket.on("lobbies list", function (lobbylist) {
         // console.log(lobbylist);
         lobbyList.innerHTML = "";
@@ -64,12 +65,19 @@
         });
 
         lobbyList.addEventListener("click", (e) => {
-          socket.emit("join room", e.target.innerText);
-          // lobbyList.style.display = "none";
-          document.getElementById("lobbyJoined").style.display = "block";
-          inLobby = true;
-          console.log(e.target.innerText);
+          if (!inLobby) {
+            socket.emit("join room", e.target.innerText);
+            document.getElementById("lobbyList").style.display = "none";
+            userList.style.display = "block";
+            document.getElementById("lobbyJoined").style.display = "block";
+            inLobby = true;
+            console.log(e.target.innerText);
+          }
         });
+      });
+
+      socket.on("lobby user list", (data) => {
+        console.log(data.message);
       });
     </script>
   </body>

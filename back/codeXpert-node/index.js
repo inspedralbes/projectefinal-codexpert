@@ -26,10 +26,13 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  socket.join("room1");
-  socket.to("room1").emit("hello");
+  var socketId = socket.id;
 
-  console.log(i + " connected");
+  console.log("general socket connected!!");
+  socket.join("chat-general");
+  io.to(`${socketId}`).emit("hello", "Welcome to the general chat");
+
+  console.log(socketId + " connected");
 
   socket.nom = i;
   i++;
@@ -37,7 +40,17 @@ io.on("connection", (socket) => {
   socket.emit("lobbies list", lobbies);
 
   socket.on("new lobby", (lobby) => {
-    lobbies.push(lobby);
+    let existeix = false;
+    lobbies.forEach((element) => {
+      if (element == lobby) {
+        existeix = true;
+      }
+    });
+
+    if (!existeix) {
+      lobbies.push(lobby);
+    }
+
     console.log(lobbies);
     io.emit("lobbies list", lobbies);
   });
@@ -47,12 +60,25 @@ io.on("connection", (socket) => {
     console.log(socket.rooms);
     console.log(socket.nom + " joined the lobby -> " + roomName);
     io.to(roomName).emit("player joined", socket.nom);
+
+    sendLobbyList(roomName);
   });
 
   socket.on("disconnect", () => {
     console.log(socket.nom + " disconnected");
   });
 });
+
+function sendLobbyList(room) {
+  var list = [];
+
+  var clients = io.clients(room);
+
+  io.emit("lobby user list", {
+    list: clients,
+    message: "lista en teoria",
+  });
+}
 
 // ==================== MY SQL ===================
 
