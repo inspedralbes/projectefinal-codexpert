@@ -39,7 +39,7 @@ function Register() {
             <Link to="/login">
                 <button>Go back</button>
             </Link>
-            <button onClick={() => setRegistro(true)}>Register</button>
+            <button onClick={() => setRegistro(!registro)}>Register</button>
         </div>
     );
 }
