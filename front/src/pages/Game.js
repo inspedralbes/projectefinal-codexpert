@@ -5,7 +5,7 @@ function Game() {
   return (
     <div>
       <h1>Game</h1>
-      <Logout></Logout>
+        <Logout></Logout>
     </div>
   );
 }

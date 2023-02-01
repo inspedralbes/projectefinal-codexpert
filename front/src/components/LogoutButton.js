@@ -5,34 +5,30 @@ import routeFetch from "../index"
 import session from "./UserSession";
 
 
-function Login() {
-    const [login, setLogin] = useState(0);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [mantenerSesion, setMantenerSesion] = useState(false);
+function Logout() {
+    const [logout, setLogout] = useState(0);
 
     useEffect(() => {
+        if (logout != 0) {
 
-        const user = new FormData()
-        user.append("email", email);
-        user.append("password", password);
+            fetch(routeFetch + "/api/logout", {
+                method: 'POST',
+            })
+                .then((response) => response.json())
+                .then(() => {
+                    console.log(session.getData());
+                    session.setData({});
+                    console.log(session.getData());
+                }
+                );
+        }
 
-        fetch(routeFetch + "/api/login", {
-            method: 'POST',
-            body: user
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                session.setData(data);
-            }
-            );
-
-    }, [login]);
+    }, [logout]);
     return (
         <div>
-            <button>Logout</button>
+            <button onClick={() => setLogout(logout + 1)}>Logout</button>
         </div>
     );
 }
 
-export default Login;
+export default Logout;
