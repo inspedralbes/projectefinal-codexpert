@@ -2,11 +2,15 @@ const express = require("express");
 
 require("dotenv").config();
 
-const PORT = 3003;
+const PORT = 4000;
 
 const app = express();
 
 const http = require("http");
+
+const cors = require("cors");
+
+app.use(cors());
 
 app.use(express.json());
 
@@ -21,16 +25,31 @@ var lobbies = [];
 
 // ================= SOCKET ROOMS ================
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+const socketIO = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
 });
 
-io.on("connection", (socket) => {
+socketIO.on("connection", (socket) => {
+  console.log(`🤢: ${socket.id} user just connected!`);
+  socket.on("disconnect", () => {
+    console.log("😒: A user disconnected");
+  });
+});
+
+app.get("/api", (req, res) => {
+  res.json({
+    message: "Hello world",
+  });
+});
+
+socketIO.on("connection", (socket) => {
   var socketId = socket.id;
 
   console.log("general socket connected!!");
   socket.join("chat-general");
-  io.to(`${socketId}`).emit("hello", "Welcome to the general chat");
+  socketIO.to(`${socketId}`).emit("hello", "Welcome to the general chat");
 
   console.log(socketId + " connected");
 
@@ -51,14 +70,14 @@ io.on("connection", (socket) => {
       lobbies.push(lobby);
     }
 
-    io.emit("lobbies list", lobbies);
+    socketIO.emit("lobbies list", lobbies);
   });
 
   socket.on("join room", (roomName) => {
     socket.join(roomName);
     console.log(socket.rooms);
     console.log(socket.data.nom + " joined the lobby -> " + roomName);
-    io.to(roomName).emit("player joined", socket.data.nom);
+    socketIO.to(roomName).emit("player joined", socket.data.nom);
 
     sendLobbyList(roomName);
   });
@@ -75,14 +94,14 @@ io.on("connection", (socket) => {
 async function sendLobbyList(room) {
   var list = [];
 
-  const sockets = await io.in(room).fetchSockets();
+  const sockets = await socketIO.in(room).fetchSockets();
 
   sockets.forEach((element) => {
-    console.log(io.sockets.sockets.get(element.id).data.nom);
-    list.push(io.sockets.sockets.get(element.id).data.nom);
+    console.log(socketIO.sockets.sockets.get(element.id).data.nom);
+    list.push(socketIO.sockets.sockets.get(element.id).data.nom);
   });
 
-  io.emit("lobby user list", {
+  socketIO.emit("lobby user list", {
     list: list,
     message: "lista en teoria",
   });
