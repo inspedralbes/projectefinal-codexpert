@@ -14,7 +14,7 @@ class UserController extends Controller
             $userFound = User::find('userId')->get();
             $returnAvatar = $userFound -> avatar;
         } else {
-            $returnAvatar = 'null';
+            $returnAvatar = null;
         }
         
         return json_encode($returnAvatar);
