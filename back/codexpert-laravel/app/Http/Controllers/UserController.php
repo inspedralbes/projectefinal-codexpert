@@ -10,11 +10,14 @@ class UserController extends Controller
 {
     public function getAvatar(Request $request)
     {
-        Session::get('userId');
-
-        $userFound = User::find('userId')->get();
-
-        return json_encode($userFound -> avatar);
+        if (Session::get('userId') != null) {
+            $userFound = User::find('userId')->get();
+            $returnAvatar = $userFound -> avatar;
+        } else {
+            $returnAvatar = 'User not logged in.';
+        }
+        
+        return json_encode($returnAvatar);
     }
     
     public function setAvatar(Request $request)
@@ -25,6 +28,6 @@ class UserController extends Controller
         $userFound -> avatar = $request -> newAvatar;
         $userFound -> save();
         
-        return json_encode($userFound -> avatar);
+        return json_encode('Avatar saved.');
     }
 }

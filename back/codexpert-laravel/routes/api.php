@@ -23,6 +23,6 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/getAvatar', [AuthController::class, 'getAvatar']);
+Route::get('/getAvatar', [AuthController::class, 'getAvatar']);
 
 Route::post('/setAvatar', [AuthController::class, 'setAvatar']);
