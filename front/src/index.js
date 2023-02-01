@@ -8,7 +8,12 @@ import Register from './pages/Register';
 import Game from './pages/Game';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword'
+import Lobbies from "./pages/Lobbies";
 import reportWebVitals from './reportWebVitals';
+
+// socket.io
+import socketIO from "socket.io-client";
+const socket = socketIO.connect("localhost:4000");
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,6 +27,7 @@ root.render(
           <Route path="game" element={<Game />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
+          <Route path="lobbylist" element={<Lobbies socket={socket} />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

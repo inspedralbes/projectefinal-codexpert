@@ -1,30 +1,42 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Lobbies = () => {
+const Lobbies = ({ socket }) => {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
+  const [lobbyName, setLobbyName] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem('userName', userName);
-    navigate('/lobbylist');
+    localStorage.setItem("lobbyName", lobbyName);
+    console.log("hola");
+    navigate("/lobbylist");
   };
   return (
-    <form className="home__container" onSubmit={handleSubmit}>
-      <h2 className="home__header">Sign in to Open Chat</h2>
-      <label htmlFor="username">Username</label>
-      <input
-        type="text"
-        minLength={6}
-        name="username"
-        id="username"
-        className="username__input"
-        value={userName}
-        onChange={(e) => setUserName(e.target.value)}
-      />
-      <button className="home__cta">SIGN IN</button>
-    </form>
+    <div>
+      <div id="lobbyList">
+        <h1>Lobby list</h1>
+        <ul id="lobbiesList"></ul>
+        <form id="form" onSubmit={handleSubmit}>
+          <label>
+            <input
+              id="inputLobby"
+              autocomplete="off"
+              type="text"
+              value={lobbyName}
+              placeholder="Lobby name"
+              onChange={(e) => setLobbyName(e.target.value)}
+            />
+          </label>
+          <button>Send</button>
+        </form>
+      </div>
+
+      <div id="lobbyJoined">
+        <button id="leaveLobby">Leave current lobby</button>
+        <h1>Connected users</h1>
+        <ul id="userList"></ul>
+      </div>
+    </div>
   );
 };
 
