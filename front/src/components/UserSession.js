@@ -1,19 +1,19 @@
-var UserProfile = (function() {
-    var full_name = "";
-  
-    var getName = function() {
-      return full_name;
+var UserProfile = (function () {
+    var uData = {};
+
+    var getData = function () {
+        return uData;
     };
-  
-    var setName = function(name) {
-      full_name = name;     
+
+    var setData = function (data) {
+        uData = data;
     };
-  
+
     return {
-      getName: getName,
-      setName: setName
+        getData: getData,
+        setData: setData
     }
-  
-  })();
-  
-  export default UserProfile;
+
+})();
+
+export default UserProfile;

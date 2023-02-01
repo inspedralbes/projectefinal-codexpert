@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Session;
 class AuthController extends Controller
 {
     public function checkUserDuplicated($userData)
@@ -24,12 +24,34 @@ class AuthController extends Controller
         return $canCreate;
     }
 
+    public function findWhatIsDuplicated($userData)
+    {
+        $isDuplicated = 'name';
+
+        $emailDuplicated = User::where('email', strtolower($userData -> email))
+        ->count();
+
+        if ($emailDuplicated != 0) {
+            $isDuplicated = 'email';
+        }
+
+        return $isDuplicated;
+    }
+
     public function register(Request $request)
     {
         $validator =  Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:3|max:20',
             'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:4|confirmed'
+            'password' => [
+                'required',
+                'string',
+                'min:6',             // must be at least 6 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+                'regex:/[@$!%*#?&.]/', // must contain a special character
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -39,12 +61,20 @@ class AuthController extends Controller
 
             if ($createUser) {
                 $user = new User;
-                $user->name = strtolower($request -> name);
-                $user->email = strtolower($request -> email);
-                $user->password = Hash::make($request -> password);
-                $user->save();
+                $user -> name = strtolower($request -> name);
+                $user -> email = strtolower($request -> email);
+                $user -> password = Hash::make($request -> password);
+                $user -> save();
+                
+                Session::put('userId', $user -> id);
             } else {
-                $user = "User already exists.";
+                $duplicated = $this->findWhatIsDuplicated($request);
+                $user = "Name already in use.";
+                
+                if ($duplicated == 'email') {
+                    $user = "Email already registered."; 
+                }
+                
             }
         } 
 
@@ -59,11 +89,19 @@ class AuthController extends Controller
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
+                Session::put('userId', $user -> id);
             } else {
                 $user = "Password and e-mail don't match.";
             }
         }
 
         return json_encode($user);
+    }
+
+    public function logout(Request $request)
+    {
+        Session::flush();
+
+        return json_encode("Logged out.");
     }
 }
