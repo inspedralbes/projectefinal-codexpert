@@ -31,31 +31,31 @@ function Login() {
 
   }, [login]);
   return (
-    <div className="login">
+    <div className="form">
       <h1>LOG IN</h1>
       <br />
-      <div className="login__form">
-        <div className="login__inputGroup">
-          <input id="email" className="login__input" placeholder=" " type="text" onChange={(e) => setEmail(e.target.value)} required></input>
-          <span className="login__inputBar"></span>
-          <label htmlFor="email" className="login__inputlabel">E-mail</label>
+      <div className="form__form">
+        <div className="form__inputGroup">
+          <input id="email" className="form__input" placeholder=" " type="text" onChange={(e) => setEmail(e.target.value)} required></input>
+          <span className="form__inputBar"></span>
+          <label className="form__inputlabel">E-mail</label>
         </div>
-        <div className="login__inputGroup">
-          <input id="password" className="login__input" placeholder=" " type="password" onChange={(e) => setPassword(e.target.value)} required></input>
-          <span className="login__inputBar"></span>
-          <label htmlFor="password" className="login__inputlabel">Password</label>
+        <div className="form__inputGroup">
+          <input id="password" className="form__input" placeholder=" " type="password" onChange={(e) => setPassword(e.target.value)} required></input>
+          <span className="form__inputBar"></span>
+          <label className="form__inputlabel">Password</label>
           <br />
-          <div className="login__checkboxInput">
-            <label className="login__checkboxLabel"><input className="login__inputCheckbox" type="checkbox" onChange={(e) => setMantenerSesion(!mantenerSesion)}></input> mantener sesión iniciada</label>
+          <div className="form__checkboxInput">
+            <label className="form__checkboxLabel"><input className="form__inputCheckbox" type="checkbox" onChange={(e) => setMantenerSesion(!mantenerSesion)}></input> mantener sesión iniciada</label>
           </div>
         </div>
 
       </div>
-      <div className="login__buttonsLinks">
-        <div className="login__buttons">
+      <div className="form__buttonsLinks">
+        <div className="form__buttons">
           <Link to="/">
-            <div className="login__goBack">
-              <div className="login__button--flex">
+            <div className="form__goBack">
+              <div className="form__button--flex">
                 <button id="goBack__button">
                   <span className="circle" aria-hidden="true">
                     <span className="icon arrow"></span>
@@ -66,7 +66,7 @@ function Login() {
             </div>
           </Link>
 
-          <div className="login__submit submit">
+          <div className="form__submit submit">
             <button onClick={() => setLogin(login + 1)} id="submit__button">
               <span className="circle2" aria-hidden="true">
                 <span className="icon2 arrow2"></span>
@@ -75,7 +75,7 @@ function Login() {
             </button>
           </div>
         </div>
-        <div className="login__links link">
+        <div className="form__links link">
           <Link className="link__ForgotPass" to="/forgotPassword">
             <p>Forgot your password?</p>
           </Link>
