@@ -33,7 +33,7 @@ function AvatarMaker() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(routeFetch + "/index.php/getAvatar")
+      await fetch(routeFetch + "/index.php/getAvatar", {mode: 'cors'})
         .then((response) => response.json())
         .then((data) => {
           urlStr = JSON.parse(data);
@@ -43,6 +43,7 @@ function AvatarMaker() {
             getAvatar(urlStr);
           }
         });
+        console.log("b");
     };
     fetchData();
   }, []);
@@ -90,7 +91,7 @@ function AvatarMaker() {
   }, [bgC, c, cC, h, hC, sC, g, gC, gP, a, aC, aP, m, mC, e, eC]);
 
   function getAvatar(u) {
-
+    console.log("a");
     const url = new URL(u);
     backgroundColor(url.searchParams.get("backgroundColor"));
     clothing(url.searchParams.get("clothing"));

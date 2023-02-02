@@ -19,45 +19,32 @@ function Register() {
         fetch(routeFetch + "/index.php/register", {
             method: 'POST',
             body: user
-        }).then((response) => response.json()).then((data) =>
-            console.log(JSON.parse(data))
+        }).then((response) => response.json()).then((data) => {
+            if (data.valid) {
+                //Se ha creado el usuario
+            } else {
+                //no se ha creado hacemos otra cosa
+            }
+        }
         );
     }, [registro]);
 
-    return ( <
-        div >
-        <
-        h1 > Register < /h1> <
-        input placeholder = "nickname"
-        type = "text"
-        onChange = {
-            (e) => setUsername(e.target.value) } > < /input> <
-        input placeholder = "email"
-        type = "email"
-        onChange = {
-            (e) => setEmail(e.target.value) } > < /input> <
-        input placeholder = "password"
-        type = "password"
-        name = "password"
-        onChange = {
-            (e) => setPassword(e.target.value) } > < /input> <
-        input placeholder = "repeat password"
-        type = "password"
-        onChange = {
-            (e) => setPasswordValidation(e.target.value) } > < /input> <
-        Link to = "/login" >
-        <
-        button > Go back < /button> <
-        /Link>
+    return (
+        <div>
+            <h1>Register</h1>
+            <input placeholder="nickname" type="text" onChange={(e) => setUsername(e.target.value)}></input>
+            <input placeholder="email" type="email" onChange={(e) => setEmail(e.target.value)}></input>
+            <input placeholder="password" type="password" name="password" onChange={(e) => setPassword(e.target.value)}></input>
+            <input placeholder="repeat password" type="password" onChange={(e) => setPasswordValidation(e.target.value)}></input>
+            <Link to="/login">
+                <button>Go back</button>
+            </Link>
 
-        <
-        button onClick = {
-            () => setRegistro(!registro) } > Register < /button> <
-        Link to = "/avatarMaker" >
-        <
-        button > Avatar < /button> <
-        /Link> <
-        /div>
+            <button onClick={() => setRegistro(!registro)}>Register</button>
+            <Link to="/avatarMaker">
+                <button>Avatar</button>
+            </Link>
+        </div>
     );
 }
 

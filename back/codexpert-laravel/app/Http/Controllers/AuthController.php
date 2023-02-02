@@ -55,8 +55,10 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $user = (object) ['message' => ""];
-            $user -> message = "Validation errors.";
+            $sendUser = (object) 
+            ["valid" => false,
+            'message' => "Validation errors."
+            ];
         } else {
             $createUser = $this->checkUserDuplicated($request);
 
@@ -67,19 +69,28 @@ class AuthController extends Controller
                 $user -> password = Hash::make($request -> password);
                 $user -> save();
                 $request -> session()->put('userId', $user->id);
-                //Session::put('userId', $user -> id);
+                $sendUser = (object) 
+                ["valid" => true,
+                'message' => $user
+                ];
             } else {
                 $duplicated = $this->findWhatIsDuplicated($request);
-                $user = "Name already in use.";
+                $sendUser = (object) 
+                ["valid" => false,
+                'message' => "Name already in use."
+                ];
                 
                 if ($duplicated == 'email') {
-                    $user = "Email already registered."; 
+                    $sendUser = (object) 
+                    ["valid" => false,
+                    'message' => "Email already registered."
+                    ];
                 }
                 
             }
         } 
 
-        return json_encode($user);
+        return response() -> json($sendUser);
     }
 
     public function login(Request $request)
