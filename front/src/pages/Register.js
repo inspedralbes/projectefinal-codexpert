@@ -16,14 +16,12 @@ function Register() {
         user.append("password", password);
         user.append("password_confirmation", passwordValidation);
 
-        fetch(routeFetch + "/api/register", {
+        fetch(routeFetch + "/index.php/register", {
             method: 'POST',
             body: user
-        })
-            .then((response) => response.json())
-            .then((data) =>
-                console.log(data)
-            );
+        }).then((response) => response.json()).then((data) =>
+            console.log(JSON.parse(data))
+        );
     }, [registro]);
 
     return (
@@ -36,7 +34,11 @@ function Register() {
             <Link to="/login">
                 <button>Go back</button>
             </Link>
+
             <button onClick={() => setRegistro(!registro)}>Register</button>
+            <Link to="/avatarMaker">
+                <button>Avatar</button>
+            </Link>
         </div>
     );
 }
