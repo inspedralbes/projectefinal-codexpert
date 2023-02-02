@@ -65,8 +65,8 @@ class AuthController extends Controller
                 $user -> email = strtolower($request -> email);
                 $user -> password = Hash::make($request -> password);
                 $user -> save();
-                
-                Session::put('userId', $user -> id);
+                $request -> session()->put('userId', $user->id);
+                //Session::put('userId', $user -> id);
             } else {
                 $duplicated = $this->findWhatIsDuplicated($request);
                 $user = "Name already in use.";
@@ -89,7 +89,9 @@ class AuthController extends Controller
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
-                Session::put('userId', $user -> id);
+                $request -> session()->put('userId', $user->id);
+
+                //Session::put('userId', $user -> id);
             } else {
                 $user = "Password and e-mail don't match.";
             }

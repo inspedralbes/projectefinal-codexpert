@@ -10,7 +10,8 @@ class UserController extends Controller
 {
     public function getAvatar(Request $request)
     {
-        if (Session::get('userId') != null) {
+        
+        if ($request -> session()->get('userId') != null) {
             $userFound = User::find('userId')->get();
             $returnAvatar = $userFound -> avatar;
         } else {
