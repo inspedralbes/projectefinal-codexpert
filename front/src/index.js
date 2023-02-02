@@ -11,10 +11,6 @@ import ResetPassword from './pages/ResetPassword'
 import Lobbies from "./pages/Lobbies";
 import reportWebVitals from './reportWebVitals';
 
-// socket.io
-import socketIO from "socket.io-client";
-const socket = socketIO.connect("localhost:4000");
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -27,7 +23,7 @@ root.render(
           <Route path="game" element={<Game />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
-          <Route path="lobbylist" element={<Lobbies socket={socket} />}></Route>
+          <Route path="lobbylist" element={<Lobbies/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
@@ -35,7 +31,8 @@ root.render(
 );
 
 const routeFetch = "http://localhost:8000"
-export default routeFetch
+const routeNodeServer = "http://localhost:4000"
+export default routeFetch;
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

@@ -73,6 +73,10 @@ socketIO.on("connection", (socket) => {
     socketIO.emit("lobbies list", lobbies);
   });
 
+  socket.on("hello", (m) => {
+    socketIO.emit("lobbies list", lobbies);
+  });
+
   socket.on("join room", (roomName) => {
     socket.join(roomName);
     console.log(socket.rooms);
