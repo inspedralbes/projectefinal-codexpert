@@ -1,14 +1,18 @@
 import "../normalize.css";
 import { Link } from "react-router-dom";
 
-
 function App() {
   return (
     <div>
-      <h1>Landing Page</h1>
-      <Link to="/login">
-        <button>Get Started</button>
-      </Link>
+      <div>
+        <h1>Landing Page</h1>
+        <Link to="/login">
+          <button>Get Started</button>
+        </Link>
+        <Link to="/lobbylist">
+          <button>Lobbies</button>
+        </Link>
+      </div>
     </div>
   );
 }
