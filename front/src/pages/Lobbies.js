@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "../Lobbies.css";
 
 // socket.io
 import socketIO from "socket.io-client";
@@ -59,21 +60,26 @@ const Lobbies = () => {
   return (
     <div className="lobbies">
       {!joinedLobby && (
-        <div id="lobbyList">
-          <h1>Lobby list</h1>
-          <ul id="lobbiesList">
+        <div id="lobbyList" className="lobbies">
+          <h1 className="lobbies__title">Lobby list</h1>
+          <ul id="lobbiesList" className="lobbies_lobbylist">
             {lobbyList.map((element, index) => {
               return (
-                <li onClick={handleJoin} key={index}>
+                <li
+                  className="lobbylist__item"
+                  onClick={handleJoin}
+                  key={index}
+                >
                   {element}
                 </li>
               );
             })}
           </ul>
-          <form id="form" onSubmit={handleSubmit}>
+          <form id="form" className="lobbies__form form" onSubmit={handleSubmit}>
             <label>
               <input
                 id="inputLobby"
+                className="form__inputLobby"
                 autoComplete="off"
                 type="text"
                 value={lobbyName}
@@ -81,22 +87,28 @@ const Lobbies = () => {
                 onChange={(e) => setLobbyName(e.target.value)}
               />
             </label>
-            <button>Send</button>
+            <button className="lobbies__button" disabled={lobbyName == ""}>Create lobby</button>
           </form>
         </div>
       )}
 
       {joinedLobby && (
-        <div id="lobbyJoined">
-          <button id="leaveLobby" onClick={handleLeave}>
+        <div id="lobbyJoined" className="lobbies__lobby lobby">
+          <button
+            id="leaveLobby"
+            className="lobby__leaveButton"
+            onClick={handleLeave}
+          >
             Leave current lobby
           </button>
-          <h1>Connected users</h1>
-          <ul id="userList">
-            {userList.map((element, index) => {
-              return <li key={index}>{element}</li>;
-            })}
-          </ul>
+          <div className="lobby__connectedUsers">
+            <h1 className="connectedUsers_title">Connected users</h1>
+            <ul id="userList" className="connectedUsers__userList userList">
+              {userList.map((element, index) => {
+                return <li className="userList__item" key={index}>{element}</li>;
+              })}
+            </ul>
+          </div>
         </div>
       )}
     </div>

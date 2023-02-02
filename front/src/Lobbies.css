@@ -1,0 +1,11 @@
+.lobbies {
+    background-color: white;
+    width: 90%;
+    height: 70vh;
+    margin: 0 auto;
+    display: block;
+}
+
+.lobbies__form {
+    bottom: 5%;
+}
