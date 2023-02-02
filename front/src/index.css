@@ -1,3 +1,11 @@
+:root {
+    --primary-color: #5264AE;
+    --h1-color: #38225e;
+    --shadow-color: #ad7bf8;
+    --labelPlaceholder-color: #a972fc;
+    --white: white;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -8,10 +16,10 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.login {
+.form {
     margin: 15vh auto;
     width: 30%;
-    background-color: white;
+    background-color: var(--white);
     padding: 30px;
     justify-content: center;
     text-align: center;
@@ -19,12 +27,16 @@ body {
     align-items: center;
 }
 
-.login h1 {
-    color: #38225e;
-    text-shadow: 4px 4px 4px 4px #ad7bf8;
+.form.register {
+    padding-bottom: 60px;
 }
 
-.login__buttons {
+.form h1 {
+    color: var(--h1-color);
+    text-shadow: 4px 4px 4px 4px var(--shadow-color);
+}
+
+.form__buttons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 1fr;
@@ -32,7 +44,7 @@ body {
     justify-content: center;
 }
 
-.login__button--flex {
+.form__button--flex {
     display: block;
     clear: both;
 }
@@ -60,7 +72,7 @@ body {
     display: block;
     width: 3rem;
     height: 3rem;
-    background: #5264AE;
+    background: var(--primary-color);
     border-radius: 1.625rem;
     float: right;
 }
@@ -71,7 +83,7 @@ body {
     top: 0;
     bottom: 0;
     margin: auto;
-    background: #fff;
+    background: var(--white);
 }
 
 #goBack__button .circle .icon.arrow {
@@ -89,8 +101,8 @@ body {
     right: 0.0625rem;
     width: 0.625rem;
     height: 0.625rem;
-    border-top: 0.125rem solid #fff;
-    border-right: 0.125rem solid #fff;
+    border-top: 0.125rem solid var(--white);
+    border-right: 0.125rem solid var(--white);
     transform: rotate(225deg);
 }
 
@@ -103,7 +115,7 @@ body {
     bottom: 0;
     padding: 0.75rem 0;
     margin: 0;
-    color: #5264AE;
+    color: var(--primary-color);
     font-weight: 700;
     line-height: 1.6;
     text-align: center;
@@ -115,33 +127,33 @@ body {
 }
 
 #goBack__button:hover .circle .icon.arrow {
-    background: #fff;
+    background: var(--white);
     transform: translate(1rem, 0);
 }
 
 #goBack__button:hover .button-text {
-    color: #fff;
+    color: var(--white);
 }
 
 /* ============================================================================================================================================================================ */
-.login h1 {
+.form h1 {
     margin-bottom: 20px;
 }
 
-.login__form {
+.form__form {
     margin: 0 auto;
 }
 
-.login__inputGroup {
+.form__inputGroup {
     position: relative;
     margin: 0 auto;
     margin-bottom: 45px;
     justify-self: center;
 }
 
-.login__input {
+.form__input {
     margin: 0 auto;
-    color: #a972fc;
+    color: var(--labelPlaceholder-color);
     font-size: 18px;
     padding: 10px 10px 10px 10px;
     display: block;
@@ -150,12 +162,12 @@ body {
     border-bottom: 1px solid #e1d1fc;
 }
 
-.login__input:focus {
+.form__input:focus {
     outline: none;
 }
 
 /*============================================================================== LABEL ============================================================================== */
-.login__inputlabel {
+.form__inputlabel {
     color: #c9a7fd;
     font-size: 18px;
     font-weight: normal;
@@ -171,46 +183,46 @@ body {
 }
 
 /* active state */
-.login__input:focus~.login__inputlabel,
-.login__input:valid~.login__inputlabel {
+.form__input:focus~.form__inputlabel,
+.form__input:valid~.form__inputlabel {
     top: -20px;
     font-size: 14px;
-    color: #5264AE;
+    color: var(--primary-color);
 }
 
 
 /*============================================================================== BOTTOM BARS ======================================================================== */
-.login__inputBar {
+.form__inputBar {
     margin: 0 auto;
     position: relative;
     display: block;
     width: 90%;
 }
 
-.login__inputBar:before,
-.login__inputBar:after {
+.form__inputBar:before,
+.form__inputBar:after {
     content: '';
     height: 2px;
     width: 0;
     bottom: 1px;
     position: absolute;
-    background: #5264AE;
+    background: var(--primary-color);
     transition: 0.2s ease all;
     -moz-transition: 0.2s ease all;
     -webkit-transition: 0.2s ease all;
 }
 
-.login__inputBar:before {
+.form__inputBar:before {
     left: 50%;
 }
 
-.login__inputBar:after {
+.form__inputBar:after {
     right: 50%;
 }
 
 /* active state */
-.login__input:focus~.login__inputBar:before,
-.login__input:focus~.login__inputBar:after {
+.form__input:focus~.form__inputBar:before,
+.form__input:focus~.form__inputBar:after {
     width: 50%;
 }
 
@@ -240,7 +252,7 @@ body {
     margin: 0;
     width: 3rem;
     height: 3rem;
-    background: #5264AE;
+    background: var(--primary-color);
     border-radius: 1.625rem;
 }
 
@@ -250,7 +262,7 @@ body {
     top: 0;
     bottom: 0;
     margin: auto;
-    background: #fff;
+    background: var(--white);
 }
 
 #submit__button .circle2 .icon2.arrow2 {
@@ -268,8 +280,8 @@ body {
     right: 0.0625rem;
     width: 0.625rem;
     height: 0.625rem;
-    border-top: 0.125rem solid #fff;
-    border-right: 0.125rem solid #fff;
+    border-top: 0.125rem solid var(--white);
+    border-right: 0.125rem solid var(--white);
     transform: rotate(45deg);
 }
 
@@ -282,7 +294,7 @@ body {
     bottom: 0;
     padding: 0.75rem 0;
     margin: 0;
-    color: #5264AE;
+    color: var(--primary-color);
     font-weight: 700;
     line-height: 1.6;
     text-align: center;
@@ -294,15 +306,15 @@ body {
 }
 
 #submit__button:hover .circle2 .icon2.arrow2 {
-    background: #fff;
+    background: var(--white);
     transform: translate(9rem, 0);
 }
 
 #submit__button:hover .button-text {
-    color: #fff;
+    color: var(--white);
 }
 
-.login__checkboxLabel {
+.form__checkboxLabel {
     display: flex;
     font-size: 10px;
     color: #999;
@@ -311,27 +323,27 @@ body {
     align-items: center;
 }
 
-.login__checkboxInput {
+.form__checkboxInput {
     text-align: left;
     padding-left: 20px;
     margin: 5px;
 
 }
 
-.login__inputCheckbox {
+.form__inputCheckbox {
     margin-right: 10px;
 
 }
 
-.login__submit {
+.form__submit {
     text-align: center;
     margin: 0 auto;
 }
 
 
-/* ================================================================================links login================================================================================== */
+/* ================================================================================links form================================================================================== */
 
-.login__links {
+.form__links {
     margin-top: 10%;
 }
 
@@ -354,44 +366,44 @@ body {
 .link__ForgotPass p:hover,
 .link__CreateAcc p:hover {
     transition: all 0.3s;
-    color: #5264AE;
-    text-shadow: 4px 4px 11px #ad7bf8;
+    color: var(--primary-color);
+    text-shadow: 4px 4px 11px var(--shadow-color);
 }
 
-.login__inputCheckbox {
+.form__inputCheckbox {
     appearance: none;
-    background-color: #fff;
+    background-color: var(--white);
     margin: 0;
     font: inherit;
     color: currentColor;
     appearance: none;
-    background-color: #fff;
+    background-color: var(--white);
     margin-right: 10px;
     font: inherit;
     color: currentColor;
     width: 1.5em;
     height: 1.5em;
-    border: 2px solid #5264AE;
+    border: 2px solid var(--primary-color);
     border-radius: 0.15em;
     transform: translateY(-0.075em);
     display: grid;
     place-content: center;
 }
 
-.login__inputCheckbox:checked::before {
+.form__inputCheckbox:checked::before {
     transform-origin: bottom left;
     clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 }
 
-.login__inputCheckbox::before {
+.form__inputCheckbox::before {
     content: "";
     width: 1em;
     height: 1em;
     transform: scale(0);
     transition: 120ms transform ease-in-out;
-    box-shadow: inset 1em 1em #b991ff;
+    box-shadow: inset 1em 1em var(--shadow-color);
 }
 
-.login__inputCheckbox:checked::before {
+.form__inputCheckbox:checked::before {
     transform: scale(1);
 }
