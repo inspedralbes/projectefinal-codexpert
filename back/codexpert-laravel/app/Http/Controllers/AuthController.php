@@ -55,7 +55,8 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $user = "Validation errors.";
+            $user = (object) ['message' => ""];
+            $user -> message = "Validation errors.";
         } else {
             $createUser = $this->checkUserDuplicated($request);
 
