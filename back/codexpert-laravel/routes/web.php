@@ -3,9 +3,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+    
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,10 +22,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/register', [AuthController::class, 'register']);
+Route::middleware(['cors'])->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
 
-Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/getAvatar', [UserController::class, 'getAvatar']);
+    Route::get('/getAvatar', [UserController::class, 'getAvatar']);
 
-Route::post('/setAvatar', [UserController::class, 'setAvatar']);
+    Route::post('/setAvatar', [UserController::class, 'setAvatar']);
+});
