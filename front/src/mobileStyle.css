@@ -1,0 +1,62 @@
+:root {
+    --primary-color: #5264AE;
+    --h1-color: #38225e;
+    --shadow-color: #ad7bf8;
+    --labelPlaceholder-color: #a972fc;
+    --white:white;
+}
+
+@media (max-width: 600px) {
+    body {
+        background-size: cover;
+        overflow: hidden;
+    }
+
+    .form {
+        width: 80%;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        margin: 5vh auto;
+    }
+
+    .form.register {
+        margin-top: 2vh;
+        padding-bottom: 20px;
+    }
+
+    .form__buttons {
+        display: block;
+    }
+
+    #submit__button,
+    #goBack__button {
+        width: 12rem;
+        margin: 10px;
+    }
+
+    #submit__button .button-text,
+    #goBack__button .button-text {
+        font-size: 13px;
+    }
+
+    #goBack__button .circle,
+    #submit__button .circle2 {
+        width: 100%;
+    }
+
+    #goBack__button .circle .icon.arrow {
+        background: #fff;
+        transform: translate(1rem, 0);
+    }
+
+    #submit__button .circle2 .icon2.arrow2 {
+        background: #fff;
+        transform: translate(9rem, 0);
+    }
+
+    #goBack__button .button-text,
+    #submit__button .button-text {
+        color: #fff;
+    }
+}
