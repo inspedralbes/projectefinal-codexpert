@@ -33,12 +33,12 @@ function AvatarMaker() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(routeFetch + "/api/getAvatar")
+      await fetch(routeFetch + "/index.php/getAvatar")
         .then((response) => response.json())
         .then((data) => {
-          urlStr = data;
-          urlStr =
-            "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFF00&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
+          urlStr = JSON.parse(data);
+          //urlStr = "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
+          console.log(data);
           if (urlStr !== null) {
             getAvatar(urlStr);
           }
@@ -48,8 +48,9 @@ function AvatarMaker() {
   }, []);
 
   useEffect(() => {
-    setAvatar(
-      "https://api.dicebear.com/5.x/pixel-art/svg?seed=" +
+    if (avatar != "") {
+      setAvatar(
+        "https://api.dicebear.com/5.x/pixel-art/svg?seed=" +
         seed +
         "&backgroundColor=" +
         bgC +
@@ -83,7 +84,9 @@ function AvatarMaker() {
         e +
         "&eyesColor=" +
         eC
-    );
+      );
+    }
+
   }, [bgC, c, cC, h, hC, sC, g, gC, gP, a, aC, aP, m, mC, e, eC]);
 
   function getAvatar(u) {
@@ -108,45 +111,46 @@ function AvatarMaker() {
 
     setAvatar(
       "https://api.dicebear.com/5.x/pixel-art/svg?seed=" +
-        "" +
-        "&backgroundColor=" +
-        url.searchParams.get("backgroundColor") +
-        "&clothing=" +
-        url.searchParams.get("clothing") +
-        "&clothingColor=" +
-        url.searchParams.get("clothingColor") +
-        "&hair=" +
-        url.searchParams.get("hair") +
-        "&hairColor=" +
-        url.searchParams.get("hairColor") +
-        "&skinColor=" +
-        url.searchParams.get("skinColor") +
-        "&glasses=" +
-        url.searchParams.get("glasses") +
-        "&glassesColor=" +
-        url.searchParams.get("glassesColor") +
-        "&glassesProbability=" +
-        url.searchParams.get("glassesProbability") +
-        "&accessories=" +
-        url.searchParams.get("accessories") +
-        "&accessoriesColor=" +
-        url.searchParams.get("accessoriesColor") +
-        "&accessoriesProbability=" +
-        url.searchParams.get("accessoriesProbability") +
-        "&mouth=" +
-        url.searchParams.get("mouth") +
-        "&mouthColor=" +
-        url.searchParams.get("mouthColor") +
-        "&eyes=" +
-        url.searchParams.get("eyes") +
-        "&eyesColor=" +
-        url.searchParams.get("eyesColor")
+      "" +
+      "&backgroundColor=" +
+      url.searchParams.get("backgroundColor") +
+      "&clothing=" +
+      url.searchParams.get("clothing") +
+      "&clothingColor=" +
+      url.searchParams.get("clothingColor") +
+      "&hair=" +
+      url.searchParams.get("hair") +
+      "&hairColor=" +
+      url.searchParams.get("hairColor") +
+      "&skinColor=" +
+      url.searchParams.get("skinColor") +
+      "&glasses=" +
+      url.searchParams.get("glasses") +
+      "&glassesColor=" +
+      url.searchParams.get("glassesColor") +
+      "&glassesProbability=" +
+      url.searchParams.get("glassesProbability") +
+      "&accessories=" +
+      url.searchParams.get("accessories") +
+      "&accessoriesColor=" +
+      url.searchParams.get("accessoriesColor") +
+      "&accessoriesProbability=" +
+      url.searchParams.get("accessoriesProbability") +
+      "&mouth=" +
+      url.searchParams.get("mouth") +
+      "&mouthColor=" +
+      url.searchParams.get("mouthColor") +
+      "&eyes=" +
+      url.searchParams.get("eyes") +
+      "&eyesColor=" +
+      url.searchParams.get("eyesColor")
     );
   }
 
   if (avatar !== "") {
     return (
       <div className="Avatar">
+
         <img src={avatar} alt="avatar" />
         <button onClick={() => eyes("variant01")}>Eyes 1</button>
         <button onClick={() => eyes("variant02")}>Eyes 2</button>
@@ -163,7 +167,7 @@ function AvatarMaker() {
       </div>
     );
   }
-  return <div className="Avatar"></div>;
+  return <div className="Avatar">  </div>;
 }
 
 export default AvatarMaker;
