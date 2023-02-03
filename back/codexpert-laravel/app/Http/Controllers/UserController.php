@@ -22,12 +22,14 @@ class UserController extends Controller
     
     public function setAvatar(Request $request)
     {
-        Session::get('userId');
-
-        $userFound = User::find('userId')->get();
-        $userFound -> avatar = $request -> newAvatar;
-        $userFound -> save();
-        
-        return json_encode('Avatar saved.');
+        if ($request -> session()->get('userId') != null) {
+            $userFound = User::where('id', $request->session()->get('userId'))->first();
+            $userFound -> avatar = $request -> avatar;
+            $userFound -> save();
+            $returnResponse = (object) ['changed' => true];
+        } else {
+            $returnResponse = (object) ['changed' => null];
+        }  
+        return response() -> json($returnResponse);
     }
 }
