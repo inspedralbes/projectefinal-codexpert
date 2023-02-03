@@ -3,6 +3,7 @@ import routeFetch from "../index";
 
 function AvatarMaker() {
   let urlStr = "";
+  const [save, setSave] = useState(0);
   const [avatar, setAvatar] = useState("");
 
   const seed = "";
@@ -150,6 +151,26 @@ function AvatarMaker() {
     );
   }
 
+  useEffect(() => {
+    if(save > 0) {
+      const sendAvatar = new FormData()
+      sendAvatar.append("newAvatar", avatar);
+      const fetchData = async () => {
+        await fetch(routeFetch + "/index.php/setAvatar", {
+          method: "POST",
+          mode: 'cors',
+          body: sendAvatar,
+          credentials: 'include'
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+          });
+      };
+      fetchData();
+    }
+  }, [save]);
+
   if (avatar !== "") {
     return (
       <div className="Avatar">
@@ -167,6 +188,8 @@ function AvatarMaker() {
         <button onClick={() => eyes("variant10")}>Eyes 10</button>
         <button onClick={() => eyes("variant11")}>Eyes 11</button>
         <button onClick={() => eyes("variant12")}>Eyes 12</button>
+        
+        <button onClick={() => setSave(save + 1)}>Save</button>
       </div>
     );
   }

@@ -2,8 +2,6 @@ import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import routeFetch from "../index"
-import session from "../components/UserSession";
-
 
 function Login() {
   const [login, setLogin] = useState(0);
@@ -18,14 +16,15 @@ function Login() {
       user.append("email", email);
       user.append("password", password);
 
-      fetch(routeFetch + "/api/login", {
+      fetch(routeFetch + "/index.php/login", {
         method: 'POST',
-        body: user
+        mode: 'cors',
+        body: user,
+        credentials: 'include'
       })
         .then((response) => response.json())
         .then((data) => {
-          session.setData(data);
-          console.log(session.getData());
+          console.log(data);
         }
         );
     }
