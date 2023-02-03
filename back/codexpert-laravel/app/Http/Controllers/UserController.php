@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $userFound -> avatar = $request -> avatar;
+            $userFound -> avatar = $request -> newAvatar;
             $userFound -> save();
             $returnResponse = (object) ['changed' => true];
         } else {
