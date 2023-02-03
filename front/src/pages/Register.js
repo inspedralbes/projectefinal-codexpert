@@ -1,20 +1,32 @@
 import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import routeFetch from "../index"
+import routeFetch from "../index";
+import session from "../components/UserSession";
 
 function Register() {
-    const [registro, setRegistro] = useState(false);
+    const [registro, setRegistro] = useState(0);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordValidation, setPasswordValidation] = useState("");
     useEffect(() => {
-        const user = new FormData()
-        user.append("name", username);
-        user.append("email", email);
-        user.append("password", password);
-        user.append("password_confirmation", passwordValidation);
+        if (registro != 0) {
+            const user = new FormData()
+            user.append("name", username);
+            user.append("email", email);
+            user.append("password", password);
+            user.append("password_confirmation", passwordValidation);
+
+            fetch(routeFetch + "/api/register", {
+                method: 'POST',
+                body: user
+            })
+                .then((response) => response.json())
+                .then((data) =>
+                    console.log(data)
+                );
+        }
 
         fetch(routeFetch + "/index.php/register", {
             method: 'POST',
