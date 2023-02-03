@@ -43,7 +43,6 @@ function AvatarMaker() {
             getAvatar(urlStr);
           }
         });
-        console.log("b");
     };
     fetchData();
   }, []);
@@ -91,7 +90,6 @@ function AvatarMaker() {
   }, [bgC, c, cC, h, hC, sC, g, gC, gP, a, aC, aP, m, mC, e, eC]);
 
   function getAvatar(u) {
-    console.log("a");
     const url = new URL(u);
     backgroundColor(url.searchParams.get("backgroundColor"));
     clothing(url.searchParams.get("clothing"));

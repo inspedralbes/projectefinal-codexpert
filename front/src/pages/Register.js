@@ -21,9 +21,9 @@ function Register() {
             body: user
         }).then((response) => response.json()).then((data) => {
             if (data.valid) {
-                //Se ha creado el usuario
+                console.log(data);
             } else {
-                //no se ha creado hacemos otra cosa
+                console.log(data);
             }
         }
         );
