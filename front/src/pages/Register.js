@@ -18,7 +18,9 @@ function Register() {
 
         fetch(routeFetch + "/index.php/register", {
             method: 'POST',
-            body: user
+            mode: 'cors',
+            body: user,
+            credentials: 'include'
         }).then((response) => response.json()).then((data) => {
             if (data.valid) {
                 console.log(data);

@@ -11,14 +11,14 @@ class UserController extends Controller
     public function getAvatar(Request $request)
     {
         
-        if ($request -> session()->get('userId') != null) {
-            $userFound = User::find($request -> session()->get('userId'))->get();
-            $returnAvatar = $userFound -> avatar;
-        } else {
-            $returnAvatar = null;
-        }
+        // if ($request -> session()->get('userId') != null) {
+        //     $userFound = User::find($request -> session()->get('userId'))->get();
+        //     $returnAvatar = $userFound -> avatar;
+        // } else {
+        //     $returnAvatar = null;
+        // }
         
-        return json_encode(Session::get('userId'));
+        return json_encode($request -> session()->get('userId'));
     }
     
     public function setAvatar(Request $request)
