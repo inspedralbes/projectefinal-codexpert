@@ -1,15 +1,16 @@
 .lobbies {
-    /* background-color: white;
-    width: 90%;
-    /* height: 100vh; */
-    /* margin: 0 auto;
-    display: block;  */
+    
+}
+
+.lobbies__form {
+    background-color: #5264ae;
 }
 
 .lobbylist__container {
     font-family: "lato", sans-serif;
-    width: 80%;
-    height: 60vh;
+    width: 60%;
+    max-height: 80vh;
+    overflow: auto;
     margin-left: auto;
     margin-right: auto;
     background-color: #ffffff50;
@@ -23,9 +24,12 @@
 }
 
 .lobbies__title {
-    color: #5264ae;
+    background-color: #5264ae;
+    color: white;
+    width: fit-content;
     font-size: 26px;
-    margin: 20px 0;
+    margin: 0 auto;
+    padding: 2vw;
     text-align: center;
 }
 
