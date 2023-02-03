@@ -1,15 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom"; //Rutas
-import "./index.css";
-import LandingPage from "./pages/LandingPage";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Game from "./pages/Game";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
+import './index.css';
+import './mobileStyle.css';
+import LandingPage from './pages/LandingPage';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Game from './pages/Game';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword'
+import Lobbies from "./pages/Lobbies";
+import reportWebVitals from './reportWebVitals';
 import AvatarMaker from "./pages/AvatarMaker";
-import reportWebVitals from "./reportWebVitals";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -24,13 +27,15 @@ root.render(
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />
+          <Route path="lobbylist" element={<Lobbies/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
 );
 
-const routeFetch = "http://localhost:8000";
+const routeFetch = "http://localhost:8000"
+const routeNodeServer = "http://localhost:4000"
 export default routeFetch;
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

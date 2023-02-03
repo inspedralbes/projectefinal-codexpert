@@ -1,0 +1,125 @@
+:root {
+    --primary-color: #5264AE;
+    --h1-color: #38225e;
+    --shadow-color: #ad7bf8;
+    --labelPlaceholder-color: #a972fc;
+    --white: white;
+}
+
+@media (max-width: 600px) {
+    body {
+        background-size: cover;
+        overflow: hidden;
+    }
+
+    .form {
+        width: 80%;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        margin: 5vh auto;
+    }
+
+    .form.register {
+        margin-top: 2vh;
+        padding-bottom: 20px;
+    }
+
+    .form__buttons {
+        display: block;
+    }
+
+    #submit__button,
+    #goBack__button {
+        width: 12rem;
+        margin: 10px;
+    }
+
+    #submit__button .button-text,
+    #goBack__button .button-text {
+        font-size: 13px;
+    }
+
+    #goBack__button .circle,
+    #submit__button .circle2 {
+        width: 100%;
+    }
+
+    #goBack__button .circle .icon.arrow {
+        background: #fff;
+        transform: translate(1rem, 0);
+    }
+
+    #submit__button .circle2 .icon2.arrow2 {
+        background: #fff;
+        transform: translate(9rem, 0);
+    }
+
+    #goBack__button .button-text,
+    #submit__button .button-text {
+        color: #fff;
+    }
+
+    /* _____________________________________________________________________________ */
+
+    #switch {
+        display: inline-block;
+        height: 21px;
+        position: relative;
+        width: 40px;
+        margin-right: 10px;
+    }
+
+    #switch .form__inputCheckbox {
+        display: none;
+    }
+
+    .slider {
+        background-color: rgb(228, 227, 227);
+        bottom: 0;
+        cursor: pointer;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transition: .4s;
+    }
+
+    .form__checkboxInput {
+        text-align: left;
+        display: flex;
+        font-size: 11px;
+        color: #999;
+        font-weight: 700;
+        text-transform: uppercase;
+        align-items: center;
+        padding-left: 10px;
+    }
+
+    .slider:before {
+        background-color: var(--white);
+        bottom: 3px;
+        content: "";
+        height: 15px;
+        left: 4px;
+        position: absolute;
+        transition: .4s;
+        width: 15px;
+    }
+
+    .form__inputCheckbox:checked+.slider {
+        background-color: var(--shadow-color);
+    }
+
+    .form__inputCheckbox:checked+.slider:before {
+        transform: translateX(18px);
+    }
+
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+}
