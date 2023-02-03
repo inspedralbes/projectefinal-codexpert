@@ -12,6 +12,7 @@ function Login() {
   const [mantenerSesion, setMantenerSesion] = useState(false);
 
   useEffect(() => {
+
     if (login != 0) {
       const user = new FormData()
       user.append("email", email);
@@ -30,6 +31,17 @@ function Login() {
     }
 
   }, [login]);
+
+  useEffect(() => {
+    if (mantenerSesion) {
+      document.getElementById('checkboxText').style.color = '#ad7bf8';
+      document.getElementById('checkboxText').style.transition = 'all 0.3s';
+    }
+
+    if (!mantenerSesion) {
+      document.getElementById('checkboxText').style.color = '#b9b9b9';
+    }
+  }, [mantenerSesion])
   return (
     <div className="form">
       <h1>LOG IN</h1>
@@ -46,7 +58,7 @@ function Login() {
           <label className="form__inputlabel">Password</label>
           <br />
           <div className="form__checkboxInput">
-            <label className="form__checkboxLabel"><input className="form__inputCheckbox" type="checkbox" onChange={(e) => setMantenerSesion(!mantenerSesion)}></input> mantener sesión iniciada</label>
+            <label id="switch" className="form__checkboxLabel"><input id="checkbox" className="form__inputCheckbox" type="checkbox" onChange={(e) => setMantenerSesion(!mantenerSesion)}></input> <div className="slider round"></div></label><label className="form__checkboxText" htmlFor="checkbox"><p id="checkboxText">mantener sesión iniciada</p></label>
           </div>
         </div>
 
