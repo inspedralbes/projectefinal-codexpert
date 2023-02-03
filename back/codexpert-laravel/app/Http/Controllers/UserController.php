@@ -17,7 +17,7 @@ class UserController extends Controller
             $returnAvatar = (object) ['url' => null];
         }
         
-        return json_encode($returnAvatar);
+        return response() -> json($returnAvatar);
     }
     
     public function setAvatar(Request $request)
