@@ -10,12 +10,11 @@ class UserController extends Controller
 {
     public function getAvatar(Request $request)
     {
-        
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $returnAvatar = $userFound -> avatar;
+            $returnAvatar = (object) ['url' => $userFound -> avatar];
         } else {
-            $returnAvatar = null;
+            $returnAvatar = (object) ['url' => null];
         }
         
         return json_encode($returnAvatar);
