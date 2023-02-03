@@ -18,7 +18,7 @@ class UserController extends Controller
             $returnAvatar = null;
         }
         
-        return json_encode(session()->get('userId'));
+        return json_encode(Session::get('userId'));
     }
     
     public function setAvatar(Request $request)

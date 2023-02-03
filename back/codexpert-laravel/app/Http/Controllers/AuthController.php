@@ -68,10 +68,13 @@ class AuthController extends Controller
                 $user -> email = strtolower($request -> email);
                 $user -> password = Hash::make($request -> password);
                 $user -> save();
-                $request -> session()->put('userId', $user->id);
+
+                Session::put('userId', $user->id);
+                Session::save(); 
+
                 $sendUser = (object) 
                 ["valid" => true,
-                'message' => $user
+                'message' => Session::get('userId')
                 ];
             } else {
                 $duplicated = $this->findWhatIsDuplicated($request);
