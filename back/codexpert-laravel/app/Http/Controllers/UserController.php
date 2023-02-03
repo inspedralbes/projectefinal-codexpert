@@ -12,7 +12,7 @@ class UserController extends Controller
     {
         
         if ($request -> session()->get('userId') != null) {
-            $userFound = User::find($request -> session()->get('userId'))->get();
+            $userFound = User::where('id', $request->session()->get('userId'))->first();
             $returnAvatar = $userFound -> avatar;
         } else {
             $returnAvatar = null;
