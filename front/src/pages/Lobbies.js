@@ -11,6 +11,8 @@ const Lobbies = () => {
   const [userList, setUserList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
+  const [messages, setMessages] = useState([]);
+
 
   const handleLeave = (e) => {
     e.preventDefault();
@@ -37,6 +39,20 @@ const Lobbies = () => {
     setJoined(true);
   };
 
+  const handleMessage = (e) => {
+    e.preventDefault();
+    var input = e.target[0];
+    console.log(input.value);
+    if (input) {
+      socket.emit('chat message', {
+        message: input.value,
+        room: lobbyName
+      });
+      input.value = '';
+    }
+  };
+
+
   useEffect(() => {
     if (firstTime) {
       socket.emit("hello", "gimme gimme");
@@ -55,7 +71,34 @@ const Lobbies = () => {
     socket.on("player joined", (id) => {
       console.log(id + " joined the lobby");
     });
-  }, []);
+  
+    // ======================================AMAE===================================
+
+
+    // form.addEventListener('submit', function (e) {
+    //   e.preventDefault();
+    //   if (input.value) {
+    //     socket.emit('chat message', input.value);
+    //     input.value = '';
+    //   }
+    // });
+
+    // socket.on('chat message', function (msg) {
+    //   var item = document.createElement('li');
+    //   item.textContent = msg;
+    //   messages.appendChild(item);
+    //   window.scrollTo(0, document.body.scrollHeight);
+    // });
+    // ================================================================
+
+    socket.on('chat message', function (msg) {
+      console.log('Ola soy el socket.io y funciono :)');
+      var htmlStr = "";
+      htmlStr += `<li className="message">${msg}</li>`;
+      document.getElementById('messages').innerHTML = htmlStr;
+    });
+
+  },[]);
 
   return (
     <div className="lobbies">
@@ -90,6 +133,8 @@ const Lobbies = () => {
             <button className="lobbies__button" disabled={lobbyName == ""}>Create lobby</button>
           </form>
         </div>
+
+
       )}
 
       {joinedLobby && (
@@ -102,13 +147,22 @@ const Lobbies = () => {
             Leave current lobby
           </button>
           <div className="lobby__connectedUsers">
+            <ul id="messages">
+              <li>mensajes</li>
+            </ul>
             <h1 className="connectedUsers_title">Connected users</h1>
             <ul id="userList" className="connectedUsers__userList userList">
               {userList.map((element, index) => {
                 return <li className="userList__item" key={index}>{element}</li>;
               })}
             </ul>
+
           </div>
+          {/* Chat :) */}
+          <form id="form" onSubmit={handleMessage}>
+            <input id="input" autoComplete="off" /><button>Send</button>
+          </form>
+          {/* Fin del chat */}
         </div>
       )}
     </div>

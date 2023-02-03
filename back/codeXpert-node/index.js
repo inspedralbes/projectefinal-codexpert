@@ -7,6 +7,7 @@ const PORT = 4000;
 const app = express();
 
 const http = require("http");
+const wss = require("wss");
 
 const cors = require("cors");
 
@@ -15,6 +16,14 @@ app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
+
+const wss = new ws.Server({ server: server, noServer: true });
+
+server.on('upgrade', function (request, socket, head) {
+  wss.handleUpgrade(request, socket, head, function (ws) {
+    wss.emit('connection', ws, request);
+  })
+})
 
 const { Server } = require("socket.io");
 const io = new Server(server);
@@ -92,6 +101,15 @@ socketIO.on("connection", (socket) => {
     sendLobbyList(roomName);
   });
 
+  // =======================================AMAE=========================================================================================
+
+  socket.on('chat message', (data) => {
+    console.log('mensaje: ' + data.message + '| room: ' + data.room);
+    io.emit('chat message', data.message);
+  });
+
+  // ====================================FinDeAmae============================================================
+
   socket.on("disconnect", () => {
     console.log(socket.data.nom + " disconnected");
   });
@@ -111,7 +129,11 @@ async function sendLobbyList(room) {
     list: list,
     message: "lista en teoria",
   });
+
 }
+
+
+
 
 // ==================== MY SQL ===================
 
@@ -147,3 +169,5 @@ app.get("/getUsers", (req, res) => {
 server.listen(PORT, () => {
   console.log("Listening on *:" + PORT);
 });
+
+
