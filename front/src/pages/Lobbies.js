@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "../normalize.css";
 import "../Lobbies.css";
 
 // socket.io
@@ -31,8 +32,8 @@ const Lobbies = () => {
 
   const handleJoin = (e) => {
     e.preventDefault();
-    setLobbyName(e.target.innerText);
-    socket.emit("join room", e.target.innerText);
+    setLobbyName(e.target.id);
+    socket.emit("join room", e.target.id);
     localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
@@ -60,22 +61,46 @@ const Lobbies = () => {
   return (
     <div className="lobbies">
       {!joinedLobby && (
-        <div id="lobbyList" className="lobbies">
-          <h1 className="lobbies__title">Lobby list</h1>
-          <ul id="lobbiesList" className="lobbies_lobbylist">
-            {lobbyList.map((element, index) => {
-              return (
-                <li
-                  className="lobbylist__item"
-                  onClick={handleJoin}
-                  key={index}
-                >
-                  {element}
-                </li>
-              );
-            })}
-          </ul>
-          <form id="form" className="lobbies__form form" onSubmit={handleSubmit}>
+        <div id="lobbyList" className="lobbies__lobbylist lobbylist">
+          <div className="lobbylist__container">
+            <h2 className="lobbies__title">Lobby list</h2>
+            <ul className="lobbies__table table">
+              <li className="table__header">
+                <div className="col col-1">Lobby Id</div>
+                <div className="col col-2">Lobby Name</div>
+                <div className="col col-3">Creator</div>
+                <div className="col col-4">Players joined</div>
+              </li>
+              {lobbyList.map((element, index) => {
+                return (
+                  <li
+                    className="table__row row"
+                    onClick={handleJoin}
+                    key={index}
+                    id={element}
+                  >
+                    <div className="col col-1" data-label="Lobby Id">
+                      {index + 1}
+                    </div>
+                    <div className="col col-2" data-label="Lobby Name">
+                      {element}
+                    </div>
+                    <div className="col col-3" data-label="Creator">
+                      marti server
+                    </div>
+                    <div className="col col-4" data-label="Players joined">
+                      x / 5
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <form
+            id="form"
+            className="lobbies__form form"
+            onSubmit={handleSubmit}
+          >
             <label>
               <input
                 id="inputLobby"
@@ -87,7 +112,9 @@ const Lobbies = () => {
                 onChange={(e) => setLobbyName(e.target.value)}
               />
             </label>
-            <button className="lobbies__button" disabled={lobbyName == ""}>Create lobby</button>
+            <button className="lobbies__button" disabled={lobbyName === ""}>
+              Create lobby
+            </button>
           </form>
         </div>
       )}
@@ -105,7 +132,11 @@ const Lobbies = () => {
             <h1 className="connectedUsers_title">Connected users</h1>
             <ul id="userList" className="connectedUsers__userList userList">
               {userList.map((element, index) => {
-                return <li className="userList__item" key={index}>{element}</li>;
+                return (
+                  <li className="userList__item" key={index}>
+                    {element}
+                  </li>
+                );
               })}
             </ul>
           </div>

@@ -1,11 +1,113 @@
 .lobbies {
-    background-color: white;
+    /* background-color: white;
     width: 90%;
-    height: 70vh;
-    margin: 0 auto;
-    display: block;
+    /* height: 100vh; */
+    /* margin: 0 auto;
+    display: block;  */
 }
 
-.lobbies__form {
-    bottom: 5%;
+.lobbylist__container {
+    font-family: "lato", sans-serif;
+    width: 80%;
+    height: 60vh;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #ffffff50;
+    margin: 0 auto;
+    margin-top: 5vh;
+    padding: 1vw;
+}
+
+.lobbies__lobbylist {
+    margin: 0 auto;
+}
+
+.lobbies__title {
+    color: #5264ae;
+    font-size: 26px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.lobbies__table {
+    padding: 0;
+}
+
+.lobbies__table li {
+    border-radius: 3px;
+    padding: 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1vh;
+}
+
+.lobbies__table .table__header {
+    background: #5264ae;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.lobbies__table .table__row {
+    transition: all 0.2s;
+    background: #022879;
+    color: white;
+    font-weight: bold;
+    /* box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1); */
+}
+
+.lobbies__table .table__row:hover {
+    background: rgba(7, 24, 175, 0.171);
+    color: white;
+    font-weight: bold;
+    -webkit-box-shadow: 18px 14px 15px -4px rgba(0, 0, 0, 0.295);
+    -moz-box-shadow: 18px 14px 15px -4px rgba(0, 0, 0, 0.295);
+    box-shadow: 18px 14px 15px -4px rgba(0, 0, 0, 0.295);
+    backdrop-filter: blur(5px);
+}
+
+.lobbies__table .col-1 {
+    flex-basis: 10%;
+}
+
+.lobbies__table .col-2 {
+    flex-basis: 40%;
+}
+
+.lobbies__table .col-3 {
+    flex-basis: 35%;
+}
+
+.lobbies__table .col-4 {
+    flex-basis: 15%;
+    text-align: center;
+}
+
+@media all and (max-width: 767px) {
+    .lobbies__table .table__header {
+        display: none;
+    }
+
+    .lobbies__table li {
+        display: block;
+    }
+
+    .lobbies__table .col {
+        flex-basis: 100%;
+    }
+
+    .lobbies__table .col {
+        display: flex;
+        padding: 10px 0;
+    }
+
+    .lobbies__table .col:before {
+        color: #6C7A89;
+        padding-right: 10px;
+        content: attr(data-label);
+        flex-basis: 50%;
+        text-align: right;
+    }
 }

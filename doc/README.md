@@ -20,7 +20,7 @@ En el directori /back/codexpert-node, hem de fer:
 - $ npm install
 - $ cp .env.example .env
 - Omplir les credencials de la base de dades
-- $ node index.js (?)
+- $ npm run start
 
 ## Instruccions per seguir codificant el projecte
 eines necessaries i com es crea l'entorn per que algú us ajudi en el vostre projecte.
