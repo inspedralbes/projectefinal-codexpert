@@ -4,7 +4,6 @@ import "../Lobbies.css";
 
 // socket.io
 
-var socket = window.ce_socket;
 const Lobbies = () => {
   const [lobbyName, setLobbyName] = useState("");
   const [lobbyList, setLobbyList] = useState([]);
@@ -14,8 +13,8 @@ const Lobbies = () => {
 
   const handleLeave = (e) => {
     e.preventDefault();
-    window.ce_socket.emit("leave lobby", lobbyName);
     console.log("has abandonat la sala " + lobbyName);
+    window.ce_socket.emit("leave lobby", lobbyName);
     setJoined(false);
     setLobbyName("");
   };
@@ -23,17 +22,18 @@ const Lobbies = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     window.ce_socket.emit("new lobby", lobbyName);
-    setLobbyName(e.target.innerText);
+    // setLobbyName(e.target.innerText);
     window.ce_socket.emit("join room", lobbyName);
-    localStorage.setItem("lobbyName", lobbyName);
+    // localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
 
   const handleJoin = (e) => {
     e.preventDefault();
+    console.log(e);
     setLobbyName(e.target.id);
     window.ce_socket.emit("join room", e.target.id);
-    localStorage.setItem("lobbyName", lobbyName);
+    // localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
 
@@ -62,13 +62,14 @@ const Lobbies = () => {
       {!joinedLobby && (
         <div id="lobbyList" className="lobbies__lobbylist lobbylist">
           <div className="lobbylist__container">
+            <h3 className="lobbies__reloadButton" onClick={() => { window.ce_socket.emit("hello", "gimme gimme") }}>↻</h3>
             <h2 className="lobbies__title">Lobby list</h2>
             <ul className="lobbies__table table">
               <li className="table__header">
-                <div className="col col-1">Lobby Id</div>
+                <div className="col col-1">ID</div>
                 <div className="col col-2">Lobby Name</div>
-                <div className="col col-3">Creator</div>
-                <div className="col col-4">Players joined</div>
+                <div className="col col-3">Owner</div>
+                <div className="col col-4">Players</div>
               </li>
               {lobbyList.map((element, index) => {
                 return (
@@ -76,19 +77,23 @@ const Lobbies = () => {
                     className="table__row row"
                     onClick={handleJoin}
                     key={index}
-                    id={element}
+                    id={element.lobby_name}
                   >
-                    <div className="col col-1" data-label="Lobby Id">
+                    <div id={element.lobby_name} className="col col-1" data-label="Lobby Id">
                       {index + 1}
                     </div>
-                    <div className="col col-2" data-label="Lobby Name">
-                      {element}
+                    <div id={element.lobby_name} className="col col-2" data-label="Lobby Name">
+                      {element.lobby_name}
                     </div>
-                    <div className="col col-3" data-label="Creator">
-                      marti server
+                    <div id={element.lobby_name} className="col col-3" data-label="Owner">
+                      {element.members.forEach(member => {
+                        if (member.rank == "Owner") {
+                          return member.nom
+                        }
+                      })}
                     </div>
-                    <div className="col col-4" data-label="Players joined">
-                      x / 5
+                    <div id={element.lobby_name} className="col col-4" data-label="Players">
+                      {element.members.length} / 5
                     </div>
                   </li>
                 );
@@ -108,7 +113,7 @@ const Lobbies = () => {
                 type="text"
                 value={lobbyName}
                 placeholder="Lobby name"
-                onChange={(e) => setLobbyName(e.target.value)}
+                onChange={(e) => { setLobbyName(e.target.value) }}
               />
             </label>
             <button className="lobbies__button" disabled={lobbyName === ""}>

@@ -12,21 +12,23 @@ import ResetPassword from './pages/ResetPassword'
 import Lobbies from "./pages/Lobbies";
 import reportWebVitals from './reportWebVitals';
 import socketIO from "socket.io-client";
-console.log("BEFORE CONNECT");
+// console.log("BEFORE CONNECT");
+
 //window.ce_socket = socketIO.connect("http://localhost:4000");
-window.ce_socket = socketIO("http://localhost:4000", {  
+window.ce_socket = socketIO("http://localhost:4000", {
   //withCredentials: true,
-//   cors: {
-//   origin: "http://localhost:3000",
-//   credentials: true
-//   },
-// //, 
-//noServer: true  
+  //   cors: {
+  //   origin: "http://localhost:3000",
+  //   credentials: true
+  //   },
+  // //, 
+  //noServer: true  
 }
 );
 
+// 
+// console.log("AFTER CONNECTION");
 
-console.log("AFTER CONNECTION");
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -39,7 +41,7 @@ root.render(
           <Route path="game" element={<Game />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
-          <Route path="lobbylist" element={<Lobbies/>}></Route>
+          <Route path="lobbylist" element={<Lobbies />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
