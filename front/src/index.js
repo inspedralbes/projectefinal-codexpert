@@ -11,6 +11,23 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword'
 import Lobbies from "./pages/Lobbies";
 import reportWebVitals from './reportWebVitals';
+import socketIO from "socket.io-client";
+// console.log("BEFORE CONNECT");
+
+//window.ce_socket = socketIO.connect("http://localhost:4000");
+window.ce_socket = socketIO("http://localhost:4000", {
+  //withCredentials: true,
+  //   cors: {
+  //   origin: "http://localhost:3000",
+  //   credentials: true
+  //   },
+  // //, 
+  //noServer: true  
+}
+);
+
+// 
+// console.log("AFTER CONNECTION");
 import AvatarMaker from "./pages/AvatarMaker";
 
 

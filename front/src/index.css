@@ -436,9 +436,3 @@ body {
 .form__inputCheckbox:checked::before {
     transform: scale(1);
 }
-
-.lobbies {
-    background-color: white;
-    width: 50%;
-    margin: 0 auto;
-}
