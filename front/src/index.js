@@ -11,6 +11,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword'
 import Lobbies from "./pages/Lobbies";
 import reportWebVitals from './reportWebVitals';
+import AvatarMaker from "./pages/AvatarMaker";
 import socketIO from "socket.io-client";
 // console.log("BEFORE CONNECT");
 
@@ -28,7 +29,6 @@ window.ce_socket = socketIO("http://localhost:4000", {
 
 // 
 // console.log("AFTER CONNECTION");
-import AvatarMaker from "./pages/AvatarMaker";
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
