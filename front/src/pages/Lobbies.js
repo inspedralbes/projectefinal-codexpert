@@ -23,16 +23,16 @@ const Lobbies = () => {
     e.preventDefault();
     window.ce_socket.emit("new lobby", lobbyName);
     // setLobbyName(e.target.innerText);
-    window.ce_socket.emit("join room", lobbyName);
+    window.ce_socket.emit("join room", { lobby_name: lobbyName, "rank": "Owner" });
     // localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
 
   const handleJoin = (e) => {
     e.preventDefault();
-    console.log(e);
+    // console.log(e);
     setLobbyName(e.target.id);
-    window.ce_socket.emit("join room", e.target.id);
+    window.ce_socket.emit("join room", { lobby_name: e.target.id, "rank": "Member" });
     // localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
@@ -86,11 +86,7 @@ const Lobbies = () => {
                       {element.lobby_name}
                     </div>
                     <div id={element.lobby_name} className="col col-3" data-label="Owner">
-                      {element.members.forEach(member => {
-                        if (member.rank == "Owner") {
-                          return member.nom
-                        }
-                      })}
+                      {element.members[0].nom}
                     </div>
                     <div id={element.lobby_name} className="col col-4" data-label="Players">
                       {element.members.length} / 5

@@ -70,20 +70,20 @@ socketIO.on("connection", (socket) => {
     sendLobbyList();
   });
 
-  socket.on("join room", (roomName) => {
-    socket.join(roomName);
+  socket.on("join room", (data) => {
+    socket.join(data.lobby_name);
     lobbies.forEach(lobby => {
-      if (lobby.lobby_name == roomName) {
+      if (lobby.lobby_name == data.lobby_name) {
         lobby.members.push({
           "nom": socket.data.nom,
-          "rank": "Member"
+          "rank": data.rank
         })
       }
     });
-    console.log(socket.data.nom + " joined the lobby -> " + roomName);
-    socketIO.to(roomName).emit("player joined", socket.data.nom);
+    console.log(socket.data.nom + " joined the lobby -> " + data.lobby_name);
+    socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
-    sendUserList(roomName);
+    sendUserList(data.lobby_name);
   });
 
   socket.on("leave lobby", (roomName) => {
