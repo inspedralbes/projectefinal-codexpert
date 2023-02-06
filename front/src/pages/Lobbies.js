@@ -62,8 +62,7 @@ const Lobbies = () => {
       {!joinedLobby && (
         <div id="lobbyList" className="lobbies__lobbylist lobbylist">
           <div className="lobbylist__container">
-            <h3 className="lobbies__reloadButton" onClick={() => { window.ce_socket.emit("hello", "gimme gimme") }}>↻</h3>
-            <h2 className="lobbies__title">Lobby list</h2>
+            <h2 className="lobbies__title"  onClick={() => { window.ce_socket.emit("hello", "gimme gimme") }}>Lobby list</h2>
             <ul className="lobbies__table table">
               <li className="table__header">
                 <div className="col col-1">ID</div>
@@ -71,6 +70,7 @@ const Lobbies = () => {
                 <div className="col col-3">Owner</div>
                 <div className="col col-4">Players</div>
               </li>
+              <div className="table__body">
               {lobbyList.map((element, index) => {
                 return (
                   <li
@@ -94,6 +94,7 @@ const Lobbies = () => {
                   </li>
                 );
               })}
+              </div>
             </ul>
           </div>
           <form

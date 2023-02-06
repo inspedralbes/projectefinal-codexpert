@@ -29,11 +29,15 @@
     text-align: center;
 }
 
+.lobbies__title:hover {
+    cursor: pointer;
+}
+
 .lobbies__table {
     padding: 0;
 }
 
-.lobbies__reloadButton {
+/* .lobbies__reloadButton {
     float: right;
     font-size: 5vw;
     color: #002c8c;
@@ -42,7 +46,7 @@
 
 .lobbies__reloadButton:hover {
     cursor: pointer;
-}
+} */
 
 .lobbies__table li {
     border-radius: 3px;
@@ -61,6 +65,12 @@
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.03em;
+}
+
+.table__body {
+    overflow: auto;
+    max-height: 50vh;
+    height: 50vh;
 }
 
 .lobbies__table .table__row {
