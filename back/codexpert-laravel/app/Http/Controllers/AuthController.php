@@ -141,6 +141,13 @@ class AuthController extends Controller
 
     public function getUserId(Request $request)
     {
+        $request -> token;
+        $user = User::all();
+        foreach ($user->tokens as $token) {
+            if ($token == $request -> token) {
+                $returnUser = "hola";
+            }
+        }
         $userId = $request -> session()->get('userId');
         $returnUser = (object) ['userId' => $userId];
 
