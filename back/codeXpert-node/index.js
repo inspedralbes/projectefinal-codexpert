@@ -38,6 +38,16 @@ app.get("/api", (req, res) => {
   });
 });
 
+fetch("http://localhost:8000" + "/index.php/getUserId", {
+  method: "POST",
+  mode: "cors",
+  credentials: "include",
+})
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+  });
+
 socketIO.on("connection", (socket) => {
   var socketId = socket.id;
 
