@@ -1,8 +1,11 @@
 import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Cookies from 'universal-cookie';
 import routeFetch from "../index";
 import session from "../components/UserSession";
+
+
 
 function Register() {
     const [registro, setRegistro] = useState(0);
@@ -10,6 +13,8 @@ function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordValidation, setPasswordValidation] = useState("");
+    const cookies = new Cookies();
+
     useEffect(() => {
         if (registro != 0) {
             const user = new FormData()
@@ -26,6 +31,19 @@ function Register() {
             }).then((response) => response.json()).then((data) => {
                 if (data.valid) {
                     console.log(data);
+                    cookies.set('token', data.token, { path: '/' });
+                    const token = new FormData()
+                    token.append("token", cookies.get('token'))
+                    fetch(routeFetch + "/index.php/getUserId", {
+                        method: 'POST',
+                        mode: 'cors',
+                        body: token,
+                        credentials: 'include'
+                    }).then((response) => response.json()).then((data) => {                            
+                        console.log(data);
+                    }
+                    );
+
                 } else {
                     console.log(data);
                 }
