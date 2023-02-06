@@ -1,5 +1,7 @@
 <?php
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +17,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::group(['middleware' => ['web']], function () {
+    Route::post('/register', [AuthController::class, 'register']);
+
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::post('/getAvatar', [UserController::class, 'getAvatar']);
+
+    Route::post('/setAvatar', [UserController::class, 'setAvatar']);
 });

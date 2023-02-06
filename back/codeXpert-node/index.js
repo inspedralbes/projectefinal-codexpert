@@ -16,9 +16,6 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
-const { Server } = require("socket.io");
-const io = new Server(server);
-
 var i = 1;
 
 var lobbies = [];
@@ -27,15 +24,9 @@ var lobbies = [];
 
 const socketIO = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: true,
+    credentials: true,
   },
-});
-
-socketIO.on("connection", (socket) => {
-  console.log(`🤢: ${socket.id} user just connected!`);
-  socket.on("disconnect", () => {
-    console.log("😒: A user disconnected");
-  });
 });
 
 app.get("/api", (req, res) => {
@@ -47,11 +38,8 @@ app.get("/api", (req, res) => {
 socketIO.on("connection", (socket) => {
   var socketId = socket.id;
 
-  console.log("general socket connected!!");
   socket.join("chat-general");
   socketIO.to(`${socketId}`).emit("hello", "Welcome to the general chat");
-
-  console.log(socketId + " connected");
 
   socket.data.nom = i;
   i++;
@@ -61,35 +49,58 @@ socketIO.on("connection", (socket) => {
   socket.on("new lobby", (lobby) => {
     let existeix = false;
     lobbies.forEach((element) => {
-      if (element == lobby) {
+      if (element.lobby == lobby) {
         existeix = true;
       }
     });
 
     if (!existeix) {
-      lobbies.push(lobby);
+      lobbies.push({
+        lobby_name: lobby,
+        members: [],
+      });
     }
 
-    socketIO.emit("lobbies list", lobbies);
+    sendLobbyList();
   });
 
   socket.on("hello", (m) => {
-    socketIO.emit("lobbies list", lobbies);
+    sendLobbyList();
   });
 
-  socket.on("join room", (roomName) => {
-    socket.join(roomName);
-    console.log(socket.rooms);
-    console.log(socket.data.nom + " joined the lobby -> " + roomName);
-    socketIO.to(roomName).emit("player joined", socket.data.nom);
+  socket.on("join room", (data) => {
+    socket.join(data.lobby_name);
+    lobbies.forEach((lobby) => {
+      if (lobby.lobby_name == data.lobby_name) {
+        lobby.members.push({
+          nom: socket.data.nom,
+          rank: data.rank,
+        });
+      }
+    });
+    console.log(socket.data.nom + " joined the lobby -> " + data.lobby_name);
+    socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
-    sendLobbyList(roomName);
+    sendUserList(data.lobby_name);
   });
 
   socket.on("leave lobby", (roomName) => {
-    socket.leave(roomName);
+    lobbies.forEach((lobby, ind_lobby) => {
+      if (lobby.lobby_name == roomName) {
+        lobby.members.forEach((member, index) => {
+          if (member.nom == socket.data.nom) {
+            lobby.members.splice(index, 1);
+          }
+        });
+      }
+      if (lobby.members.length == 0) {
+        lobbies.splice(ind_lobby, 1);
+      }
+    });
 
-    sendLobbyList(roomName);
+    socket.leave(roomName);
+    sendUserList(roomName);
+    sendLobbyList();
   });
 
   socket.on("disconnect", () => {
@@ -97,7 +108,11 @@ socketIO.on("connection", (socket) => {
   });
 });
 
-async function sendLobbyList(room) {
+async function sendLobbyList() {
+  await socketIO.emit("lobbies list", lobbies);
+}
+
+async function sendUserList(room) {
   var list = [];
 
   const sockets = await socketIO.in(room).fetchSockets();
@@ -107,7 +122,7 @@ async function sendLobbyList(room) {
     list.push(socketIO.sockets.sockets.get(element.id).data.nom);
   });
 
-  socketIO.emit("lobby user list", {
+  socketIO.to(room).emit("lobby user list", {
     list: list,
     message: "lista en teoria",
   });
