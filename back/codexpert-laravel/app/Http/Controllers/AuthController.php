@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\NewAccessToken;
 use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -142,9 +143,14 @@ class AuthController extends Controller
 
     public function getUserId(Request $request)
     {
-        $tokenFound = DB::table('personal_access_tokens')
-        ->where('token', $request -> token)
-        ->get();
+        $tokenFound = false;
+        
+        [$id, $token] = explode('|', $request -> token, 2);
+        $accessToken = PersonalAccessToken::find($id);
+
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            $tokenFound = true;
+        }
 
         // $userId = $request -> session()->get('userId');
         // $returnUser = (object) ['userId' => $userId];
