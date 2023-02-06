@@ -71,29 +71,29 @@ const Lobbies = () => {
                 <div className="col col-4">Players</div>
               </li>
               <div className="table__body">
-              {lobbyList.map((element, index) => {
-                return (
-                  <li
-                    className="table__row row"
-                    onClick={handleJoin}
-                    key={index}
-                    id={element.lobby_name}
-                  >
-                    <div id={element.lobby_name} className="col col-1" data-label="Lobby Id">
-                      {index + 1}
-                    </div>
-                    <div id={element.lobby_name} className="col col-2" data-label="Lobby Name">
-                      {element.lobby_name}
-                    </div>
-                    <div id={element.lobby_name} className="col col-3" data-label="Owner">
-                      {element.members[0].nom}
-                    </div>
-                    <div id={element.lobby_name} className="col col-4" data-label="Players">
-                      {element.members.length} / 5
-                    </div>
-                  </li>
-                );
-              })}
+                {lobbyList.map((element, index) => {
+                  return (
+                    <li
+                      className="table__row row"
+                      onClick={handleJoin}
+                      key={index}
+                      id={element.lobby_name}
+                    >
+                      <div id={element.lobby_name} className="col col-1" data-label="Lobby Id">
+                        {index + 1}
+                      </div>
+                      <div id={element.lobby_name} className="col col-2" data-label="Lobby Name">
+                        {element.lobby_name}
+                      </div>
+                      <div id={element.lobby_name} className="col col-3" data-label="Owner">
+                        {element.members[0].nom}
+                      </div>
+                      <div id={element.lobby_name} className="col col-4" data-label="Players">
+                        {element.members.length} / 5
+                      </div>
+                    </li>
+                  );
+                })}
               </div>
             </ul>
           </div>

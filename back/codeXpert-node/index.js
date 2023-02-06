@@ -125,7 +125,7 @@ async function sendUserList(room) {
     list.push(socketIO.sockets.sockets.get(element.id).data.nom);
   });
 
-  socketIO.emit("lobby user list", {
+  socketIO.to(room).emit("lobby user list", {
     list: list,
     message: "lista en teoria",
   });

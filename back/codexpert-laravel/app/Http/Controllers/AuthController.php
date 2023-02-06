@@ -55,7 +55,10 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $user = "Validation errors.";
+            $sendUser = (object) 
+            ["valid" => false,
+            'message' => "Validation errors."
+            ];
         } else {
             $createUser = $this->checkUserDuplicated($request);
 
@@ -65,20 +68,31 @@ class AuthController extends Controller
                 $user -> email = strtolower($request -> email);
                 $user -> password = Hash::make($request -> password);
                 $user -> save();
-                
-                Session::put('userId', $user -> id);
+
+                $request->session()->put('userId', $user -> id);
+                $request->session()->save();
+                $sendUser = (object) 
+                ["valid" => true,
+                'message' => $request->session()->get("userId")
+                ];
             } else {
                 $duplicated = $this->findWhatIsDuplicated($request);
-                $user = "Name already in use.";
+                $sendUser = (object) 
+                ["valid" => false,
+                'message' => "Name already in use."
+                ];
                 
                 if ($duplicated == 'email') {
-                    $user = "Email already registered."; 
+                    $sendUser = (object) 
+                    ["valid" => false,
+                    'message' => "Email already registered."
+                    ];
                 }
                 
             }
         } 
 
-        return json_encode($user);
+        return response() -> json($sendUser);
     }
 
     public function login(Request $request)
@@ -89,7 +103,9 @@ class AuthController extends Controller
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
-                Session::put('userId', $user -> id);
+                $request -> session()->put('userId', $user->id);
+
+                //Session::put('userId', $user -> id);
             } else {
                 $user = "Password and e-mail don't match.";
             }

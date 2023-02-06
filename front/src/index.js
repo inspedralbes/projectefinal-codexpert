@@ -11,6 +11,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Lobbies from "./pages/Lobbies";
 import reportWebVitals from "./reportWebVitals";
+import AvatarMaker from "./pages/AvatarMaker";
 import socketIO from "socket.io-client";
 // console.log("BEFORE CONNECT");
 
@@ -42,7 +43,8 @@ root.render(
           <Route path="game" element={<Game />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
-          <Route path="lobbylist" element={<Lobbies />}></Route>
+          <Route path="avatarMaker" element={<AvatarMaker />} />
+          <Route path="lobbylist" element={<Lobbies/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

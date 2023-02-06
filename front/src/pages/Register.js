@@ -18,16 +18,20 @@ function Register() {
             user.append("password", password);
             user.append("password_confirmation", passwordValidation);
 
-            fetch(routeFetch + "/api/register", {
+            fetch(routeFetch + "/index.php/register", {
                 method: 'POST',
-                body: user
-            })
-                .then((response) => response.json())
-                .then((data) =>
-                    console.log(data)
-                );
+                mode: 'cors',
+                body: user,
+                credentials: 'include'
+            }).then((response) => response.json()).then((data) => {
+                if (data.valid) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                }
+            }
+            );
         }
-
     }, [registro]);
 
     return (
@@ -82,6 +86,9 @@ function Register() {
                     </div>
                 </div>
             </div>
+            <Link to="/avatarMaker">
+                <button>Avatar</button>
+            </Link>
         </div>
 
     );
