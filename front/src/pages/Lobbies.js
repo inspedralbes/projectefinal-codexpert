@@ -11,7 +11,6 @@ const Lobbies = () => {
   const [userList, setUserList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
-  const [messages, setMessages] = useState([]);
 
 
   const handleLeave = (e) => {

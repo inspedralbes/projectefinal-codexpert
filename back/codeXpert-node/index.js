@@ -7,7 +7,6 @@ const PORT = 4000;
 const app = express();
 
 const http = require("http");
-const wss = require("wss");
 
 const cors = require("cors");
 
@@ -16,14 +15,6 @@ app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
-
-const wss = new ws.Server({ server: server, noServer: true });
-
-server.on('upgrade', function (request, socket, head) {
-  wss.handleUpgrade(request, socket, head, function (ws) {
-    wss.emit('connection', ws, request);
-  })
-})
 
 const { Server } = require("socket.io");
 const io = new Server(server);
