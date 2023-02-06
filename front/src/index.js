@@ -15,11 +15,10 @@ import AvatarMaker from "./pages/AvatarMaker";
 import socketIO from "socket.io-client";
 // console.log("BEFORE CONNECT");
 
-//window.ce_socket = socketIO.connect("http://localhost:4000");
-window.ce_socket = socketIO("ws://localhost:4000", {
+window.ce_socket = socketIO("ws://192.168.220.56:4000", {
   withCredentials: true,
   cors: {
-    origin: "ws://localhost:3000",
+    origin: "*",
     credentials: true,
   },
   transports: ['websocket']
