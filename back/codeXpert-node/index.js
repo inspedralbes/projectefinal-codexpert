@@ -16,9 +16,6 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
-const { Server } = require("socket.io");
-const io = new Server(server);
-
 var i = 1;
 
 var lobbies = [];
@@ -37,16 +34,6 @@ app.get("/api", (req, res) => {
     message: "Hello world",
   });
 });
-
-fetch("http://localhost:8000" + "/index.php/getUserId", {
-  method: "POST",
-  mode: "cors",
-  credentials: "include",
-})
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-  });
 
 socketIO.on("connection", (socket) => {
   var socketId = socket.id;
