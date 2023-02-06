@@ -43,7 +43,7 @@ const Lobbies = () => {
     var input = e.target[0];
     console.log(input.value);
     if (input) {
-      socket.emit('chat message', {
+      window.ce_socket.emit('chat message', {
         message: input.value,
         room: lobbyName
       });
@@ -77,12 +77,12 @@ const Lobbies = () => {
     // form.addEventListener('submit', function (e) {
     //   e.preventDefault();
     //   if (input.value) {
-    //     socket.emit('chat message', input.value);
+    //     window.ce_socket.emit('chat message', input.value);
     //     input.value = '';
     //   }
     // });
 
-    // socket.on('chat message', function (msg) {
+    // window.ce_socket.on('chat message', function (msg) {
     //   var item = document.createElement('li');
     //   item.textContent = msg;
     //   messages.appendChild(item);
@@ -90,7 +90,7 @@ const Lobbies = () => {
     // });
     // ================================================================
 
-    socket.on('chat message', function (msg) {
+    window.ce_socket.on('chat message', function (msg) {
       console.log('Ola soy el socket.io y funciono :)');
       var htmlStr = "";
       htmlStr += `<li className="message">${msg}</li>`;

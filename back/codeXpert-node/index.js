@@ -84,6 +84,11 @@ socketIO.on("connection", (socket) => {
     sendUserList(data.lobby_name);
   });
 
+  socket.on("chat message", (data) => {
+    console.log(data.message);
+    socket.to(data.room).emit(data.message);
+  });
+
   socket.on("leave lobby", (roomName) => {
     lobbies.forEach((lobby, ind_lobby) => {
       if (lobby.lobby_name == roomName) {

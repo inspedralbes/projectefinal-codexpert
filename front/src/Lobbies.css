@@ -2,7 +2,6 @@
     background-color: #5264ae;
 }
 
-<<<<<<< HEAD
 .lobbies__form {
     bottom: 5%;
 }
@@ -64,7 +63,6 @@ body {
 }
 
 /* ================================================================================= */
-=======
 .lobbylist__container {
     font-family: "lato", sans-serif;
     width: 80%;
@@ -202,4 +200,3 @@ body {
         text-align: right;
     }
 }
->>>>>>> roomsSocket
