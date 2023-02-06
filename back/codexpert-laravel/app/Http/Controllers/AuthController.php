@@ -155,6 +155,6 @@ class AuthController extends Controller
         // $userId = $request -> session()->get('userId');
         // $returnUser = (object) ['userId' => $userId];
 
-        return response() -> json($tokenInfo);
+        return response() -> json($request -> token);
     }    
 }
