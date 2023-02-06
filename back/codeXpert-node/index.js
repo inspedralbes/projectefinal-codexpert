@@ -92,15 +92,6 @@ socketIO.on("connection", (socket) => {
     sendLobbyList(roomName);
   });
 
-  // =======================================AMAE=========================================================================================
-
-  socket.on('chat message', (data) => {
-    console.log('mensaje: ' + data.message + '| room: ' + data.room);
-    io.emit('chat message', data.message);
-  });
-
-  // ====================================FinDeAmae============================================================
-
   socket.on("disconnect", () => {
     console.log(socket.data.nom + " disconnected");
   });
@@ -120,11 +111,7 @@ async function sendLobbyList(room) {
     list: list,
     message: "lista en teoria",
   });
-
 }
-
-
-
 
 // ==================== MY SQL ===================
 
@@ -160,5 +147,3 @@ app.get("/getUsers", (req, res) => {
 server.listen(PORT, () => {
   console.log("Listening on *:" + PORT);
 });
-
-

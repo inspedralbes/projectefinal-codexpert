@@ -32,7 +32,7 @@ function Login() {
   }, [login]);
   return (
     <div className="form">
-      <h1>LOG IN</h1>
+      <h1>LOGIN</h1>
       <br />
       <div className="form__form">
         <div className="form__inputGroup">
