@@ -122,7 +122,8 @@ class AuthController extends Controller
     public function getUserId(Request $request)
     {
         $userId = $request -> session()->get('userId');
+        $returnUser = (object) ['userId' => $userId];
 
-        return json_encode($userId);
+        return response() -> json($returnUser);
     }    
 }
