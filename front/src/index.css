@@ -6,6 +6,34 @@
     --white: white;
 }
 
+@font-face {
+    font-family: dogica;
+    src: url(fonts/dogica/TTF/dogica.ttf);
+}
+
+/*  la mejor */
+
+@font-face {
+    font-family: rainyhearts;
+    src: url(fonts/rainyhearts/rainyhearts.ttf);
+}
+
+@font-face {
+    font-family: bitArcade;
+    src: url(fonts/8_bit_arcade/8-bit\ Arcade\ Out.ttf);
+    /* es horrible */
+}
+
+@font-face {
+    font-family: pixellari;
+    src: url(fonts/pixellari/Pixellari.ttf);
+}
+
+@font-face {
+    font-family: pixelmix;
+    src: url(fonts/pixelmix/pixelmix.ttf);
+}
+
 * {
     box-sizing: border-box;
 }
@@ -13,7 +41,8 @@
 body {
     background-image: url('img/LoginBG.jpg');
     background-size: cover;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: rainyhearts;
+    font-size: 30px;
 }
 
 .form {
@@ -60,9 +89,7 @@ body {
     text-decoration: none;
     background: transparent;
     padding: 0;
-    font-size: inherit;
-    font-family: inherit;
-    width: 13rem;
+    font-size: 17px;    width: 13rem;
     height: auto;
 }
 
@@ -240,9 +267,9 @@ body {
     background: transparent;
     padding: 0;
     font-size: inherit;
-    font-family: inherit;
     width: 12rem;
     height: auto;
+    font-size: 17px;
 }
 
 #submit__button .circle2 {
