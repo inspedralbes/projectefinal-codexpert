@@ -1,3 +1,13 @@
+const fetch = require('node-fetch');
+
+async function hola() {
+  const response = await fetch("http://localhost:8000/index.php/getUserId");
+  const data = await response.json();
+
+  console.log(data);
+}
+hola();
+
 const express = require("express");
 
 require("dotenv").config();
@@ -31,6 +41,16 @@ const socketIO = require("socket.io")(server, {
   },
 });
 
+// fetch("http://localhost:8000/index.php/getUserId", {
+//   method: "POST",
+//   mode: "cors",
+//   credentials: "include",
+// })
+//   .then((response) => response.json())
+//   .then((data) => {
+//     console.log(data);
+//   });
+
 app.get("/api", (req, res) => {
   res.json({
     message: "Hello world",
@@ -58,8 +78,8 @@ socketIO.on("connection", (socket) => {
 
     if (!existeix) {
       lobbies.push({
-        "lobby_name": lobby,
-        "members": []
+        lobby_name: lobby,
+        members: [],
       });
     }
 
@@ -72,12 +92,12 @@ socketIO.on("connection", (socket) => {
 
   socket.on("join room", (data) => {
     socket.join(data.lobby_name);
-    lobbies.forEach(lobby => {
+    lobbies.forEach((lobby) => {
       if (lobby.lobby_name == data.lobby_name) {
         lobby.members.push({
-          "nom": socket.data.nom,
-          "rank": data.rank
-        })
+          nom: socket.data.nom,
+          rank: data.rank,
+        });
       }
     });
     console.log(socket.data.nom + " joined the lobby -> " + data.lobby_name);
@@ -87,17 +107,16 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("leave lobby", (roomName) => {
-
     lobbies.forEach((lobby, ind_lobby) => {
       if (lobby.lobby_name == roomName) {
         lobby.members.forEach((member, index) => {
           if (member.nom == socket.data.nom) {
-            lobby.members.splice(index, 1)
+            lobby.members.splice(index, 1);
           }
-        })
+        });
       }
       if (lobby.members.length == 0) {
-        lobbies.splice(ind_lobby, 1)
+        lobbies.splice(ind_lobby, 1);
       }
     });
 
