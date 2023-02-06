@@ -104,8 +104,6 @@ class AuthController extends Controller
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
                 $request -> session()->put('userId', $user->id);
-
-                //Session::put('userId', $user -> id);
             } else {
                 $user = "Password and e-mail don't match.";
             }
@@ -120,4 +118,11 @@ class AuthController extends Controller
 
         return json_encode("Logged out.");
     }
+
+    public function getUserId(Request $request)
+    {
+        $userId = $request -> session()->get('userId');
+
+        return json_encode($userId);
+    }    
 }
