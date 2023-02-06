@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom"; //Rutas
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"; //Rutas
 import './index.css';
 import './mobileStyle.css';
 import LandingPage from './pages/LandingPage';
@@ -45,6 +45,7 @@ root.render(
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />
           <Route path="lobbylist" element={<Lobbies/>}></Route>
+          <Route path='*' element={<Navigate to='/' />} />
         </Route>
       </Routes>
     </BrowserRouter>
