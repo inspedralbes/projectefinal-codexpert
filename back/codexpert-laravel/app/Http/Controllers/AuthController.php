@@ -113,7 +113,7 @@ class AuthController extends Controller
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
                 $request -> session()->put('userId', $user->id);
-                $token = $user->createToken('token')->plainTextToken;
+                $token = $user->createToken('token');
                 $sendUser = (object) 
                 ["valid" => true,
                 'message' => "Logged in successfully",
