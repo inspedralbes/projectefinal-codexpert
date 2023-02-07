@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import routeFetch from "../index";
 import { useNavigate } from "react-router-dom"; //Rutas
+import Cookies from 'universal-cookie';
+
 
 function AvatarMaker() {
+  const cookies = new Cookies();
   const navigate = useNavigate();
   let urlStr = "";
   const [optionCopy, setOptionCopy] = useState("");
   const [save, setSave] = useState(0);
   const [avatar, setAvatar] = useState("");
+
   const [menu, setMenu] = useState({
     background: true,
     cloth: false,
@@ -41,9 +45,12 @@ function AvatarMaker() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = new FormData()
+      token.append("token", cookies.get('token'))
       await fetch(routeFetch + "/index.php/getAvatar", {
         method: "POST",
         mode: "cors",
+        body: token,
         credentials: "include",
       })
         .then((response) => response.json())
@@ -52,7 +59,7 @@ function AvatarMaker() {
           //urlStr = "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
           if (urlStr !== null) {
             getAvatar(urlStr);
-          }else {
+          } else {
             navigate("/login");
           }
         });
@@ -64,39 +71,39 @@ function AvatarMaker() {
     if (avatar != "") {
       setAvatar(
         "https://api.dicebear.com/5.x/pixel-art/svg?seed=" +
-          changes.seed +
-          "&backgroundColor=" +
-          changes.bg +
-          "&clothing=" +
-          changes.c +
-          "&clothingColor=" +
-          changes.cC +
-          "&hair=" +
-          changes.h +
-          "&hairColor=" +
-          changes.hC +
-          "&skinColor=" +
-          changes.sC +
-          "&glasses=" +
-          changes.g +
-          "&glassesColor=" +
-          changes.gC +
-          "&glassesProbability=" +
-          changes.gP +
-          "&accessories=" +
-          changes.a +
-          "&accessoriesColor=" +
-          changes.aC +
-          "&accessoriesProbability=" +
-          changes.aP +
-          "&mouth=" +
-          changes.m +
-          "&mouthColor=" +
-          changes.mC +
-          "&eyes=" +
-          changes.e +
-          "&eyesColor=" +
-          changes.eC
+        changes.seed +
+        "&backgroundColor=" +
+        changes.bg +
+        "&clothing=" +
+        changes.c +
+        "&clothingColor=" +
+        changes.cC +
+        "&hair=" +
+        changes.h +
+        "&hairColor=" +
+        changes.hC +
+        "&skinColor=" +
+        changes.sC +
+        "&glasses=" +
+        changes.g +
+        "&glassesColor=" +
+        changes.gC +
+        "&glassesProbability=" +
+        changes.gP +
+        "&accessories=" +
+        changes.a +
+        "&accessoriesColor=" +
+        changes.aC +
+        "&accessoriesProbability=" +
+        changes.aP +
+        "&mouth=" +
+        changes.m +
+        "&mouthColor=" +
+        changes.mC +
+        "&eyes=" +
+        changes.e +
+        "&eyesColor=" +
+        changes.eC
       );
     }
   }, [changes]);
@@ -136,39 +143,39 @@ function AvatarMaker() {
 
     setAvatar(
       "https://api.dicebear.com/5.x/pixel-art/svg?seed=" +
-        "" +
-        "&backgroundColor=" +
-        url.searchParams.get("backgroundColor") +
-        "&clothing=" +
-        url.searchParams.get("clothing") +
-        "&clothingColor=" +
-        url.searchParams.get("clothingColor") +
-        "&hair=" +
-        url.searchParams.get("hair") +
-        "&hairColor=" +
-        url.searchParams.get("hairColor") +
-        "&skinColor=" +
-        url.searchParams.get("skinColor") +
-        "&glasses=" +
-        url.searchParams.get("glasses") +
-        "&glassesColor=" +
-        url.searchParams.get("glassesColor") +
-        "&glassesProbability=" +
-        url.searchParams.get("glassesProbability") +
-        "&accessories=" +
-        url.searchParams.get("accessories") +
-        "&accessoriesColor=" +
-        url.searchParams.get("accessoriesColor") +
-        "&accessoriesProbability=" +
-        url.searchParams.get("accessoriesProbability") +
-        "&mouth=" +
-        url.searchParams.get("mouth") +
-        "&mouthColor=" +
-        url.searchParams.get("mouthColor") +
-        "&eyes=" +
-        url.searchParams.get("eyes") +
-        "&eyesColor=" +
-        url.searchParams.get("eyesColor")
+      "" +
+      "&backgroundColor=" +
+      url.searchParams.get("backgroundColor") +
+      "&clothing=" +
+      url.searchParams.get("clothing") +
+      "&clothingColor=" +
+      url.searchParams.get("clothingColor") +
+      "&hair=" +
+      url.searchParams.get("hair") +
+      "&hairColor=" +
+      url.searchParams.get("hairColor") +
+      "&skinColor=" +
+      url.searchParams.get("skinColor") +
+      "&glasses=" +
+      url.searchParams.get("glasses") +
+      "&glassesColor=" +
+      url.searchParams.get("glassesColor") +
+      "&glassesProbability=" +
+      url.searchParams.get("glassesProbability") +
+      "&accessories=" +
+      url.searchParams.get("accessories") +
+      "&accessoriesColor=" +
+      url.searchParams.get("accessoriesColor") +
+      "&accessoriesProbability=" +
+      url.searchParams.get("accessoriesProbability") +
+      "&mouth=" +
+      url.searchParams.get("mouth") +
+      "&mouthColor=" +
+      url.searchParams.get("mouthColor") +
+      "&eyes=" +
+      url.searchParams.get("eyes") +
+      "&eyesColor=" +
+      url.searchParams.get("eyesColor")
     );
   }
 
@@ -176,6 +183,7 @@ function AvatarMaker() {
     if (save > 0) {
       const sendAvatar = new FormData();
       sendAvatar.append("newAvatar", avatar);
+      sendAvatar.append("token", cookies.get('token'))
       const fetchData = async () => {
         await fetch(routeFetch + "/index.php/setAvatar", {
           method: "POST",
@@ -184,7 +192,7 @@ function AvatarMaker() {
           credentials: "include",
         })
           .then((response) => response.json())
-          .then((data) => {});
+          .then((data) => { });
       };
       fetchData();
     }

@@ -2,6 +2,7 @@ import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
+import { useNavigate } from "react-router-dom"; //Rutas
 import routeFetch from "../index";
 import session from "../components/UserSession";
 
@@ -14,6 +15,7 @@ function Register() {
     const [password, setPassword] = useState("");
     const [passwordValidation, setPasswordValidation] = useState("");
     const cookies = new Cookies();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (registro != 0) {
@@ -29,21 +31,10 @@ function Register() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                if (data.valid) {
+                if (data.valid) { // Si registro es valido
                     console.log(data);
                     cookies.set('token', data.token, { path: '/' });
-                    const token = new FormData()
-                    token.append("token", cookies.get('token'))
-                    fetch(routeFetch + "/index.php/getUserId", {
-                        method: 'POST',
-                        mode: 'cors',
-                        body: token,
-                        credentials: 'include'
-                    }).then((response) => response.json()).then((data) => {                            
-                        console.log(data);
-                    }
-                    );
-
+                    navigate("/avatarMaker")
                 } else {
                     console.log(data);
                 }

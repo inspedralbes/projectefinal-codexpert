@@ -2,6 +2,9 @@ import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import routeFetch from "../index"
+import Cookies from 'universal-cookie';
+import { useNavigate } from "react-router-dom"; //Rutas
+
 
 
 function Login() {
@@ -9,6 +12,8 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mantenerSesion, setMantenerSesion] = useState(false);
+  const cookies = new Cookies();
+  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -25,7 +30,14 @@ function Login() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          if (data.valid) { //Si se ha logueado
+            cookies.set('token', data.token, { path: '/' });
+            console.log(data);
+            navigate("/lobbylist");
+          } else {
+            console.log(data);
+          }
+
         }
         );
     }

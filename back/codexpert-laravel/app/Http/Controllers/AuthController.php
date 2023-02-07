@@ -160,7 +160,7 @@ class AuthController extends Controller
     {
         $userId = $this->getUserId($request);
         if ($userId != null) {
-            $userFound = User::where('id', $userId)->first();
+            $userFound = User::where('id', $userId -> original)->first();
             $returnAvatar = (object) ['url' => $userFound -> avatar];
         } else {
             $returnAvatar = (object) ['url' => null];
