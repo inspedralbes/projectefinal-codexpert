@@ -21,7 +21,7 @@ var socket = socketIO("ws://192.168.220.56:4000", {
     origin: "*",
     credentials: true,
   },
-  transports: ['websocket']
+  transports: ["websocket"],
   // methods: ["GET", "POST"],
   //,
   // noServer: true
@@ -32,7 +32,7 @@ var socket = socketIO("ws://192.168.220.56:4000", {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/">
@@ -43,11 +43,11 @@ root.render(
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />
-          <Route path="lobbylist" element={<Lobbies socket={socket}/>}></Route>
+          <Route path="lobbylist" element={<Lobbies socket={socket} />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
-  // </React.StrictMode>
+  </React.StrictMode>
 );
 
 const routeFetch = "http://localhost:8000";
