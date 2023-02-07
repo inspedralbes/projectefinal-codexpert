@@ -1,7 +1,7 @@
 import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import routeFetch from "../index"
+import routes from "../index"
 import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom"; //Rutas
 
@@ -22,7 +22,7 @@ function Login() {
       user.append("email", email);
       user.append("password", password);
 
-      fetch(routeFetch + "/index.php/login", {
+      fetch(routes.fetchLaravel + "/index.php/login", {
         method: 'POST',
         mode: 'cors',
         body: user,

@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom"; //Rutas
-import routeFetch from "../index";
+import routes from "../index";
 import session from "../components/UserSession";
-
 
 
 function Register() {
@@ -25,7 +24,7 @@ function Register() {
             user.append("password", password);
             user.append("password_confirmation", passwordValidation);
 
-            fetch(routeFetch + "/index.php/register", {
+            fetch(routes.fetchLaravel + "/index.php/register", {
                 method: 'POST',
                 mode: 'cors',
                 body: user,

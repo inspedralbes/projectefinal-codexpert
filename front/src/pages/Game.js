@@ -1,5 +1,6 @@
 import "../normalize.css";
 import Logout from "../components/LogoutButton"
+import routes from "../index";
 
 function Game() {
   return (

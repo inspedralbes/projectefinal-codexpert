@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import routeFetch from "../index";
+import routes from "../index"
 import { useNavigate } from "react-router-dom"; //Rutas
 import Cookies from 'universal-cookie';
 
@@ -47,7 +47,7 @@ function AvatarMaker() {
     const fetchData = async () => {
       const token = new FormData()
       token.append("token", cookies.get('token'))
-      await fetch(routeFetch + "/index.php/getAvatar", {
+      await fetch(routes.fetchLaravel + "/index.php/getAvatar", {
         method: "POST",
         mode: "cors",
         body: token,
@@ -185,7 +185,7 @@ function AvatarMaker() {
       sendAvatar.append("newAvatar", avatar);
       sendAvatar.append("token", cookies.get('token'))
       const fetchData = async () => {
-        await fetch(routeFetch + "/index.php/setAvatar", {
+        await fetch(routes.fetchLaravel + "/index.php/setAvatar", {
           method: "POST",
           mode: "cors",
           body: sendAvatar,
