@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from "react";
 import "../normalize.css";
 import "../Lobbies.css";
+import Chat from "../components/Chat";
 
 // socket.io
 
-const Lobbies = () => {
+const Lobbies = ({ socket }) => {
   const [lobbyName, setLobbyName] = useState("");
   const [lobbyList, setLobbyList] = useState([]);
   const [userList, setUserList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
-
+  const [messages, setMessages] = useState([]);
+  const [msg, setMsg] = useState("");
 
   const handleLeave = (e) => {
     e.preventDefault();
     console.log("has abandonat la sala " + lobbyName);
-    window.ce_socket.emit("leave lobby", lobbyName);
+    socket.emit("leave lobby", lobbyName);
     setJoined(false);
     setLobbyName("");
+    setMessages([]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    window.ce_socket.emit("new lobby", lobbyName);
+    socket.emit("new lobby", lobbyName);
     // setLobbyName(e.target.innerText);
-    window.ce_socket.emit("join room", { lobby_name: lobbyName, "rank": "Owner" });
+    socket.emit("join room", {
+      lobby_name: lobbyName,
+      rank: "Owner",
+    });
     // localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
@@ -33,78 +39,69 @@ const Lobbies = () => {
     e.preventDefault();
     // console.log(e);
     setLobbyName(e.target.id);
-    window.ce_socket.emit("join room", { lobby_name: e.target.id, "rank": "Member" });
+    socket.emit("join room", {
+      lobby_name: e.target.id,
+      rank: "Member",
+    });
+
+    console.log(socket);
     // localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
 
-  const handleMessage = (e) => {
+  const handleSendMessage = (e) => {
     e.preventDefault();
-    var input = e.target[0];
-    console.log(input.value);
-    if (input) {
-      window.ce_socket.emit('chat message', {
-        message: input.value,
-        room: lobbyName
+    // setMsg(e.target[0].value);
+    // console.log(input.value);
+    if (msg != "") {
+      socket.emit("chat message", {
+        message: msg,
+        room: lobbyName,
       });
-      input.value = '';
+      setMsg("");
     }
   };
 
-
   useEffect(() => {
     if (firstTime) {
-      window.ce_socket.emit("hello", "gimme gimme");
+      socket.emit("hello", "gimme gimme");
       setFirstTime(true);
     }
 
-    window.ce_socket.on("lobbies list", function (lobbylist) {
+    socket.on("lobbies list", function (lobbylist) {
       setLobbyList(lobbylist);
       // console.log(lobbyList);
     });
 
-    window.ce_socket.on("lobby user list", (data) => {
+    socket.on("lobby user list", (data) => {
       setUserList(data.list);
     });
 
-    window.ce_socket.on("player joined", (id) => {
+    socket.on("player joined", (id) => {
       console.log(id + " joined the lobby");
     });
-  
-    // ======================================AMAE===================================
 
-
-    // form.addEventListener('submit', function (e) {
-    //   e.preventDefault();
-    //   if (input.value) {
-    //     window.ce_socket.emit('chat message', input.value);
-    //     input.value = '';
-    //   }
-    // });
-
-    // window.ce_socket.on('chat message', function (msg) {
-    //   var item = document.createElement('li');
-    //   item.textContent = msg;
-    //   messages.appendChild(item);
-    //   window.scrollTo(0, document.body.scrollHeight);
-    // });
-    // ================================================================
-
-    window.ce_socket.on('chat message', function (msg) {
-      console.log('Ola soy el socket.io y funciono :)');
-      var htmlStr = "";
-      htmlStr += `<li className="message">${msg}</li>`;
-      document.getElementById('messages').innerHTML = htmlStr;
+    socket.on("lobby-message", function (data) {
+      console.log(data);
+      console.log("ANTES " + messages);
+      setMessages(data.messages);
+      console.log("DSPS " + messages);
     });
-
-  },[]);
+  }, []);
 
   return (
     <div className="lobbies">
       {!joinedLobby && (
         <div id="lobbyList" className="lobbies__lobbylist lobbylist">
           <div className="lobbylist__container">
-            <h2 className="lobbies__title"  onClick={() => { window.ce_socket.emit("hello", "gimme gimme") }}>Lobby list</h2>
+            <h2
+              className="lobbies__title"
+              onClick={() => {
+                socket.emit("hello", "gimme gimme");
+              }}
+            >
+              Lobby list
+            </h2>
             <ul className="lobbies__table table">
               <li className="table__header">
                 <div className="col col-1">ID</div>
@@ -121,16 +118,32 @@ const Lobbies = () => {
                       key={index}
                       id={element.lobby_name}
                     >
-                      <div id={element.lobby_name} className="col col-1" data-label="Lobby Id">
+                      <div
+                        id={element.lobby_name}
+                        className="col col-1"
+                        data-label="Lobby Id"
+                      >
                         {index + 1}
                       </div>
-                      <div id={element.lobby_name} className="col col-2" data-label="Lobby Name">
+                      <div
+                        id={element.lobby_name}
+                        className="col col-2"
+                        data-label="Lobby Name"
+                      >
                         {element.lobby_name}
                       </div>
-                      <div id={element.lobby_name} className="col col-3" data-label="Owner">
+                      <div
+                        id={element.lobby_name}
+                        className="col col-3"
+                        data-label="Owner"
+                      >
                         {element.members[0].nom}
                       </div>
-                      <div id={element.lobby_name} className="col col-4" data-label="Players">
+                      <div
+                        id={element.lobby_name}
+                        className="col col-4"
+                        data-label="Players"
+                      >
                         {element.members.length} / 5
                       </div>
                     </li>
@@ -152,7 +165,9 @@ const Lobbies = () => {
                 type="text"
                 value={lobbyName}
                 placeholder="Lobby name"
-                onChange={(e) => { setLobbyName(e.target.value) }}
+                onChange={(e) => {
+                  setLobbyName(e.target.value);
+                }}
               />
             </label>
             <button className="lobbies__button" disabled={lobbyName === ""}>
@@ -160,8 +175,6 @@ const Lobbies = () => {
             </button>
           </form>
         </div>
-
-
       )}
 
       {joinedLobby && (
@@ -174,9 +187,7 @@ const Lobbies = () => {
             Leave current lobby
           </button>
           <div className="lobby__connectedUsers">
-            <ul id="messages">
-              <li>mensajes</li>
-            </ul>
+            <Chat messages={messages}>{/* {console.log("hola")} */}</Chat>
             <h1 className="connectedUsers_title">Connected users</h1>
             <ul id="userList" className="connectedUsers__userList userList">
               {userList.map((element, index) => {
@@ -187,11 +198,16 @@ const Lobbies = () => {
                 );
               })}
             </ul>
-
           </div>
           {/* Chat :) */}
-          <form id="form" onSubmit={handleMessage}>
-            <input id="input" autoComplete="off" /><button>Send</button>
+          <form id="form" onSubmit={handleSendMessage}>
+            <input
+              id="input_message"
+              autoComplete="off"
+              value={msg}
+              onChange={(e) => setMsg(e.target.value)}
+            />
+            <button>Send</button>
           </form>
           {/* Fin del chat */}
         </div>

@@ -15,7 +15,7 @@ import AvatarMaker from "./pages/AvatarMaker";
 import socketIO from "socket.io-client";
 // console.log("BEFORE CONNECT");
 
-window.ce_socket = socketIO("ws://192.168.220.56:4000", {
+var socket = socketIO("ws://192.168.220.56:4000", {
   withCredentials: true,
   cors: {
     origin: "*",
@@ -32,7 +32,7 @@ window.ce_socket = socketIO("ws://192.168.220.56:4000", {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/">
@@ -43,11 +43,11 @@ root.render(
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />
-          <Route path="lobbylist" element={<Lobbies/>}></Route>
+          <Route path="lobbylist" element={<Lobbies socket={socket}/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 const routeFetch = "http://localhost:8000";

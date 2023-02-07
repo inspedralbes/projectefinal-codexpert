@@ -58,6 +58,7 @@ socketIO.on("connection", (socket) => {
       lobbies.push({
         lobby_name: lobby,
         members: [],
+        messages: [],
       });
     }
 
@@ -82,12 +83,30 @@ socketIO.on("connection", (socket) => {
     socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
     sendUserList(data.lobby_name);
+    sendMessagesToLobby(data.lobby_name);
   });
 
   socket.on("chat message", (data) => {
     console.log(data.message);
-    socket.to(data.room).emit(data.message);
+    console.log(data.room);
+    lobbies.forEach((element) => {
+      if (element.lobby_name == data.room) {
+        element.messages.push(socket.data.nom + ": " + data.message);
+      }
+    });
+    sendMessagesToLobby(data.room);
+    //
   });
+
+  function sendMessagesToLobby(lobby) {
+    lobbies.forEach((element) => {
+      if (element.lobby_name == lobby) {
+        socketIO.sockets.in(lobby).emit("lobby-message", {
+          messages: element.messages,
+        });
+      }
+    });
+  }
 
   socket.on("leave lobby", (roomName) => {
     lobbies.forEach((lobby, ind_lobby) => {
