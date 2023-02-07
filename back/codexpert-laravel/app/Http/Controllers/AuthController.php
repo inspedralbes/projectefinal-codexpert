@@ -173,7 +173,7 @@ class AuthController extends Controller
     {
         $userId = $this->getUserId($request);
         if ($userId != null) {
-            $userFound = User::where('id', $userId)->first();
+            $userFound = User::where('id', $userId -> original)->first();
             $userFound -> avatar = $request -> newAvatar;
             $userFound -> save();
             $returnResponse = (object) ['changed' => true];
