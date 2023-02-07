@@ -10,6 +10,22 @@ const http = require("http");
 
 const cors = require("cors");
 
+const cookieParser = require("cookie-parser");
+var sessions = require('express-session');
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
+    res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
+    next();
+});
+app.use(sessions({
+    secret: "sadsadsadasd",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 },
+    token: ""
+}));
+
 app.use(cors());
 
 app.use(express.json());
@@ -39,11 +55,30 @@ const socketIO = require("socket.io")(server, {
 //     console.log(data);
 //   });
 
-app.get("/api", (req, res) => {
+// ================= SAVE TOKEN AS COOKIE ================
+app.use(cors({
+    credentials: true,
+    origin: function (origin, callback) {
+        console.log(origin);
+        return callback(null, true)
+    }
+}));
+
+app.post("/sendToken", (req, res) => {
+    const userToken = req.cookies.token;
+    req.session.userToken = userToken;
+
     res.json({
-        message: "Hello world",
+        token: req.session.userToken,
     });
 });
+
+app.get("/getToken", (req, res) => {
+    res.json({
+        token: req.session.userToken,
+    });
+});
+
 
 socketIO.on("connection", (socket) => {
     var socketId = socket.id;

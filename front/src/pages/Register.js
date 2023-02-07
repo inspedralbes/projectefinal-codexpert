@@ -32,7 +32,47 @@ function Register() {
             }).then((response) => response.json()).then((data) => {
                 if (data.valid) { // Si registro es valido
                     console.log(data);
-                    cookies.set('token', data.token, { path: '/' });
+                    cookies.set('token', data.token, { path: '/' })
+
+                    const sendTokenToNode = async () => {
+                        const token = new FormData()
+                        token.append("token", cookies.get('token'));
+                        await fetch(routes.fetchNode + "/sendToken", {
+                            method: "POST",
+                            mode: "cors",
+                            body: token,
+                            credentials: "include",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                            },
+                            cache: "default",
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                console.log(data);
+                            });
+                    };
+                    sendTokenToNode();
+
+                    const getTokenToNode = async () => {
+                        await fetch(routes.fetchNode + "/getToken", {
+                            method: "GET",
+                            mode: "cors",
+                            credentials: "include",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                            },
+                            cache: "default",
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                console.log(data);
+                            });
+                    };
+                    getTokenToNode();
+
                     navigate("/avatarMaker")
                 } else {
                     console.log(data);
