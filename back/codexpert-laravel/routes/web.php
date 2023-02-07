@@ -24,9 +24,9 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::post('/getAvatar', [AuthController::class, 'getAvatar']);
+    Route::post('/getAvatar', [UserController::class, 'getAvatar']);
 
-    Route::post('/setAvatar', [AuthController::class, 'setAvatar']);
+    Route::post('/setAvatar', [UserController::class, 'setAvatar']);
 
     Route::post('/getUserId', [AuthController::class, 'getUserId']);
 });
