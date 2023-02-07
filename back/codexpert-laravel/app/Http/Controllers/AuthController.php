@@ -143,17 +143,18 @@ class AuthController extends Controller
 
     public function getUserId(Request $request)
     {
-        $tokenFound = false;
+        $returnUserId = null;
+
         [$id, $token] = explode('|', $request -> token, 2);
         $accessToken = PersonalAccessToken::find($id);
 
         if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $tokenFound = true;
+            $returnUserId = $accessToken -> tokenable_id;
         }
 
         // $userId = $request -> session()->get('userId');
         // $returnUser = (object) ['userId' => $userId];
 
-        return response() -> json($tokenFound);
+        return response() -> json($returnUserId);
     }    
 }
