@@ -106,7 +106,7 @@ class AuthController extends Controller
     {   
         $sendUser = (object)
         ["valid" => false,
-        'message' => $user = "User not found.",
+        'message' => "User not found.",
         'token' => null
         ];
 
@@ -131,7 +131,7 @@ class AuthController extends Controller
             }
         }
 
-        return json_encode($user);
+        return json_encode($sendUser);
     }
 
     public function logout(Request $request)
@@ -151,9 +151,6 @@ class AuthController extends Controller
         if (hash_equals($accessToken->token, hash('sha256', $token))) {
             $returnUserId = $accessToken -> tokenable_id;
         }
-
-        // $userId = $request -> session()->get('userId');
-        // $returnUser = (object) ['userId' => $userId];
 
         return response() -> json($returnUserId);
     }    
