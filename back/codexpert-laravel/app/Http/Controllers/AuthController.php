@@ -76,6 +76,7 @@ class AuthController extends Controller
 
                 $request->session()->put('userId', $user -> id);
                 $request->session()->save();
+
                 $token = $user->createToken('token')->plainTextToken;
                 $sendUser = (object) 
                 ["valid" => true,
@@ -154,4 +155,31 @@ class AuthController extends Controller
 
         return response() -> json($returnUserId);
     }    
+
+    public function getAvatar(Request $request)
+    {
+        $userId = $this->getUserId($request);
+        if ($userId != null) {
+            $userFound = User::where('id', $userId)->first();
+            $returnAvatar = (object) ['url' => $userFound -> avatar];
+        } else {
+            $returnAvatar = (object) ['url' => null];
+        }
+        
+        return response() -> json($returnAvatar);
+    }
+    
+    public function setAvatar(Request $request)
+    {
+        $userId = $this->getUserId($request);
+        if ($userId != null) {
+            $userFound = User::where('id', $userId)->first();
+            $userFound -> avatar = $request -> newAvatar;
+            $userFound -> save();
+            $returnResponse = (object) ['changed' => true];
+        } else {
+            $returnResponse = (object) ['changed' => null];
+        }  
+        return response() -> json($returnResponse);
+    }
 }
