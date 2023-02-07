@@ -26,9 +26,6 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
-const { Server } = require("socket.io");
-const io = new Server(server);
-
 var i = 1;
 
 var lobbies = [];
@@ -37,7 +34,8 @@ var lobbies = [];
 
 const socketIO = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: true,
+    credentials: true,
   },
 });
 
@@ -80,6 +78,7 @@ socketIO.on("connection", (socket) => {
       lobbies.push({
         lobby_name: lobby,
         members: [],
+        messages: [],
       });
     }
 
@@ -104,7 +103,30 @@ socketIO.on("connection", (socket) => {
     socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
     sendUserList(data.lobby_name);
+    sendMessagesToLobby(data.lobby_name);
   });
+
+  socket.on("chat message", (data) => {
+    console.log(data.message);
+    console.log(data.room);
+    lobbies.forEach((element) => {
+      if (element.lobby_name == data.room) {
+        element.messages.push(socket.data.nom + ": " + data.message);
+      }
+    });
+    sendMessagesToLobby(data.room);
+    //
+  });
+
+  function sendMessagesToLobby(lobby) {
+    lobbies.forEach((element) => {
+      if (element.lobby_name == lobby) {
+        socketIO.sockets.in(lobby).emit("lobby-message", {
+          messages: element.messages,
+        });
+      }
+    });
+  }
 
   socket.on("leave lobby", (roomName) => {
     lobbies.forEach((lobby, ind_lobby) => {
