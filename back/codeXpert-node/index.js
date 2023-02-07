@@ -1,13 +1,3 @@
-const fetch = require('node-fetch');
-
-async function hola() {
-  const response = await fetch("http://localhost:8000/index.php/getUserId");
-  const data = await response.json();
-
-  console.log(data);
-}
-hola();
-
 const express = require("express");
 
 require("dotenv").config();
