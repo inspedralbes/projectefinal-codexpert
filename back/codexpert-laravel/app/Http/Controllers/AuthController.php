@@ -105,7 +105,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {   
         $sendUser = (object)
-        ["valid" => false,
+        ['valid' => false,
         'message' => "User not found.",
         'token' => null
         ];
@@ -115,16 +115,16 @@ class AuthController extends Controller
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
                 $request -> session()->put('userId', $user->id);
-                $token = $user->createToken('token');
+                $token = $user->createToken('token')->plainTextToken;
                 $sendUser = (object) 
-                ["valid" => true,
+                ['valid' => true,
                 'message' => "Logged in successfully",
                 'token' => $token
                 ];
 
             } else {
                 $sendUser = (object)
-                ["valid" => false,
+                ['valid' => false,
                 'message' => "Password and e-mail don't match.",
                 'token' => null
                 ];
