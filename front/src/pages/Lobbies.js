@@ -26,18 +26,15 @@ const Lobbies = ({ socket }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     socket.emit("new lobby", lobbyName);
-    // setLobbyName(e.target.innerText);
     socket.emit("join room", {
       lobby_name: lobbyName,
       rank: "Owner",
     });
-    // localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
 
   const handleJoin = (e) => {
     e.preventDefault();
-    // console.log(e);
     setLobbyName(e.target.id);
     socket.emit("join room", {
       lobby_name: e.target.id,
@@ -45,14 +42,11 @@ const Lobbies = ({ socket }) => {
     });
 
     console.log(socket);
-    // localStorage.setItem("lobbyName", lobbyName);
     setJoined(true);
   };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    // setMsg(e.target[0].value);
-    // console.log(input.value);
     if (msg != "") {
       socket.emit("chat message", {
         message: msg,
@@ -70,7 +64,6 @@ const Lobbies = ({ socket }) => {
 
     socket.on("lobbies list", function (lobbylist) {
       setLobbyList(lobbylist);
-      // console.log(lobbyList);
     });
 
     socket.on("lobby user list", (data) => {
@@ -82,10 +75,7 @@ const Lobbies = ({ socket }) => {
     });
 
     socket.on("lobby-message", function (data) {
-      console.log(data);
-      console.log("ANTES " + messages);
       setMessages(data.messages);
-      console.log("DSPS " + messages);
     });
   }, []);
 
@@ -187,7 +177,6 @@ const Lobbies = ({ socket }) => {
             Leave current lobby
           </button>
           <div className="lobby__connectedUsers">
-            <Chat messages={messages}>{/* {console.log("hola")} */}</Chat>
             <h1 className="connectedUsers_title">Connected users</h1>
             <ul id="userList" className="connectedUsers__userList userList">
               {userList.map((element, index) => {
@@ -200,15 +189,21 @@ const Lobbies = ({ socket }) => {
             </ul>
           </div>
           {/* Chat :) */}
-          <form id="form" onSubmit={handleSendMessage}>
-            <input
-              id="input_message"
-              autoComplete="off"
-              value={msg}
-              onChange={(e) => setMsg(e.target.value)}
-            />
-            <button>Send</button>
-          </form>
+          <div className="lobby__chat chat">
+            <h3 className="chat__title">Lobby chat</h3>
+            <div className="chat__body">
+              <Chat className="chat__chatbox" messages={messages}></Chat>
+            </div>
+            <form id="form" onSubmit={handleSendMessage}>
+              <input
+                id="input_message"
+                autoComplete="off"
+                value={msg}
+                onChange={(e) => setMsg(e.target.value)}
+              />
+              <button>Send</button>
+            </form>
+          </div>
           {/* Fin del chat */}
         </div>
       )}
