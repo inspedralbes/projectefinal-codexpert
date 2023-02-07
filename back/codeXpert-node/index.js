@@ -1,33 +1,24 @@
-const PORT = 4000;
 const express = require("express");
+
+require("dotenv").config();
+
+const PORT = 4000;
+
 const app = express();
-app.use(express.json());
+
+const http = require("http");
 
 const cors = require("cors");
+
 app.use(cors());
 
-const axios = require('axios');
+app.use(express.json());
 
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+const server = http.createServer(app);
 
 var i = 1;
 
 var lobbies = [];
-
-// ================= TEST COOKIES ================
-const token = new FormData()
-token.append("token", cookies.get('token'))
-axios.post('http://localhost:8000/index.php/getUserId', {
-    token: token
-})
-    .then(function (response) {
-        console.log(response);
-    })
-
-require("dotenv").config();
-
-
 
 // ================= SOCKET ROOMS ================
 
@@ -102,49 +93,48 @@ socketIO.on("connection", (socket) => {
         socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
         sendUserList(data.lobby_name);
+        sendMessagesToLobby(data.lobby_name);
     });
-    console.log(socket.data.nom + " joined the lobby -> " + data.lobby_name);
-    socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
-    sendUserList(data.lobby_name);
-    sendMessagesToLobby(data.lobby_name);
-});
-
-socket.on("chat message", (data) => {
-    console.log(data.message);
-    console.log(data.room);
-    lobbies.forEach((element) => {
-        if (element.lobby_name == data.room) {
-            element.messages.push(socket.data.nom + ": " + data.message);
-        }
+    socket.on("chat message", (data) => {
+        console.log(data.message);
+        console.log(data.room);
+        lobbies.forEach((element) => {
+            if (element.lobby_name == data.room) {
+                element.messages.push(socket.data.nom + ": " + data.message);
+            }
+        });
+        sendMessagesToLobby(data.room);
+        //
     });
-    sendMessagesToLobby(data.room);
-    //
-});
 
-function sendMessagesToLobby(lobby) {
-    lobbies.forEach((element) => {
-        if (element.lobby_name == lobby) {
-            socketIO.sockets.in(lobby).emit("lobby-message", {
-                messages: element.messages,
-            });
-        }
-    });
-}
+    function sendMessagesToLobby(lobby) {
+        lobbies.forEach((element) => {
+            if (element.lobby_name == lobby) {
+                socketIO.sockets.in(lobby).emit("lobby-message", {
+                    messages: element.messages,
+                });
+            }
+        });
+    }
 
-socket.on("leave lobby", (roomName) => {
-    lobbies.forEach((lobby, ind_lobby) => {
-        if (lobby.lobby_name == roomName) {
-            lobby.members.forEach((member, index) => {
-                if (member.nom == socket.data.nom) {
-                    lobby.members.splice(index, 1);
-                }
-            });
+    socket.on("leave lobby", (roomName) => {
+        lobbies.forEach((lobby, ind_lobby) => {
+            if (lobby.lobby_name == roomName) {
+                lobby.members.forEach((member, index) => {
+                    if (member.nom == socket.data.nom) {
+                        lobby.members.splice(index, 1);
+                    }
+                });
+            }
+            if (lobby.members.length == 0) {
+                lobbies.splice(ind_lobby, 1);
+            }
+        });
 
-            socket.leave(roomName);
-            sendUserList(roomName);
-            sendLobbyList();
-        }
+        socket.leave(roomName);
+        sendUserList(roomName);
+        sendLobbyList();
     });
 
     socket.on("disconnect", () => {

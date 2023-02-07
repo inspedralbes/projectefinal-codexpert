@@ -15,7 +15,7 @@ import AvatarMaker from "./pages/AvatarMaker";
 import socketIO from "socket.io-client";
 // console.log("BEFORE CONNECT");
 
-var socket = socketIO("ws://192.168.220.56:4000", {
+var socket = socketIO("ws://192.168.220.28:4000", {
   withCredentials: true,
   cors: {
     origin: "*",

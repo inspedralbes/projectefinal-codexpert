@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../normalize.css";
 import "../Lobbies.css";
-import routes from "../index";
+import Chat from "../components/Chat";
 
 // socket.io
 
