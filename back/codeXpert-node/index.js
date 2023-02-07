@@ -1,3 +1,4 @@
+const PORT = 4000;
 const express = require("express");
 const app = express();
 app.use(express.json());
@@ -10,13 +11,6 @@ const axios = require('axios');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-const PORT = 4000;
-const http = require("http");
-
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
-
 var i = 1;
 
 var lobbies = [];
@@ -25,9 +19,9 @@ var lobbies = [];
 const token = new FormData()
 token.append("token", cookies.get('token'))
 axios.post('http://localhost:8000/index.php/getUserId', {
-        token: token
-    })
-    .then(function(response) {
+    token: token
+})
+    .then(function (response) {
         console.log(response);
     })
 
@@ -39,7 +33,8 @@ require("dotenv").config();
 
 const socketIO = require("socket.io")(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: true,
+        credentials: true,
     },
 });
 
@@ -82,6 +77,7 @@ socketIO.on("connection", (socket) => {
             lobbies.push({
                 lobby_name: lobby,
                 members: [],
+                messages: [],
             });
         }
 
@@ -107,24 +103,48 @@ socketIO.on("connection", (socket) => {
 
         sendUserList(data.lobby_name);
     });
+    console.log(socket.data.nom + " joined the lobby -> " + data.lobby_name);
+    socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
-    socket.on("leave lobby", (roomName) => {
-        lobbies.forEach((lobby, ind_lobby) => {
-            if (lobby.lobby_name == roomName) {
-                lobby.members.forEach((member, index) => {
-                    if (member.nom == socket.data.nom) {
-                        lobby.members.splice(index, 1);
-                    }
-                });
-            }
-            if (lobby.members.length == 0) {
-                lobbies.splice(ind_lobby, 1);
-            }
-        });
+    sendUserList(data.lobby_name);
+    sendMessagesToLobby(data.lobby_name);
+});
 
-        socket.leave(roomName);
-        sendUserList(roomName);
-        sendLobbyList();
+socket.on("chat message", (data) => {
+    console.log(data.message);
+    console.log(data.room);
+    lobbies.forEach((element) => {
+        if (element.lobby_name == data.room) {
+            element.messages.push(socket.data.nom + ": " + data.message);
+        }
+    });
+    sendMessagesToLobby(data.room);
+    //
+});
+
+function sendMessagesToLobby(lobby) {
+    lobbies.forEach((element) => {
+        if (element.lobby_name == lobby) {
+            socketIO.sockets.in(lobby).emit("lobby-message", {
+                messages: element.messages,
+            });
+        }
+    });
+}
+
+socket.on("leave lobby", (roomName) => {
+    lobbies.forEach((lobby, ind_lobby) => {
+        if (lobby.lobby_name == roomName) {
+            lobby.members.forEach((member, index) => {
+                if (member.nom == socket.data.nom) {
+                    lobby.members.splice(index, 1);
+                }
+            });
+
+            socket.leave(roomName);
+            sendUserList(roomName);
+            sendLobbyList();
+        }
     });
 
     socket.on("disconnect", () => {
@@ -163,7 +183,7 @@ var con = mysql.createConnection({
     database: process.env.DB_DATABASE,
 });
 
-con.connect(function(err) {
+con.connect(function (err) {
     if (err != null) {
         console.log(err);
     } else {
@@ -172,7 +192,7 @@ con.connect(function(err) {
 });
 
 app.get("/getUsers", (req, res) => {
-    con.query("SELECT * FROM users", function(err, result, fields) {
+    con.query("SELECT * FROM users", function (err, result, fields) {
         var ret = {
             result: result,
         };

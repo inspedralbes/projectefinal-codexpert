@@ -2,6 +2,67 @@
     background-color: #5264ae;
 }
 
+.lobbies__form {
+    bottom: 5%;
+}
+
+/* =================================Amae================================================ */
+body {
+    margin: 0;
+    padding-bottom: 3rem;
+}
+
+#form {
+    /* background: rgba(0, 0, 0, 0.021); */
+    padding: 0.25rem;
+    position: fixed;
+    /* bottom: 0; */
+    left: 0;
+    right: 0;
+    display: flex;
+    height: 3rem;
+    box-sizing: border-box;
+    /* backdrop-filter: blur(10px); */
+}
+
+#input {
+    border: none;
+    padding: 0 1rem;
+    flex-grow: 1;
+    border-radius: 2rem;
+    margin: 0.25rem;
+}
+
+#input:focus {
+    outline: none;
+}
+
+#form>button {
+    background: #333;
+    border: none;
+    padding: 0 1rem;
+    margin: 0.25rem;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+#messages>li {
+    padding: 0.5rem 1rem;
+}
+
+#messages>li:nth-child(odd) {
+    background: #efefef;
+}
+
+/* ================================================================================= */
 .lobbylist__container {
     font-family: "lato", sans-serif;
     width: 80%;
@@ -28,11 +89,15 @@
     text-align: center;
 }
 
+.lobbies__title:hover {
+    cursor: pointer;
+}
+
 .lobbies__table {
     padding: 0;
 }
 
-.lobbies__reloadButton {
+/* .lobbies__reloadButton {
     float: right;
     font-size: 3vw;
     position:relative;
@@ -42,7 +107,7 @@
 
 .lobbies__reloadButton:hover {
     cursor: pointer;
-}
+} */
 
 .lobbies__table li {
     border-radius: 3px;
@@ -61,6 +126,12 @@
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.03em;
+}
+
+.table__body {
+    overflow: auto;
+    max-height: 50vh;
+    height: 50vh;
 }
 
 .lobbies__table .table__row {
@@ -101,6 +172,25 @@
 .table__body {
     overflow: auto;
     max-height: 60vh;
+}
+
+.lobby__connectedUsers {
+    color:white
+}
+
+.chat__body {
+    height: 50vh;
+    max-height: 30vh;
+    max-width: 70%;
+    overflow: auto;
+}
+
+.chat__title {
+    color: white
+}
+
+.lobby__chat {
+    bottom: 0;
 }
 
 @media all and (max-width: 767px) {
