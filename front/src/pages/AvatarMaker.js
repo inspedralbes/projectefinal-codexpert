@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import routeFetch from "../index";
+import '../avatarMaker.css';
+import ColorPicker from "../components/ColorPicker";
 
 function AvatarMaker() {
   let urlStr = "";
@@ -60,39 +62,39 @@ function AvatarMaker() {
     if (avatar != "") {
       setAvatar(
         "https://api.dicebear.com/5.x/pixel-art/svg?seed=" +
-          changes.seed +
-          "&backgroundColor=" +
-          changes.bg +
-          "&clothing=" +
-          changes.c +
-          "&clothingColor=" +
-          changes.cC +
-          "&hair=" +
-          changes.h +
-          "&hairColor=" +
-          changes.hC +
-          "&skinColor=" +
-          changes.sC +
-          "&glasses=" +
-          changes.g +
-          "&glassesColor=" +
-          changes.gC +
-          "&glassesProbability=" +
-          changes.gP +
-          "&accessories=" +
-          changes.a +
-          "&accessoriesColor=" +
-          changes.aC +
-          "&accessoriesProbability=" +
-          changes.aP +
-          "&mouth=" +
-          changes.m +
-          "&mouthColor=" +
-          changes.mC +
-          "&eyes=" +
-          changes.e +
-          "&eyesColor=" +
-          changes.eC
+        changes.seed +
+        "&backgroundColor=" +
+        changes.bg +
+        "&clothing=" +
+        changes.c +
+        "&clothingColor=" +
+        changes.cC +
+        "&hair=" +
+        changes.h +
+        "&hairColor=" +
+        changes.hC +
+        "&skinColor=" +
+        changes.sC +
+        "&glasses=" +
+        changes.g +
+        "&glassesColor=" +
+        changes.gC +
+        "&glassesProbability=" +
+        changes.gP +
+        "&accessories=" +
+        changes.a +
+        "&accessoriesColor=" +
+        changes.aC +
+        "&accessoriesProbability=" +
+        changes.aP +
+        "&mouth=" +
+        changes.m +
+        "&mouthColor=" +
+        changes.mC +
+        "&eyes=" +
+        changes.e +
+        "&eyesColor=" +
+        changes.eC
       );
     }
   }, [changes]);
@@ -132,39 +134,39 @@ function AvatarMaker() {
 
     setAvatar(
       "https://api.dicebear.com/5.x/pixel-art/svg?seed=" +
-        "" +
-        "&backgroundColor=" +
-        url.searchParams.get("backgroundColor") +
-        "&clothing=" +
-        url.searchParams.get("clothing") +
-        "&clothingColor=" +
-        url.searchParams.get("clothingColor") +
-        "&hair=" +
-        url.searchParams.get("hair") +
-        "&hairColor=" +
-        url.searchParams.get("hairColor") +
-        "&skinColor=" +
-        url.searchParams.get("skinColor") +
-        "&glasses=" +
-        url.searchParams.get("glasses") +
-        "&glassesColor=" +
-        url.searchParams.get("glassesColor") +
-        "&glassesProbability=" +
-        url.searchParams.get("glassesProbability") +
-        "&accessories=" +
-        url.searchParams.get("accessories") +
-        "&accessoriesColor=" +
-        url.searchParams.get("accessoriesColor") +
-        "&accessoriesProbability=" +
-        url.searchParams.get("accessoriesProbability") +
-        "&mouth=" +
-        url.searchParams.get("mouth") +
-        "&mouthColor=" +
-        url.searchParams.get("mouthColor") +
-        "&eyes=" +
-        url.searchParams.get("eyes") +
-        "&eyesColor=" +
-        url.searchParams.get("eyesColor")
+      "" +
+      "&backgroundColor=" +
+      url.searchParams.get("backgroundColor") +
+      "&clothing=" +
+      url.searchParams.get("clothing") +
+      "&clothingColor=" +
+      url.searchParams.get("clothingColor") +
+      "&hair=" +
+      url.searchParams.get("hair") +
+      "&hairColor=" +
+      url.searchParams.get("hairColor") +
+      "&skinColor=" +
+      url.searchParams.get("skinColor") +
+      "&glasses=" +
+      url.searchParams.get("glasses") +
+      "&glassesColor=" +
+      url.searchParams.get("glassesColor") +
+      "&glassesProbability=" +
+      url.searchParams.get("glassesProbability") +
+      "&accessories=" +
+      url.searchParams.get("accessories") +
+      "&accessoriesColor=" +
+      url.searchParams.get("accessoriesColor") +
+      "&accessoriesProbability=" +
+      url.searchParams.get("accessoriesProbability") +
+      "&mouth=" +
+      url.searchParams.get("mouth") +
+      "&mouthColor=" +
+      url.searchParams.get("mouthColor") +
+      "&eyes=" +
+      url.searchParams.get("eyes") +
+      "&eyesColor=" +
+      url.searchParams.get("eyesColor")
     );
   }
 
@@ -180,7 +182,7 @@ function AvatarMaker() {
           credentials: "include",
         })
           .then((response) => response.json())
-          .then((data) => {});
+          .then((data) => { });
       };
       fetchData();
     }
@@ -189,15 +191,15 @@ function AvatarMaker() {
   if (avatar !== "") {
     return (
       <div className="Avatar">
-        <button onClick={() => changeOption("background")}>Background</button>
-        <button onClick={() => changeOption("cloth")}>Cloth</button>
-        <button onClick={() => changeOption("hair")}>Hair</button>
-        <button onClick={() => changeOption("skinColor")}>Skin Color</button>
-        <button onClick={() => changeOption("glasses")}>Glasses</button>
-        <button onClick={() => changeOption("accessories")}>Accessories</button>
-        <button onClick={() => changeOption("mouth")}>Mouth</button>
-        <button onClick={() => changeOption("eyes")}>Eyes</button>
-        <img src={avatar} alt="avatar" />
+        <button className="avatar__menu" onClick={() => changeOption("background")}>Background</button>
+        <button className="avatar__menu" onClick={() => changeOption("cloth")}>Cloth</button>
+        <button className="avatar__menu" onClick={() => changeOption("hair")}>Hair</button>
+        <button className="avatar__menu" onClick={() => changeOption("skinColor")}>Skin Color</button>
+        <button className="avatar__menu" onClick={() => changeOption("glasses")}>Glasses</button>
+        <button className="avatar__menu" onClick={() => changeOption("accessories")}>Accessories</button>
+        <button className="avatar__menu" onClick={() => changeOption("mouth")}>Mouth</button>
+        <button className="avatar__menu" onClick={() => changeOption("eyes")}>Eyes</button>
+        <img className="avatar__img" src={avatar} alt="avatar" />
         {menu.background && (
           <input
             type="color"
@@ -289,6 +291,7 @@ function AvatarMaker() {
         )}
         {menu.hair && (
           <>
+            <ColorPicker  />
             <input
               type="color"
               value={"#" + changes.hC}
