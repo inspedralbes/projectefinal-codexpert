@@ -94,9 +94,6 @@ function Register() {
                     </div>
                 </div>
             </div>
-            <Link to="/avatarMaker">
-                <button>Avatar</button>
-            </Link>
         </div>
 
     );

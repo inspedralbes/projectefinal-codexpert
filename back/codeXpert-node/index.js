@@ -22,14 +22,14 @@ var i = 1;
 var lobbies = [];
 
 // ================= TEST COOKIES ================
-const token = new FormData()
-token.append("token", cookies.get('token'))
-axios.post('http://localhost:8000/index.php/getUserId', {
-        token: token
-    })
-    .then(function(response) {
-        console.log(response);
-    })
+// const token = new FormData()
+// //token.append("token", cookies.get('token'))
+// axios.post('http://localhost:8000/index.php/getUserId', {
+//         token: token
+//     })
+//     .then(function(response) {
+//         console.log(response);
+//     })
 
 require("dotenv").config();
 

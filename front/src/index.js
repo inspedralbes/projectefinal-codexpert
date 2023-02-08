@@ -13,6 +13,7 @@ import Lobbies from "./pages/Lobbies";
 import reportWebVitals from './reportWebVitals';
 import AvatarMaker from "./pages/AvatarMaker";
 import socketIO from "socket.io-client";
+import Error404 from "./pages/404"
 // console.log("BEFORE CONNECT");
 
 //window.ce_socket = socketIO.connect("http://localhost:4000");
@@ -45,7 +46,8 @@ root.render(
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />
           <Route path="lobbylist" element={<Lobbies/>}></Route>
-          <Route path='*' element={<Navigate to='/' />} />
+          <Route path="404" element={<Error404/>}></Route>
+          <Route path='*' element={<Navigate to='/404' />} />
         </Route>
       </Routes>
     </BrowserRouter>
