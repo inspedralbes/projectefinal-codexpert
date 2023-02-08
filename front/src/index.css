@@ -1,9 +1,14 @@
 :root {
-    --primary-color: #5264AE;
+    --primary-color: hsl(228, 36%, 50%);
     --h1-color: #38225e;
     --shadow-color: #ad7bf8;
     --labelPlaceholder-color: #a972fc;
     --white: white;
+}
+
+@font-face {
+    font-family: pixel_operator;
+    src: url(fonts/pixel_operator/PixelOperator8.ttf);
 }
 
 * {
@@ -13,7 +18,8 @@
 body {
     background-image: url('img/LoginBG.jpg');
     background-size: cover;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: pixel_operator;
+    font-size: 30px;
 }
 
 .form {
@@ -60,8 +66,7 @@ body {
     text-decoration: none;
     background: transparent;
     padding: 0;
-    font-size: inherit;
-    font-family: inherit;
+    font-size: 14px;
     width: 13rem;
     height: auto;
 }
@@ -239,8 +244,7 @@ body {
     text-decoration: none;
     background: transparent;
     padding: 0;
-    font-size: inherit;
-    font-family: inherit;
+    font-size: 14px;
     width: 12rem;
     height: auto;
 }

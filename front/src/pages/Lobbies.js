@@ -1,60 +1,81 @@
 import React, { useEffect, useState } from "react";
 import "../normalize.css";
 import "../Lobbies.css";
-import routes from "../index";
+import Chat from "../components/Chat";
 
 // socket.io
 
-const Lobbies = () => {
+const Lobbies = ({ socket }) => {
   const [lobbyName, setLobbyName] = useState("");
   const [lobbyList, setLobbyList] = useState([]);
   const [userList, setUserList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
+  const [messages, setMessages] = useState([]);
+  const [msg, setMsg] = useState("");
 
   const handleLeave = (e) => {
     e.preventDefault();
     console.log("has abandonat la sala " + lobbyName);
-    window.ce_socket.emit("leave lobby", lobbyName);
+    socket.emit("leave lobby", lobbyName);
     setJoined(false);
     setLobbyName("");
+    setMessages([]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    window.ce_socket.emit("new lobby", lobbyName);
-    // setLobbyName(e.target.innerText);
-    window.ce_socket.emit("join room", { lobby_name: lobbyName, "rank": "Owner" });
-    // localStorage.setItem("lobbyName", lobbyName);
+    socket.emit("new lobby", lobbyName);
+    socket.emit("join room", {
+      lobby_name: lobbyName,
+      rank: "Owner",
+    });
     setJoined(true);
   };
 
   const handleJoin = (e) => {
     e.preventDefault();
-    // console.log(e);
     setLobbyName(e.target.id);
-    window.ce_socket.emit("join room", { lobby_name: e.target.id, "rank": "Member" });
-    // localStorage.setItem("lobbyName", lobbyName);
+    socket.emit("join room", {
+      lobby_name: e.target.id,
+      rank: "Member",
+    });
+
+    console.log(socket);
     setJoined(true);
+  };
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (msg != "") {
+      socket.emit("chat message", {
+        message: msg,
+        room: lobbyName,
+      });
+      setMsg("");
+    }
   };
 
   useEffect(() => {
     if (firstTime) {
-      window.ce_socket.emit("hello", "gimme gimme");
+      socket.emit("hello", "gimme gimme");
       setFirstTime(true);
     }
 
-    window.ce_socket.on("lobbies list", function (lobbylist) {
+    socket.on("lobbies list", function (lobbylist) {
       setLobbyList(lobbylist);
-      // console.log(lobbyList);
     });
 
-    window.ce_socket.on("lobby user list", (data) => {
+    socket.on("lobby user list", (data) => {
       setUserList(data.list);
     });
 
-    window.ce_socket.on("player joined", (id) => {
+    socket.on("player joined", (id) => {
       console.log(id + " joined the lobby");
+    });
+
+    socket.on("lobby-message", function (data) {
+      setMessages(data.messages);
     });
   }, []);
 
@@ -63,8 +84,14 @@ const Lobbies = () => {
       {!joinedLobby && (
         <div id="lobbyList" className="lobbies__lobbylist lobbylist">
           <div className="lobbylist__container">
-            <h3 className="lobbies__reloadButton" onClick={() => { window.ce_socket.emit("hello", "gimme gimme") }}>↻</h3>
-            <h2 className="lobbies__title">Lobby list</h2>
+            <h2
+              className="lobbies__title"
+              onClick={() => {
+                socket.emit("hello", "gimme gimme");
+              }}
+            >
+              Lobby list
+            </h2>
             <ul className="lobbies__table table">
               <li className="table__header">
                 <div className="col col-1">ID</div>
@@ -81,16 +108,32 @@ const Lobbies = () => {
                       key={index}
                       id={element.lobby_name}
                     >
-                      <div id={element.lobby_name} className="col col-1" data-label="Lobby Id">
+                      <div
+                        id={element.lobby_name}
+                        className="col col-1"
+                        data-label="Lobby Id"
+                      >
                         {index + 1}
                       </div>
-                      <div id={element.lobby_name} className="col col-2" data-label="Lobby Name">
+                      <div
+                        id={element.lobby_name}
+                        className="col col-2"
+                        data-label="Lobby Name"
+                      >
                         {element.lobby_name}
                       </div>
-                      <div id={element.lobby_name} className="col col-3" data-label="Owner">
+                      <div
+                        id={element.lobby_name}
+                        className="col col-3"
+                        data-label="Owner"
+                      >
                         {element.members[0].nom}
                       </div>
-                      <div id={element.lobby_name} className="col col-4" data-label="Players">
+                      <div
+                        id={element.lobby_name}
+                        className="col col-4"
+                        data-label="Players"
+                      >
                         {element.members.length} / 5
                       </div>
                     </li>
@@ -112,7 +155,9 @@ const Lobbies = () => {
                 type="text"
                 value={lobbyName}
                 placeholder="Lobby name"
-                onChange={(e) => { setLobbyName(e.target.value) }}
+                onChange={(e) => {
+                  setLobbyName(e.target.value);
+                }}
               />
             </label>
             <button className="lobbies__button" disabled={lobbyName === ""}>
@@ -143,6 +188,23 @@ const Lobbies = () => {
               })}
             </ul>
           </div>
+          {/* Chat :) */}
+          <div className="lobby__chat chat">
+            <h3 className="chat__title">Lobby chat</h3>
+            <div className="chat__body">
+              <Chat className="chat__chatbox" messages={messages}></Chat>
+            </div>
+            <form id="form" onSubmit={handleSendMessage}>
+              <input
+                id="input_message"
+                autoComplete="off"
+                value={msg}
+                onChange={(e) => setMsg(e.target.value)}
+              />
+              <button>Send</button>
+            </form>
+          </div>
+          {/* Fin del chat */}
         </div>
       )}
     </div>

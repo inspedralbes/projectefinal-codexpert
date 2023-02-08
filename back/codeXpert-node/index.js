@@ -1,45 +1,47 @@
 const express = require("express");
-const app = express();
-app.use(express.json());
 
-const cors = require("cors");
-app.use(cors());
-
-const axios = require('axios');
-
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+require("dotenv").config();
 
 const PORT = 4000;
+
+const app = express();
+
 const http = require("http");
 
+const cors = require("cors");
+
+const cookieParser = require("cookie-parser");
+var sessions = require('express-session');
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
+    res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
+    next();
+});
+app.use(sessions({
+    secret: "sadsadsadasd",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 },
+    token: ""
+}));
+
+app.use(cors());
+
+app.use(express.json());
+
 const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
 
 var i = 1;
 
 var lobbies = [];
 
-// ================= TEST COOKIES ================
-// const token = new FormData()
-// //token.append("token", cookies.get('token'))
-// axios.post('http://localhost:8000/index.php/getUserId', {
-//         token: token
-//     })
-//     .then(function(response) {
-//         console.log(response);
-//     })
-
-require("dotenv").config();
-
-
-
 // ================= SOCKET ROOMS ================
 
 const socketIO = require("socket.io")(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: true,
+        credentials: true,
     },
 });
 
@@ -53,11 +55,30 @@ const socketIO = require("socket.io")(server, {
 //     console.log(data);
 //   });
 
-app.get("/api", (req, res) => {
+// ================= SAVE TOKEN AS COOKIE ================
+app.use(cors({
+    credentials: true,
+    origin: function (origin, callback) {
+        console.log(origin);
+        return callback(null, true)
+    }
+}));
+
+app.post("/sendToken", (req, res) => {
+    const userToken = req.cookies.token;
+    req.session.userToken = userToken;
+
     res.json({
-        message: "Hello world",
+        token: req.session.userToken,
     });
 });
+
+app.get("/getToken", (req, res) => {
+    res.json({
+        token: req.session.userToken,
+    });
+});
+
 
 socketIO.on("connection", (socket) => {
     var socketId = socket.id;
@@ -82,6 +103,7 @@ socketIO.on("connection", (socket) => {
             lobbies.push({
                 lobby_name: lobby,
                 members: [],
+                messages: [],
             });
         }
 
@@ -106,7 +128,30 @@ socketIO.on("connection", (socket) => {
         socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
         sendUserList(data.lobby_name);
+        sendMessagesToLobby(data.lobby_name);
     });
+
+    socket.on("chat message", (data) => {
+        console.log(data.message);
+        console.log(data.room);
+        lobbies.forEach((element) => {
+            if (element.lobby_name == data.room) {
+                element.messages.push(socket.data.nom + ": " + data.message);
+            }
+        });
+        sendMessagesToLobby(data.room);
+        //
+    });
+
+    function sendMessagesToLobby(lobby) {
+        lobbies.forEach((element) => {
+            if (element.lobby_name == lobby) {
+                socketIO.sockets.in(lobby).emit("lobby-message", {
+                    messages: element.messages,
+                });
+            }
+        });
+    }
 
     socket.on("leave lobby", (roomName) => {
         lobbies.forEach((lobby, ind_lobby) => {
@@ -163,7 +208,7 @@ var con = mysql.createConnection({
     database: process.env.DB_DATABASE,
 });
 
-con.connect(function(err) {
+con.connect(function (err) {
     if (err != null) {
         console.log(err);
     } else {
@@ -172,7 +217,7 @@ con.connect(function(err) {
 });
 
 app.get("/getUsers", (req, res) => {
-    con.query("SELECT * FROM users", function(err, result, fields) {
+    con.query("SELECT * FROM users", function (err, result, fields) {
         var ret = {
             result: result,
         };
