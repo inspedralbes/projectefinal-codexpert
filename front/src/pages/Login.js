@@ -35,7 +35,7 @@ function Login({ socket }) {
             socket.emit("send token", {
               token: cookies.get('token')
             });
-            navigate("/lobbylist");
+            navigate("/lobbies");
           } else {
             console.log(data);
           }
