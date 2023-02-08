@@ -7,7 +7,7 @@ import routes from "../index";
 import session from "../components/UserSession";
 
 
-function Register() {
+function Register({ socket }) {
     const [registro, setRegistro] = useState(0);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -30,52 +30,11 @@ function Register() {
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
-                if (data.valid) { // Si registro es valido
-                    console.log(data);
+                if (data.valid) {
                     cookies.set('token', data.token, { path: '/' })
-
-                    const sendTokenToNode = async () => {
-                        const token = new FormData()
-                        token.append("token enviado desde react", cookies.get('token'));
-                        await fetch(routes.fetchNode + "/sendToken", {
-                            method: "POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                            },
-                            credentials: 'include',
-                            withCredentials: true,
-                            body: JSON.stringify(token),
-                            mode: "cors",
-                            cache: "default",
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                console.log(data);
-                            });
-                    };
-                    sendTokenToNode();
-
-                    const getTokenToNode = async () => {
-                        await fetch(routes.fetchNode + "/getToken", {
-                            method: "POST",
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                            },
-                            credentials: 'include',
-                            withCredentials: true,
-                            body: JSON.stringify({}),
-                            mode: "cors",
-                            cache: "default",
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                console.log(data);
-                            });
-                    };
-                    getTokenToNode();
-
+                    socket.emit("send token", {
+                        token: cookies.get('token')
+                    });
                     navigate("/avatarMaker")
                 } else {
                     console.log(data);

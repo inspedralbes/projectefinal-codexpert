@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"; //Rutas
 
 
 
-function Login() {
+function Login({ socket }) {
   const [login, setLogin] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,8 +31,10 @@ function Login() {
         .then((response) => response.json())
         .then((data) => {
           if (data.valid) { //Si se ha logueado
-            cookies.set('token', data.token, { path: '/' });
-            console.log(data);
+            cookies.set('token', data.token, { path: '/' })
+            socket.emit("send token", {
+              token: cookies.get('token')
+            });
             navigate("/lobbylist");
           } else {
             console.log(data);

@@ -15,8 +15,7 @@ dns.setDefaultResultOrder('ipv4first');
 var i = 1;
 var util = require('util')
 var lobbies = [];
-
-var session = {};
+var sesiones = [];
 // ================= SOCKET ROOMS ================
 
 const socketIO = require("socket.io")(server, {
@@ -25,18 +24,6 @@ const socketIO = require("socket.io")(server, {
         credentials: true,
     },
 });
-
-// ================= FETCH TO BACK WITH AXIOS ================
-let token = "94|353q0m1QKTIEesTkhhspx9wcmaRwsr9JEQgLNrJ5";
-axios.post('http://localhost:8000/index.php/getUserId', {
-    token: token,
-})
-    .then(function (response) {
-        console.log(response.data);
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
 
 
 // ================= SAVE TOKEN AS COOKIE ================
@@ -70,43 +57,46 @@ app.use(cors({
 }));
 
 app.post("/sendToken", (req, res) => {
-    session = req.session;
-
-    console.log(util.inspect(req))
-
-    const userToken = req.cookies.token;
-    var user = {
-        token: userToken
-    }
-
-    session.user = user;
-    console.log("hola desde el post")
-    console.table(session.user);
-
-    res.json({
-        setSesion: session.user,
-    });
+    var user = {};
+    // ================= FETCH TO BACK WITH AXIOS ================
+    let token = req.cookies.token;
 });
-
-
-app.post("/getToken", (req, res) => {
-    console.log("hola desde el get")
-    console.table(session.user);
-
-    res.json({
-        getSesion: session.user,
-    });
-});
-
 
 socketIO.on("connection", (socket) => {
+    console.log("CONECTADO");
     var socketId = socket.id;
+    const ses = sesiones;
 
     socket.join("chat-general");
     socketIO.to(`${socketId}`).emit("hello", "Welcome to the general chat");
 
-    socket.data.nom = i;
-    i++;
+    // socket.data.name = i;
+    // i++;
+
+    socket.on("send token", (data) => {
+        let token = data.token;
+
+        axios.post('http://localhost:8000/index.php/getUserInfo', {
+            token: token,
+        })
+            .then(function (response) {
+                var user = {
+                    token: token,
+                    userId: response.data.id,
+                    userName: response.data.name,
+                }
+                sesiones.push(user);
+
+                socket.data.id = response.data.id;
+                socket.data.name = response.data.name;
+
+                console.log(socket.data.id);
+                console.log(socket.data.name);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    });
 
     socket.emit("lobbies list", lobbies);
 
@@ -138,13 +128,13 @@ socketIO.on("connection", (socket) => {
         lobbies.forEach((lobby) => {
             if (lobby.lobby_name == data.lobby_name) {
                 lobby.members.push({
-                    nom: socket.data.nom,
+                    nom: socket.data.name,
                     rank: data.rank,
                 });
             }
         });
-        console.log(socket.data.nom + " joined the lobby -> " + data.lobby_name);
-        socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
+        console.log(socket.data.name + " joined the lobby -> " + data.lobby_name);
+        socketIO.to(data.lobby_name).emit("player joined", socket.data.name);
 
         sendUserList(data.lobby_name);
         sendMessagesToLobby(data.lobby_name);
@@ -155,7 +145,7 @@ socketIO.on("connection", (socket) => {
         console.log(data.room);
         lobbies.forEach((element) => {
             if (element.lobby_name == data.room) {
-                element.messages.push(socket.data.nom + ": " + data.message);
+                element.messages.push(socket.data.name + ": " + data.message);
             }
         });
         sendMessagesToLobby(data.room);
@@ -176,7 +166,7 @@ socketIO.on("connection", (socket) => {
         lobbies.forEach((lobby, ind_lobby) => {
             if (lobby.lobby_name == roomName) {
                 lobby.members.forEach((member, index) => {
-                    if (member.nom == socket.data.nom) {
+                    if (member.nom == socket.data.name) {
                         lobby.members.splice(index, 1);
                     }
                 });
@@ -192,7 +182,7 @@ socketIO.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        console.log(socket.data.nom + " disconnected");
+        console.log(socket.data.name + " disconnected");
     });
 });
 
@@ -206,8 +196,8 @@ async function sendUserList(room) {
     const sockets = await socketIO.in(room).fetchSockets();
 
     sockets.forEach((element) => {
-        console.log(socketIO.sockets.sockets.get(element.id).data.nom);
-        list.push(socketIO.sockets.sockets.get(element.id).data.nom);
+        console.log(socketIO.sockets.sockets.get(element.id).data.name);
+        list.push(socketIO.sockets.sockets.get(element.id).data.name);
     });
 
     socketIO.to(room).emit("lobby user list", {

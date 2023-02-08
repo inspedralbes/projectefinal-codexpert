@@ -38,14 +38,14 @@ root.render(
       <Routes>
         <Route path="/">
           <Route index element={<LandingPage />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
+          <Route path="login" element={<Login socket={socket} />} />
+          <Route path="register" element={<Register socket={socket} />} />
           <Route path="game" element={<Game />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />
           <Route path="lobbylist" element={<Lobbies socket={socket} />}></Route>
-          <Route path="404" element={<Error404/>}></Route>
+          <Route path="404" element={<Error404 />}></Route>
           <Route path='*' element={<Navigate to='/404' />} />
         </Route>
       </Routes>
