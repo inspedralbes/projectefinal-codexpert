@@ -33,7 +33,7 @@ function Login() {
           if (data.valid) { //Si se ha logueado
             cookies.set('token', data.token, { path: '/' });
             console.log(data);
-            navigate("/lobbylist");
+            navigate("/lobbies");
           } else {
             console.log(data);
           }

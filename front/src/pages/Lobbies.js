@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../normalize.css";
 import "../Lobbies.css";
 import Chat from "../components/Chat";
+import IconUser from "../components/IconUser";
 
 // socket.io
 
@@ -81,6 +82,7 @@ const Lobbies = ({ socket }) => {
 
   return (
     <div className="lobbies">
+      <IconUser></IconUser>
       {!joinedLobby && (
         <div id="lobbyList" className="lobbies__lobbylist lobbylist">
           <div className="lobbylist__container">
