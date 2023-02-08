@@ -13,9 +13,10 @@ const axios = require('axios');
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 var i = 1;
-
+var util = require('util')
 var lobbies = [];
 
+var session = {};
 // ================= SOCKET ROOMS ================
 
 const socketIO = require("socket.io")(server, {
@@ -48,12 +49,14 @@ app.use(function (req, res, next) {
     next();
 });
 app.use(sessions({
-    secret: "sadsadsadasd",
-    name: 'test',
+    key: 'session.sid',
+    secret: "soy secreto",
     resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60000 },
-    user: { token: "", id: "" },
+    saveUninitialized: true,
+    cookie: {
+        secure: false,
+        maxAge: 600000
+    },
 }));
 
 app.use(express.json());
@@ -67,28 +70,32 @@ app.use(cors({
 }));
 
 app.post("/sendToken", (req, res) => {
+    session = req.session;
+
+    console.log(util.inspect(req))
+
     const userToken = req.cookies.token;
     var user = {
         token: userToken
     }
-    req.session.user = user;
-    req.session.save();
+
+    session.user = user;
+    console.log("hola desde el post")
+    console.table(session.user);
 
     res.json({
-        test: user,
+        setSesion: session.user,
     });
 });
 
 
 app.post("/getToken", (req, res) => {
-    console.log("hola" + req.session.user);
-    let session = req.session;
-    var ret = {
-        token: "GET" + session.user
-    }
-    console.log(ret);
+    console.log("hola desde el get")
+    console.table(session.user);
 
-    res.send(JSON.stringify(ret));
+    res.json({
+        getSesion: session.user,
+    });
 });
 
 

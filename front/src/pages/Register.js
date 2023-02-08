@@ -36,7 +36,7 @@ function Register() {
 
                     const sendTokenToNode = async () => {
                         const token = new FormData()
-                        token.append("token", cookies.get('token'));
+                        token.append("token enviado desde react", cookies.get('token'));
                         await fetch(routes.fetchNode + "/sendToken", {
                             method: "POST",
                             headers: {
