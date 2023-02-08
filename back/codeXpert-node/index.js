@@ -1,37 +1,17 @@
-const express = require("express");
-
-require("dotenv").config();
-
-const PORT = 4000;
-
-const app = express();
-
-const http = require("http");
-
+const express = require('express');
 const cors = require("cors");
-
-const cookieParser = require("cookie-parser");
-var sessions = require('express-session');
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
-    res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
-    next();
-});
-app.use(sessions({
-    secret: "sadsadsadasd",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60000 },
-    token: ""
-}));
-
-app.use(cors());
-
-app.use(express.json());
-
+const fs = require('fs');
+const path = require('path');
+const sessions = require('express-session');
+var cookieParser = require('cookie-parser');
+const app = express();
+const PORT = 4000;
+const http = require("http");
+require("dotenv").config();
 const server = http.createServer(app);
-
+const axios = require('axios');
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
 var i = 1;
 
 var lobbies = [];
@@ -45,17 +25,39 @@ const socketIO = require("socket.io")(server, {
     },
 });
 
-// fetch("http://localhost:8000/index.php/getUserId", {
-//   method: "POST",
-//   mode: "cors",
-//   credentials: "include",
-// })
-//   .then((response) => response.json())
-//   .then((data) => {
-//     console.log(data);
-//   });
+// ================= FETCH TO BACK WITH AXIOS ================
+let token = "94|353q0m1QKTIEesTkhhspx9wcmaRwsr9JEQgLNrJ5";
+axios.post('http://localhost:8000/index.php/getUserId', {
+    token: token,
+})
+    .then(function (response) {
+        console.log(response.data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
 
 // ================= SAVE TOKEN AS COOKIE ================
+app.use(cookieParser());
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
+    res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
+    next();
+});
+app.use(sessions({
+    secret: "sadsadsadasd",
+    name: 'test',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 },
+    user: { token: "", id: "" },
+}));
+
+app.use(express.json());
+
 app.use(cors({
     credentials: true,
     origin: function (origin, callback) {
@@ -66,17 +68,27 @@ app.use(cors({
 
 app.post("/sendToken", (req, res) => {
     const userToken = req.cookies.token;
-    req.session.userToken = userToken;
+    var user = {
+        token: userToken
+    }
+    req.session.user = user;
+    req.session.save();
 
     res.json({
-        token: req.session.userToken,
+        test: user,
     });
 });
 
-app.get("/getToken", (req, res) => {
-    res.json({
-        token: req.session.userToken,
-    });
+
+app.post("/getToken", (req, res) => {
+    console.log("hola" + req.session.user);
+    let session = req.session;
+    var ret = {
+        token: "GET" + session.user
+    }
+    console.log(ret);
+
+    res.send(JSON.stringify(ret));
 });
 
 
