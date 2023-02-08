@@ -45,7 +45,8 @@ root.render(
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />
           <Route path="lobbylist" element={<Lobbies socket={socket} />}></Route>
-          <Route path='*' element={<Navigate to='/' />} />
+          <Route path="404" element={<Error404/>}></Route>
+          <Route path='*' element={<Navigate to='/404' />} />
         </Route>
       </Routes>
     </BrowserRouter>
