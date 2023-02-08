@@ -36,16 +36,17 @@ function Register() {
 
                     const sendTokenToNode = async () => {
                         const token = new FormData()
-                        token.append("token", cookies.get('token'));
+                        token.append("token enviado desde react", cookies.get('token'));
                         await fetch(routes.fetchNode + "/sendToken", {
                             method: "POST",
-                            mode: "cors",
-                            body: token,
-                            credentials: "include",
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/json',
                             },
+                            credentials: 'include',
+                            withCredentials: true,
+                            body: JSON.stringify(token),
+                            mode: "cors",
                             cache: "default",
                         })
                             .then((response) => response.json())
@@ -57,13 +58,15 @@ function Register() {
 
                     const getTokenToNode = async () => {
                         await fetch(routes.fetchNode + "/getToken", {
-                            method: "GET",
-                            mode: "cors",
-                            credentials: "include",
+                            method: "POST",
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/json',
                             },
+                            credentials: 'include',
+                            withCredentials: true,
+                            body: JSON.stringify({}),
+                            mode: "cors",
                             cache: "default",
                         })
                             .then((response) => response.json())
