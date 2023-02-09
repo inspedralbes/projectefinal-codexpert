@@ -10,7 +10,7 @@ function App() {
         <Link to="/login">
           <button>Get Started</button>
         </Link>
-        <Link to="/lobbylist">
+        <Link to="/lobbies">
           <button>Lobbies</button>
         </Link>
       </div>
