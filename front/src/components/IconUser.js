@@ -18,12 +18,6 @@ function IconUser() {
     setState(!state)
   };
 
-  componentDidMount() {
-    document.addEventListener("mousedown", handleClickOutside());
-  }
-  componentWillUnmount() {
-    document.removeEventListener("mousedown", handleClickOutside());
-  }
 
   token.append("token", cookies.get("token"));
   fetch(routes.fetchLaravel + "/index.php/getAvatar", {
