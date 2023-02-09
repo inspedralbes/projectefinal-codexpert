@@ -3,6 +3,8 @@ import "../normalize.css";
 import "../Lobbies.css";
 import Chat from "../components/Chat";
 import IconUser from "../components/IconUser";
+import { useNavigate } from "react-router-dom";
+
 
 // socket.io
 
@@ -14,6 +16,7 @@ const Lobbies = ({ socket }) => {
   const [firstTime, setFirstTime] = useState(true);
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
 
   const handleLeave = (e) => {
     e.preventDefault();

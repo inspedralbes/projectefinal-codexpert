@@ -195,6 +195,7 @@ function AvatarMaker() {
           .then((data) => { });
       };
       fetchData();
+      navigate("/lobbies");
     }
   }, [save]);
 
