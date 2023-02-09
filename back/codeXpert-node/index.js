@@ -8,9 +8,7 @@ const http = require("http");
 require("dotenv").config();
 const server = http.createServer(app);
 const axios = require("axios");
-const dns = require("dns");
-dns.setDefaultResultOrder("ipv4first");
-var i = 1;
+
 var lobbies = [];
 var sesiones = [];
 // ================= SOCKET ROOMS ================
@@ -128,16 +126,18 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("join room", (data) => {
-    socket.join(data.lobby_name);
-    socket.data.current_lobby = data.lobby_name;
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == data.lobby_name) {
+        // console.log(lobby.members.length);
+        // console.log(lobby.members.length());
         lobby.members.push({
           nom: socket.data.name,
           rank: data.rank,
         });
       }
     });
+    socket.join(data.lobby_name);
+    socket.data.current_lobby = data.lobby_name;
     console.log(socket.data.name + " joined the lobby -> " + data.lobby_name);
     socketIO.to(data.lobby_name).emit("player joined", socket.data.name);
 
@@ -150,7 +150,9 @@ socketIO.on("connection", (socket) => {
     // console.log(data.room);
     lobbies.forEach((element) => {
       if (element.lobby_name == data.room) {
-        element.messages.push(socket.data.name + ": " + data.message);
+        element.messages.push(
+          socket.data.id + " " + socket.data.name + ": " + data.message
+        );
       }
     });
     sendMessagesToLobby(data.room);
@@ -175,25 +177,25 @@ socketIO.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log(socket.data.name + " disconnected");
-    leaveLobby(socket)
+    leaveLobby(socket);
   });
 });
 
 async function leaveLobby(socket) {
-    lobbies.forEach((lobby, ind_lobby) => {
-        if (lobby.lobby_name == socket.data.current_lobby) {
-          lobby.members.forEach((member, index) => {
-            if (member.nom == socket.data.name) {
-              lobby.members.splice(index, 1);
-            }
-          });
-        }
-        if (lobby.members.length == 0) {
-          lobbies.splice(ind_lobby, 1);
+  lobbies.forEach((lobby, ind_lobby) => {
+    if (lobby.lobby_name == socket.data.current_lobby) {
+      lobby.members.forEach((member, index) => {
+        if (member.nom == socket.data.name) {
+          lobby.members.splice(index, 1);
         }
       });
-      
-    socket.leave(socket.data.current_lobby);
+    }
+    if (lobby.members.length == 0) {
+      lobbies.splice(ind_lobby, 1);
+    }
+  });
+
+  socket.leave(socket.data.current_lobby);
 }
 
 async function sendLobbyList() {
