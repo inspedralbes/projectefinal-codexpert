@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GameController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,4 +34,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/getUserId', [AuthController::class, 'getUserId']);
 
     Route::post('/getUserInfo', [AuthController::class, 'getUserInfo']);
+    
+    Route::get('/startGame', [GameController::class, 'startGame']);
 });

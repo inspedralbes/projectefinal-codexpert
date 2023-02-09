@@ -26,7 +26,7 @@ return new class extends Migration
             $table->boolean('finished')->default(false);
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('game_id')->references('id')->on('game')->onDelete('cascade');
+            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
 
             $table->timestamps();
         });
