@@ -31,4 +31,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/getUserId', [AuthController::class, 'getUserId']);
 
     Route::post('/getUserInfo', [AuthController::class, 'getUserInfo']);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
