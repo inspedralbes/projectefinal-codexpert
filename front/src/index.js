@@ -21,7 +21,7 @@ const cookies = new Cookies();
 const routes = {
   fetchLaravel: "http://localhost:8000",
   fetchNode: "http://localhost:4000",
-  wsNode: "ws://192.168.220.28:4000",
+  wsNode: "ws://localhost:4000",
 };
 
 var socket = socketIO(routes.wsNode, {

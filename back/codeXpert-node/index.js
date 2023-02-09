@@ -154,7 +154,7 @@ socketIO.on("connection", (socket) => {
     lobbies.forEach((element) => {
       if (element.lobby_name == data.room) {
         element.messages.push(
-          socket.data.userId + " " + socket.data.name + ": " + data.message
+          socket.data.name + ": " + data.message
         );
       }
     });
