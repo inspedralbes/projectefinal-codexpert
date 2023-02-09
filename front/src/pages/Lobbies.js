@@ -193,6 +193,7 @@ const Lobbies = ({ socket }) => {
               })}
             </ul>
           </div>
+          {/* <button onClick={handleStartGame}>Start game</button> */}
           {/* Chat :) */}
           <div className="lobby__chat chat">
             <h3 className="chat__title">Lobby chat</h3>
