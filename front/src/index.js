@@ -14,22 +14,21 @@ import reportWebVitals from "./reportWebVitals";
 import AvatarMaker from "./pages/AvatarMaker";
 import socketIO from "socket.io-client";
 import Error404 from "./pages/404"
-// console.log("BEFORE CONNECT");
 
-var socket = socketIO("ws://localhost:4000", {
+const routes = {
+  fetchLaravel: "http://localhost:8000",
+  fetchNode: "http://localhost:4000",
+  wsNode: "ws://localhost:4000"
+}
+
+var socket = socketIO(routes.wsNode, {
   withCredentials: true,
   cors: {
     origin: "*",
     credentials: true,
   },
   transports: ["websocket"],
-  // methods: ["GET", "POST"],
-  //,
-  // noServer: true
 });
-
-//
-// console.log("AFTER CONNECTION");
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -52,11 +51,6 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
-
-const routes = {
-  fetchLaravel: "http://localhost:8000",
-  fetchNode: "http://localhost:4000"
-}
 
 export default routes;
 // If you want to start measuring performance in your app, pass a function
