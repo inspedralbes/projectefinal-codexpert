@@ -16,9 +16,6 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
-const { Server } = require("socket.io");
-const io = new Server(server);
-
 var i = 1;
 
 var lobbies = [];
@@ -27,9 +24,20 @@ var lobbies = [];
 
 const socketIO = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: true,
+    credentials: true,
   },
 });
+
+// fetch("http://localhost:8000/index.php/getUserId", {
+//   method: "POST",
+//   mode: "cors",
+//   credentials: "include",
+// })
+//   .then((response) => response.json())
+//   .then((data) => {
+//     console.log(data);
+//   });
 
 app.get("/api", (req, res) => {
   res.json({
@@ -58,8 +66,9 @@ socketIO.on("connection", (socket) => {
 
     if (!existeix) {
       lobbies.push({
-        "lobby_name": lobby,
-        "members": []
+        lobby_name: lobby,
+        members: [],
+        messages: [],
       });
     }
 
@@ -72,32 +81,54 @@ socketIO.on("connection", (socket) => {
 
   socket.on("join room", (data) => {
     socket.join(data.lobby_name);
-    lobbies.forEach(lobby => {
+    lobbies.forEach((lobby) => {
       if (lobby.lobby_name == data.lobby_name) {
         lobby.members.push({
-          "nom": socket.data.nom,
-          "rank": data.rank
-        })
+          nom: socket.data.nom,
+          rank: data.rank,
+        });
       }
     });
     console.log(socket.data.nom + " joined the lobby -> " + data.lobby_name);
     socketIO.to(data.lobby_name).emit("player joined", socket.data.nom);
 
     sendUserList(data.lobby_name);
+    sendMessagesToLobby(data.lobby_name);
   });
 
-  socket.on("leave lobby", (roomName) => {
+  socket.on("chat message", (data) => {
+    console.log(data.message);
+    console.log(data.room);
+    lobbies.forEach((element) => {
+      if (element.lobby_name == data.room) {
+        element.messages.push(socket.data.nom + ": " + data.message);
+      }
+    });
+    sendMessagesToLobby(data.room);
+    //
+  });
 
+  function sendMessagesToLobby(lobby) {
+    lobbies.forEach((element) => {
+      if (element.lobby_name == lobby) {
+        socketIO.sockets.in(lobby).emit("lobby-message", {
+          messages: element.messages,
+        });
+      }
+    });
+  }
+
+  socket.on("leave lobby", (roomName) => {
     lobbies.forEach((lobby, ind_lobby) => {
       if (lobby.lobby_name == roomName) {
         lobby.members.forEach((member, index) => {
           if (member.nom == socket.data.nom) {
-            lobby.members.splice(index, 1)
+            lobby.members.splice(index, 1);
           }
-        })
+        });
       }
       if (lobby.members.length == 0) {
-        lobbies.splice(ind_lobby, 1)
+        lobbies.splice(ind_lobby, 1);
       }
     });
 

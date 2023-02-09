@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom"; //Rutas
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"; //Rutas
 import './index.css';
 import './mobileStyle.css';
 import LandingPage from './pages/LandingPage';
@@ -10,26 +10,25 @@ import Game from './pages/Game';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword'
 import Lobbies from "./pages/Lobbies";
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from "./reportWebVitals";
 import AvatarMaker from "./pages/AvatarMaker";
 import socketIO from "socket.io-client";
 // console.log("BEFORE CONNECT");
 
-//window.ce_socket = socketIO.connect("http://localhost:4000");
-window.ce_socket = socketIO("http://localhost:4000", {
-  //withCredentials: true,
-  //   cors: {
-  //   origin: "http://localhost:3000",
-  //   credentials: true
-  //   },
-  // //, 
-  //noServer: true  
-}
-);
+var socket = socketIO("ws://192.168.220.56:4000", {
+  withCredentials: true,
+  cors: {
+    origin: "*",
+    credentials: true,
+  },
+  transports: ["websocket"],
+  // methods: ["GET", "POST"],
+  //,
+  // noServer: true
+});
 
-// 
+//
 // console.log("AFTER CONNECTION");
-
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -44,15 +43,16 @@ root.render(
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />
-          <Route path="lobbylist" element={<Lobbies/>}></Route>
+          <Route path="lobbylist" element={<Lobbies socket={socket} />}></Route>
+          <Route path='*' element={<Navigate to='/' />} />
         </Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
 );
 
-const routeFetch = "http://localhost:8000"
-const routeNodeServer = "http://localhost:4000"
+const routeFetch = "http://localhost:8000";
+const routeNodeServer = "http://localhost:4000";
 export default routeFetch;
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

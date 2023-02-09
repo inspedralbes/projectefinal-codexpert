@@ -7,6 +7,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\NewAccessToken;
+use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\PersonalAccessToken;
+
 class AuthController extends Controller
 {
     public function checkUserDuplicated($userData)
@@ -71,9 +76,11 @@ class AuthController extends Controller
 
                 $request->session()->put('userId', $user -> id);
                 $request->session()->save();
+                $token = $user->createToken('token')->plainTextToken;
                 $sendUser = (object) 
                 ["valid" => true,
-                'message' => $request->session()->get("userId")
+                'message' => $request->session()->get("userId"),
+                'token' => $token
                 ];
             } else {
                 $duplicated = $this->findWhatIsDuplicated($request);
@@ -96,22 +103,35 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $user = "User not found.";
+    {   
+        $sendUser = (object)
+        ['valid' => false,
+        'message' => "User not found.",
+        'token' => null
+        ];
 
         $userFound = User::where('email', strtolower($request -> email))->first();
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
                 $request -> session()->put('userId', $user->id);
+                $token = $user->createToken('token')->plainTextToken;
+                $sendUser = (object) 
+                ['valid' => true,
+                'message' => "Logged in successfully",
+                'token' => $token
+                ];
 
-                //Session::put('userId', $user -> id);
             } else {
-                $user = "Password and e-mail don't match.";
+                $sendUser = (object)
+                ['valid' => false,
+                'message' => "Password and e-mail don't match.",
+                'token' => null
+                ];
             }
         }
 
-        return json_encode($user);
+        return json_encode($sendUser);
     }
 
     public function logout(Request $request)
@@ -120,4 +140,20 @@ class AuthController extends Controller
 
         return json_encode("Logged out.");
     }
+
+    public function getUserId(Request $request)
+    {
+        $returnUserId = null;
+
+        [$id, $token] = explode('|', $request -> token, 2);
+        $accessToken = PersonalAccessToken::find($id);
+
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            $returnUserId = $accessToken -> tokenable_id;
+            $request -> session()->put('userId', $returnUserId);
+        }
+
+        return response() -> json($returnUserId);
+    }    
+
 }
