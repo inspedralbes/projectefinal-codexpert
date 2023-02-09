@@ -93,13 +93,14 @@ socketIO.on("connection", (socket) => {
 
         socket.data.userId = response.data.id;
         socket.data.name = response.data.name;
+        socket.data.avatar = response.data.avatar
       })
       .catch(function (error) {
         console.log(error);
       });
   });
 
-  socket.emit("lobbies list", lobbies);
+  sendLobbyList()
 
   socket.on("new lobby", (lobby) => {
     let existeix = false;
@@ -148,6 +149,12 @@ socketIO.on("connection", (socket) => {
     sendMessagesToLobby(data.lobby_name);
   });
 
+  socket.on("leave lobby", (roomName) => {
+    leaveLobby(socket);
+    sendUserList(roomName);
+    sendLobbyList();
+  });
+
   socket.on("chat message", (data) => {
     // console.log(data.message);
     // console.log(data.room);
@@ -172,12 +179,6 @@ socketIO.on("connection", (socket) => {
     });
   }
 
-  socket.on("leave lobby", (roomName) => {
-    leaveLobby(socket);
-    sendUserList(roomName);
-    sendLobbyList();
-  });
-
   socket.on("disconnect", () => {
     console.log(socket.data.name + " disconnected");
     leaveLobby(socket);
@@ -199,6 +200,7 @@ async function leaveLobby(socket) {
   });
 
   socket.leave(socket.data.current_lobby);
+  sendLobbyList()
 }
 
 async function sendLobbyList() {
@@ -212,12 +214,15 @@ async function sendUserList(room) {
 
   sockets.forEach((element) => {
     // console.log(socketIO.sockets.sockets.get(element.id).data.name);
-    list.push(socketIO.sockets.sockets.get(element.id).data.name);
+    list.push({
+      name: socketIO.sockets.sockets.get(element.id).data.name,
+      avatar: socketIO.sockets.sockets.get(element.id).data.avatar
+    });
   });
 
   socketIO.to(room).emit("lobby user list", {
     list: list,
-    message: "lista en teoria",
+    message: "user list",
   });
 }
 
