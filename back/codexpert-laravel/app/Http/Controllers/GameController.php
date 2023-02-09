@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Game;
 
 class GameController extends Controller
 {
     public function createNewGame(Request $request)
     {
-        $newGame;
+        $newGame = new Game;
+        $newGame -> save();
         return response() -> json($newGame);
     }
 

@@ -35,5 +35,9 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/getUserInfo', [AuthController::class, 'getUserInfo']);
     
+    //Pasarlo luego a post
     Route::get('/startGame', [GameController::class, 'startGame']);
+
+    //Eliminarla una vez testeado
+    Route::get('/createNewGame', [GameController::class, 'createNewGame']);
 });
