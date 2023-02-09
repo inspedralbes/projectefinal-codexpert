@@ -3,8 +3,10 @@ import "../IconUser.css";
 import routes from "../index";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function IconUser() {
+  const navigate = useNavigate();
   const cookies = new Cookies();
   const [state, setState] = useState(false);
   const [avatarURL, setAvatarURL] = useState(null);
@@ -51,6 +53,7 @@ function IconUser() {
             const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
             document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
           }
+          navigate("/login");
         });
     }
   }, [logOut]);
@@ -69,7 +72,7 @@ function IconUser() {
           <div className="dropdown">
             <ul className="dropdown__list list">
               <li className="list__item">Profile</li>
-              <li className="list__item">Avatar Maker</li>
+              <li className="list__item"><button className="button" onClick={() => navigate("/avatarMaker")}>Avatar Maker</button></li>
               <li className="list__item"> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
             </ul>
           </div>
