@@ -39,7 +39,6 @@ function Login({ socket }) {
           } else {
             console.log(data);
           }
-
         }
         );
     }
