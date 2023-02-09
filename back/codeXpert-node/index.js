@@ -93,13 +93,14 @@ socketIO.on("connection", (socket) => {
 
         socket.data.userId = response.data.id;
         socket.data.name = response.data.name;
+        socket.data.avatar = response.data.avatar
       })
       .catch(function (error) {
         console.log(error);
       });
   });
 
-  socket.emit("lobbies list", lobbies);
+  sendLobbyList()
 
   socket.on("new lobby", (lobby) => {
     let existeix = false;
@@ -148,19 +149,43 @@ socketIO.on("connection", (socket) => {
     sendMessagesToLobby(data.lobby_name);
   });
 
+  socket.on("leave lobby", (roomName) => {
+    leaveLobby(socket);
+    sendUserList(roomName);
+    sendLobbyList();
+  });
+
   socket.on("chat message", (data) => {
     // console.log(data.message);
     // console.log(data.room);
     lobbies.forEach((element) => {
       if (element.lobby_name == data.room) {
         element.messages.push(
-          socket.data.userId + " " + socket.data.name + ": " + data.message
+          socket.data.name + ": " + data.message
         );
       }
     });
     sendMessagesToLobby(data.room);
     //
   });
+
+  socket.on("start_game", () => {
+    axios
+      .get("http://127.0.0.1:8000/index.php/startGame")
+      .then(function (response) {
+        // console.log(response);
+        lobbies.forEach(lobby => {
+          if (lobby.lobby_name == socket.data.lobby_name) {
+            lobby.game_data = response.data;
+            socketIO.to(lobby.lobby_name).emit("game_started")
+            socket.data.gameId = response.data.gameId
+          }
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  })
 
   function sendMessagesToLobby(lobby) {
     lobbies.forEach((element) => {
@@ -171,12 +196,6 @@ socketIO.on("connection", (socket) => {
       }
     });
   }
-
-  socket.on("leave lobby", (roomName) => {
-    leaveLobby(socket);
-    sendUserList(roomName);
-    sendLobbyList();
-  });
 
   socket.on("disconnect", () => {
     console.log(socket.data.name + " disconnected");
@@ -199,6 +218,7 @@ async function leaveLobby(socket) {
   });
 
   socket.leave(socket.data.current_lobby);
+  sendLobbyList()
 }
 
 async function sendLobbyList() {
@@ -212,12 +232,15 @@ async function sendUserList(room) {
 
   sockets.forEach((element) => {
     // console.log(socketIO.sockets.sockets.get(element.id).data.name);
-    list.push(socketIO.sockets.sockets.get(element.id).data.name);
+    list.push({
+      name: socketIO.sockets.sockets.get(element.id).data.name,
+      avatar: socketIO.sockets.sockets.get(element.id).data.avatar
+    });
   });
 
   socketIO.to(room).emit("lobby user list", {
     list: list,
-    message: "lista en teoria",
+    message: "user list",
   });
 }
 
