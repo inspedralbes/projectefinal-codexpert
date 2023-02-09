@@ -67,10 +67,10 @@ function IconUser() {
         </button>
         {state && (
           <div className="dropdown">
-            <ul>
-              <li>Profile</li>
-              <li>Avatar Maker</li>
-              <li> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
+            <ul className="dropdown__list list">
+              <li className="list__item">Profile</li>
+              <li className="list__item">Avatar Maker</li>
+              <li className="list__item"> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
             </ul>
           </div>
         )}
