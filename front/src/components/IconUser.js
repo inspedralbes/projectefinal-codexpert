@@ -38,14 +38,14 @@ function IconUser() {
           className="button"
           onClick={handleButtonClick}
         >
-          <img src={avatarURL} height="50" width="50"></img>
+          <img className="button__image" src={avatarURL} height="50" width="50"></img>
         </button>
         {state && (
           <div className="dropdown">
-            <ul>
-              <li>Profile</li>
-              <li>Avatar Maker</li>
-              <li>Log Out</li>
+            <ul className="dropdown__list list">
+              <li className="list__item">Profile</li>
+              <li className="list__item">Avatar Maker</li>
+              <li className="list__item">Log Out</li>
             </ul>
           </div>
         )}
