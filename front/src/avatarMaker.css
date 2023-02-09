@@ -5,6 +5,7 @@
     width: 90%;
     max-height: max-content;
     min-height: 85vh;
+    font-size: 15px;
 }
 
 .avatar__left {
@@ -40,7 +41,7 @@
 
 .avatar__menu {
     background-color: brown;
-    padding: 30px;
+    padding: 10px;
     margin-bottom: 30px;
 }
 
