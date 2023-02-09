@@ -32,5 +32,5 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/getUserInfo', [AuthController::class, 'getUserInfo']);
 
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/logout', [AuthController::class, 'logout']);
 });
