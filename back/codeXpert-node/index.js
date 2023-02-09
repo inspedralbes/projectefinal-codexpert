@@ -169,6 +169,24 @@ socketIO.on("connection", (socket) => {
     //
   });
 
+  socket.on("start_game", () => {
+    axios
+      .get("http://127.0.0.1:8000/index.php/startGame")
+      .then(function (response) {
+        // console.log(response);
+        lobbies.forEach(lobby => {
+          if (lobby.lobby_name == socket.data.lobby_name) {
+            lobby.game_data = response.data;
+            socketIO.to(lobby.lobby_name).emit("game_started")
+            socket.data.gameId = response.data.gameId
+          }
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  })
+
   function sendMessagesToLobby(lobby) {
     lobbies.forEach((element) => {
       if (element.lobby_name == lobby) {

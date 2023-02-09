@@ -60,6 +60,10 @@ const Lobbies = ({ socket }) => {
     }
   };
 
+  function startGame() {
+    socket.emit("start_game")
+  }
+
   useEffect(() => {
     if (firstTime) {
       socket.emit("hello", "gimme gimme");
@@ -81,6 +85,10 @@ const Lobbies = ({ socket }) => {
     socket.on("lobby-message", function (data) {
       setMessages(data.messages);
     });
+    
+    socket.on("game_started", () => {
+      navigate("/game")
+    })
   }, []);
 
   return (
@@ -193,7 +201,7 @@ const Lobbies = ({ socket }) => {
               })}
             </ul>
           </div>
-          {/* <button onClick={handleStartGame}>Start game</button> */}
+          <button onClick={startGame}>Start game</button>
           {/* Chat :) */}
           <div className="lobby__chat chat">
             <h3 className="chat__title">Lobby chat</h3>
