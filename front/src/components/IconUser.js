@@ -63,7 +63,7 @@ function IconUser() {
           className="button"
           onClick={handleButtonClick}
         >
-          <img src={avatarURL} height="50" width="50"></img>
+          <img className="button__image" src={avatarURL} height="50" width="50"></img>
         </button>
         {state && (
           <div className="dropdown">

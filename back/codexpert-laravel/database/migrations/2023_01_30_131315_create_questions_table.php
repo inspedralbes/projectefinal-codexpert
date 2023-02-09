@@ -15,9 +15,16 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
+
             $table->string('statement');
+            
+            $table->string('userExpectedInput');
             $table->string('userExpectedOutput');
+
+            $table->string('testInput1');
             $table->string('testOutput1');
+
+            $table->string('testInput2');
             $table->string('testOutput2');
             $table->timestamps();
         });
