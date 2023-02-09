@@ -2,13 +2,18 @@ import React, { useEffect, useState } from "react";
 import routeFetch from "../index";
 import '../avatarMaker.css';
 import { CirclePicker } from "react-color";
+import { useNavigate } from "react-router-dom"; //Rutas
+import Cookies from 'universal-cookie';
 
 
 function AvatarMaker() {
+  const cookies = new Cookies();
+  const navigate = useNavigate();
   let urlStr = "";
   const [optionCopy, setOptionCopy] = useState("");
   const [save, setSave] = useState(0);
   const [avatar, setAvatar] = useState("");
+
   const [menu, setMenu] = useState({
     background: true,
     cloth: false,
@@ -54,9 +59,12 @@ function AvatarMaker() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = new FormData()
+      token.append("token", cookies.get('token'))
       await fetch(routeFetch + "/index.php/getAvatar", {
         method: "POST",
         mode: "cors",
+        body: token,
         credentials: "include",
       })
         .then((response) => response.json())
@@ -65,6 +73,8 @@ function AvatarMaker() {
           //urlStr = "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
           if (urlStr !== null) {
             getAvatar(urlStr);
+          } else {
+            navigate("/login");
           }
         });
     };
@@ -187,6 +197,7 @@ function AvatarMaker() {
     if (save > 0) {
       const sendAvatar = new FormData();
       sendAvatar.append("newAvatar", avatar);
+      sendAvatar.append("token", cookies.get('token'))
       const fetchData = async () => {
         await fetch(routeFetch + "/index.php/setAvatar", {
           method: "POST",
