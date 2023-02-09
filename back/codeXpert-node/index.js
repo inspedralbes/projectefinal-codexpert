@@ -10,6 +10,7 @@ const server = http.createServer(app);
 const axios = require("axios");
 
 var lobbies = [];
+const maxMembersOnLobby = 4;
 var sesiones = [];
 // ================= SOCKET ROOMS ================
 
@@ -57,11 +58,11 @@ app.use(
   })
 );
 
-app.post("/sendToken", (req, res) => {
-  var user = {};
-  // ================= FETCH TO BACK WITH AXIOS ================
-  let token = req.cookies.token;
-});
+// app.post("/sendToken", (req, res) => {
+//   var user = {};
+//   // ================= FETCH TO BACK WITH AXIOS ================
+//   let token = req.cookies.token;
+// });
 
 socketIO.on("connection", (socket) => {
   console.log("CONECTADO");
@@ -89,11 +90,8 @@ socketIO.on("connection", (socket) => {
         };
         sesiones.push(user);
 
-        socket.data.id = response.data.id;
+        socket.data.userId = response.data.id;
         socket.data.name = response.data.name;
-
-        // console.log(socket.data.id);
-        // console.log(socket.data.name);
       })
       .catch(function (error) {
         console.log(error);
@@ -128,12 +126,16 @@ socketIO.on("connection", (socket) => {
   socket.on("join room", (data) => {
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == data.lobby_name) {
-        // console.log(lobby.members.length);
-        // console.log(lobby.members.length());
-        lobby.members.push({
-          nom: socket.data.name,
-          rank: data.rank,
-        });
+        if (lobby.members.length == maxMembersOnLobby) {
+          socketIO.to(`${socketId}`).emit("LOBBY_FULL_ERROR", {
+            message: "The selected lobby is full",
+          });
+        } else {
+          lobby.members.push({
+            nom: socket.data.name,
+            rank: data.rank,
+          });
+        }
       }
     });
     socket.join(data.lobby_name);
@@ -151,7 +153,7 @@ socketIO.on("connection", (socket) => {
     lobbies.forEach((element) => {
       if (element.lobby_name == data.room) {
         element.messages.push(
-          socket.data.id + " " + socket.data.name + ": " + data.message
+          socket.data.userId + " " + socket.data.name + ": " + data.message
         );
       }
     });
