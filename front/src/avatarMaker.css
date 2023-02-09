@@ -1,22 +1,65 @@
-.avatar__img {
-    width: 300px;
-    height: 300px;
-    float: left;
-}
-
 .Avatar {
-    margin: 5% 5%;
-    background-color: rgb(255, 255, 255);
-    display: block;
-    padding: 20px;
-    height: max-content;
+    background-color: #ffffff;
+    padding: 30px;
+    margin: 5vh auto;
+    width: 90%;
+    max-height: max-content;
+    min-height: 85vh;
 }
 
-/* ======================================Color Picker============================================================= */
-
-.CirclePicker--overflow {
-    height: 400px;
-    overflow: auto;
+.avatar__left {
+    background-color: #ffcafb;
+    float: left;
     padding: 30px;
+}
+
+.avatar__img {
+    background-color: burlywood;
+    height: 300px;
+    width: 300px;
+    margin-bottom: 30px;
+}
+
+.avatar__colorPicker {
+    position: absolute;
+    background-color: #ffffff;
+    width: 300px;
+    overflow: auto;
+    padding: 15px;
     width: fit-content;
+    height: 50vh;
+}
+
+.avatar__right {
+    background-color: rgb(255, 255, 255);
+    float: right;
+    padding: 30px;
+    width: 70%;
+    height: 90%;
+}
+
+.avatar__menu {
+    background-color: brown;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.avatar__options {
+    background-color: rgb(255, 255, 255);
+    padding: 30px;
+    height: 50vh;
+    width: 70%;
+    float: right;
+    overflow: auto;
+
+}
+
+.avatar__optionsButton {
+    margin: 5px;
+}
+
+/* =============================================================Color Picker============================================================= */
+
+.avatar__save {
+    text-align: center;
 }
