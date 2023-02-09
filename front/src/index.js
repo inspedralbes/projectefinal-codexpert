@@ -16,7 +16,7 @@ import socketIO from "socket.io-client";
 import Error404 from "./pages/404"
 // console.log("BEFORE CONNECT");
 
-var socket = socketIO("ws://192.168.220.28:4000", {
+var socket = socketIO("ws://localhost:4000", {
   withCredentials: true,
   cors: {
     origin: "*",
