@@ -79,7 +79,7 @@ socketIO.on("connection", (socket) => {
     let token = data.token;
 
     axios
-      .post("http://localhost:8000/index.php/getUserInfo", {
+      .post("http://127.0.0.1:8000/index.php/getUserInfo", {
         token: token,
       })
       .then(function (response) {
@@ -88,6 +88,7 @@ socketIO.on("connection", (socket) => {
           userId: response.data.id,
           userName: response.data.name,
         };
+        console.log(user);
         sesiones.push(user);
 
         socket.data.userId = response.data.id;
