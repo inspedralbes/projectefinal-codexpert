@@ -21,11 +21,11 @@ return new class extends Migration
             $table->string('userExpectedInput');
             $table->string('userExpectedOutput');
 
-            $table->string('testInput1');
-            $table->string('testOutput1');
+            $table->string('testInput1') -> nullable();
+            $table->string('testOutput1') -> nullable();
 
-            $table->string('testInput2');
-            $table->string('testOutput2');
+            $table->string('testInput2') -> nullable();
+            $table->string('testOutput2') -> nullable();
             $table->timestamps();
         });
     }
