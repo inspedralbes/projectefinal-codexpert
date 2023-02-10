@@ -194,12 +194,8 @@ socketIO.on("connection", (socket) => {
             socketIO.to(socket.data.current_lobby).emit("game_started");
             socketIO.to(socket.data.current_lobby).emit("game_data", {
               statement: lobby.game_data.question.statement,
-              input: lobby.game_data.question.input,
-              expectedOutput: lobby.game_data.question.expectedOutput,
-              testInput1: response.data.testInput1,
-              testOutput1: response.data.testOutput1,
-              testInput2: response.data.testInput2,
-              testOutput2: response.data.testOutput2,
+              inputs: lobby.game_data.question.inputs,
+              output: lobby.game_data.question.outputs[0],
             });
           }
         });
@@ -233,7 +229,7 @@ socketIO.on("connection", (socket) => {
         idQuestion: socket.data.idQuestion,
         idGame: socket.data.game_data.idGame,
         idUser: socket.data.userId,
-        evalRes: data.result,
+        evalRes: data.resultsEval,
       })
       .then(function (response) {
         console.log(response);
