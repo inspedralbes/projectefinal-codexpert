@@ -1,17 +1,43 @@
 import "../normalize.css";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Cookies from "universal-cookie";
+import routes from "../index";
 
 function App() {
+  const cookies = new Cookies();
+  const [login, setLogin] = useState(false);
+
+  useEffect(() => {
+    const token = new FormData();
+    token.append("token", cookies.get('token'))
+    fetch(routes.fetchLaravel + "/index.php/isUserLogged", {
+      method: "POST",
+      mode: "cors",
+      body: token,
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data) {
+          setLogin(true)
+        }
+      });
+  }, [])
   return (
     <div>
       <div>
         <h1>Landing Page</h1>
-        <Link to="/login">
-          <button>Get Started</button>
-        </Link>
-        {/* <Link to="/lobbies">
-          <button>Lobbies</button>
-        </Link> */}
+        {!login && (
+          <Link to="/login">
+            <button>Get Started</button>
+          </Link>
+        )}
+        {login && (
+          <Link to="/lobbies">
+            <button>Lobbies</button>
+          </Link>
+        )}
       </div>
     </div>
   );
