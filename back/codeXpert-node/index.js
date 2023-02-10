@@ -203,6 +203,8 @@ socketIO.on("connection", (socket) => {
       .catch(function (error) {
         console.log(error);
       });
+
+      // llamada a laravel que conecte el usuario con game, mandar ID USER e ID GAME
   });
 
   async function setGameData(game_data, room) {
