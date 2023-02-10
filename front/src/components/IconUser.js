@@ -16,10 +16,6 @@ function IconUser() {
     setState(!state)
   };
 
-  const handleClickOutside = () => {
-    setState(!state)
-  };
-
   useEffect(() => {
     const token = new FormData();
     token.append("token", cookies.get("token"));

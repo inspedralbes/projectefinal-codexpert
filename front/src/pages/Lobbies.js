@@ -5,7 +5,6 @@ import Chat from "../components/Chat";
 import IconUser from "../components/IconUser";
 import { useNavigate } from "react-router-dom";
 
-
 // socket.io
 
 const Lobbies = ({ socket }) => {
@@ -24,6 +23,7 @@ const Lobbies = ({ socket }) => {
     socket.emit("leave lobby", lobbyName);
     setJoined(false);
     setLobbyName("");
+    setLobbyList([]);
     setMessages([]);
   };
 
@@ -60,6 +60,10 @@ const Lobbies = ({ socket }) => {
     }
   };
 
+  function startGame() {
+    socket.emit("start_game");
+  }
+
   useEffect(() => {
     if (firstTime) {
       socket.emit("hello", "gimme gimme");
@@ -80,6 +84,10 @@ const Lobbies = ({ socket }) => {
 
     socket.on("lobby-message", function (data) {
       setMessages(data.messages);
+    });
+
+    socket.on("game_started", () => {
+      navigate("/game");
     });
   }, []);
 
@@ -184,16 +192,22 @@ const Lobbies = ({ socket }) => {
           <div className="lobby__connectedUsers">
             <h1 className="connectedUsers_title">Connected users</h1>
             <ul id="userList" className="connectedUsers__userList userList">
-              {userList.map((element, index) => {
+              {userList.map((user, index) => {
                 return (
-                  <li className="userList__item" key={index}>
-                    {element}
+                  <li className="userList__item item" key={index}>
+                    <img
+                      src={user.avatar}
+                      width="50px"
+                      className="item__image"
+                      alt={user.name + "'s avatar"}
+                    ></img>
+                    {user.name}
                   </li>
                 );
               })}
             </ul>
           </div>
-          {/* <button onClick={handleStartGame}>Start game</button> */}
+          <button onClick={startGame}>Start game</button>
           {/* Chat :) */}
           <div className="lobby__chat chat">
             <h3 className="chat__title">Lobby chat</h3>

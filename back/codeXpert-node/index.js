@@ -9,8 +9,10 @@ require("dotenv").config();
 const server = http.createServer(app);
 const axios = require("axios");
 
-var lobbies = [];
 const maxMembersOnLobby = 4;
+const laravelRoute = "http://localhost:8000/";
+
+var lobbies = [];
 var sesiones = [];
 // ================= SOCKET ROOMS ================
 
@@ -79,7 +81,7 @@ socketIO.on("connection", (socket) => {
     let token = data.token;
 
     axios
-      .post("http://127.0.0.1:8000/index.php/getUserInfo", {
+      .post(laravelRoute + "index.php/getUserInfo", {
         token: token,
       })
       .then(function (response) {
@@ -93,13 +95,18 @@ socketIO.on("connection", (socket) => {
 
         socket.data.userId = response.data.id;
         socket.data.name = response.data.name;
+        socket.data.avatar = response.data.avatar;
       })
       .catch(function (error) {
         console.log(error);
       });
   });
 
-  socket.emit("lobbies list", lobbies);
+  socket.on("hello", (m) => {
+    sendLobbyList();
+  });
+
+  sendLobbyList();
 
   socket.on("new lobby", (lobby) => {
     let existeix = false;
@@ -117,10 +124,6 @@ socketIO.on("connection", (socket) => {
       });
     }
 
-    sendLobbyList();
-  });
-
-  socket.on("hello", (m) => {
     sendLobbyList();
   });
 
@@ -148,34 +151,40 @@ socketIO.on("connection", (socket) => {
     sendMessagesToLobby(data.lobby_name);
   });
 
+  socket.on("leave lobby", (roomName) => {
+    leaveLobby(socket);
+    sendUserList(roomName);
+    sendLobbyList();
+  });
+
   socket.on("chat message", (data) => {
     // console.log(data.message);
     // console.log(data.room);
     lobbies.forEach((element) => {
       if (element.lobby_name == data.room) {
-        element.messages.push(
-          socket.data.userId + " " + socket.data.name + ": " + data.message
-        );
+        element.messages.push(socket.data.name + ": " + data.message);
       }
     });
     sendMessagesToLobby(data.room);
     //
   });
 
-  function sendMessagesToLobby(lobby) {
-    lobbies.forEach((element) => {
-      if (element.lobby_name == lobby) {
-        socketIO.sockets.in(lobby).emit("lobby-message", {
-          messages: element.messages,
+  socket.on("start_game", () => {
+    axios
+      .get(laravelRoute + "index.php/startGame")
+      .then(function (response) {
+        // console.log(response);
+        lobbies.forEach((lobby) => {
+          if (lobby.lobby_name == socket.data.lobby_name) {
+            lobby.game_data = response.data;
+            socketIO.to(lobby.lobby_name).emit("game_started");
+            socket.data.gameId = response.data.gameId;
+          }
         });
-      }
-    });
-  }
-
-  socket.on("leave lobby", (roomName) => {
-    leaveLobby(socket);
-    sendUserList(roomName);
-    sendLobbyList();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   });
 
   socket.on("disconnect", () => {
@@ -199,6 +208,17 @@ async function leaveLobby(socket) {
   });
 
   socket.leave(socket.data.current_lobby);
+  sendLobbyList();
+}
+
+function sendMessagesToLobby(lobby) {
+  lobbies.forEach((element) => {
+    if (element.lobby_name == lobby) {
+      socketIO.sockets.in(lobby).emit("lobby-message", {
+        messages: element.messages,
+      });
+    }
+  });
 }
 
 async function sendLobbyList() {
@@ -212,43 +232,36 @@ async function sendUserList(room) {
 
   sockets.forEach((element) => {
     // console.log(socketIO.sockets.sockets.get(element.id).data.name);
-    list.push(socketIO.sockets.sockets.get(element.id).data.name);
+    list.push({
+      name: socketIO.sockets.sockets.get(element.id).data.name,
+      avatar: socketIO.sockets.sockets.get(element.id).data.avatar,
+    });
   });
 
   socketIO.to(room).emit("lobby user list", {
     list: list,
-    message: "lista en teoria",
+    message: "user list",
   });
 }
 
 // ==================== MY SQL ===================
 
-var mysql = require("mysql");
+// var mysql = require("mysql");
 
-var con = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_DATABASE,
-});
+// var con = mysql.createConnection({
+//   host: process.env.DB_HOST,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASS,
+//   database: process.env.DB_DATABASE,
+// });
 
-con.connect(function (err) {
-  if (err != null) {
-    console.log(err);
-  } else {
-    console.log("Connected to database!");
-  }
-});
-
-app.get("/getUsers", (req, res) => {
-  con.query("SELECT * FROM users", function (err, result, fields) {
-    var ret = {
-      result: result,
-    };
-
-    res.send(JSON.stringify(ret));
-  });
-});
+// con.connect(function (err) {
+//   if (err != null) {
+//     console.log(err);
+//   } else {
+//     console.log("Connected to database!");
+//   }
+// });
 
 // ================ LISTEN SERVER ================
 
