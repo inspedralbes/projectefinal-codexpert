@@ -6,13 +6,21 @@ import routes from "../index";
 import Chat from "../components/Chat";
 
 function Game({ socket }) {
-  const [messages, setMessages] = useState([]);
+  const [code, setCode] = useState("");
   const [msg, setMsg] = useState("");
-  const [qst, setQst] = useState({
-    // statement: "",
-    // input: "",
-    // expectedOutput: "",
-  });
+  const [qst, setQst] = useState({});
+  const [messages, setMessages] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (code != "") {
+      var resultEval = eval(code);
+      console.log(resultEval);
+      socket.emit("check_answer", {
+        result: resultEval,
+      });
+    }
+  };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -53,7 +61,7 @@ function Game({ socket }) {
           <h1>{qst.expectedOutput}</h1>
         </div>
       </div>
-      <div className="editor">
+      <form className="editor" onSubmit={handleSubmit}>
         <div className="input-header">
           <h1>Input</h1>
         </div>
@@ -85,7 +93,11 @@ function Game({ socket }) {
           <textarea
             className="input-strobe"
             type="text"
+            value={code}
             placeholder="Type in your code :)"
+            onChange={(e) => {
+              setCode(e.target.value);
+            }}
           ></textarea>
           <div></div>
           <div className="help">
@@ -97,9 +109,9 @@ function Game({ socket }) {
             */
           </div>
         </div>
-      </div>
 
-      <button className="game__submit">Submit</button>
+        <button className="game__submit">Submit</button>
+      </form>
       {/* Chat uwu */}
       {/* <div className="lobby__chat chat">
         <h3 className="chat__title">Game chat</h3>
