@@ -187,7 +187,7 @@ socketIO.on("connection", (socket) => {
 
             // console.log(socket.data.current_lobby);
             socket.data.idGame = response.data.idGame;
-            console.log(lobby);
+            // console.log(lobby);
             socketIO.to(socket.data.current_lobby).emit("game_started");
             socketIO.to(socket.data.current_lobby).emit("game_data", {
               statement: lobby.game_data.question.statement,

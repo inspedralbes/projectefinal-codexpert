@@ -47,10 +47,10 @@ function Game({ socket }) {
       </div>
       <div className="game--grid">
         <div className="game__expectedInput">
-          <h1>{qst.input.toString()}</h1>
+          <h1>{qst.input}</h1>
         </div>
         <div className="game__expectedOutput">
-          <h1>{qst.expectedOutput.toString()}</h1>
+          <h1>{qst.expectedOutput}</h1>
         </div>
       </div>
       <div className="editor">
