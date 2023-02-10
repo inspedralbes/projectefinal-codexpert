@@ -49,10 +49,15 @@ class GameController extends Controller
                 'idQuestion' => $getQuestions -> id,
                 'statement' => $getQuestions -> statement,
                 'input' => $getQuestions -> userExpectedInput,
-                'expectedOutput' => $getQuestions -> userExpectedOutput 
+                'expectedOutput' => $getQuestions -> userExpectedOutput, 
+                'testInput1' => $getQuestions -> testInput1, 
+                'testOutput1' => $getQuestions -> testOutput1, 
+                'testInput2' => $getQuestions -> testInput2, 
+                'testOutput2' => $getQuestions -> testOutput2                    
             ]
             ];
 
         return response() -> json($game);
     }
+    
 }

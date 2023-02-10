@@ -156,6 +156,7 @@ class AuthController extends Controller
 
         return response() -> json($returnUserId);
     }    
+
         public function getUserInfo(Request $request)
     {
         $returnUserId = null;
@@ -172,6 +173,20 @@ class AuthController extends Controller
         }
 
         return response() -> json($userFound);
+    }    
+
+        public function isUserLogged(Request $request)
+    {
+        $logged = false;
+        
+        [$id, $token] = explode('|', $request -> token, 2);
+        $accessToken = PersonalAccessToken::find($id);
+
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            $logged = true;
+        }
+
+        return response() -> json($logged);
     }    
 
 }
