@@ -59,5 +59,20 @@ class GameController extends Controller
 
         return response() -> json($game);
     }
+
+    public function checkAnswer(Request $request)
+    {
+        $answerValidation = [];
+        
+        $request -> idQuestion;
+        $request -> idGame;
+        $request -> idUser;
+        $request -> evalRes;
+        
+        $question = Question::find($request -> idQuestion) -> first();
+        $question -> userExpectedOutput = serialize(array( 3, 5, 7 ));
+
+        return response() -> json($answerValidation);
+    }    
     
 }
