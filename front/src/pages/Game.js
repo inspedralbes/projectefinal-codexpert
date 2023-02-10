@@ -18,7 +18,11 @@ function Game({ socket }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (code != "") {
-      var resultEval = eval(code);
+      let x = qst.input;
+      // let x = qst.testInput1;
+      // console.log(code);
+      // console.log(qst.input);
+      let resultEval = eval(code);
       console.log(resultEval);
       socket.emit("check_answer", {
         result: resultEval,
@@ -70,6 +74,7 @@ function Game({ socket }) {
           <h1>Input</h1>
         </div>
         <div className="file-window js-view">
+          let x = [{qst.input.toString()}]
           <div className="line-numbers">
             1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />
             10
