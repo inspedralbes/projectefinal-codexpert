@@ -8,16 +8,33 @@ import Chat from "../components/Chat";
 function Game({ socket }) {
   const [code, setCode] = useState("");
   const [msg, setMsg] = useState("");
-  const [qst, setQst] = useState({});
+  const [qst, setQst] = useState({
+    statement: "",
+    inputs: [""],
+    output: "",
+  });
   const [messages, setMessages] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (code != "") {
-      var resultEval = eval(code);
-      console.log(resultEval);
+      let resultsEval = [];
+      qst.inputs.forEach((inp) => {
+        let x = inp;
+
+        let res = eval(code);
+
+        resultsEval.push(res);
+      });
+
+      console.log(qst.testInput1);
+      // let x = qst.testInput1;
+      console.log(code);
+      // console.log(qst.input);
+
+      console.log(resultsEval);
       socket.emit("check_answer", {
-        result: resultEval,
+        resultsEval: resultsEval,
       });
     }
   };
@@ -55,10 +72,10 @@ function Game({ socket }) {
       </div>
       <div className="game--grid">
         <div className="game__expectedInput">
-          <h1>{qst.input}</h1>
+          <h1>{qst.inputs[0].toString()}</h1>
         </div>
         <div className="game__expectedOutput">
-          <h1>{qst.expectedOutput}</h1>
+          <h1>{qst.output.toString()}</h1>
         </div>
       </div>
       <form className="editor" onSubmit={handleSubmit}>
@@ -66,6 +83,7 @@ function Game({ socket }) {
           <h1>Input</h1>
         </div>
         <div className="file-window js-view">
+          let x = [{qst.inputs[0].toString()}]
           <div className="line-numbers">
             1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />
             10
