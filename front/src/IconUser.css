@@ -6,10 +6,12 @@
 }
 
 .button {
+    text-align: left;
     padding: 0;
     border: 0;
     cursor: pointer;
     background-color: transparent;
+    width: 100%;
 }
 
 .button__image {
