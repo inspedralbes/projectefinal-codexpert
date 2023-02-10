@@ -56,7 +56,7 @@ class GameController extends Controller
                 'testOutput2' => $getQuestions -> testOutput2                    
             ]
             ];
-
+// hola alessia
         return response() -> json($game);
     }
 

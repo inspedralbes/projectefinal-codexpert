@@ -61,10 +61,6 @@ function Game({ socket }) {
     });
   }, []);
 
-  useEffect(() => {
-    console.log(qst);
-  }, [qst]);
-
   return (
     <div className="game">
       <div className="game__statement">
