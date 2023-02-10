@@ -170,6 +170,12 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("start_game", () => {
+    lobbies.forEach((lobby) => {
+      console.log(socket.data.lobby_name);
+      if (lobby.lobby_name == socket.data.lobby_name) {
+        socketIO.to(lobby.lobby_name).emit("game_started");
+      }
+    });
     axios
       .get(laravelRoute + "index.php/startGame")
       .then(function (response) {
@@ -177,7 +183,8 @@ socketIO.on("connection", (socket) => {
         lobbies.forEach((lobby) => {
           if (lobby.lobby_name == socket.data.lobby_name) {
             lobby.game_data = response.data;
-            socketIO.to(lobby.lobby_name).emit("game_started");
+            // socketIO.to(lobby.lobby_name).emit("game_started");
+            // console.log(lobby.lobby_name);
             socket.data.gameId = response.data.gameId;
           }
         });
