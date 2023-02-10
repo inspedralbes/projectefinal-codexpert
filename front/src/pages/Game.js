@@ -7,6 +7,7 @@ import Chat from "../components/Chat";
 
 function Game({ socket }) {
   const [messages, setMessages] = useState([]);
+  const [colorTema, setColorTema] = useState(false);
   const [msg, setMsg] = useState("");
 
   const handleSendMessage = (e) => {
@@ -24,8 +25,27 @@ function Game({ socket }) {
     });
   }, []);
 
+  useEffect(() => {
+
+    if (colorTema) {
+      document.getElementById('file-window').style.backgroundColor = '#333';
+      document.getElementById('line-numbers').style.backgroundColor = '#222';
+      document.getElementById('file-window').style.color = '#999';
+      document.getElementById('textarea').style.color = '#999';
+      document.getElementById('line-numbers').style.transition = 'all 0.3s';
+      document.getElementById('file-window').style.transition = 'all 0.3s';
+
+    } else {
+      document.getElementById('file-window').style.backgroundColor = '#DDD';
+      document.getElementById('line-numbers').style.backgroundColor = '#CCC';
+      document.getElementById('file-window').style.color = '#666';
+      document.getElementById('textarea').style.color = '#666';
+
+    }
+  }, [colorTema])
+
   return (
-    <div className="game">
+    <div id="game" className="game">
       <div className="game__statement">
         <h1 className="game__statementTitle">statement</h1>
       </div>
@@ -37,23 +57,27 @@ function Game({ socket }) {
           <h1>expectedOutput</h1>
         </div>
       </div>
-      <div class="editor">
+      <div className="editor">
 
-        <div class="input-header">
+        <div className="input-header">
           <h1>Input</h1>
-        </div>
-        <div class="file-window js-view">
-          <div class="line-numbers">
-            1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14<br />15<br />16<br />17<br />18<br />19<br />20
+          <div className="toggle">
+            <input onClick={() => setColorTema(!colorTema)} type="checkbox" />
+            <label></label>
           </div>
-          <textarea class="input-strobe" type="text" placeholder="Type in your code :)"></textarea>
+        </div>
+        <div id="file-window" className="file-window js-view">
+          <div id="line-numbers" className="line-numbers">
+            1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14
+          </div>
+          <textarea id="textarea" className="input-strobe" type="text" placeholder="Type in your code :)"></textarea>
           <div>
           </div>
-          <div class="help">
+          <div className="help">
             <br />
-                /* <br />
-            This is your code input.<br />
-            You can, we trust you!! <br />*/
+            <br />
+            // This is your code input<br />
+            // You can, we trust you!! <br />
           </div>
         </div>
       </div>
