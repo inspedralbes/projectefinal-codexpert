@@ -39,7 +39,7 @@ root.render(
           <Route index element={<LandingPage />} />
           <Route path="login" element={<Login socket={socket} />} />
           <Route path="register" element={<Register socket={socket} />} />
-          <Route path="game" element={<Game />} />
+          <Route path="game" element={<Game socket={socket} />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="avatarMaker" element={<AvatarMaker />} />

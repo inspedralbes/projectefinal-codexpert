@@ -1,0 +1,38 @@
+.game {
+    background-color: #fff;
+    margin: auto;
+    font-size: 20px;
+    text-align: center;
+    padding: 30px;
+    width: 90%;
+    color: #252525;
+}
+
+.game--grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    column-gap: 10px;
+}
+
+.game__statement {
+    background-color: #252525;
+    color: white;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.game__Wrapperinput input {
+    height: 100px;
+    background-color: #252525;
+    color: white;
+}
+
+.game__expectedOutput,
+.game__expectedInput,
+.game__Wrapperinput {
+    padding: 10px;
+    background-color: #6b6b6b;
+    color: white;
+    margin: 15px;
+}

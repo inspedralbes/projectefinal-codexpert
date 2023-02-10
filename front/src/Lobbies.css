@@ -175,7 +175,7 @@ body {
 }
 
 .lobby__connectedUsers {
-    color:white
+    color: white
 }
 
 .chat__body {
@@ -189,7 +189,8 @@ body {
     color: white
 }
 
-.lobby__chat {
+.lobby__chat,
+.game__chat {
     bottom: 0;
 }
 
