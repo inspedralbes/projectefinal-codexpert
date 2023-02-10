@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('game', function (Blueprint $table) {
+        Schema::create('games', function (Blueprint $table) {
             $table->id();
 
-            $table->bigInteger('winner_id')->unsigned()->index();
+            $table->bigInteger('winner_id')->unsigned()->index()->nullable();
             $table->foreign('winner_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();

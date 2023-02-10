@@ -1,6 +1,5 @@
 import "../normalize.css";
 import { Link } from "react-router-dom";
-import routes from "../index";
 
 function App() {
   return (
@@ -10,9 +9,9 @@ function App() {
         <Link to="/login">
           <button>Get Started</button>
         </Link>
-        <Link to="/lobbies">
+        {/* <Link to="/lobbies">
           <button>Lobbies</button>
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

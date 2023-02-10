@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('game_id')->unsigned()->index();
             $table->bigInteger('question_id')->unsigned()->index();
             
-            $table->foreign('game_id')->references('id')->on('game')->onDelete('cascade');
+            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
             
             $table->timestamps();
