@@ -9,9 +9,9 @@ function App() {
         <Link to="/login">
           <button>Get Started</button>
         </Link>
-        <Link to="/lobbies">
+        {/* <Link to="/lobbies">
           <button>Lobbies</button>
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
