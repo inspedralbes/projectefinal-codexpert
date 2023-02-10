@@ -6,13 +6,38 @@ import routes from "../index";
 import Chat from "../components/Chat";
 
 function Game({ socket }) {
-  const [messages, setMessages] = useState([]);
+  const [code, setCode] = useState("");
   const [msg, setMsg] = useState("");
   const [qst, setQst] = useState({
-    // statement: "",
-    // input: "",
-    // expectedOutput: "",
+    statement: "",
+    inputs: [""],
+    output: "",
   });
+  const [messages, setMessages] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (code != "") {
+      let resultsEval = [];
+      qst.inputs.forEach((inp) => {
+        let x = inp;
+
+        let res = eval(code);
+
+        resultsEval.push(res);
+      });
+
+      console.log(qst.testInput1);
+      // let x = qst.testInput1;
+      console.log(code);
+      // console.log(qst.input);
+
+      console.log(resultsEval);
+      socket.emit("check_answer", {
+        resultsEval: resultsEval,
+      });
+    }
+  };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -47,17 +72,18 @@ function Game({ socket }) {
       </div>
       <div className="game--grid">
         <div className="game__expectedInput">
-          <h1>{qst.input}</h1>
+          <h1>{qst.inputs[0].toString()}</h1>
         </div>
         <div className="game__expectedOutput">
-          <h1>{qst.expectedOutput}</h1>
+          <h1>{qst.output.toString()}</h1>
         </div>
       </div>
-      <div className="editor">
+      <form className="editor" onSubmit={handleSubmit}>
         <div className="input-header">
           <h1>Input</h1>
         </div>
         <div className="file-window js-view">
+          let x = [{qst.inputs[0].toString()}]
           <div className="line-numbers">
             1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />
             10
@@ -85,7 +111,11 @@ function Game({ socket }) {
           <textarea
             className="input-strobe"
             type="text"
+            value={code}
             placeholder="Type in your code :)"
+            onChange={(e) => {
+              setCode(e.target.value);
+            }}
           ></textarea>
           <div></div>
           <div className="help">
@@ -97,9 +127,9 @@ function Game({ socket }) {
             */
           </div>
         </div>
-      </div>
 
-      <button className="game__submit">Submit</button>
+        <button className="game__submit">Submit</button>
+      </form>
       {/* Chat uwu */}
       {/* <div className="lobby__chat chat">
         <h3 className="chat__title">Game chat</h3>
