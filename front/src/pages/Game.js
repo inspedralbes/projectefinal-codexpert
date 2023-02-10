@@ -70,13 +70,16 @@ function Game({ socket }) {
   return (
     <div id="game" className="game">
       <div className="game__statement">
+        <h2>Statement:</h2>
         <h1 className="game__statementTitle">{qst.statement}</h1>
       </div>
       <div className="game--grid">
         <div className="game__expectedInput">
+          <h2>Our input:</h2>
           <h1>{qst.input}</h1>
         </div>
         <div className="game__expectedOutput">
+          <h2>Expected output:</h2>
           <h1>{qst.expectedOutput}</h1>
         </div>
       </div>
@@ -102,8 +105,9 @@ function Game({ socket }) {
             // You can, we trust you!! <br />
           </div>
         </div >
-
-        <button className="game__submit">Submit</button>
+        <div className="">
+          <button className="game__submit">Submit</button>
+        </div>
       </form>
       {/* Chat uwu */}
       {/* <div className="lobby__chat chat">
