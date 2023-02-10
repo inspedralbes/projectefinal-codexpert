@@ -8,7 +8,11 @@ import Chat from "../components/Chat";
 function Game({ socket }) {
   const [code, setCode] = useState("");
   const [msg, setMsg] = useState("");
-  const [qst, setQst] = useState({});
+  const [qst, setQst] = useState({
+    statement: "",
+    input: "",
+    expectedOutput: "",
+  });
   const [messages, setMessages] = useState("");
 
   const handleSubmit = (e) => {
@@ -55,10 +59,10 @@ function Game({ socket }) {
       </div>
       <div className="game--grid">
         <div className="game__expectedInput">
-          <h1>{qst.input}</h1>
+          <h1>{qst.input.toString()}</h1>
         </div>
         <div className="game__expectedOutput">
-          <h1>{qst.expectedOutput}</h1>
+          <h1>{qst.expectedOutput.toString()}</h1>
         </div>
       </div>
       <form className="editor" onSubmit={handleSubmit}>
