@@ -222,7 +222,7 @@ socketIO.on("connection", (socket) => {
       "idQuestion: " + socket.data.idQuestion,
       "idGame: " + socket.data.game_data.idGame,
       "idUser: " + socket.data.userId,
-      "evalRes: " + data.result
+      "evalRes: " + data.resultsEval
     );
     axios
       .post(laravelRoute + "index.php/checkAnswer", {
