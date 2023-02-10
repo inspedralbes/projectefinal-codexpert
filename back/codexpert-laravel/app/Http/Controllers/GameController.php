@@ -19,7 +19,7 @@ class GameController extends Controller
     public function getQuestions(Request $request)
     {
         $question = Question::all()->random(1)->first();
-        // $question = new Question;
+        //$question = new Question;
         // $question -> statement = "Sort the following array";
         // $question -> userExpectedInput = serialize(array( 3, 7, 5 ));
         // $question -> userExpectedOutput = serialize(array( 3, 5, 7 ));

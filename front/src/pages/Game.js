@@ -8,12 +8,20 @@ import Chat from "../components/Chat";
 function Game({ socket }) {
   const [messages, setMessages] = useState([]);
   const [colorTema, setColorTema] = useState(false);
+  const [code, setCode] = useState("");
   const [msg, setMsg] = useState("");
-  const [qst, setQst] = useState({
-    // statement: "",
-    // input: "",
-    // expectedOutput: "",
-  });
+  const [qst, setQst] = useState({});
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (code != "") {
+      var resultEval = eval(code);
+      console.log(resultEval);
+      socket.emit("check_answer", {
+        result: resultEval,
+      });
+    }
+  };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -72,7 +80,7 @@ function Game({ socket }) {
           <h1>{qst.expectedOutput}</h1>
         </div>
       </div>
-      <div className="editor">
+      <form className="editor" onSubmit={handleSubmit}>
         <div className="input-header">
           <h1>Input</h1>
           <div className="toggle">
@@ -84,7 +92,7 @@ function Game({ socket }) {
           <div id="line-numbers" className="line-numbers">
             1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14
           </div>
-          <textarea id="textarea" className="input-strobe" type="text" placeholder="Type in your code :)"></textarea>
+          <textarea id="textarea" className="input-strobe" type="text" placeholder="Type in your code :) " value={code} onChange={(e) => { setCode(e.target.value); }}></textarea>
           <div>
           </div>
           <div className="help">
@@ -93,9 +101,10 @@ function Game({ socket }) {
             // This is your code input<br />
             // You can, we trust you!! <br />
           </div>
-        </div>
-      </div>
-      <button className="game__submit">Submit</button>
+        </div >
+
+        <button className="game__submit">Submit</button>
+      </form>
       {/* Chat uwu */}
       {/* <div className="lobby__chat chat">
         <h3 className="chat__title">Game chat</h3>
@@ -113,7 +122,7 @@ function Game({ socket }) {
         </form>
       </div> */}
       {/* fin del chat uwu */}
-    </div>
+    </div >
   );
 }
 

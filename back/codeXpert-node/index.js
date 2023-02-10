@@ -187,6 +187,9 @@ socketIO.on("connection", (socket) => {
 
             // console.log(socket.data.current_lobby);
             socket.data.idGame = response.data.idGame;
+            setGameData(response.data, socket.data.current_lobby);
+            // setQuestionAtAll(0);
+            // setHealthAll(3);
             // console.log(lobby);
             socketIO.to(socket.data.current_lobby).emit("game_started");
             socketIO.to(socket.data.current_lobby).emit("game_data", {
@@ -196,6 +199,40 @@ socketIO.on("connection", (socket) => {
             });
           }
         });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
+
+  async function setGameData(game_data, room) {
+    const sockets = await socketIO.in(room).fetchSockets();
+
+    sockets.forEach((element) => {
+      socketIO.sockets.sockets.get(element.id).data.game_data = game_data;
+      socketIO.sockets.sockets.get(element.id).data.idQuestion =
+        game_data.question.idQuestion;
+      socketIO.sockets.sockets.get(element.id).data.question_at = 0;
+      socketIO.sockets.sockets.get(element.id).data.hearts_remaining = 3;
+    });
+  }
+
+  socket.on("check_answer", (data) => {
+    console.log(
+      "idQuestion: " + socket.data.idQuestion,
+      "idGame: " + socket.data.game_data.idGame,
+      "idUser: " + socket.data.userId,
+      "evalRes: " + data.result
+    );
+    axios
+      .post(laravelRoute + "index.php/checkAnswer", {
+        idQuestion: socket.data.idQuestion,
+        idGame: socket.data.game_data.idGame,
+        idUser: socket.data.userId,
+        evalRes: data.result,
+      })
+      .then(function (response) {
+        console.log(response);
       })
       .catch(function (error) {
         console.log(error);
