@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Game;
 use App\Models\Question;
+use App\Models\Game_question;
+use App\Models\User_game;
 
 class GameController extends Controller
 {
@@ -31,10 +33,26 @@ class GameController extends Controller
         return ($question);
     }
 
-public function startGame(Request $request)
+    public function addQuestionsToGame($newGame, $getQuestions)
+    {
+        // for ($i = 0; count($getQuestions); $i++) {
+        //     $gameQuestion = new Game_question;
+        //     $gameQuestion -> game_id = $newGame->id;
+        //     $gameQuestion -> question_id = $getQuestions->id;
+        //     $gameQuestion -> save();
+        // }
+        $gameQuestion = new Game_question;
+        $gameQuestion -> game_id = $newGame->id;
+        $gameQuestion -> question_id = $getQuestions->id;
+        $gameQuestion -> save();
+    }
+    
+    public function startGame(Request $request)
     {
         $newGame = $this->createNewGame($request);
         $getQuestions = $this->getQuestions($request);
+        $this->addQuestionsToGame($newGame, $getQuestions);
+
         $getQuestions -> userExpectedInput = unserialize($getQuestions -> userExpectedInput);
         $getQuestions -> userExpectedOutput = unserialize($getQuestions -> userExpectedOutput);
         $getQuestions -> testInput1 = unserialize($getQuestions -> testInput1);
@@ -57,7 +75,11 @@ public function startGame(Request $request)
 
     public function checkAnswer(Request $request)
     {
-        $answerValidation = [];
+        $answerValidation = (object) 
+            ['correct' => false,
+            'winner' => null,
+            'finished' => false
+            ];
 
         $request -> idQuestion;
         $request -> idGame;
@@ -65,9 +87,11 @@ public function startGame(Request $request)
         $request -> evalRes;
         
         $question = Question::find($request -> idQuestion) -> first();
-        $question -> userExpectedOutput;
-        $question -> testInput1;
-        $question -> testInput2;
+
+        if ($question -> userExpectedOutput == $request -> evalRes [0] && $question -> testInput1 == $request -> evalRes [1] && $question -> testInput2 == $request -> evalRes [2]) {
+            $answerValidation -> correct = true;
+        }
+
 
         return response() -> json($answerValidation);
     }    
