@@ -5,7 +5,6 @@ import Chat from "../components/Chat";
 import IconUser from "../components/IconUser";
 import { useNavigate } from "react-router-dom";
 
-
 // socket.io
 
 const Lobbies = ({ socket }) => {
@@ -24,6 +23,7 @@ const Lobbies = ({ socket }) => {
     socket.emit("leave lobby", lobbyName);
     setJoined(false);
     setLobbyName("");
+    setLobbyList([]);
     setMessages([]);
   };
 
@@ -61,7 +61,7 @@ const Lobbies = ({ socket }) => {
   };
 
   function startGame() {
-    socket.emit("start_game")
+    socket.emit("start_game");
   }
 
   useEffect(() => {
@@ -85,10 +85,10 @@ const Lobbies = ({ socket }) => {
     socket.on("lobby-message", function (data) {
       setMessages(data.messages);
     });
-    
+
     socket.on("game_started", () => {
-      navigate("/game")
-    })
+      navigate("/game");
+    });
   }, []);
 
   return (
@@ -195,7 +195,13 @@ const Lobbies = ({ socket }) => {
               {userList.map((user, index) => {
                 return (
                   <li className="userList__item item" key={index}>
-                    <img src={user.avatar} width="50px" className="item__image" alt={user.name + "'s avatar"}></img>{user.name}
+                    <img
+                      src={user.avatar}
+                      width="50px"
+                      className="item__image"
+                      alt={user.name + "'s avatar"}
+                    ></img>
+                    {user.name}
                   </li>
                 );
               })}
