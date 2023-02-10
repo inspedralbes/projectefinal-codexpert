@@ -31,7 +31,7 @@ class GameController extends Controller
         return ($question);
     }
 
-    public function startGame(Request $request)
+public function startGame(Request $request)
     {
         $newGame = $this->createNewGame($request);
         $getQuestions = $this->getQuestions($request);
@@ -48,15 +48,10 @@ class GameController extends Controller
             'question' => (object) [
                 'idQuestion' => $getQuestions -> id,
                 'statement' => $getQuestions -> statement,
-                'input' => $getQuestions -> userExpectedInput,
-                'expectedOutput' => $getQuestions -> userExpectedOutput, 
-                'testInput1' => $getQuestions -> testInput1, 
-                'testOutput1' => $getQuestions -> testOutput1, 
-                'testInput2' => $getQuestions -> testInput2, 
-                'testOutput2' => $getQuestions -> testOutput2                    
+                'inputs' => [$getQuestions -> userExpectedInput, $getQuestions -> testInput1, $getQuestions -> testInput2],
+                'outputs' => [$getQuestions -> userExpectedOutput, $getQuestions -> testOutput1, $getQuestions -> testOutput2]
             ]
             ];
-// hola alessia
         return response() -> json($game);
     }
 
@@ -73,7 +68,7 @@ class GameController extends Controller
         $question -> userExpectedOutput;
         $question -> testInput1;
         $question -> testInput2;
-        
+
         return response() -> json($answerValidation);
     }    
     
