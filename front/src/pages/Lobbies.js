@@ -62,6 +62,7 @@ const Lobbies = ({ socket }) => {
 
   function startGame() {
     socket.emit("start_game");
+    navigate("/game");
   }
 
   useEffect(() => {
@@ -89,6 +90,7 @@ const Lobbies = ({ socket }) => {
     socket.on("game_started", () => {
       navigate("/game");
     });
+    
   }, []);
 
   return (

@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const axios = require("axios");
 
 const maxMembersOnLobby = 4;
-const laravelRoute = "http://localhost:8000/";
+const laravelRoute = "http://127.0.0.1:8000/";
 
 var lobbies = [];
 var sesiones = [];
@@ -170,15 +170,30 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("start_game", () => {
+    lobbies.forEach((lobby) => {
+      // console.log(socket.data.lobby_name);
+      if (lobby.lobby_name == socket.data.current_lobby) {
+        socketIO.to(lobby.lobby_name).emit("game_started");
+      }
+    });
     axios
       .get(laravelRoute + "index.php/startGame")
       .then(function (response) {
+        console.log(response.data);
         // console.log(response);
         lobbies.forEach((lobby) => {
-          if (lobby.lobby_name == socket.data.lobby_name) {
+          if (lobby.lobby_name == socket.data.current_lobby) {
             lobby.game_data = response.data;
-            socketIO.to(lobby.lobby_name).emit("game_started");
-            socket.data.gameId = response.data.gameId;
+
+            // console.log(socket.data.current_lobby);
+            socket.data.idGame = response.data.idGame;
+            // console.log(lobby);
+            socketIO.to(socket.data.current_lobby).emit("game_started");
+            socketIO.to(socket.data.current_lobby).emit("game_data", {
+              statement: lobby.game_data.question.statement,
+              input: lobby.game_data.question.input,
+              expectedOutput: lobby.game_data.question.expectedOutput,
+            });
           }
         });
       })

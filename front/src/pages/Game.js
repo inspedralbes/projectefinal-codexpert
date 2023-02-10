@@ -9,12 +9,17 @@ function Game({ socket }) {
   const [messages, setMessages] = useState([]);
   const [colorTema, setColorTema] = useState(false);
   const [msg, setMsg] = useState("");
+  const [qst, setQst] = useState({
+    // statement: "",
+    // input: "",
+    // expectedOutput: "",
+  });
 
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (msg != "") {
       socket.emit("chat message", {
-        message: msg,
+        message: msg
       });
       setMsg("");
     }
@@ -43,22 +48,31 @@ function Game({ socket }) {
 
     }
   }, [colorTema])
+  useEffect(() => {
+    socket.on("game_data", function (data) {
+      console.log(data);
+      setQst(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(qst);
+  }, [qst]);
 
   return (
     <div id="game" className="game">
       <div className="game__statement">
-        <h1 className="game__statementTitle">statement</h1>
+        <h1 className="game__statementTitle">{qst.statement}</h1>
       </div>
       <div className="game--grid">
         <div className="game__expectedInput">
-          <h1>input</h1>
+          <h1>{qst.input}</h1>
         </div>
         <div className="game__expectedOutput">
-          <h1>expectedOutput</h1>
+          <h1>{qst.expectedOutput}</h1>
         </div>
       </div>
       <div className="editor">
-
         <div className="input-header">
           <h1>Input</h1>
           <div className="toggle">
@@ -81,7 +95,6 @@ function Game({ socket }) {
           </div>
         </div>
       </div>
-
       <button className="game__submit">Submit</button>
       {/* Chat uwu */}
       {/* <div className="lobby__chat chat">
