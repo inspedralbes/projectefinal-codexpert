@@ -19,7 +19,6 @@ function IconUser() {
   useEffect(() => {
     const token = new FormData();
     token.append("token", cookies.get("token"));
-    console.log();
     fetch(routes.fetchLaravel + "/index.php/getAvatar", {
       method: "POST",
       mode: "cors",
@@ -34,14 +33,17 @@ function IconUser() {
 
   useEffect(() => {
     if (logOut) {
+      const token = new FormData();
+      token.append("token", cookies.get("token"));
       fetch(routes.fetchLaravel + "/index.php/logout", {
-        method: "GET",
+        method: "POST",
+        mode: "cors",
+        body: token,
+        credentials: "include",
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
           const nCookies = document.cookie.split(";");
-          console.log(nCookies);
 
           for (let i = 0; i < nCookies.length; i++) {
             const cookie = nCookies[i];
