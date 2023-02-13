@@ -36,12 +36,14 @@ function Game({ socket }) {
           setError(e.message);
           evalPassed = false;
           // console.log(EvalError(code));
-        } finally {
-          socket.emit("check_answer", {
-            resultsEval: resultsEval,
-            evalPassed: evalPassed,
-          });
         }
+      });
+
+      console.log(resultsEval, evalPassed);
+
+      socket.emit("check_answer", {
+        resultsEval: resultsEval,
+        evalPassed: evalPassed,
       });
     }
   };

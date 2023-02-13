@@ -110,9 +110,20 @@ class GameController extends Controller
 
         if ($request -> evalPassed) {
             $question = Question::find($request -> idQuestion) -> first();
+            $userExpectedOutput = unserialize($question -> userExpectedOutput);
+            $testOutput1 = unserialize($question -> testOutput1);
+            $testOutput2 = unserialize($question -> testOutput2);
+            
+            if ($userExpectedOutput == $request -> evalRes[0]) {
+                $returnObject -> correct1 = true;
+            }
 
-            if ($question -> userExpectedOutput == $request -> evalRes [0] && $question -> testInput1 == $request -> evalRes [1] && $question -> testInput2 == $request -> evalRes [2]) {
-                $returnObject -> correct = true;
+            if ($testOutput1 == $request -> evalRes[1]) {
+                $returnObject -> correct2 = true;
+            }
+
+            if ($testOutput2 == $request -> evalRes [2]) {
+                $returnObject -> correct3 = true;
             }
         }
 

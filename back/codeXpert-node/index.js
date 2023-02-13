@@ -266,6 +266,16 @@ socketIO.on("connection", (socket) => {
         evalPassed: data.evalPassed,
       })
       .then(function (response) {
+        // var user_game = response.data.user_game;
+        // var game = response.data.game;
+        // if (!user_game.dead) {
+        //   // Only passes if not dead
+        //   if (user_game.finished) {
+        //     // Finish but still don't know if they won
+        //     if (game.winner_id != undefined) {
+        //     }
+        //   }
+        // }
         console.log(response);
       })
       .catch(function (error) {
