@@ -136,9 +136,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->session()->flush();
-        $request->session()->forget('userId');
         $request->user()->currentAccessToken()->delete();
+        $request->session()->flush();
         return json_encode("Logged out.");
     }
 

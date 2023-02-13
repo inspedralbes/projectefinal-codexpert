@@ -20,7 +20,7 @@ class GameController extends Controller
 
     public function getQuestions(Request $request)
     {
-        $question = Question::all()->random(1)->first();
+        $questions = Question::all()->random(5);
         // $question = new Question;
         // $question -> statement = "Sort the following array";
         // $question -> userExpectedInput = serialize(array( 3, 7, 5 ));
@@ -30,17 +30,17 @@ class GameController extends Controller
         // $question -> testInput2 = serialize(array( 6, 2, 8 ));
         // $question -> testOutput2 = serialize(array( 2, 6, 8 ));
         // $question -> save();
-        return ($question);
+        return ($questions);
     }
 
     public function addQuestionsToGame($newGame, $getQuestions)
     {
-        // for ($i = 0; count($getQuestions); $i++) {
-        //     $gameQuestion = new Game_question;
-        //     $gameQuestion -> game_id = $newGame->id;
-        //     $gameQuestion -> question_id = $getQuestions->id;
-        //     $gameQuestion -> save();
-        // }
+        for ($i = 0; count($getQuestions); $i++) {
+            $gameQuestion = new Game_question;
+            $gameQuestion -> game_id = $newGame->id;
+            $gameQuestion -> question_id = $getQuestions->id;
+            $gameQuestion -> save();
+        }
         $gameQuestion = new Game_question;
         $gameQuestion -> game_id = $newGame->id;
         $gameQuestion -> question_id = $getQuestions->id;
