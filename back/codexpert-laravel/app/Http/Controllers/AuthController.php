@@ -138,7 +138,7 @@ class AuthController extends Controller
     {   
 
         [$id, $token] = explode('|', $request -> token, 2);
-        $accessToken = PersonalAccessToken::revoke($id);
+        $accessToken = PersonalAccessToken::find($id);
 
         $request->session()->forget('userId');
         $request->session()->flush();
