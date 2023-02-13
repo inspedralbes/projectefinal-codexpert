@@ -52,6 +52,7 @@ class GameController extends Controller
         $newGame = $this->createNewGame($request);
         $getQuestions = $this->getQuestions($request);
         $this->addQuestionsToGame($newGame, $getQuestions);
+        $allQuestions = [];
 
         for ($i = 0; $i < count($getQuestions); $i++) {
             $getQuestions[$i] -> userExpectedInput = unserialize($getQuestions[$i] -> userExpectedInput);
@@ -60,12 +61,15 @@ class GameController extends Controller
             $getQuestions[$i] -> testOutput1 = unserialize($getQuestions[$i] -> testOutput1);
             $getQuestions[$i] -> testInput2 = unserialize($getQuestions[$i] -> testInput2);
             $getQuestions[$i] -> testOutput2 = unserialize($getQuestions[$i] -> testOutput2);
+            $allQuestions[$i] -> inputs = [$getQuestions[$i] -> userExpectedInput, $getQuestions[$i] -> testInput1, $getQuestions[$i] -> testInput2];
+            $allQuestions[$i] -> outputs = [$getQuestions[$i] -> userExpectedOutput, $getQuestions[$i] -> testOutput1, $getQuestions[$i] -> testOutput2];
+            $allQuestions[$i] = $getQuestions[$i];
         }
 
         $game = (object) 
             ['idGame' => $newGame -> id,
             'winner' => null,
-            'questions' => [$getQuestions[0], $getQuestions[1], $getQuestions[2], $getQuestions[3], $getQuestions[4]],
+            'questions' => [$allQuestions],
             ];
         return response() -> json($game);
     }
