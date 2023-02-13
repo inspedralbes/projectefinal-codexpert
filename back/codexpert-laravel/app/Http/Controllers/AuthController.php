@@ -138,15 +138,11 @@ class AuthController extends Controller
     {   
 
         [$id, $token] = explode('|', $request -> token, 2);
-        $accessToken = PersonalAccessToken::find($id);
         
         PersonalAccessToken::find($id)->delete();
 
-        // $request->session()->forget('userId');
-        // $request->session()->flush();
-
         $returnResponse = (object)['logout' => true,];
-        return response() -> json($accessToken);
+        return response() -> json($returnResponse);
     }
 
     public function getUserId(Request $request)
