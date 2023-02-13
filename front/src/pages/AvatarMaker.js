@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"; //Rutas
 import Cookies from 'universal-cookie';
 
 
-function AvatarMaker() {
+function AvatarMaker({ socket }) {
   const cookies = new Cookies();
   const navigate = useNavigate();
   let urlStr = "";
@@ -206,7 +206,13 @@ function AvatarMaker() {
           credentials: "include",
         })
           .then((response) => response.json())
-          .then((data) => { });
+          .then((data) => {
+            if (cookies.get("token") != undefined) {
+              socket.emit("send token", {
+                token: cookies.get("token"),
+              });
+            }
+          });
       };
       fetchData();
       navigate("/lobbies");
