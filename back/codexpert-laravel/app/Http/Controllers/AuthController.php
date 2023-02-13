@@ -139,8 +139,9 @@ class AuthController extends Controller
 
         [$tokenId, $tokenString] = explode('|', $request -> token, 2);
 
-        $tokenFound = DB::table('personal_access_tokens')->find($tokenId)->delete();
-                                                                            
+        $tokenFound = DB::table('personal_access_tokens')->find($tokenId);
+        $tokenFound -> delete();
+                                                                          
         $request->session()->flush();
 
         $returnResponse = (object)['logout' => true,];
