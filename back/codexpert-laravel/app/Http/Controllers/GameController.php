@@ -69,7 +69,7 @@ class GameController extends Controller
         $game = (object) 
             ['idGame' => $newGame -> id,
             'winner' => null,
-            'questions' => [$allQuestions],
+            'questions' => $allQuestions,
             ];
         return response() -> json($game);
     }
