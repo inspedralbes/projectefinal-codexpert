@@ -20,6 +20,7 @@ function Game({ socket }) {
     e.preventDefault();
     if (code != "") {
       let resultsEval = [];
+      let evalPassed = true;
       qst.inputs.forEach((inp) => {
         let x = inp;
         try {
@@ -31,12 +32,15 @@ function Game({ socket }) {
           // console.log(qst.input);
           console.log(resultsEval);
           setError("");
-          socket.emit("check_answer", {
-            resultsEval: resultsEval,
-          });
         } catch (e) {
           setError(e.message);
+          evalPassed = false;
           // console.log(EvalError(code));
+        } finally {
+          socket.emit("check_answer", {
+            resultsEval: resultsEval,
+            evalPassed: evalPassed,
+          });
         }
       });
     }
