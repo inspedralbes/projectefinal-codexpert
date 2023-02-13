@@ -61,8 +61,8 @@ class GameController extends Controller
             $getQuestions[$i] -> testOutput1 = unserialize($getQuestions[$i] -> testOutput1);
             $getQuestions[$i] -> testInput2 = unserialize($getQuestions[$i] -> testInput2);
             $getQuestions[$i] -> testOutput2 = unserialize($getQuestions[$i] -> testOutput2);
-            $allQuestions[$i] -> inputs = [$getQuestions[$i] -> userExpectedInput, $getQuestions[$i] -> testInput1, $getQuestions[$i] -> testInput2];
-            $allQuestions[$i] -> outputs = [$getQuestions[$i] -> userExpectedOutput, $getQuestions[$i] -> testOutput1, $getQuestions[$i] -> testOutput2];
+            $getQuestions[$i] -> inputs = [$getQuestions[$i] -> userExpectedInput, $getQuestions[$i] -> testInput1, $getQuestions[$i] -> testInput2];
+            $getQuestions[$i] -> outputs = [$getQuestions[$i] -> userExpectedOutput, $getQuestions[$i] -> testOutput1, $getQuestions[$i] -> testOutput2];
             $allQuestions[$i] = $getQuestions[$i];
         }
 
