@@ -159,7 +159,7 @@ class AuthController extends Controller
         return response() -> json($returnUserId);
     }    
 
-        public function getUserInfo(Request $request)
+    public function getUserInfo(Request $request)
     {
         $returnUserId = null;
         $userFound = null;
@@ -177,7 +177,7 @@ class AuthController extends Controller
         return response() -> json($userFound);
     }    
 
-        public function isUserLogged(Request $request)
+    public function isUserLogged(Request $request)
     {
         $logged = false;
         
@@ -190,5 +190,5 @@ class AuthController extends Controller
 
         return response() -> json($logged);
     }    
-
+    
 }
