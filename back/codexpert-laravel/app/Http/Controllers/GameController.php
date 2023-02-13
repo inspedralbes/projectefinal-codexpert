@@ -79,7 +79,7 @@ class GameController extends Controller
         for ($i = 0; $i < count($request -> users); $i++) {
             $newUserGame = new User_game;
             $newUserGame -> game_id = $request -> idGame;
-            $newUserGame -> user_id = $request -> users [$i];
+            $newUserGame -> user_id = $request -> users [$i] -> idUser;
             $newUserGame -> save();
             $checkUserGames [$i] = $newUserGame;
         }
