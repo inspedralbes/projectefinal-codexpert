@@ -25,7 +25,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/login', [AuthController::class, 'login']);
 
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::post('/isUserLogged', [AuthController::class, 'isUserLogged']);
 
