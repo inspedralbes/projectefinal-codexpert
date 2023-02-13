@@ -14,6 +14,7 @@ function Game({ socket }) {
     output: "",
   });
   const [messages, setMessages] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,12 +30,12 @@ function Game({ socket }) {
           console.log(code);
           // console.log(qst.input);
           console.log(resultsEval);
+          setError("");
           socket.emit("check_answer", {
             resultsEval: resultsEval,
           });
         } catch (e) {
-          console.log(e.message)
-          console.log(e);
+          setError(e.message);
           // console.log(EvalError(code));
         }
       });
@@ -128,6 +129,7 @@ function Game({ socket }) {
 
         <button className="game__submit">Submit</button>
       </form>
+      {error != "" && <div>{error}</div>}
       {/* Chat uwu */}
       {/* <div className="lobby__chat chat">
         <h3 className="chat__title">Game chat</h3>
