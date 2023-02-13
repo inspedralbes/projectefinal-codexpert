@@ -141,7 +141,7 @@ class AuthController extends Controller
         
         PersonalAccessToken::find($id)->delete();
 
-        $returnResponse = (object)['logout' => true,];
+        $returnResponse = (object)['logout' => true];
         return response() -> json($returnResponse);
     }
 
