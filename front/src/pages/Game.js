@@ -21,20 +21,22 @@ function Game({ socket }) {
       let resultsEval = [];
       qst.inputs.forEach((inp) => {
         let x = inp;
-
-        let res = eval(code);
-
-        resultsEval.push(res);
-      });
-
-      console.log(qst.testInput1);
-      // let x = qst.testInput1;
-      console.log(code);
-      // console.log(qst.input);
-
-      console.log(resultsEval);
-      socket.emit("check_answer", {
-        resultsEval: resultsEval,
+        try {
+          let res = eval(code);
+          resultsEval.push(res);
+          console.log(qst.inputs[1]);
+          // let x = qst.testInput1;
+          console.log(code);
+          // console.log(qst.input);
+          console.log(resultsEval);
+          socket.emit("check_answer", {
+            resultsEval: resultsEval,
+          });
+        } catch (e) {
+          console.log(e.message)
+          console.log(e);
+          // console.log(EvalError(code));
+        }
       });
     }
   };
@@ -55,7 +57,7 @@ function Game({ socket }) {
   }, []);
 
   useEffect(() => {
-    socket.on("game_data", function (data) {
+    socket.on("question_data", function (data) {
       console.log(data);
       setQst(data);
     });

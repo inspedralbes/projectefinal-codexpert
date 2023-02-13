@@ -136,17 +136,12 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {   
-
         [$id, $token] = explode('|', $request -> token, 2);
-        $accessToken = PersonalAccessToken::find($id);
         
         PersonalAccessToken::find($id)->delete();
 
-        // $request->session()->forget('userId');
-        // $request->session()->flush();
-
-        $returnResponse = (object)['logout' => true,];
-        return response() -> json($accessToken);
+        $returnResponse = (object)['logout' => true];
+        return response() -> json($returnResponse);
     }
 
     public function getUserId(Request $request)
@@ -164,7 +159,7 @@ class AuthController extends Controller
         return response() -> json($returnUserId);
     }    
 
-        public function getUserInfo(Request $request)
+    public function getUserInfo(Request $request)
     {
         $returnUserId = null;
         $userFound = null;
@@ -182,7 +177,7 @@ class AuthController extends Controller
         return response() -> json($userFound);
     }    
 
-        public function isUserLogged(Request $request)
+    public function isUserLogged(Request $request)
     {
         $logged = false;
         
@@ -195,5 +190,5 @@ class AuthController extends Controller
 
         return response() -> json($logged);
     }    
-
+    
 }

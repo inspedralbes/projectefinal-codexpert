@@ -35,16 +35,16 @@ class GameController extends Controller
 
     public function addQuestionsToGame($newGame, $getQuestions)
     {
-        for ($i = 0; count($getQuestions); $i++) {
+        for ($i = 0; $i < count($getQuestions); $i++) {
             $gameQuestion = new Game_question;
             $gameQuestion -> game_id = $newGame->id;
-            $gameQuestion -> question_id = $getQuestions->id;
+            $gameQuestion -> question_id = $getQuestions[$i]->id;
             $gameQuestion -> save();
         }
-        $gameQuestion = new Game_question;
-        $gameQuestion -> game_id = $newGame->id;
-        $gameQuestion -> question_id = $getQuestions->id;
-        $gameQuestion -> save();
+        // $gameQuestion = new Game_question;
+        // $gameQuestion -> game_id = $newGame->id;
+        // $gameQuestion -> question_id = $getQuestions->id;
+        // $gameQuestion -> save();
     }
     
     public function startGame(Request $request)
@@ -52,26 +52,47 @@ class GameController extends Controller
         $newGame = $this->createNewGame($request);
         $getQuestions = $this->getQuestions($request);
         $this->addQuestionsToGame($newGame, $getQuestions);
+        $allQuestions = [];
 
-        $getQuestions -> userExpectedInput = unserialize($getQuestions -> userExpectedInput);
-        $getQuestions -> userExpectedOutput = unserialize($getQuestions -> userExpectedOutput);
-        $getQuestions -> testInput1 = unserialize($getQuestions -> testInput1);
-        $getQuestions -> testOutput1 = unserialize($getQuestions -> testOutput1);
-        $getQuestions -> testInput2 = unserialize($getQuestions -> testInput2);
-        $getQuestions -> testOutput2 = unserialize($getQuestions -> testOutput2);
+        for ($i = 0; $i < count($getQuestions); $i++) {
+            $getQuestions[$i] -> userExpectedInput = unserialize($getQuestions[$i] -> userExpectedInput);
+            $getQuestions[$i] -> userExpectedOutput = unserialize($getQuestions[$i] -> userExpectedOutput);
+            $getQuestions[$i] -> testInput1 = unserialize($getQuestions[$i] -> testInput1);
+            $getQuestions[$i] -> testOutput1 = unserialize($getQuestions[$i] -> testOutput1);
+            $getQuestions[$i] -> testInput2 = unserialize($getQuestions[$i] -> testInput2);
+            $getQuestions[$i] -> testOutput2 = unserialize($getQuestions[$i] -> testOutput2);
+            $getQuestions[$i] -> inputs = [$getQuestions[$i] -> userExpectedInput, $getQuestions[$i] -> testInput1, $getQuestions[$i] -> testInput2];
+            $getQuestions[$i] -> outputs = [$getQuestions[$i] -> userExpectedOutput, $getQuestions[$i] -> testOutput1, $getQuestions[$i] -> testOutput2];
+            $allQuestions[$i] = $getQuestions[$i];
+        }
 
         $game = (object) 
             ['idGame' => $newGame -> id,
             'winner' => null,
-            'question' => (object) [
-                'idQuestion' => $getQuestions -> id,
-                'statement' => $getQuestions -> statement,
-                'inputs' => [$getQuestions -> userExpectedInput, $getQuestions -> testInput1, $getQuestions -> testInput2],
-                'outputs' => [$getQuestions -> userExpectedOutput, $getQuestions -> testOutput1, $getQuestions -> testOutput2]
-            ]
+            'questions' => $allQuestions,
             ];
         return response() -> json($game);
     }
+
+    public function setUserGame(Request $request)
+    {
+        $members = $request -> users;
+        for ($i = 0; $i < count($members); $i++) {
+            $newUserGame = new User_game;
+            $newUserGame -> game_id = $request -> idGame;
+            $newUserGame -> user_id = $members[$i]['idUser'];
+            $newUserGame -> save();
+            $checkUserGames [$i] = $newUserGame;
+        }
+        
+        if ($checkUserGames != null) {
+            $gameStatus = 200;
+        } else {
+            $gameStatus = 500;
+        }
+
+        return response('Assigned users to the game', $gameStatus);
+    }    
 
     public function checkAnswer(Request $request)
     {
@@ -91,7 +112,6 @@ class GameController extends Controller
         if ($question -> userExpectedOutput == $request -> evalRes [0] && $question -> testInput1 == $request -> evalRes [1] && $question -> testInput2 == $request -> evalRes [2]) {
             $answerValidation -> correct = true;
         }
-
 
         return response() -> json($answerValidation);
     }    
