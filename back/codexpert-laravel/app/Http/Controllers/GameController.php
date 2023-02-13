@@ -76,10 +76,11 @@ class GameController extends Controller
 
     public function setUserGame(Request $request)
     {
-        for ($i = 0; $i < count($request -> users); $i++) {
+        $members = $request -> users;
+        for ($i = 0; $i < count($members); $i++) {
             $newUserGame = new User_game;
             $newUserGame -> game_id = $request -> idGame;
-            $newUserGame -> user_id = $request -> users [$i] -> idUser;
+            $newUserGame -> user_id = $members[$i]['idUser'];
             $newUserGame -> save();
             $checkUserGames [$i] = $newUserGame;
         }

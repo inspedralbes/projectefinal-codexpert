@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const axios = require("axios");
 
 const maxMembersOnLobby = 4;
-const laravelRoute = "http://127.0.0.1:8000/";
+const laravelRoute = "http://localhost:8000/";
 
 var lobbies = [];
 var sesiones = [];
@@ -90,7 +90,7 @@ socketIO.on("connection", (socket) => {
           userId: response.data.id,
           userName: response.data.name,
         };
-        console.log(user);
+        // console.log(user);
         sesiones.push(user);
 
         socket.data.userId = response.data.id;
@@ -138,6 +138,7 @@ socketIO.on("connection", (socket) => {
           lobby.members.push({
             nom: socket.data.name,
             rank: data.rank,
+            idUser: socket.data.userId,
           });
         }
       }
@@ -174,38 +175,66 @@ socketIO.on("connection", (socket) => {
       // console.log(socket.data.lobby_name);
       if (lobby.lobby_name == socket.data.current_lobby) {
         socketIO.to(lobby.lobby_name).emit("game_started");
+        startGame(lobby.lobby_name);
       }
     });
-    axios
+  });
+
+  async function startGame(room) {
+    await axios
       .get(laravelRoute + "index.php/startGame")
       .then(function (response) {
-        console.log(response.data);
+        // console.log(response.data);
         // console.log(response);
         lobbies.forEach((lobby) => {
-          if (lobby.lobby_name == socket.data.current_lobby) {
+          if (lobby.lobby_name == room) {
             lobby.game_data = response.data;
 
-            // console.log(socket.data.current_lobby);
-            socket.data.idGame = response.data.idGame;
-            setGameData(response.data, socket.data.current_lobby);
-            // setQuestionAtAll(0);
-            // setHealthAll(3);
-            // console.log(lobby);
-            socketIO.to(socket.data.current_lobby).emit("game_started");
-            socketIO.to(socket.data.current_lobby).emit("game_data", {
-              statement: lobby.game_data.question.statement,
-              inputs: lobby.game_data.question.inputs,
-              output: lobby.game_data.question.outputs[0],
+            // console.log(room);
+            setGameData(response.data, room);
+
+            socketIO.to(room).emit("game_started");
+            console.log(lobby.game_data);
+            socketIO.to(room).emit("question_data", {
+              statement: lobby.game_data.questions[0].statement,
+              inputs: lobby.game_data.questions[0].inputs,
+              output: lobby.game_data.questions[0].outputs[0],
             });
+            enviarDadesGame(room);
           }
         });
       })
       .catch(function (error) {
         console.log(error);
       });
+  }
 
-      // llamada a laravel que conecte el usuario con game, mandar ID USER e ID GAME
-  });
+  async function enviarDadesGame(room) {
+    var members;
+    var idGame;
+
+    lobbies.forEach((lobby) => {
+      if (lobby.lobby_name == room) {
+        members = lobby.members;
+        idGame = lobby.game_data.idGame;
+        console.log(members);
+      }
+    });
+    await axios
+      .post(laravelRoute + "index.php/setUserGame", {
+        users: members,
+        idGame: idGame
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    // const dades = new FormData();
+    // dades.append("name", dadesname);
+  }
 
   async function setGameData(game_data, room) {
     const sockets = await socketIO.in(room).fetchSockets();
@@ -213,9 +242,10 @@ socketIO.on("connection", (socket) => {
     sockets.forEach((element) => {
       socketIO.sockets.sockets.get(element.id).data.game_data = game_data;
       socketIO.sockets.sockets.get(element.id).data.idQuestion =
-        game_data.question.idQuestion;
+        game_data.questions[0].id;
       socketIO.sockets.sockets.get(element.id).data.question_at = 0;
       socketIO.sockets.sockets.get(element.id).data.hearts_remaining = 3;
+      socketIO.sockets.sockets.get(element.id).data.idGame = game_data.idGame;
     });
   }
 
