@@ -138,7 +138,11 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         $request->session()->flush();
-        return json_encode("Logged out.");
+
+        $returnResponse = (object)
+            ['logout' => true,
+            ];
+        return response() -> json($returnResponse);
     }
 
     public function getUserId(Request $request)
