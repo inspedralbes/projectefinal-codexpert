@@ -223,7 +223,7 @@ socketIO.on("connection", (socket) => {
     await axios
       .post(laravelRoute + "index.php/setUserGame", {
         users: members,
-        idGame: idGame
+        idGame: idGame,
       })
       .then(function (response) {
         console.log(response);
@@ -254,7 +254,8 @@ socketIO.on("connection", (socket) => {
       "idQuestion: " + socket.data.idQuestion,
       "idGame: " + socket.data.game_data.idGame,
       "idUser: " + socket.data.userId,
-      "evalRes: " + data.resultsEval
+      "evalRes: " + data.resultsEval,
+      "evalPassed: " + data.evalPassed
     );
     axios
       .post(laravelRoute + "index.php/checkAnswer", {
@@ -262,8 +263,19 @@ socketIO.on("connection", (socket) => {
         idGame: socket.data.game_data.idGame,
         idUser: socket.data.userId,
         evalRes: data.resultsEval,
+        evalPassed: data.evalPassed,
       })
       .then(function (response) {
+        // var user_game = response.data.user_game;
+        // var game = response.data.game;
+        // if (!user_game.dead) {
+        //   // Only passes if not dead
+        //   if (user_game.finished) {
+        //     // Finish but still don't know if they won
+        //     if (game.winner_id != undefined) {
+        //     }
+        //   }
+        // }
         console.log(response);
       })
       .catch(function (error) {

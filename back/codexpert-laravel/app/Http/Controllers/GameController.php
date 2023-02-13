@@ -96,24 +96,66 @@ class GameController extends Controller
 
     public function checkAnswer(Request $request)
     {
-        $answerValidation = (object) 
-            ['correct' => false,
-            'winner' => null,
-            'finished' => false
+        $returnObject = (object) 
+            ['correct'=> false,
+            'user_game'=> null,
+            'game' => null
             ];
 
         $request -> idQuestion;
         $request -> idGame;
         $request -> idUser;
         $request -> evalRes;
-        
-        $question = Question::find($request -> idQuestion) -> first();
+        $request -> evalPassed; 
 
-        if ($question -> userExpectedOutput == $request -> evalRes [0] && $question -> testInput1 == $request -> evalRes [1] && $question -> testInput2 == $request -> evalRes [2]) {
-            $answerValidation -> correct = true;
+        if ($request -> evalPassed) {
+            $question = Question::find($request -> idQuestion) -> first();
+            $userExpectedOutput = unserialize($question -> userExpectedOutput);
+            $testOutput1 = unserialize($question -> testOutput1);
+            $testOutput2 = unserialize($question -> testOutput2);
+            
+            if ($userExpectedOutput == $request -> evalRes[0]) {
+                $returnObject -> correct1 = true;
+            }
+
+            if ($testOutput1 == $request -> evalRes[1]) {
+                $returnObject -> correct2 = true;
+            }
+
+            if ($testOutput2 == $request -> evalRes [2]) {
+                $returnObject -> correct3 = true;
+            }
         }
 
-        return response() -> json($answerValidation);
+        $game = Game::find($request -> idGame) -> first();
+
+        $user_game = User_game::where('game_id', $request -> idGame) 
+        -> where ('user_id', $request -> idUser)
+        -> first();
+
+        if ($returnObject -> correct) {
+            $user_game -> question_at = $user_game -> question_at + 1;
+            if ($user_game -> question_at == 5) {
+                $user_game -> finished = true;
+                if ($game -> winner_id == null) {
+                   $game -> winner_id = $request -> idUser;
+                }
+            }
+        } else {
+            $user_game -> hearts_remaining = $user_game -> hearts_remaining - 1;
+            if ($user_game -> hearts_remaining == 0) {
+                $user_game -> finished = true;
+                $user_game -> dead = true;
+            }
+        }
+
+        $user_game -> save();
+        $game -> save();
+
+        $returnObject -> user_game = $user_game;
+        $returnObject -> game = $game;
+
+        return response() -> json($returnObject);
     }    
     
 }

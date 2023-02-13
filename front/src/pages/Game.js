@@ -14,11 +14,13 @@ function Game({ socket }) {
     output: "",
   });
   const [messages, setMessages] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (code != "") {
       let resultsEval = [];
+      let evalPassed = true;
       qst.inputs.forEach((inp) => {
         let x = inp;
         try {
@@ -29,14 +31,19 @@ function Game({ socket }) {
           console.log(code);
           // console.log(qst.input);
           console.log(resultsEval);
-          socket.emit("check_answer", {
-            resultsEval: resultsEval,
-          });
+          setError("");
         } catch (e) {
-          console.log(e.message)
-          console.log(e);
+          setError(e.message);
+          evalPassed = false;
           // console.log(EvalError(code));
         }
+      });
+
+      console.log(resultsEval, evalPassed);
+
+      socket.emit("check_answer", {
+        resultsEval: resultsEval,
+        evalPassed: evalPassed,
       });
     }
   };
@@ -128,6 +135,7 @@ function Game({ socket }) {
 
         <button className="game__submit">Submit</button>
       </form>
+      {error != "" && <div>{error}</div>}
       {/* Chat uwu */}
       {/* <div className="lobby__chat chat">
         <h3 className="chat__title">Game chat</h3>
