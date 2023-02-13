@@ -35,16 +35,16 @@ class GameController extends Controller
 
     public function addQuestionsToGame($newGame, $getQuestions)
     {
-        for ($i = 0; count($getQuestions); $i++) {
+        for ($i = 0; $i < count($getQuestions); $i++) {
             $gameQuestion = new Game_question;
             $gameQuestion -> game_id = $newGame->id;
-            $gameQuestion -> question_id = $getQuestions->id;
+            $gameQuestion -> question_id = $getQuestions[$i]->id;
             $gameQuestion -> save();
         }
-        $gameQuestion = new Game_question;
-        $gameQuestion -> game_id = $newGame->id;
-        $gameQuestion -> question_id = $getQuestions->id;
-        $gameQuestion -> save();
+        // $gameQuestion = new Game_question;
+        // $gameQuestion -> game_id = $newGame->id;
+        // $gameQuestion -> question_id = $getQuestions->id;
+        // $gameQuestion -> save();
     }
     
     public function startGame(Request $request)
@@ -53,22 +53,19 @@ class GameController extends Controller
         $getQuestions = $this->getQuestions($request);
         $this->addQuestionsToGame($newGame, $getQuestions);
 
-        $getQuestions -> userExpectedInput = unserialize($getQuestions -> userExpectedInput);
-        $getQuestions -> userExpectedOutput = unserialize($getQuestions -> userExpectedOutput);
-        $getQuestions -> testInput1 = unserialize($getQuestions -> testInput1);
-        $getQuestions -> testOutput1 = unserialize($getQuestions -> testOutput1);
-        $getQuestions -> testInput2 = unserialize($getQuestions -> testInput2);
-        $getQuestions -> testOutput2 = unserialize($getQuestions -> testOutput2);
+        for ($i = 0; $i < count($getQuestions); $i++) {
+            $getQuestions[$i] -> userExpectedInput = unserialize($getQuestions[$i] -> userExpectedInput);
+            $getQuestions[$i] -> userExpectedOutput = unserialize($getQuestions[$i] -> userExpectedOutput);
+            $getQuestions[$i] -> testInput1 = unserialize($getQuestions[$i] -> testInput1);
+            $getQuestions[$i] -> testOutput1 = unserialize($getQuestions[$i] -> testOutput1);
+            $getQuestions[$i] -> testInput2 = unserialize($getQuestions[$i] -> testInput2);
+            $getQuestions[$i] -> testOutput2 = unserialize($getQuestions[$i] -> testOutput2);
+        }
 
         $game = (object) 
             ['idGame' => $newGame -> id,
             'winner' => null,
-            'question' => (object) [
-                'idQuestion' => $getQuestions -> id,
-                'statement' => $getQuestions -> statement,
-                'inputs' => [$getQuestions -> userExpectedInput, $getQuestions -> testInput1, $getQuestions -> testInput2],
-                'outputs' => [$getQuestions -> userExpectedOutput, $getQuestions -> testOutput1, $getQuestions -> testOutput2]
-            ]
+            'questions' => [$getQuestions[0], $getQuestions[1], $getQuestions[2], $getQuestions[3], $getQuestions[4]],
             ];
         return response() -> json($game);
     }
