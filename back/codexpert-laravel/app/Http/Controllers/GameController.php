@@ -74,6 +74,25 @@ class GameController extends Controller
         return response() -> json($game);
     }
 
+    public function setUserGame(Request $request)
+    {
+        for ($i = 0; $i < count($request -> users); $i++) {
+            $newUserGame = new User_game;
+            $newUserGame -> game_id = $request -> idGame;
+            $newUserGame -> user_id = $request -> users [$i];
+            $newUserGame -> save();
+            $checkUserGames [$i] = $newUserGame;
+        }
+        
+        if ($checkUserGames != null) {
+            $gameStatus = 200;
+        } else {
+            $gameStatus = 500;
+        }
+
+        return response('Assigned users to the game', $gameStatus);
+    }    
+
     public function checkAnswer(Request $request)
     {
         $answerValidation = (object) 
@@ -92,7 +111,6 @@ class GameController extends Controller
         if ($question -> userExpectedOutput == $request -> evalRes [0] && $question -> testInput1 == $request -> evalRes [1] && $question -> testInput2 == $request -> evalRes [2]) {
             $answerValidation -> correct = true;
         }
-
 
         return response() -> json($answerValidation);
     }    
