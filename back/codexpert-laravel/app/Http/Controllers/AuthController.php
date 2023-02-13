@@ -136,7 +136,6 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {   
-
         [$id, $token] = explode('|', $request -> token, 2);
         
         PersonalAccessToken::find($id)->delete();
