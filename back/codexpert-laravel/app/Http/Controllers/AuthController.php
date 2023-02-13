@@ -137,15 +137,14 @@ class AuthController extends Controller
     public function logout(Request $request)
     {   
 
-        [$tokenId, $tokenString] = explode('|', $request -> token, 2);
+        [$id, $token] = explode('|', $request -> token, 2);
+        $accessToken = PersonalAccessToken::delete($id);
 
-        $tokenFound = DB::table('personal_access_tokens')->find($tokenId);
-        $tokenFound -> delete();
-                                                                          
+        $request->session()->forget('userId');
         $request->session()->flush();
 
         $returnResponse = (object)['logout' => true,];
-        return response() -> json($tokenFound);
+        return response() -> json($accessToken);
     }
 
     public function getUserId(Request $request)
