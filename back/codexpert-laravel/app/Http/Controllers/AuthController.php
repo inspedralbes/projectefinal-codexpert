@@ -142,8 +142,8 @@ class AuthController extends Controller
         
         PersonalAccessToken::find($id)->delete();
 
-        $request->session()->forget('userId');
-        $request->session()->flush();
+        // $request->session()->forget('userId');
+        // $request->session()->flush();
 
         $returnResponse = (object)['logout' => true,];
         return response() -> json($accessToken);
