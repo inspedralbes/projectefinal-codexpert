@@ -91,6 +91,10 @@ function Game({ socket }) {
       {!playable && <div>
         <h1>{result}</h1>
         <h2>{winnerMessage}</h2>
+        <p>
+          <button>GO BACK TO LOBBY</button>
+          <button>LOBBY LIST</button>
+        </p>
       </div>}
       {playable && <div>
         <div className="game__statement">

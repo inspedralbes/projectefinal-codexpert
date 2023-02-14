@@ -175,12 +175,7 @@ class GameController extends Controller
     public function updateUserLvl(Request $request)
     {
         $updatedProfiles = [];
-        $updatedStats = (object) 
-            ['idUser' => null,
-            'xpEarned' => null,
-            'coinsEarned' => null,
-            'eloEarned' => null,
-            ];
+
         $multiplier = 1;
         $members = $request -> users;
         $game = Game::where('id', $request -> idGame) -> first();
@@ -196,14 +191,20 @@ class GameController extends Controller
                 $multiplier = 2;
             }
 
-            $myProfile -> xp += ($myGame -> question_at) * $multiplier;
-            $myProfile -> coins += ($myGame -> question_at) * $multiplier;
-            $myProfile -> elo += (($myGame -> question_at) * 2) * $multiplier;
+            $newXp = ($myGame -> question_at) * $multiplier;
+            $newCoins = ($myGame -> question_at) * $multiplier;
+            $newElo = (($myGame -> question_at) * 2) * $multiplier;
+
+            $myProfile -> xp += $newXp;
+            $myProfile -> coins += $newCoins;
+            $myProfile -> elo += $newElo;
             
-            $updatedStats -> idUser = $members[$i]['idUser'];
-            $updatedStats -> xpEarned = $myProfile -> xp;
-            $updatedStats -> coinsEarned = $myProfile -> coins;
-            $updatedStats -> eloEarned = $myProfile -> elo;
+            $updatedStats = (object) 
+            ['idUser' =>  $members[$i]['idUser'],
+            'xpEarned' =>  $newXp,
+            'coinsEarned' => $newCoins,
+            'eloEarned' => $newElo,
+            ];
 
             $updatedProfiles[$i] = $updatedStats;
             

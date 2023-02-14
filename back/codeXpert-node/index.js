@@ -236,6 +236,33 @@ socketIO.on("connection", (socket) => {
     // dades.append("name", dadesname);
   }
 
+  async function updateUserLvl(room) {
+    var members;
+    var idGame;
+
+    lobbies.forEach((lobby) => {
+      if (lobby.lobby_name == room) {
+        members = lobby.members;
+        idGame = lobby.game_data.idGame;
+        console.log(""+members);
+      }
+    });
+    await axios
+      .post(laravelRoute + "index.php/updateUserLvl", {
+        users: members,
+        idGame: idGame,
+      })
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    // const dades = new FormData();
+    // dades.append("name", dadesname);
+  }
+
   async function setGameData(game_data, room) {
     const sockets = await socketIO.in(room).fetchSockets();
 
@@ -272,13 +299,15 @@ socketIO.on("connection", (socket) => {
         var game = response.data.game;
         if (response.data.correct) {
           socket.data.question_at = user_game.question_at;
-          console.log(socket.data);
+          // console.log(socket.data);
           // Only passes if not dead
           if (user_game.finished) {
             // Finish but still don't know if they won
             if (game.winner_id != undefined) {
               setWinnerId(socket.data.userId);
-              console.log(lobbies);
+              // console.log(lobbies);
+
+              updateUserLvl(socket.data.current_lobby)
               socketIO.to(socket.data.current_lobby).emit("game_over", {
                 message: `${socket.data.name} won the game`,
               });
@@ -314,7 +343,7 @@ socketIO.on("connection", (socket) => {
             });
           }
         }
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch(function (error) {
         console.log(error);
