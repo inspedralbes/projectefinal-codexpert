@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const axios = require("axios");
 
 const maxMembersOnLobby = 4;
-const laravelRoute = "http://localhost:8000/";
+const laravelRoute = "http://127.0.0.1:8000/";
 
 var lobbies = [];
 var sesiones = [];
@@ -250,6 +250,7 @@ socketIO.on("connection", (socket) => {
   }
 
   socket.on("check_answer", (data) => {
+    /*
     console.log(
       "idQuestion: " + socket.data.idQuestion,
       "idGame: " + socket.data.game_data.idGame,
@@ -257,6 +258,7 @@ socketIO.on("connection", (socket) => {
       "evalRes: " + data.resultsEval,
       "evalPassed: " + data.evalPassed
     );
+    */
     axios
       .post(laravelRoute + "index.php/checkAnswer", {
         idQuestion: socket.data.idQuestion,
@@ -268,15 +270,16 @@ socketIO.on("connection", (socket) => {
       .then(function (response) {
         var user_game = response.data.user_game;
         var game = response.data.game;
-        if (!user_game.dead) {
+        if (response.data.correct) {
+          socket.data.question_at++;
+          console.log(socket.data);
           // Only passes if not dead
           if (user_game.finished) {
             // Finish but still don't know if they won
             if (game.winner_id != undefined) {
             }
           } else {
-            if (condition) {
-              
+            if (true) {
             }
           }
         }
