@@ -194,9 +194,13 @@ class AuthController extends Controller
     
     public function getProfile(Request $request)
     {
-        $userId = $this->getUserId($request);
-        $profile = User::where('id', $userId) -> first();
+        $profile = null;
 
+        $userId = $this->getUserId($request);
+        if ($userId != null) {
+            $profile = User::where('id', $userId) -> first();
+        }
+        
         return response() -> json($profile);
     }     
 }
