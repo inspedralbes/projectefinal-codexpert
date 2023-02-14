@@ -144,20 +144,22 @@ class GameController extends Controller
         -> where ('user_id', $request -> idUser)
         -> first();
 
-        if ($returnObject -> correct) {
-            $user_game -> question_at = $user_game -> question_at + 1;
-            if ($user_game -> question_at == 5) {
-                $user_game -> finished = true;
-                if ($game -> winner_id == null) {
-                   $game -> winner_id = $request -> idUser;
-                   
+        if ($user_game -> question_at < 5) {
+            if ($returnObject -> correct) {
+                $user_game -> question_at = $user_game -> question_at + 1;
+                if ($user_game -> question_at == 5) {
+                    $user_game -> finished = true;
+                    if ($game -> winner_id == null) {
+                    $game -> winner_id = $request -> idUser;
+                    
+                    }
                 }
-            }
-        } else {
-            $user_game -> hearts_remaining = $user_game -> hearts_remaining - 1;
-            if ($user_game -> hearts_remaining == 0) {
-                $user_game -> finished = true;
-                $user_game -> dead = true;
+            } else {
+                $user_game -> hearts_remaining = $user_game -> hearts_remaining - 1;
+                if ($user_game -> hearts_remaining == 0) {
+                    $user_game -> finished = true;
+                    $user_game -> dead = true;
+                }
             }
         }
 
