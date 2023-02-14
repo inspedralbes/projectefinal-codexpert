@@ -20,6 +20,11 @@ function Game({ socket }) {
   const [winnerMessage, setWinnerMessage] = useState("");
   const [finished, setFinished] = useState(false);
   const [playable, setPlayable] = useState(true);
+  const [rewards, setRewards] = useState({
+    xpEarned: "",
+    coinsEarned: "",
+    eloEarned: "",
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -85,6 +90,15 @@ function Game({ socket }) {
       setResult(data.message);
       setPlayable(false)
     });
+
+    socket.on("stats", (data) => {
+      console.log(data);
+      setRewards({
+        xpEarned: data.xpEarned,
+        coinsEarned: data.coinsEarned,
+        eloEarned: data.eloEarned,
+      })
+    })
   }, []);
 
   useEffect(() => {
@@ -115,9 +129,14 @@ function Game({ socket }) {
       {!playable && <div>
         <h1>{result}</h1>
         <h2>{winnerMessage}</h2>
+        <ul>
+          <li>XP: {rewards.xpEarned}</li>
+          <li>Coins: {rewards.coinsEarned}</li>
+          <li>Elo: {rewards.eloEarned}</li>
+        </ul>
         <p>
-          <button>GO BACK TO LOBBY</button>
-          <button>LOBBY LIST</button>
+          <button className="pixel-button">GO BACK TO LOBBY</button>
+          <button className="pixel-button">LOBBY LIST</button>
         </p>
       </div>}
       {playable && <div>
