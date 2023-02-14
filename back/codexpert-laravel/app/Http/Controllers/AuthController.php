@@ -56,6 +56,7 @@ class AuthController extends Controller
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',      // must contain at least one digit
                 'regex:/[@$!%*#?&.]/', // must contain a special character
+                'confirmed'
             ],
         ]);
 
@@ -135,11 +136,13 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request)
-    {
-        $request->session()->flush();
-        $request->session()->forget('userId');
-        $request->user()->currentAccessToken()->delete();
-        return json_encode("Logged out.");
+    {   
+        [$id, $token] = explode('|', $request -> token, 2);
+        
+        PersonalAccessToken::find($id)->delete();
+
+        $returnResponse = (object)['logout' => true];
+        return response() -> json($returnResponse);
     }
 
     public function getUserId(Request $request)
@@ -157,7 +160,7 @@ class AuthController extends Controller
         return response() -> json($returnUserId);
     }    
 
-        public function getUserInfo(Request $request)
+    public function getUserInfo(Request $request)
     {
         $returnUserId = null;
         $userFound = null;
@@ -175,7 +178,7 @@ class AuthController extends Controller
         return response() -> json($userFound);
     }    
 
-        public function isUserLogged(Request $request)
+    public function isUserLogged(Request $request)
     {
         $logged = false;
         
@@ -188,5 +191,17 @@ class AuthController extends Controller
 
         return response() -> json($logged);
     }    
+    
+    public function getProfile(Request $request)
+    {
+        $profile = null;
 
+        $userId = $this->getUserId($request);
+        if ($userId != null) {
+            $profile = User::where('id', $userId) -> first();
+        }
+        
+        return response() -> json($profile);
+    }     
+    
 }

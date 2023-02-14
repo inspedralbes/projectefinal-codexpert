@@ -90,7 +90,7 @@ socketIO.on("connection", (socket) => {
           userId: response.data.id,
           userName: response.data.name,
         };
-        console.log(user);
+        // console.log(user);
         sesiones.push(user);
 
         socket.data.userId = response.data.id;
@@ -138,6 +138,7 @@ socketIO.on("connection", (socket) => {
           lobby.members.push({
             nom: socket.data.name,
             rank: data.rank,
+            idUser: socket.data.userId,
           });
         }
       }
@@ -174,36 +175,66 @@ socketIO.on("connection", (socket) => {
       // console.log(socket.data.lobby_name);
       if (lobby.lobby_name == socket.data.current_lobby) {
         socketIO.to(lobby.lobby_name).emit("game_started");
+        startGame(lobby.lobby_name);
       }
     });
-    axios
+  });
+
+  async function startGame(room) {
+    await axios
       .get(laravelRoute + "index.php/startGame")
       .then(function (response) {
-        console.log(response.data);
+        // console.log(response.data);
         // console.log(response);
         lobbies.forEach((lobby) => {
-          if (lobby.lobby_name == socket.data.current_lobby) {
+          if (lobby.lobby_name == room) {
             lobby.game_data = response.data;
 
-            // console.log(socket.data.current_lobby);
-            socket.data.idGame = response.data.idGame;
-            setGameData(response.data, socket.data.current_lobby);
-            // setQuestionAtAll(0);
-            // setHealthAll(3);
-            // console.log(lobby);
-            socketIO.to(socket.data.current_lobby).emit("game_started");
-            socketIO.to(socket.data.current_lobby).emit("game_data", {
-              statement: lobby.game_data.question.statement,
-              inputs: lobby.game_data.question.inputs,
-              output: lobby.game_data.question.outputs[0],
+            // console.log(room);
+            setGameData(response.data, room);
+
+            socketIO.to(room).emit("game_started");
+            console.log(lobby.game_data);
+            socketIO.to(room).emit("question_data", {
+              statement: lobby.game_data.questions[0].statement,
+              inputs: lobby.game_data.questions[0].inputs,
+              output: lobby.game_data.questions[0].outputs[0],
             });
+            enviarDadesGame(room);
           }
         });
       })
       .catch(function (error) {
         console.log(error);
       });
-  });
+  }
+
+  async function enviarDadesGame(room) {
+    var members;
+    var idGame;
+
+    lobbies.forEach((lobby) => {
+      if (lobby.lobby_name == room) {
+        members = lobby.members;
+        idGame = lobby.game_data.idGame;
+        console.log(members);
+      }
+    });
+    await axios
+      .post(laravelRoute + "index.php/setUserGame", {
+        users: members,
+        idGame: idGame,
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    // const dades = new FormData();
+    // dades.append("name", dadesname);
+  }
 
   async function setGameData(game_data, room) {
     const sockets = await socketIO.in(room).fetchSockets();
@@ -211,28 +242,79 @@ socketIO.on("connection", (socket) => {
     sockets.forEach((element) => {
       socketIO.sockets.sockets.get(element.id).data.game_data = game_data;
       socketIO.sockets.sockets.get(element.id).data.idQuestion =
-        game_data.question.idQuestion;
+        game_data.questions[0].id;
       socketIO.sockets.sockets.get(element.id).data.question_at = 0;
       socketIO.sockets.sockets.get(element.id).data.hearts_remaining = 3;
+      socketIO.sockets.sockets.get(element.id).data.idGame = game_data.idGame;
     });
   }
 
   socket.on("check_answer", (data) => {
+    /*
     console.log(
       "idQuestion: " + socket.data.idQuestion,
       "idGame: " + socket.data.game_data.idGame,
       "idUser: " + socket.data.userId,
-      "evalRes: " + data.resultsEval
+      "evalRes: " + data.resultsEval,
+      "evalPassed: " + data.evalPassed
     );
+    */
     axios
       .post(laravelRoute + "index.php/checkAnswer", {
         idQuestion: socket.data.idQuestion,
         idGame: socket.data.game_data.idGame,
         idUser: socket.data.userId,
         evalRes: data.resultsEval,
+        evalPassed: data.evalPassed,
       })
       .then(function (response) {
-        console.log(response);
+        var user_game = response.data.user_game;
+        var game = response.data.game;
+        if (response.data.correct) {
+          socket.data.question_at = user_game.question_at;
+          console.log(socket.data);
+          // Only passes if not dead
+          if (user_game.finished) {
+            // Finish but still don't know if they won
+            if (game.winner_id != undefined) {
+              setWinnerId(socket.data.userId);
+              console.log(lobbies);
+              socketIO.to(socket.data.current_lobby).emit("game_over", {
+                message: `${socket.data.name} won the game`,
+              });
+
+              // AXIOS to updateUserLvl LO MISMO QUE EN SETUSERGAME
+              socketIO.to(socket.id).emit("user_finished", {
+                message: `YOU WON`,
+                stats: {
+                  hearts_remaining: user_game.hearts_remaining,
+                  perks_used: user_game.perks_used,
+                  question_at: socket.data.question_at,
+                },
+              });
+            } else {
+              // FUTURO uwu
+            }
+          } else {
+            sendQuestionDataToUser(
+              socket.id,
+              socket.data.question_at,
+              socket.data.current_lobby
+            );
+          }
+        } else {
+          if (user_game.dead) {
+            socketIO.to(socket.id).emit("user_finished", {
+              message: `YOU LOST`,
+              stats: {
+                hearts_remaining: user_game.hearts_remaining,
+                perks_used: user_game.perks_used,
+                question_at: user_game.question_at,
+              },
+            });
+          }
+        }
+        console.log(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -244,6 +326,26 @@ socketIO.on("connection", (socket) => {
     leaveLobby(socket);
   });
 });
+
+function sendQuestionDataToUser(socketId, questionIndex, currentLobby) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobby_name == currentLobby) {
+      socketIO.to(socketId).emit("question_data", {
+        statement: lobby.game_data.questions[questionIndex].statement,
+        inputs: lobby.game_data.questions[questionIndex].inputs,
+        output: lobby.game_data.questions[questionIndex].outputs[0],
+      });
+    }
+  });
+}
+
+function setWinnerId(winnerId, currentLobby) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobby_name == currentLobby) {
+      lobby.game_data.winner = winnerId;
+    }
+  });
+}
 
 async function leaveLobby(socket) {
   lobbies.forEach((lobby, ind_lobby) => {

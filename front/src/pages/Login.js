@@ -9,6 +9,7 @@ function Login({ socket }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mantenerSesion, setMantenerSesion] = useState(false);
+  const [errorText, setErrorText] = useState("");
   const cookies = new Cookies();
   const navigate = useNavigate();
 
@@ -34,7 +35,7 @@ function Login({ socket }) {
             });
             navigate("/lobbies");
           } else {
-            console.log(data);
+            setErrorText(data.message)
           }
         });
     }
@@ -61,6 +62,8 @@ function Login({ socket }) {
       <h1>LOGIN</h1>
       <br />
       <div className="form__form">
+        <p>{errorText}</p>
+
         <div className="form__inputGroup">
           <input
             id="email"
