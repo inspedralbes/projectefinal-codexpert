@@ -13,15 +13,8 @@ function Register({ socket }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordValidation, setPasswordValidation] = useState("");
-    const [errorText, setErrorText] = useState("");
     const cookies = new Cookies();
     const navigate = useNavigate();
-
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-          setRegistro(registro + 1);
-        }
-      };
 
     useEffect(() => {
         if (registro != 0) {
@@ -44,7 +37,7 @@ function Register({ socket }) {
                     });
                     navigate("/avatarMaker")
                 } else {
-                    setErrorText(data.message)
+                    console.log(data);
                 }
             }
             );
@@ -56,7 +49,6 @@ function Register({ socket }) {
             <h1>REGISTER</h1>
             <br />
             <div className="form__form">
-                <p>{errorText}</p>
                 <div className="form__inputGroup">
                     <input className="form__input" placeholder=" " type="text" onChange={(e) => setUsername(e.target.value)} required></input>
                     <span className="form__inputBar"></span>
@@ -73,7 +65,7 @@ function Register({ socket }) {
                     <label className="form__inputlabel">Password</label>
                 </div>
                 <div className="form__inputGroup">
-                    <input className="form__input" placeholder=" " type="password" onChange={(e) => setPasswordValidation(e.target.value)} onKeyDown={handleKeyDown} required></input>
+                    <input className="form__input" placeholder=" " type="password" onChange={(e) => setPasswordValidation(e.target.value)} required></input>
                     <span className="form__inputBar"></span>
                     <label className="form__inputlabel">Repeat password</label>
                 </div>
@@ -99,7 +91,7 @@ function Register({ socket }) {
                             <span className="circle2" aria-hidden="true">
                                 <span className="icon2 arrow2"></span>
                             </span>
-                            <span className="button-text">REGISTER</span>
+                            <span className="button-text">SUBMIT</span>
                         </button>
                     </div>
                 </div>

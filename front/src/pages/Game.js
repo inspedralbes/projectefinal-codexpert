@@ -6,6 +6,8 @@ import routes from "../index";
 import Chat from "../components/Chat";
 
 function Game({ socket }) {
+  const [messages, setMessages] = useState([]);
+  const [colorTema, setColorTema] = useState(false);
   const [code, setCode] = useState("");
   const [msg, setMsg] = useState("");
   const [qst, setQst] = useState({
@@ -13,7 +15,6 @@ function Game({ socket }) {
     inputs: [""],
     output: "",
   });
-  const [messages, setMessages] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState("");
   const [winnerMessage, setWinnerMessage] = useState("");
@@ -56,7 +57,7 @@ function Game({ socket }) {
     e.preventDefault();
     if (msg != "") {
       socket.emit("chat message", {
-        message: msg,
+        message: msg
       });
       setMsg("");
     }
@@ -86,6 +87,29 @@ function Game({ socket }) {
     });
   }, []);
 
+  useEffect(() => {
+    console.log(qst);
+  }, [qst]);
+
+  useEffect(() => {
+
+    if (colorTema) {
+      document.getElementById('file-window').style.backgroundColor = '#333';
+      document.getElementById('line-numbers').style.backgroundColor = '#222';
+      document.getElementById('file-window').style.color = '#999';
+      document.getElementById('textarea').style.color = '#999';
+      document.getElementById('line-numbers').style.transition = 'all 0.3s';
+      document.getElementById('file-window').style.transition = 'all 0.3s';
+
+    } else {
+      document.getElementById('file-window').style.backgroundColor = '#DDD';
+      document.getElementById('line-numbers').style.backgroundColor = '#CCC';
+      document.getElementById('file-window').style.color = '#666';
+      document.getElementById('textarea').style.color = '#666';
+
+    }
+  }, [colorTema])
+
   return (
     <div className="game">
       {!playable && <div>
@@ -98,27 +122,34 @@ function Game({ socket }) {
       </div>}
       {playable && <div>
         <div className="game__statement">
+          <h2>Statement:</h2>
           <h1 className="game__statementTitle">{qst.statement}</h1>
         </div>
         <div className="game--grid">
           <div className="game__expectedInput">
+            <h2>Our input:</h2>
             <h1>{qst.inputs[0].toString()}</h1>
           </div>
           <div className="game__expectedOutput">
+            <h2>Expected output:</h2>
             <h1>{qst.output.toString()}</h1>
           </div>
         </div>
         <form className="editor" onSubmit={handleSubmit}>
           <div className="input-header">
             <h1>Input</h1>
+            <div className="toggle">
+              <input onClick={() => setColorTema(!colorTema)} type="checkbox" />
+              <label></label>
+            </div>
           </div>
-          <div className="file-window js-view">
+          <div id="file-window" className="file-window js-view">
             let x = [{qst.inputs[0].toString()}]
-            <div className="line-numbers">
-              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />
-              10<br />11<br />12<br />13<br />14<br />15<br />16<br />17<br />18<br />19<br />20
+            <div id="line-numbers" className="line-numbers">
+              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14
             </div>
             <textarea
+              id="textarea"
               className="input-strobe"
               type="text"
               value={code}
@@ -129,12 +160,8 @@ function Game({ socket }) {
             ></textarea>
             <div></div>
             <div className="help">
-              <br />
-            /* <br />
-              This is your code input.
-              <br />
-              You can, we trust you!! <br />
-              */
+                // This is your code input<br />
+            // You can, we trust you!! <br />
             </div>
           </div>
 
@@ -161,7 +188,7 @@ function Game({ socket }) {
         </form>
       </div> */}
       {/* fin del chat uwu */}
-    </div>
+    </div >
   );
 }
 

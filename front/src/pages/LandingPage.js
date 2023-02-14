@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import routes from "../index";
+import logo from '../img/logo.gif'
 
 function App() {
   const cookies = new Cookies();
@@ -30,16 +31,20 @@ function App() {
   }, [])
   return (
     <div>
-      <div>
-        <h1>Landing Page</h1>
+      <div className="landingPage">
+        <img src={logo} alt="codeXpert"></img>
+        <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
+
+        {/* <p className="landingPage__codexpert">CODEPERT</p> */}
+        <br />
         {!login && (
           <Link to="/login">
-            <button>Get Started</button>
+            <button className="pixel-button">Get Started</button>
           </Link>
         )}
         {login && (
           <Link to="/lobbies">
-            <button>Lobbies</button>
+            <button className="pixel-button">Lobbies</button>
           </Link>
         )}
       </div>

@@ -1,9 +1,5 @@
-.lobbies__form {
-    background-color: #5264ae;
-}
-
-.lobbies__form {
-    bottom: 5%;
+#inputLobby {
+    font-size: 25px;
 }
 
 /* =================================Amae================================================ */
@@ -14,11 +10,13 @@ body {
 
 #form {
     /* background: rgba(0, 0, 0, 0.021); */
-    padding: 0.25rem;
+    padding: 20px;
+    width: fit-content;
     position: fixed;
     /* bottom: 0; */
     left: 0;
     right: 0;
+    bottom: 10%;
     display: flex;
     height: 3rem;
     box-sizing: border-box;
@@ -27,18 +25,18 @@ body {
 
 #input {
     border: none;
-    padding: 0 1rem;
     flex-grow: 1;
     border-radius: 2rem;
     margin: 0.25rem;
 }
+
 
 #input:focus {
     outline: none;
 }
 
 #form>button {
-    background: #333;
+    background: #0d6319;
     border: none;
     padding: 0 1rem;
     margin: 0.25rem;
@@ -62,14 +60,17 @@ body {
     background: #efefef;
 }
 
+#input_message {
+    font-size: 10px;
+}
+
 /* ================================================================================= */
 .lobbylist__container {
-    font-family: "lato", sans-serif;
     width: 80%;
     max-height: 80vh;
     margin-left: auto;
     margin-right: auto;
-    background-color: #ffffff50;
+    background-color: #ffffff;
     margin: 0 auto;
     margin-top: 5vh;
     padding: 1vw;
@@ -80,7 +81,7 @@ body {
 }
 
 .lobbies__title {
-    background-color: #5264ae;
+    background-color: #77ae52;
     color: white;
     width: fit-content;
     font-size: 26px;
@@ -97,7 +98,7 @@ body {
     padding: 0;
 }
 
-.connectedUsers__userList{
+.connectedUsers__userList {
     list-style: none;
 }
 
@@ -110,20 +111,7 @@ body {
     margin-bottom: 1vw;
 }
 
-/* .lobbies__reloadButton {
-    float: right;
-    font-size: 3vw;
-    position:relative;
-    color: #002c8c;
-    font-weight: bold;
-}
-
-.lobbies__reloadButton:hover {
-    cursor: pointer;
-} */
-
 .lobbies__table li {
-    border-radius: 3px;
     padding: 25px 15px;
     display: flex;
     justify-content: space-between;
@@ -133,7 +121,7 @@ body {
 
 .lobbies__table .table__header {
     padding: 10px 15px;
-    background: #002c8c;
+    background: #108c00;
     color: white;
     font-size: 14px;
     font-weight: bold;
@@ -149,7 +137,7 @@ body {
 
 .lobbies__table .table__row {
     transition: all 0.2s;
-    background: #32458e;
+    background: #578e32;
     color: white;
     font-weight: bold;
     /* box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1); */
