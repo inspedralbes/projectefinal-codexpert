@@ -8,6 +8,7 @@ use App\Models\Game;
 use App\Models\Question;
 use App\Models\Game_question;
 use App\Models\User_game;
+use App\Models\User;
 
 class GameController extends Controller
 {
@@ -110,7 +111,7 @@ class GameController extends Controller
         $request -> evalPassed; 
 
         if ($request -> evalPassed) {
-            $question = Question::find($request -> idQuestion) -> first();
+            $question = Question::where('id', $request -> idQuestion) -> first();
             $userExpectedOutput = unserialize($question -> userExpectedOutput);
             $testOutput1 = unserialize($question -> testOutput1);
             $testOutput2 = unserialize($question -> testOutput2);
@@ -143,20 +144,22 @@ class GameController extends Controller
         -> where ('user_id', $request -> idUser)
         -> first();
 
-        if ($returnObject -> correct) {
-            $user_game -> question_at = $user_game -> question_at + 1;
-            if ($user_game -> question_at == 5) {
-                $user_game -> finished = true;
-                if ($game -> winner_id == null) {
-                   $game -> winner_id = $request -> idUser;
-                   
+        if ($user_game -> question_at < 5) {
+            if ($returnObject -> correct) {
+                $user_game -> question_at = $user_game -> question_at + 1;
+                if ($user_game -> question_at == 5) {
+                    $user_game -> finished = true;
+                    if ($game -> winner_id == null) {
+                    $game -> winner_id = $request -> idUser;
+                    
+                    }
                 }
-            }
-        } else {
-            $user_game -> hearts_remaining = $user_game -> hearts_remaining - 1;
-            if ($user_game -> hearts_remaining == 0) {
-                $user_game -> finished = true;
-                $user_game -> dead = true;
+            } else {
+                $user_game -> hearts_remaining = $user_game -> hearts_remaining - 1;
+                if ($user_game -> hearts_remaining == 0) {
+                    $user_game -> finished = true;
+                    $user_game -> dead = true;
+                }
             }
         }
 
@@ -167,6 +170,47 @@ class GameController extends Controller
         $returnObject -> game = $game;
 
         return response() -> json($returnObject);
+    }    
+
+    public function updateUserLvl(Request $request)
+    {
+        $updatedProfiles = [];
+        $updatedStats = (object) 
+            ['idUser' => null,
+            'xpEarned' => null,
+            'coinsEarned' => null,
+            'eloEarned' => null,
+            ];
+        $multiplier = 1;
+        $members = $request -> users;
+        $game = Game::where('id', $request -> idGame) -> first();
+        
+        for ($i = 0; $i < count($members); $i++) {
+            $myGame = User_game::where('game_id', $request -> idGame) 
+            -> where('user_id', $members[$i]['idUser'])
+            -> first();
+
+            $myProfile = User::where('id', $members[$i]['idUser']) -> first();
+
+            if ($game -> winner_id == $members[$i]['idUser']) {
+                $multiplier = 2;
+            }
+
+            $myProfile -> xp += ($myGame -> question_at) * $multiplier;
+            $myProfile -> coins += ($myGame -> question_at) * $multiplier;
+            $myProfile -> elo += (($myGame -> question_at) * 2) * $multiplier;
+            
+            $updatedStats -> idUser = $members[$i]['idUser'];
+            $updatedStats -> xpEarned = $myProfile -> xp;
+            $updatedStats -> coinsEarned = $myProfile -> coins;
+            $updatedStats -> eloEarned = $myProfile -> elo;
+
+            $updatedProfiles[$i] = $updatedStats;
+            
+            $myProfile -> save();
+        }
+
+        return response() -> json($updatedProfiles);
     }    
     
 }

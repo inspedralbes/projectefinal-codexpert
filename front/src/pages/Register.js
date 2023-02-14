@@ -90,7 +90,7 @@ function Register({ socket }) {
                     });
                     navigate("/avatarMaker")
                 } else {
-                    setErrorText(data.message)
+                    console.log(data);
                 }
             }
             );
@@ -102,7 +102,6 @@ function Register({ socket }) {
             <h1>REGISTER</h1>
             <br />
             <div className="form__form">
-                <p>{errorText}</p>
                 <div className="form__inputGroup">
                     <input className="form__input" style={{ color: color.username }} placeholder=" " type="text" onChange={(e) => setUserData({ ...userData, username: e.target.value })} required></input>
                     <span className="form__inputBar"></span>
@@ -153,7 +152,7 @@ function Register({ socket }) {
                             <span className="circle2" aria-hidden="true">
                                 <span className="icon2 arrow2"></span>
                             </span>
-                            <span className="button-text">REGISTER</span>
+                            <span className="button-text">SUBMIT</span>
                         </button>
                     </div>
                 </div>
