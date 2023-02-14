@@ -46,4 +46,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/setUserGame', [GameController::class, 'setUserGame']);
 
     Route::post('/checkAnswer', [GameController::class, 'checkAnswer']);
+
+    Route::post('/updateUserLvl', [GameController::class, 'updateUserLvl']);
 });
