@@ -91,7 +91,7 @@ function Register({ socket }) {
                             <span className="circle2" aria-hidden="true">
                                 <span className="icon2 arrow2"></span>
                             </span>
-                            <span className="button-text">REGISTER</span>
+                            <span className="button-text">SUBMIT</span>
                         </button>
                     </div>
                 </div>

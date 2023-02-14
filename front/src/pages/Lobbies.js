@@ -90,7 +90,7 @@ const Lobbies = ({ socket }) => {
     socket.on("game_started", () => {
       navigate("/game");
     });
-    
+
   }, []);
 
   return (
@@ -164,8 +164,7 @@ const Lobbies = ({ socket }) => {
           >
             <label>
               <input
-                id="inputLobby"
-                className="form__inputLobby"
+                className="form__input"
                 autoComplete="off"
                 type="text"
                 value={lobbyName}

@@ -42,7 +42,7 @@ function Login({ socket }) {
 
   useEffect(() => {
     if (mantenerSesion) {
-      document.getElementById("checkboxText").style.color = "#ad7bf8";
+      document.getElementById("checkboxText").style.color = "#3d7934";
       document.getElementById("checkboxText").style.transition = "all 0.3s";
     }
 
