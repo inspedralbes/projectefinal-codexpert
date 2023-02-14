@@ -68,51 +68,47 @@ function Game({ socket }) {
       setMessages(data.messages);
     });
 
-    useEffect(() => {
+    socket.on("question_data", function (data) {
+      setQst(data);
+      setCode("");
+    });
 
-      if (colorTema) {
-        document.getElementById('file-window').style.backgroundColor = '#333';
-        document.getElementById('line-numbers').style.backgroundColor = '#222';
-        document.getElementById('file-window').style.color = '#999';
-        document.getElementById('textarea').style.color = '#999';
-        document.getElementById('line-numbers').style.transition = 'all 0.3s';
-        document.getElementById('file-window').style.transition = 'all 0.3s';
+    socket.on("game_over", function (data) {
+      console.log(data.message);
+      setWinnerMessage(data.message);
+      setPlayable(false)
+    });
 
-      } else {
-        document.getElementById('file-window').style.backgroundColor = '#DDD';
-        document.getElementById('line-numbers').style.backgroundColor = '#CCC';
-        document.getElementById('file-window').style.color = '#666';
-        document.getElementById('textarea').style.color = '#666';
-
-      }
-    }, [colorTema]);
-    useEffect(() => {
-      socket.on("game_data", function (data) {
-        console.log(data);
-        socket.on("question_data", function (data) {
-          setQst(data);
-          setCode("");
-        });
-
-        socket.on("game_over", function (data) {
-          console.log(data.message);
-          setWinnerMessage(data.message);
-          setPlayable(false)
-        });
-
-        socket.on("user_finished", function (data) {
-          console.log(data);
-          setFinished(true);
-          setResult(data.message);
-          setPlayable(false)
-        });
-      });
-    })
+    socket.on("user_finished", function (data) {
+      console.log(data);
+      setFinished(true);
+      setResult(data.message);
+      setPlayable(false)
+    });
   }, []);
 
   useEffect(() => {
     console.log(qst);
   }, [qst]);
+
+  useEffect(() => {
+
+    if (colorTema) {
+      document.getElementById('file-window').style.backgroundColor = '#333';
+      document.getElementById('line-numbers').style.backgroundColor = '#222';
+      document.getElementById('file-window').style.color = '#999';
+      document.getElementById('textarea').style.color = '#999';
+      document.getElementById('line-numbers').style.transition = 'all 0.3s';
+      document.getElementById('file-window').style.transition = 'all 0.3s';
+
+    } else {
+      document.getElementById('file-window').style.backgroundColor = '#DDD';
+      document.getElementById('line-numbers').style.backgroundColor = '#CCC';
+      document.getElementById('file-window').style.color = '#666';
+      document.getElementById('textarea').style.color = '#666';
+
+    }
+  }, [colorTema])
 
   return (
     <div className="game">
@@ -122,27 +118,34 @@ function Game({ socket }) {
       </div>}
       {playable && <div>
         <div className="game__statement">
+          <h2>Statement:</h2>
           <h1 className="game__statementTitle">{qst.statement}</h1>
         </div>
         <div className="game--grid">
           <div className="game__expectedInput">
+            <h2>Our input:</h2>
             <h1>{qst.inputs[0].toString()}</h1>
           </div>
           <div className="game__expectedOutput">
+            <h2>Expected output:</h2>
             <h1>{qst.output.toString()}</h1>
           </div>
         </div>
         <form className="editor" onSubmit={handleSubmit}>
           <div className="input-header">
             <h1>Input</h1>
+            <div className="toggle">
+              <input onClick={() => setColorTema(!colorTema)} type="checkbox" />
+              <label></label>
+            </div>
           </div>
-          <div className="file-window js-view">
+          <div id="file-window" className="file-window js-view">
             let x = [{qst.inputs[0].toString()}]
-            <div className="line-numbers">
-              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />
-              10<br />11<br />12<br />13<br />14<br />15<br />16<br />17<br />18<br />19<br />20
+            <div id="line-numbers" className="line-numbers">
+              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14
             </div>
             <textarea
+              id="textarea"
               className="input-strobe"
               type="text"
               value={code}
@@ -153,9 +156,7 @@ function Game({ socket }) {
             ></textarea>
             <div></div>
             <div className="help">
-              <br />
-              <br />
-            // This is your code input<br />
+                // This is your code input<br />
             // You can, we trust you!! <br />
             </div>
           </div>
@@ -185,9 +186,6 @@ function Game({ socket }) {
       {/* fin del chat uwu */}
     </div >
   );
-
-
-
 }
 
 export default Game;
