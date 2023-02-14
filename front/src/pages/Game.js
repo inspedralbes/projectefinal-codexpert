@@ -165,7 +165,7 @@ function Game({ socket }) {
             </div>
           </div>
 
-          <button className="game__submit" disabled={finished}>
+          <button className="game__submit" disabled={code == ""}>
             Submit
           </button>
         </form>

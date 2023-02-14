@@ -45,6 +45,16 @@ body {
     color: #fff;
 }
 
+#form>button:disabled {
+    background: #0d631852;
+    border: none;
+    padding: 0 1rem;
+    margin: 0.25rem;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+}
+
 #messages {
     list-style-type: none;
     margin: 0;
@@ -70,7 +80,7 @@ body {
     max-height: 80vh;
     margin-left: auto;
     margin-right: auto;
-    background-color: #ffffff;
+    background-color: #ffffff70;
     margin: 0 auto;
     margin-top: 5vh;
     padding: 1vw;

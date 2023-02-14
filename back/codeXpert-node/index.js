@@ -244,7 +244,6 @@ socketIO.on("connection", (socket) => {
       if (lobby.lobby_name == room) {
         members = lobby.members;
         idGame = lobby.game_data.idGame;
-        console.log(""+members);
       }
     });
     await axios
