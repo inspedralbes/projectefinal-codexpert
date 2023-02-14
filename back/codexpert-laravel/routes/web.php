@@ -29,6 +29,8 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/isUserLogged', [AuthController::class, 'isUserLogged']);
 
+    Route::get('/getRanking', [UserController::class, 'getRanking']);
+
     Route::post('/getAvatar', [UserController::class, 'getAvatar']);
 
     Route::post('/setAvatar', [UserController::class, 'setAvatar']);

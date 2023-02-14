@@ -32,4 +32,12 @@ class UserController extends Controller
         }  
         return response() -> json($returnResponse);
     }
+
+    public function getRanking(Request $request)
+    {
+        $ranking = User::orderBy('id', 'DESC')->get();
+
+        return response() -> json($ranking);
+    }    
+
 }
