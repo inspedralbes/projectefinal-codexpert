@@ -98,6 +98,7 @@ class GameController extends Controller
     {
         $returnObject = (object) 
             ['correct'=> false,
+            'testsPassed' => null,
             'user_game'=> null,
             'game' => null
             ];
@@ -113,21 +114,30 @@ class GameController extends Controller
             $userExpectedOutput = unserialize($question -> userExpectedOutput);
             $testOutput1 = unserialize($question -> testOutput1);
             $testOutput2 = unserialize($question -> testOutput2);
+
+            $returnObject -> correct = true;
             
             if ($userExpectedOutput == $request -> evalRes[0]) {
-                $returnObject -> correct1 = true;
+                $returnObject -> testsPassed++;
+            } else {
+                $returnObject -> correct = false;
             }
 
             if ($testOutput1 == $request -> evalRes[1]) {
-                $returnObject -> correct2 = true;
+                $returnObject -> testsPassed++;
+            } else {
+                $returnObject -> correct = false;
             }
 
             if ($testOutput2 == $request -> evalRes [2]) {
-                $returnObject -> correct3 = true;
+                $returnObject -> testsPassed++;
+            } else {
+                $returnObject -> correct = false;
+
             }
         }
 
-        $game = Game::find($request -> idGame) -> first();
+        $game = Game::where('id', $request -> idGame) -> first();
 
         $user_game = User_game::where('game_id', $request -> idGame) 
         -> where ('user_id', $request -> idUser)
@@ -139,6 +149,7 @@ class GameController extends Controller
                 $user_game -> finished = true;
                 if ($game -> winner_id == null) {
                    $game -> winner_id = $request -> idUser;
+                   
                 }
             }
         } else {
