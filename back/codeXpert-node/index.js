@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const axios = require("axios");
 
 const maxMembersOnLobby = 4;
-const laravelRoute = "http://localhost:8000/";
+const laravelRoute = "http://127.0.0.1:8000/";
 
 var lobbies = [];
 var sesiones = [];
