@@ -271,19 +271,50 @@ socketIO.on("connection", (socket) => {
         var user_game = response.data.user_game;
         var game = response.data.game;
         if (response.data.correct) {
-          socket.data.question_at++;
+          socket.data.question_at = user_game.question_at;
           console.log(socket.data);
           // Only passes if not dead
           if (user_game.finished) {
             // Finish but still don't know if they won
             if (game.winner_id != undefined) {
+              setWinnerId(socket.data.userId);
+              console.log(lobbies);
+              socketIO.to(socket.data.current_lobby).emit("game_over", {
+                message: `${socket.data.name} won the game`,
+              });
+
+              // AXIOS to updateUserLvl LO MISMO QUE EN SETUSERGAME
+              socketIO.to(socket.id).emit("user_finished", {
+                message: `YOU WON`,
+                stats: {
+                  hearts_remaining: user_game.hearts_remaining,
+                  perks_used: user_game.perks_used,
+                  question_at: socket.data.question_at,
+                },
+              });
+            } else {
+              // FUTURO uwu
             }
           } else {
-            if (true) {
-            }
+            sendQuestionDataToUser(
+              socket.id,
+              socket.data.question_at,
+              socket.data.current_lobby
+            );
+          }
+        } else {
+          if (user_game.dead) {
+            socketIO.to(socket.id).emit("user_finished", {
+              message: `YOU LOST`,
+              stats: {
+                hearts_remaining: user_game.hearts_remaining,
+                perks_used: user_game.perks_used,
+                question_at: user_game.question_at,
+              },
+            });
           }
         }
-        console.log(response);
+        console.log(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -295,6 +326,26 @@ socketIO.on("connection", (socket) => {
     leaveLobby(socket);
   });
 });
+
+function sendQuestionDataToUser(socketId, questionIndex, currentLobby) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobby_name == currentLobby) {
+      socketIO.to(socketId).emit("question_data", {
+        statement: lobby.game_data.questions[questionIndex].statement,
+        inputs: lobby.game_data.questions[questionIndex].inputs,
+        output: lobby.game_data.questions[questionIndex].outputs[0],
+      });
+    }
+  });
+}
+
+function setWinnerId(winnerId, currentLobby) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobby_name == currentLobby) {
+      lobby.game_data.winner = winnerId;
+    }
+  });
+}
 
 async function leaveLobby(socket) {
   lobbies.forEach((lobby, ind_lobby) => {

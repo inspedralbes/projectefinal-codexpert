@@ -15,6 +15,10 @@ function Game({ socket }) {
   });
   const [messages, setMessages] = useState("");
   const [error, setError] = useState("");
+  const [result, setResult] = useState("");
+  const [winnerMessage, setWinnerMessage] = useState("");
+  const [finished, setFinished] = useState(false);
+  const [playable, setPlayable] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,85 +61,85 @@ function Game({ socket }) {
       setMsg("");
     }
   };
+
   useEffect(() => {
     socket.on("lobby-message", function (data) {
       setMessages(data.messages);
     });
-  }, []);
 
-  useEffect(() => {
     socket.on("question_data", function (data) {
-      console.log(data);
       setQst(data);
+      setCode("");
+    });
+
+    socket.on("game_over", function (data) {
+      console.log(data.message);
+      setWinnerMessage(data.message);
+      setPlayable(false)
+    });
+
+    socket.on("user_finished", function (data) {
+      console.log(data);
+      setFinished(true);
+      setResult(data.message);
+      setPlayable(false)
     });
   }, []);
 
   return (
     <div className="game">
-      <div className="game__statement">
-        <h1 className="game__statementTitle">{qst.statement}</h1>
-      </div>
-      <div className="game--grid">
-        <div className="game__expectedInput">
-          <h1>{qst.inputs[0].toString()}</h1>
+      {!playable && <div>
+        <h1>{result}</h1>
+        <h2>{winnerMessage}</h2>
+      </div>}
+      {playable && <div>
+        <div className="game__statement">
+          <h1 className="game__statementTitle">{qst.statement}</h1>
         </div>
-        <div className="game__expectedOutput">
-          <h1>{qst.output.toString()}</h1>
-        </div>
-      </div>
-      <form className="editor" onSubmit={handleSubmit}>
-        <div className="input-header">
-          <h1>Input</h1>
-        </div>
-        <div className="file-window js-view">
-          let x = [{qst.inputs[0].toString()}]
-          <div className="line-numbers">
-            1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />
-            10
-            <br />
-            11
-            <br />
-            12
-            <br />
-            13
-            <br />
-            14
-            <br />
-            15
-            <br />
-            16
-            <br />
-            17
-            <br />
-            18
-            <br />
-            19
-            <br />
-            20
+        <div className="game--grid">
+          <div className="game__expectedInput">
+            <h1>{qst.inputs[0].toString()}</h1>
           </div>
-          <textarea
-            className="input-strobe"
-            type="text"
-            value={code}
-            placeholder="Type in your code :)"
-            onChange={(e) => {
-              setCode(e.target.value);
-            }}
-          ></textarea>
-          <div></div>
-          <div className="help">
-            <br />
+          <div className="game__expectedOutput">
+            <h1>{qst.output.toString()}</h1>
+          </div>
+        </div>
+        <form className="editor" onSubmit={handleSubmit}>
+          <div className="input-header">
+            <h1>Input</h1>
+          </div>
+          <div className="file-window js-view">
+            let x = [{qst.inputs[0].toString()}]
+            <div className="line-numbers">
+              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />
+              10<br />11<br />12<br />13<br />14<br />15<br />16<br />17<br />18<br />19<br />20
+            </div>
+            <textarea
+              className="input-strobe"
+              type="text"
+              value={code}
+              placeholder="Type in your code :)"
+              onChange={(e) => {
+                setCode(e.target.value);
+              }}
+            ></textarea>
+            <div></div>
+            <div className="help">
+              <br />
             /* <br />
-            This is your code input.
-            <br />
-            You can, we trust you!! <br />
-            */
+              This is your code input.
+              <br />
+              You can, we trust you!! <br />
+              */
+            </div>
           </div>
-        </div>
 
-        <button className="game__submit">Submit</button>
-      </form>
-      {error != "" && <div>{error}</div>}
+          <button className="game__submit" disabled={finished}>
+            Submit
+          </button>
+        </form>
+        {error != "" && <div>{error}</div>}
+      </div>}
       {/* Chat uwu */}
       {/* <div className="lobby__chat chat">
         <h3 className="chat__title">Game chat</h3>
