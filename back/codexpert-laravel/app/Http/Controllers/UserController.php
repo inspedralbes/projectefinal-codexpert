@@ -35,7 +35,7 @@ class UserController extends Controller
 
     public function getRanking(Request $request)
     {
-        $ranking = User::orderBy('id', 'DESC')->get();
+        $ranking = User::orderBy('elo', 'DESC')->get();
 
         return response() -> json($ranking);
     }    
