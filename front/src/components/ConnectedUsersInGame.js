@@ -7,6 +7,7 @@ function ConnectedUsersInGame({ socket }) {
     useEffect(() => {
         socket.on("lobby user list", (data) => {
             setUserList(data.list);
+            console.log(userList);
         });
     })
 
@@ -17,14 +18,46 @@ function ConnectedUsersInGame({ socket }) {
                 {userList.map((user, index) => {
                     return (
                         <div className="userList__item item" key={index}>
-                            <img
-                                src={user.avatar}
-                                width="50px"
-                                className="item__image"
-                                alt={user.name + "'s avatar"}
-                            ></img>
-                            {user.name}
-                            {user.hearts_remaining != -1 && <a>{user.hearts_remaining}</a>}
+                            <div>{user.name}</div>
+                            <div> {user.hearts_remaining > 0 &&
+                                <img
+                                    src={user.avatar}
+                                    width="50px"
+                                    className="item__image"
+                                    alt={user.name + "'s avatar"}
+                                ></img>}
+
+                                {user.hearts_remaining == 0 &&
+                                    <img src={require('../img/hearts/skull.gif')}
+                                        width="50px"
+                                        className="item__image"
+                                        alt={"user lost"} />}
+                            </div>
+
+                            <div>
+                                {user.hearts_remaining == 3 &&
+                                    <img src={require('../img/hearts/three_hearts.png')}
+                                        height="50px"
+                                        className="item__image"
+                                        alt={user.hearts_remaining + " hearts remaining"} />}
+
+                                {user.hearts_remaining == 2 &&
+                                    <img src={require('../img/hearts/two_hearts.gif')}
+                                        height="50px"
+                                        className="item__image"
+                                        alt={user.hearts_remaining + " hearts remaining"} />}
+
+                                {user.hearts_remaining == 1 &&
+                                    <img src={require('../img/hearts/one_heart.gif')}
+                                        height="50px"
+                                        className="item__image"
+                                        alt={user.hearts_remaining + " hearts remaining"} />}
+                            </div>
+
+                            <div>
+                                Level: {user.question_at + 1}
+                            </div>
+
                         </div>
                     );
                 })}

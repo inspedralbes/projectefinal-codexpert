@@ -257,6 +257,10 @@ body {
     /* background-color: #ffffff; */
 }
 
+.chat__chatbox{
+    bottom: 0;
+}
+
 @media all and (max-width: 767px) {
     .lobbies__table .table__header {
         display: none;

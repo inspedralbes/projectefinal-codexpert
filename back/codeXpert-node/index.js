@@ -97,6 +97,7 @@ socketIO.on("connection", (socket) => {
         socket.data.name = response.data.name;
         socket.data.avatar = response.data.avatar;
         socket.data.hearts_remaining = -1
+        socket.data.question_at = -1
       })
       .catch(function (error) {
         console.log(error);
@@ -211,6 +212,7 @@ socketIO.on("connection", (socket) => {
           addMessage(`${socket.data.name} answered question ${user_game.question_at} correctly.`, socket.data.current_lobby)
 
           socket.data.question_at = user_game.question_at;
+          sendUserList(socket.data.current_lobby)
           // console.log(socket.data);
           // Only passes if not dead
           if (user_game.finished) {
@@ -483,7 +485,8 @@ async function sendUserList(room) {
     list.push({
       name: socketIO.sockets.sockets.get(element.id).data.name,
       avatar: socketIO.sockets.sockets.get(element.id).data.avatar,
-      hearts_remaining: socketIO.sockets.sockets.get(element.id).data.hearts_remaining
+      hearts_remaining: socketIO.sockets.sockets.get(element.id).data.hearts_remaining,
+      question_at: socketIO.sockets.sockets.get(element.id).data.question_at
     });
   });
 

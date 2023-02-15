@@ -4,7 +4,7 @@ import "../game.css";
 import "../Lobbies.css";
 import routes from "../index";
 import Chat from "../components/Chat";
-import ConnectedUsers from "../components/ConnectedUsers";
+import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 
 function Game({ socket }) {
   const [lobbyName, setLobbyName] = useState("");
@@ -152,7 +152,7 @@ function Game({ socket }) {
         <div className="game__container ">
 
           <div className="container__left">
-            <ConnectedUsers socket={socket} ></ConnectedUsers>
+            <ConnectedUsersInGame socket={socket} ></ConnectedUsersInGame>
             <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
           </div>
 
