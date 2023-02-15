@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import routes from "../index";
 import { Blocks } from 'react-loader-spinner'
+import lobbyTitle from '../img/lobbies.gif'
+
 
 
 
@@ -129,14 +131,13 @@ const Lobbies = ({ socket }) => {
         {!joinedLobby && (
           <div id="lobbyList" className="lobbies__lobbylist lobbylist">
             <div className="lobbylist__container">
-              <h2
+              <img
                 className="lobbies__title"
-                onClick={() => {
+                src={lobbyTitle} alt="LOBBIES"
+              />
+              {/* onClick={() => {
                   socket.emit("hello", "gimme gimme");
-                }}
-              >
-                Lobby list
-              </h2>
+                }} */}
               <ul className="lobbies__table table">
                 <li className="table__header">
                   <div className="col col-1">ID</div>
@@ -189,7 +190,7 @@ const Lobbies = ({ socket }) => {
             </div>
             <form
               id="form"
-              className="lobbies__form form"
+              className="lobbies__form"
               onSubmit={handleSubmit}
             >
               <label>

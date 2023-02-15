@@ -4,7 +4,7 @@
 }
 
 :root {
-    --pixel-bg: #8c6db4;
+    --pixel-bg: #75b152;
     /* ↑ Inner background color */
 
     --pixel-border: #8c6db4;
@@ -25,13 +25,41 @@ body {
 }
 
 .game {
-    background-color: #5a59a5;
+    background-color: #dcffd1;
     margin: 3vh auto;
     font-size: 20px;
     text-align: center;
     padding: 30px;
     width: 90%;
     color: #252525;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    position: relative;
+}
+
+.game::after {
+    background-color: #dcffd1;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game::before {
+    background-color: #dcffd1;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
 }
 
 .game--grid {
@@ -54,66 +82,40 @@ body {
     background: var(--pixel-bg);
     margin: 50px;
     padding: 10px;
-    box-shadow:
-
-        /* Inner Background Color */
-        0 calc(var(--pixel) * -3) 0 calc(var(--pixel) * -1) var(--pixel-bg),
-        0 calc(var(--pixel) * 3) 0 calc(var(--pixel) * -1) var(--pixel-bg),
-        0 calc(var(--pixel) * -6) 0 calc(var(--pixel) * -2) var(--pixel-bg),
-        0 calc(var(--pixel) * 6) 0 calc(var(--pixel) * -2) var(--pixel-bg),
-        0 calc(var(--pixel) * -9) 0 calc(var(--pixel) * -4) var(--pixel-bg),
-        0 calc(var(--pixel) * 9) 0 calc(var(--pixel) * -4) var(--pixel-bg),
-        0 calc(var(--pixel) * -12) 0 calc(var(--pixel) * -6) var(--pixel-bg),
-        0 calc(var(--pixel) * 12) 0 calc(var(--pixel) * -6) var(--pixel-bg),
-
-        /* Pixel Border Layer 1 */
-        calc(var(--pixel) * -1) 0 0 0 var(--pixel-border),
-        var(--pixel) 0 0 0 var(--pixel-border),
-        0 calc(var(--pixel) * -2) 0 0 var(--pixel-border),
-        0 calc(var(--pixel) * 2) 0 0 var(--pixel-border),
-        0 calc(var(--pixel) * -5) 0 calc(var(--pixel) * -1) var(--pixel-border),
-        0 calc(var(--pixel) * 5) 0 calc(var(--pixel) * -1) var(--pixel-border),
-        0 calc(var(--pixel) * -7) 0 calc(var(--pixel) * -2) var(--pixel-border),
-        0 calc(var(--pixel) * 7) 0 calc(var(--pixel) * -2) var(--pixel-border),
-        0 calc(var(--pixel) * -10) 0 calc(var(--pixel) * -4) var(--pixel-border),
-        0 calc(var(--pixel) * 10) 0 calc(var(--pixel) * -4) var(--pixel-border),
-        0 calc(var(--pixel) * -13) 0 calc(var(--pixel) * -6) var(--pixel-border),
-        0 calc(var(--pixel) * 13) 0 calc(var(--pixel) * -6) var(--pixel-border),
-
-        /* Pixel Border Layer 2 */
-        calc(var(--pixel) * -2) 0 0 0 var(--pixel-border-2),
-        calc(var(--pixel) * 2) 0 0 0 var(--pixel-border-2),
-        0 calc(var(--pixel) * -1) 0 var(--pixel) var(--pixel-border-2),
-        0 var(--pixel) 0 var(--pixel) var(--pixel-border-2),
-        0 calc(var(--pixel) * -4) 0 0 var(--pixel-border-2),
-        0 calc(var(--pixel) * 4) 0 0 var(--pixel-border-2),
-        0 calc(var(--pixel) * -6) 0 calc(var(--pixel) * -1) var(--pixel-border-2),
-        0 calc(var(--pixel) * 6) 0 calc(var(--pixel) * -1) var(--pixel-border-2),
-        0 calc(var(--pixel) * -8) 0 calc(var(--pixel) * -2) var(--pixel-border-2),
-        0 calc(var(--pixel) * 8) 0 calc(var(--pixel) * -2) var(--pixel-border-2),
-        0 calc(var(--pixel) * -11) 0 calc(var(--pixel) * -4) var(--pixel-border-2),
-        0 calc(var(--pixel) * 11) 0 calc(var(--pixel) * -4) var(--pixel-border-2),
-        0 calc(var(--pixel) * -14) 0 calc(var(--pixel) * -6) var(--pixel-border-2),
-        0 calc(var(--pixel) * 14) 0 calc(var(--pixel) * -6) var(--pixel-border-2),
-
-        /* Border Layer 3: --pixel-border-3 */
-        calc(var(--pixel) * -3) 0 0 0 var(--pixel-border-3),
-        calc(var(--pixel) * 3) 0 0 0 var(--pixel-border-3),
-        0 0 0 calc(var(--pixel) * 2) var(--pixel-border-3),
-        0 calc(var(--pixel) * -3) 0 var(--pixel) var(--pixel-border-3),
-        0 calc(var(--pixel) * 3) 0 var(--pixel) var(--pixel-border-3),
-        0 calc(var(--pixel) * -5) 0 0 var(--pixel-border-3),
-        0 calc(var(--pixel) * 5) 0 0 var(--pixel-border-3),
-        0 calc(var(--pixel) * -7) 0 calc(var(--pixel) * -1) var(--pixel-border-3),
-        0 calc(var(--pixel) * 7) 0 calc(var(--pixel) * -1) var(--pixel-border-3),
-        0 calc(var(--pixel) * -9) 0 calc(var(--pixel) * -2) var(--pixel-border-3),
-        0 calc(var(--pixel) * 9) 0 calc(var(--pixel) * -2) var(--pixel-border-3),
-        0 calc(var(--pixel) * -12) 0 calc(var(--pixel) * -4) var(--pixel-border-3),
-        0 calc(var(--pixel) * 12) 0 calc(var(--pixel) * -4) var(--pixel-border-3),
-        0 calc(var(--pixel) * -15) 0 calc(var(--pixel) * -6) var(--pixel-border-3),
-        0 calc(var(--pixel) * 15) 0 calc(var(--pixel) * -6) var(--pixel-border-3);
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
 }
 
+.game__statement::after,
+.game__expectedOutput::after,
+.game__expectedInput::after {
+    background-color: var(--pixel-bg);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__statement::before,
+.game__expectedOutput::before,
+.game__expectedInput::before {
+    background-color: var(--pixel-bg);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
 
 /* ======================================================================================= */
 
@@ -127,13 +129,41 @@ h2 {
 }
 
 .editor {
-    position: relative;
     text-align: left;
     width: 50%;
     margin: 0 auto;
-    border: solid 10px #00000059;
+    padding: 30px;
     border-radius: 4px;
     overflow: hidden;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
+}
+
+.editor::after {
+    background-color: #6e41a1;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.editor::before {
+    background-color: #6e41a1;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
 }
 
 .editor * {
