@@ -18,8 +18,7 @@ function Game({ socket }) {
   const [error, setError] = useState("");
   const [result, setResult] = useState("");
   const [winnerMessage, setWinnerMessage] = useState("");
-  const [inputQuestion, setInputQuestion] = useState("");
-  const [finished, setFinished] = useState(false);
+  // const [finished, setFinished] = useState(false);
   const [playable, setPlayable] = useState(true);
   const [rewards, setRewards] = useState({
     xpEarned: "",
@@ -77,7 +76,6 @@ function Game({ socket }) {
     socket.on("question_data", function (data) {
       setQst(data);
       setCode("");
-      setInputQuestion(qst.inputs[0])
     });
 
     socket.on("game_over", function (data) {
@@ -88,7 +86,7 @@ function Game({ socket }) {
 
     socket.on("user_finished", function (data) {
       console.log(data);
-      setFinished(true);
+      // setFinished(true);
       setResult(data.message);
       setPlayable(false)
     });
