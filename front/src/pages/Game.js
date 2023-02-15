@@ -27,6 +27,7 @@ function Game({ socket }) {
   });
   const [rivalCorrect, setRivalCorrect] = useState("");
   const [rivalWrong, setRivalWrong] = useState("");
+  const [otherLost, setOtherLost] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -101,6 +102,11 @@ function Game({ socket }) {
     socket.on("answered_wrong", function (data) {
       console.log(data);
       setRivalWrong(data.message);
+    });
+
+    socket.on("other_lost", function (data) {
+      console.log(data);
+      setOtherLost(data.message);
     });
 
     socket.on("stats", (data) => {

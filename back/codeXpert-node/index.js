@@ -245,6 +245,10 @@ socketIO.on("connection", (socket) => {
           });
 
           if (user_game.dead) {
+            socket.to(socket.data.current_lobby).emit("other_lost", {
+              message: `${socket.data.name} has lost!`,
+            });
+
             socketIO.to(socket.id).emit("user_finished", {
               message: `YOU LOST`,
               stats: {
