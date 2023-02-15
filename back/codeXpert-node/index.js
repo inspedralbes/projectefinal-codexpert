@@ -202,6 +202,10 @@ socketIO.on("connection", (socket) => {
         var user_game = response.data.user_game;
         var game = response.data.game;
         if (response.data.correct) {
+          socket.to(socket.data.current_lobby).emit("answered_correctly", {
+            message: `${socket.data.name} answered question ${user_game.question_at + 1} correctly.`,
+          });
+
           socket.data.question_at = user_game.question_at;
           // console.log(socket.data);
           // Only passes if not dead
@@ -236,6 +240,10 @@ socketIO.on("connection", (socket) => {
             );
           }
         } else {
+          socket.to(socket.data.current_lobby).emit("answered_wrong", {
+            message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
+          });
+
           if (user_game.dead) {
             socketIO.to(socket.id).emit("user_finished", {
               message: `YOU LOST`,

@@ -25,6 +25,8 @@ function Game({ socket }) {
     coinsEarned: "",
     eloEarned: "",
   });
+  const [rivalCorrect, setRivalCorrect] = useState("");
+  const [rivalWrong, setRivalWrong] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -89,6 +91,16 @@ function Game({ socket }) {
       setFinished(true);
       setResult(data.message);
       setPlayable(false)
+    });
+
+    socket.on("answered_correctly", function (data) {
+      console.log(data);
+      setRivalCorrect(data.message);
+    });
+
+    socket.on("answered_wrong", function (data) {
+      console.log(data);
+      setRivalWrong(data.message);
     });
 
     socket.on("stats", (data) => {
