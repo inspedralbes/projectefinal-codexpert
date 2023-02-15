@@ -4,12 +4,12 @@ import "../game.css";
 import "../Lobbies.css";
 import routes from "../index";
 import Chat from "../components/Chat";
+import ConnectedUsers from "../components/ConnectedUsers";
 
 function Game({ socket }) {
-  const [messages, setMessages] = useState([]);
+  const [lobbyName, setLobbyName] = useState("");
   const [colorTema, setColorTema] = useState(false);
   const [code, setCode] = useState("");
-  const [msg, setMsg] = useState("");
   const [qst, setQst] = useState({
     statement: "",
     inputs: [""],
@@ -18,13 +18,16 @@ function Game({ socket }) {
   const [error, setError] = useState("");
   const [result, setResult] = useState("");
   const [winnerMessage, setWinnerMessage] = useState("");
-  const [finished, setFinished] = useState(false);
+  // const [finished, setFinished] = useState(false);
   const [playable, setPlayable] = useState(true);
   const [rewards, setRewards] = useState({
-    xpEarned: "",
-    coinsEarned: "",
-    eloEarned: "",
+    xpEarned: 0,
+    coinsEarned: 0,
+    eloEarned: 0,
   });
+  const [rivalCorrect, setRivalCorrect] = useState("");
+  const [rivalWrong, setRivalWrong] = useState("");
+  const [otherLost, setOtherLost] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,13 +35,13 @@ function Game({ socket }) {
       let resultsEval = [];
       let evalPassed = true;
       qst.inputs.forEach((inp) => {
-        let x = inp;
+        let input = inp;
         try {
           let res = eval(code);
           resultsEval.push(res);
-          console.log(qst.inputs[1]);
+          // console.log(qst.inputs[1]);
           // let x = qst.testInput1;
-          console.log(code);
+          // console.log(code);
           // console.log(qst.input);
           console.log(resultsEval);
           setError("");
@@ -58,20 +61,11 @@ function Game({ socket }) {
     }
   };
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (msg != "") {
-      socket.emit("chat message", {
-        message: msg
-      });
-      setMsg("");
-    }
-  };
-
   useEffect(() => {
-    socket.on("lobby-message", function (data) {
-      setMessages(data.messages);
-    });
+
+    socket.on("lobby_name", (data) => {
+      setLobbyName(data.lobby)
+    })
 
     socket.on("question_data", function (data) {
       setQst(data);
@@ -86,9 +80,24 @@ function Game({ socket }) {
 
     socket.on("user_finished", function (data) {
       console.log(data);
-      setFinished(true);
+      // setFinished(true);
       setResult(data.message);
       setPlayable(false)
+    });
+
+    socket.on("answered_correctly", function (data) {
+      console.log(data);
+      setRivalCorrect(data.message);
+    });
+
+    socket.on("answered_wrong", function (data) {
+      console.log(data);
+      setRivalWrong(data.message);
+    });
+
+    socket.on("other_lost", function (data) {
+      console.log(data);
+      setOtherLost(data.message);
     });
 
     socket.on("stats", (data) => {
@@ -101,9 +110,9 @@ function Game({ socket }) {
     })
   }, []);
 
-  useEffect(() => {
-    console.log(qst);
-  }, [qst]);
+  // useEffect(() => {
+  //   console.log(qst);
+  // }, [qst]);
 
   useEffect(() => {
 
@@ -125,11 +134,11 @@ function Game({ socket }) {
   }, [colorTema])
 
   return (
-    <div className="game">
+    <div>
       {!playable && <div>
         <h1>{result}</h1>
         <h2>{winnerMessage}</h2>
-        <ul>
+        <ul className="game__rewards">
           <li>XP: {rewards.xpEarned}</li>
           <li>Coins: {rewards.coinsEarned}</li>
           <li>Elo: {rewards.eloEarned}</li>
@@ -139,75 +148,87 @@ function Game({ socket }) {
           <button className="pixel-button">LOBBY LIST</button>
         </p>
       </div>}
-      {playable && <div>
-        <div className="game__statement">
-          <h2>Statement:</h2>
-          <h1 className="game__statementTitle">{qst.statement}</h1>
-        </div>
-        <div className="game--grid">
-          <div className="game__expectedInput">
-            <h2>Our input:</h2>
-            <h1>{qst.inputs[0].toString()}</h1>
-          </div>
-          <div className="game__expectedOutput">
-            <h2>Expected output:</h2>
-            <h1>{qst.output.toString()}</h1>
-          </div>
-        </div>
-        <form className="editor" onSubmit={handleSubmit}>
-          <div className="input-header">
-            <h1>Input</h1>
-            <div className="toggle">
-              <input onClick={() => setColorTema(!colorTema)} type="checkbox" />
-              <label></label>
-            </div>
-          </div>
-          <div id="file-window" className="file-window js-view">
-            let x = [{qst.inputs[0].toString()}]
-            <div id="line-numbers" className="line-numbers">
-              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14
-            </div>
-            <textarea
-              id="textarea"
-              className="input-strobe"
-              type="text"
-              value={code}
-              placeholder="Type in your code :)"
-              onChange={(e) => {
-                setCode(e.target.value);
-              }}
-            ></textarea>
-            <div></div>
-            <div className="help">
-                // This is your code input<br />
-            // You can, we trust you!! <br />
-            </div>
+      {playable &&
+        <div className="game__container ">
+
+          <div className="container__left">
+            <ConnectedUsers socket={socket} ></ConnectedUsers>
+            <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
           </div>
 
-          <button className="game__submit" disabled={code == ""}>
-            Submit
-          </button>
-        </form>
-        {error != "" && <div>{error}</div>}
-      </div>}
-      {/* Chat uwu */}
-      {/* <div className="lobby__chat chat">
-        <h3 className="chat__title">Game chat</h3>
-        <div className="chat__body">
-          <Chat className="chat__chatbox" messages={messages}></Chat>
+          <div className="container__right">
+            <div className="game__statement">
+              <h2>Statement:</h2>
+              <h1 className="game__statementTitle">{qst.statement}</h1>
+            </div>
+
+            <div className="game--grid">
+              <div className="game__expectedInput">
+                <h2>Example input:</h2>
+                <h1>{qst.inputs[0].toString()}</h1>
+              </div>
+
+              <div className="game__expectedOutput">
+                <h2>Example output:</h2>
+                <h1>{qst.output.toString()}</h1>
+              </div>
+            </div>
+
+            <form className="editor" onSubmit={handleSubmit}>
+
+              <div className="input-header">
+                <h1>Input</h1>
+                <div className="toggle">
+                  <input onClick={() => setColorTema(!colorTema)} type="checkbox" />
+                  <label></label>
+                </div>
+              </div>
+
+              <div id="file-window" className="file-window js-view">
+
+                <div id="line-numbers" className="line-numbers">
+                  1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />
+                  11<br />12<br />13<br />14<br />15<br />16<br />17<br />
+                </div>
+
+                {`let input = [${qst.inputs[0].toString()}];`}<br />
+                {"function yourCode(input) {"}<br />
+
+                <textarea
+                  id="textarea"
+                  className="input-strobe"
+                  type="text"
+                  value={code}
+                  placeholder="Type in your code :)"
+                  onChange={(e) => {
+                    setCode(e.target.value);
+                  }}
+                ></textarea>
+                <br />
+                {"return input;"}<br />
+                {"}"}<br />
+                {"yourCode(input);"}
+
+                <div className="help">
+                  // This is your code input<br />
+                  // You can, we trust you!! <br />
+                </div>
+
+              </div>
+
+              <button className="game__submit" disabled={code == ""}>
+                Submit
+              </button>
+            </form>
+
+            {error != "" && <div>{error}</div>}
+
+          </div>
         </div>
-        <form id="form" onSubmit={handleSendMessage}>
-          <input
-            id="input_message"
-            autoComplete="off"
-            value={msg}
-            onChange={(e) => setMsg(e.target.value)}
-          />
-          <button>Send</button>
-        </form>
-      </div> */}
-      {/* fin del chat uwu */}
+
+      }
     </div >
+
   );
 }
 

@@ -96,6 +96,7 @@ socketIO.on("connection", (socket) => {
         socket.data.userId = response.data.id;
         socket.data.name = response.data.name;
         socket.data.avatar = response.data.avatar;
+        socket.data.hearts_remaining = -1
       })
       .catch(function (error) {
         console.log(error);
@@ -159,16 +160,17 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("chat message", (data) => {
-    // console.log(data.message);
-    // console.log(data.room);
-    lobbies.forEach((element) => {
-      if (element.lobby_name == data.room) {
-        element.messages.push(socket.data.name + ": " + data.message);
+    addMessage(`${socket.data.name}: ${data.message}`, data.room);
+  });
+
+  function addMessage(msg, room) {
+    lobbies.forEach((lobby) => {
+      if (lobby.lobby_name == room) {
+        lobby.messages.push(msg);
       }
     });
-    sendMessagesToLobby(data.room);
-    //
-  });
+    sendMessagesToLobby(room);
+  }
 
   socket.on("start_game", () => {
     lobbies.forEach((lobby) => {
@@ -202,6 +204,12 @@ socketIO.on("connection", (socket) => {
         var user_game = response.data.user_game;
         var game = response.data.game;
         if (response.data.correct) {
+          socket.to(socket.data.current_lobby).emit("answered_correctly", {
+            message: `${socket.data.name} answered question ${user_game.question_at} correctly.`,
+          });
+
+          addMessage(`${socket.data.name} answered question ${user_game.question_at} correctly.`, socket.data.current_lobby)
+
           socket.data.question_at = user_game.question_at;
           // console.log(socket.data);
           // Only passes if not dead
@@ -236,7 +244,21 @@ socketIO.on("connection", (socket) => {
             );
           }
         } else {
+          socket.to(socket.data.current_lobby).emit("answered_wrong", {
+            message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
+          });
+
+          addMessage(`${socket.data.name} answered question ${user_game.question_at + 1} wrong.`, socket.data.current_lobby)
+          socket.data.hearts_remaining--
+          sendUserList(socket.data.current_lobby)
+
           if (user_game.dead) {
+            socket.to(socket.data.current_lobby).emit("other_lost", {
+              message: `${socket.data.name} has lost!`,
+            });
+
+            addMessage(`${socket.data.name} has lost!`, socket.data.current_lobby)
+
             socketIO.to(socket.id).emit("user_finished", {
               message: `YOU LOST`,
               stats: {
@@ -275,6 +297,13 @@ async function startGame(room) {
 
           socketIO.to(room).emit("game_started");
           console.log(lobby.game_data);
+          socketIO.to(room).emit("lobby_name", {
+            lobby: room
+          });
+          socketIO.sockets.in(room).emit("lobby-message", {
+            messages: lobby.messages,
+          });
+          sendUserList(room)
           socketIO.to(room).emit("question_data", {
             statement: lobby.game_data.questions[0].statement,
             inputs: lobby.game_data.questions[0].inputs,
@@ -454,6 +483,7 @@ async function sendUserList(room) {
     list.push({
       name: socketIO.sockets.sockets.get(element.id).data.name,
       avatar: socketIO.sockets.sockets.get(element.id).data.avatar,
+      hearts_remaining: socketIO.sockets.sockets.get(element.id).data.hearts_remaining
     });
   });
 

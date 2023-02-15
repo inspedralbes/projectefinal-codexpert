@@ -51,7 +51,7 @@ root.render(
           <Route path="game" element={<Game socket={socket} />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
-          <Route path="avatarMaker" element={<AvatarMaker socket={socket}/>} />
+          <Route path="avatarMaker" element={<AvatarMaker socket={socket} />} />
           <Route path="lobbies" element={<Lobbies socket={socket} />}></Route>
           <Route path="404" element={<Error404 />}></Route>
           <Route path="*" element={<Navigate to="/404" />} />
