@@ -18,6 +18,7 @@ function Game({ socket }) {
   const [error, setError] = useState("");
   const [result, setResult] = useState("");
   const [winnerMessage, setWinnerMessage] = useState("");
+  const [inputQuestion, setInputQuestion] = useState("");
   const [finished, setFinished] = useState(false);
   const [playable, setPlayable] = useState(true);
   const [rewards, setRewards] = useState({
@@ -32,7 +33,7 @@ function Game({ socket }) {
       let resultsEval = [];
       let evalPassed = true;
       qst.inputs.forEach((inp) => {
-        let x = inp;
+        let input = inp;
         try {
           let res = eval(code);
           resultsEval.push(res);
@@ -76,6 +77,7 @@ function Game({ socket }) {
     socket.on("question_data", function (data) {
       setQst(data);
       setCode("");
+      setInputQuestion(qst.inputs[0])
     });
 
     socket.on("game_over", function (data) {
@@ -163,10 +165,13 @@ function Game({ socket }) {
             </div>
           </div>
           <div id="file-window" className="file-window js-view">
-            let x = [{qst.inputs[0].toString()}]
+
             <div id="line-numbers" className="line-numbers">
-              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14
+              1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />
+              11<br />12<br />13<br />14<br />15<br />16<br />17<br />
             </div>
+            {`let input = [${qst.inputs[0].toString()}];`}<br />
+            {"function yourCode(input) {"}<br />
             <textarea
               id="textarea"
               className="input-strobe"
@@ -176,7 +181,10 @@ function Game({ socket }) {
               onChange={(e) => {
                 setCode(e.target.value);
               }}
-            ></textarea>
+            ></textarea><br />
+            {"return input;"}<br />
+            {"}"}<br />
+            {"yourCode(input);"}
             <div></div>
             <div className="help">
                 // This is your code input<br />
