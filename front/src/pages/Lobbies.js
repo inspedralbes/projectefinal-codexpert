@@ -9,6 +9,8 @@ import Cookies from "universal-cookie";
 import routes from "../index";
 import { Blocks } from 'react-loader-spinner'
 import lobbyTitle from '../img/lobbies.gif'
+import arrow from '../img/arrow.gif'
+
 
 
 
@@ -110,6 +112,7 @@ const Lobbies = ({ socket }) => {
         <IconUser></IconUser>
         {!joinedLobby && (
           <div id="lobbyList" className="lobbies__lobbylist lobbylist">
+
             <div className="lobbylist__container">
               <img
                 className="lobbies__title"
@@ -126,6 +129,15 @@ const Lobbies = ({ socket }) => {
                   <div className="col col-4">Players</div>
                 </li>
                 <div className="table__body">
+                  {lobbyList.length == 0 &&
+                    <div className="lobbies__noLobbies">
+                      <h1>There are no lobbies yet</h1>
+                      <h2>You can create one!!</h2>
+                      <img
+                        src={arrow} alt=" " height="100px"
+                      />
+                    </div>
+                  }
                   {lobbyList.map((element, index) => {
                     return (
                       <li
@@ -164,32 +176,34 @@ const Lobbies = ({ socket }) => {
                         </div>
                       </li>
                     );
+
                   })}
                 </div>
               </ul>
+
+              <form
+                className="lobbies__form"
+                onSubmit={handleSubmit}
+              >
+                <div className="lobbiesForm__inputGroup">
+                  <input
+                    id="email"
+                    className="lobbiesForm__input"
+                    value={lobbyName}
+                    placeholder="CREATE LOBBY"
+                    type="text"
+                    onChange={(e) => {
+                      setLobbyName(e.target.value);
+                    }}
+                    autoComplete="off"
+                    required
+                  ></input>
+                </div>
+                <button className="lobbies__button" disabled={lobbyName === ""}>
+                  Create lobby
+                </button>
+              </form>
             </div>
-            <form
-              id="form"
-              className="lobbies__form"
-              onSubmit={handleSubmit}
-            >
-              <label>
-                <input
-                  id="inputLobby"
-                  className="form__inputLobby"
-                  autoComplete="off"
-                  type="text"
-                  value={lobbyName}
-                  placeholder="Lobby name"
-                  onChange={(e) => {
-                    setLobbyName(e.target.value);
-                  }}
-                />
-              </label>
-              <button className="lobbies__button" disabled={lobbyName === ""}>
-                Create lobby
-              </button>
-            </form>
           </div>
         )}
 
