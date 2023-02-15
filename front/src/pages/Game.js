@@ -203,8 +203,7 @@ function Game({ socket }) {
             {"yourCode(input);"}
             <div></div>
             <div className="help">
-                // This is your code input<br />
-            // You can, we trust you!! <br />
+                // You got this!<br />
             </div>
           </div>
 
