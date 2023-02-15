@@ -41,7 +41,7 @@ if (cookies.get("token") != undefined) {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/">
@@ -51,14 +51,14 @@ root.render(
           <Route path="game" element={<Game socket={socket} />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
-          <Route path="avatarMaker" element={<AvatarMaker socket={socket}/>} />
+          <Route path="avatarMaker" element={<AvatarMaker socket={socket} />} />
           <Route path="lobbies" element={<Lobbies socket={socket} />}></Route>
           <Route path="404" element={<Error404 />}></Route>
           <Route path="*" element={<Navigate to="/404" />} />
         </Route>
       </Routes>
     </BrowserRouter>
-  // </React.StrictMode>
+  </React.StrictMode>
 );
 
 export default routes;

@@ -1,5 +1,5 @@
 #inputLobby {
-    font-size: 25px;
+    font-size: 14px;
 }
 
 /* =================================Amae================================================ */
@@ -12,7 +12,7 @@ body {
     /* background: rgba(0, 0, 0, 0.021); */
     padding: 20px;
     width: fit-content;
-    position: fixed;
+    /* position: fixed; */
     /* bottom: 0; */
     left: 0;
     right: 0;
@@ -254,6 +254,7 @@ body {
 .lobby__chat,
 .game__chat {
     bottom: 0;
+    /* background-color: #ffffff; */
 }
 
 @media all and (max-width: 767px) {

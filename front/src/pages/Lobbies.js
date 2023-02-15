@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../normalize.css";
 import "../Lobbies.css";
 import Chat from "../components/Chat";
+import ConnectedUsers from "../components/ConnectedUsers";
 import IconUser from "../components/IconUser";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
@@ -21,9 +22,7 @@ const Lobbies = ({ socket }) => {
   const [userList, setUserList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
-  const [messages, setMessages] = useState([]);
   const [fetchUser, setfetchUser] = useState(false);
-  const [msg, setMsg] = useState("");
   const navigate = useNavigate();
   const cookies = new Cookies();
 
@@ -34,7 +33,7 @@ const Lobbies = ({ socket }) => {
     setJoined(false);
     setLobbyName("");
     setLobbyList([]);
-    setMessages([]);
+    // setMessages([]);
   };
 
   const handleSubmit = (e) => {
@@ -57,17 +56,6 @@ const Lobbies = ({ socket }) => {
 
     console.log(socket);
     setJoined(true);
-  };
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (msg != "") {
-      socket.emit("chat message", {
-        message: msg,
-        room: lobbyName,
-      });
-      setMsg("");
-    }
   };
 
   function startGame() {
@@ -106,16 +94,8 @@ const Lobbies = ({ socket }) => {
       setLobbyList(lobbylist);
     });
 
-    socket.on("lobby user list", (data) => {
-      setUserList(data.list);
-    });
-
     socket.on("player joined", (id) => {
       console.log(id + " joined the lobby");
-    });
-
-    socket.on("lobby-message", function (data) {
-      setMessages(data.messages);
     });
 
     socket.on("game_started", () => {
@@ -222,42 +202,9 @@ const Lobbies = ({ socket }) => {
             >
               Leave current lobby
             </button>
-            <div className="lobby__connectedUsers">
-              <h1 className="connectedUsers_title">Connected users</h1>
-              <ul id="userList" className="connectedUsers__userList userList">
-                {userList.map((user, index) => {
-                  return (
-                    <li className="userList__item item" key={index}>
-                      <img
-                        src={user.avatar}
-                        width="50px"
-                        className="item__image"
-                        alt={user.name + "'s avatar"}
-                      ></img>
-                      {user.name}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <ConnectedUsers socket={socket} ></ConnectedUsers>
             <button className="pixel-button" onClick={startGame}>Start game</button>
-            {/* Chat :) */}
-            <div className="lobby__chat chat">
-              <h3 className="chat__title">Lobby chat</h3>
-              <div className="chat__body">
-                <Chat className="chat__chatbox" messages={messages}></Chat>
-              </div>
-              <form id="form" onSubmit={handleSendMessage}>
-                <input
-                  id="input_message"
-                  autoComplete="off"
-                  value={msg}
-                  onChange={(e) => setMsg(e.target.value)}
-                />
-                <button className="pixel-button">Send</button>
-              </form>
-            </div>
-            {/* Fin del chat */}
+            <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
           </div>
         )}
       </div>
