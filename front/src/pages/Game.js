@@ -158,11 +158,11 @@ function Game({ socket }) {
         </div>
         <div className="game--grid">
           <div className="game__expectedInput">
-            <h2>Our input:</h2>
+            <h2>Example input:</h2>
             <h1>{qst.inputs[0].toString()}</h1>
           </div>
           <div className="game__expectedOutput">
-            <h2>Expected output:</h2>
+            <h2>Example output:</h2>
             <h1>{qst.output.toString()}</h1>
           </div>
         </div>
