@@ -203,7 +203,7 @@ socketIO.on("connection", (socket) => {
         var game = response.data.game;
         if (response.data.correct) {
           socket.to(socket.data.current_lobby).emit("answered_correctly", {
-            message: `${socket.data.name} answered question ${user_game.question_at + 1} correctly.`,
+            message: `${socket.data.name} answered question ${user_game.question_at} correctly.`,
           });
 
           socket.data.question_at = user_game.question_at;
