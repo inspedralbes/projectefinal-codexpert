@@ -217,7 +217,7 @@ const Lobbies = ({ socket }) => {
           <div id="lobbyJoined" className="lobbies__lobby lobby">
             <button
               id="leaveLobby"
-              className="lobby__leaveButton"
+              className="lobby__leaveButton pixel-button"
               onClick={handleLeave}
             >
               Leave current lobby
@@ -240,7 +240,7 @@ const Lobbies = ({ socket }) => {
                 })}
               </ul>
             </div>
-            <button onClick={startGame}>Start game</button>
+            <button className="pixel-button" onClick={startGame}>Start game</button>
             {/* Chat :) */}
             <div className="lobby__chat chat">
               <h3 className="chat__title">Lobby chat</h3>
@@ -254,7 +254,7 @@ const Lobbies = ({ socket }) => {
                   value={msg}
                   onChange={(e) => setMsg(e.target.value)}
                 />
-                <button>Send</button>
+                <button className="pixel-button">Send</button>
               </form>
             </div>
             {/* Fin del chat */}
