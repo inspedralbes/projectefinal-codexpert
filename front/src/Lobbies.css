@@ -340,6 +340,10 @@
     color: white
 }
 
+.chat__message {
+    font-size: 14px;
+}
+
 .lobby__chat,
 .game__chat {
     bottom: 0;
