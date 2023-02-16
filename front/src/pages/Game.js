@@ -135,28 +135,16 @@ function Game({ socket }) {
 
   return (
     <div>
-      {!playable && <div>
-        <h1>{result}</h1>
-        <h2>{winnerMessage}</h2>
-        <ul className="game__rewards">
-          <li>XP: {rewards.xpEarned}</li>
-          <li>Coins: {rewards.coinsEarned}</li>
-          <li>Elo: {rewards.eloEarned}</li>
-        </ul>
-        <p>
-          <button className="pixel-button">GO BACK TO LOBBY</button>
-          <button className="pixel-button">LOBBY LIST</button>
-        </p>
-      </div>}
-      {playable &&
-        <div className="game__container ">
+      <div className="game__container ">
 
-          <div className="container__left">
-            <ConnectedUsersInGame socket={socket} ></ConnectedUsersInGame>
-            <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
-          </div>
+        <div className="container__left">
+          <ConnectedUsersInGame socket={socket} ></ConnectedUsersInGame>
+          <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
+        </div>
 
-          <div className="container__right">
+        <div className="container__right">
+          {playable && <div >
+
             <div className="game__statement">
               <h2>Statement:</h2>
               <h1 className="game__statementTitle">{qst.statement}</h1>
@@ -223,10 +211,24 @@ function Game({ socket }) {
 
             {error != "" && <div>{error}</div>}
 
-          </div>
+          </div>}
+          {!playable && <div className="game__results">
+            <h1 className="game__yourResult">{result}</h1>
+            <h2>{winnerMessage}</h2>
+            <ul className="game__rewards">
+              <li>XP: {rewards.xpEarned}</li>
+              <li>Coins: {rewards.coinsEarned}</li>
+              <li>Elo: {rewards.eloEarned}</li>
+            </ul>
+            <p className="game__buttons">
+              <button className="pixel-button game__button">GO BACK TO LOBBY</button>
+              <button className="pixel-button game__button">LOBBY LIST</button>
+            </p>
+          </div>}
         </div>
+      </div>
 
-      }
+
     </div >
 
   );

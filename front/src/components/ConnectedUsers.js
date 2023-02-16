@@ -11,7 +11,7 @@ function ConnectedUsers({ socket }) {
     })
 
     return (
-        <div className="lobby__connectedUsers">
+        <div className="game__connectedUsers">
             <h1 className="connectedUsers_title">Connected users</h1>
             <ul id="userList" className="connectedUsers__userList userList">
                 {userList.map((user, index) => {

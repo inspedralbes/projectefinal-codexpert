@@ -152,7 +152,7 @@
 }
 
 #input_message {
-    font-size: 10px;
+    font-size: 14px;
 }
 
 /* ================================================================================= */
@@ -337,7 +337,7 @@
 }
 
 .chat__title {
-    color: white
+    color: #000
 }
 
 .chat__message {
@@ -350,7 +350,7 @@
     /* background-color: #ffffff; */
 }
 
-.chat__chatbox{
+.chat__chatbox {
     bottom: 0;
 }
 

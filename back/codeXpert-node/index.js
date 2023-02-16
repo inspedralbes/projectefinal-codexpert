@@ -254,9 +254,9 @@ socketIO.on("connection", (socket) => {
             );
           }
         } else {
-          socket.to(socket.data.current_lobby).emit("answered_wrong", {
-            message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
-          });
+          // socket.to(socket.data.current_lobby).emit("answered_wrong", {
+          //   message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
+          // });
 
           addMessage({
             nickname: "ingame_events",

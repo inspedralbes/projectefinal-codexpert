@@ -42,7 +42,7 @@ function Chat({ socket, lobbyName }) {
                 );
               } else {
                 return (
-                  <li className="chat__message chat__message-event" key={index}>
+                  <li className="chat__message chat__message--event" key={index}>
                     {element.message}
                   </li>
                 );
