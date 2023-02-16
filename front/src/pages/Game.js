@@ -179,7 +179,8 @@ function Game({ socket }) {
                   11<br />12<br />13<br />14<br />15<br />16<br />17<br />
                 </div>
 
-                {`let input = [${qst.inputs[0].toString()}];`}<br />
+                {Array.isArray(qst.inputs[0]) && `let input = [${qst.inputs[0].toString()}];`}
+                {!Array.isArray(qst.inputs[0]) && `let input = "${qst.inputs[0].toString()}";`}<br />
                 {"function yourCode(input) {"}<br />
 
                 <textarea

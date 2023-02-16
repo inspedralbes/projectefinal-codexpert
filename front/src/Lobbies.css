@@ -435,3 +435,10 @@
 .lobbies__button:hover::before {
     background-color: #027202;
 }
+
+.lobbies__error{
+    color: red;
+    text-align: center;
+    font-family: pixel_operator;
+    src: url(fonts/pixel_operator/PixelOperator8.ttf);
+}
