@@ -69,7 +69,8 @@ app.use(
 socketIO.on("connection", (socket) => {
   console.log("CONECTADO");
   var socketId = socket.id;
-  const ses = sesiones;
+  socket.data.current_lobby = null;
+  // const ses = sesiones;
 
   socket.join("chat-general");
   socketIO.to(`${socketId}`).emit("hello", "Welcome to the general chat");
@@ -105,10 +106,24 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("hello", (m) => {
-    sendLobbyList();
+    if (socket.data.current_lobby != null) {
+      socket.emit("YOU_ARE_ON_LOBBY", {
+        lobby_name: socket.data.current_lobby
+      })
+      // socket.join(socket.data.current_lobby)
+    } else {
+      sendLobbyList();
+    }
+
+
   });
 
   sendLobbyList();
+
+  socket.on("lobby_data_pls", () => {
+    sendUserList(socket.data.current_lobby);
+    sendMessagesToLobby(socket.data.current_lobby);
+  })
 
   socket.on("new lobby", (lobby) => {
     let existeix = false;
@@ -135,11 +150,21 @@ socketIO.on("connection", (socket) => {
             message: "The selected lobby is full",
           });
         } else {
-          lobby.members.push({
-            nom: socket.data.name,
-            rank: data.rank,
-            idUser: socket.data.userId,
+          var disponible = true;
+
+          lobby.members.forEach(member => {
+            if (member.nom == socket.data.name) {
+              disponible = false;
+            }
           });
+
+          if (disponible) {
+            lobby.members.push({
+              nom: socket.data.name,
+              rank: data.rank,
+              idUser: socket.data.userId,
+            });
+          }
         }
       }
     });
@@ -299,6 +324,19 @@ socketIO.on("connection", (socket) => {
     leaveLobby(socket);
   });
 });
+
+// async function usuariDisponible(socketId, room) {
+//   let disponible = true
+//   const sockets = await socketIO.in(room).fetchSockets();
+
+//   sockets.forEach((element) => {
+//     if (element.id == socketId) {
+//       disponible = false;
+//     }
+//   });
+
+//   return disponible;
+// }
 
 async function startGame(room) {
   await axios

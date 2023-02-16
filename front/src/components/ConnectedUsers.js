@@ -3,12 +3,16 @@ import { useState, useEffect } from "react";
 
 function ConnectedUsers({ socket }) {
     const [userList, setUserList] = useState([]);
+    const [firstTime, setFirstTime] = useState(true);
 
     useEffect(() => {
+        if (firstTime) {
+            socket.emit("lobby_data_pls");
+        }
         socket.on("lobby user list", (data) => {
             setUserList(data.list);
         });
-    })
+    }, [])
 
     return (
         <div className="game__connectedUsers">

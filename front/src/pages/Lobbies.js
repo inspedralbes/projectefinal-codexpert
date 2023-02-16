@@ -106,6 +106,11 @@ const Lobbies = ({ socket }) => {
       navigate("/game");
     });
 
+    socket.on("YOU_ARE_ON_LOBBY", (data) => {
+      setLobbyName(data.lobby_name);
+      setJoined(true);
+    })
+
     socket.on("LOBBY_FULL_ERROR", (data) => {
       setLobbyName("");
       setJoined(false);
