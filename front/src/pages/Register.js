@@ -77,7 +77,7 @@ function Register({ socket }) {
             user.append("password", userData.password);
             user.append("password_confirmation", userData.passwordValidation);
 
-            fetch(routes.fetchLaravel + "/index.php/register", {
+            fetch(routes.fetchLaravel + "/register", {
                 method: 'POST',
                 mode: 'cors',
                 body: user,

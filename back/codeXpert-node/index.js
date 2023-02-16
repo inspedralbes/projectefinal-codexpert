@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const axios = require("axios");
 
 const maxMembersOnLobby = 4;
-const laravelRoute = "http://127.0.0.1:8000/";
+const laravelRoute = "http://http://codexpertapi.alumnes.inspedralbes.cat/public/";
 
 var lobbies = [];
 var sesiones = [];
@@ -81,7 +81,7 @@ socketIO.on("connection", (socket) => {
     let token = data.token;
 
     axios
-      .post(laravelRoute + "index.php/getUserInfo", {
+      .post(laravelRoute + "getUserInfo", {
         token: token,
       })
       .then(function (response) {
@@ -198,7 +198,7 @@ socketIO.on("connection", (socket) => {
     );
     */
     axios
-      .post(laravelRoute + "index.php/checkAnswer", {
+      .post(laravelRoute + "checkAnswer", {
         idQuestion: socket.data.idQuestion,
         idGame: socket.data.game_data.idGame,
         idUser: socket.data.userId,
@@ -303,7 +303,7 @@ socketIO.on("connection", (socket) => {
 
 async function startGame(room) {
   await axios
-    .get(laravelRoute + "index.php/startGame")
+    .get(laravelRoute + "startGame")
     .then(function (response) {
       // console.log(response.data);
       // console.log(response);
@@ -349,7 +349,7 @@ async function enviarDadesGame(room) {
     }
   });
   await axios
-    .post(laravelRoute + "index.php/setUserGame", {
+    .post(laravelRoute + "setUserGame", {
       users: members,
       idGame: idGame,
     })
@@ -375,7 +375,7 @@ async function updateUserLvl(room) {
     }
   });
   await axios
-    .post(laravelRoute + "index.php/updateUserLvl", {
+    .post(laravelRoute + "updateUserLvl", {
       users: members,
       idGame: idGame,
     })
