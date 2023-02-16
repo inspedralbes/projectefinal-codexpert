@@ -161,13 +161,17 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("chat message", (data) => {
-    addMessage(`${socket.data.name}: ${data.message}`, data.room);
+    addMessage({
+      nickname: socket.data.name,
+      message: data.message,
+      avatar: socket.data.avatar
+    }, data.room);
   });
 
-  function addMessage(msg, room) {
+  function addMessage(msgData, room) {
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == room) {
-        lobby.messages.push(msg);
+        lobby.messages.push(msgData);
       }
     });
     sendMessagesToLobby(room);
@@ -205,11 +209,15 @@ socketIO.on("connection", (socket) => {
         var user_game = response.data.user_game;
         var game = response.data.game;
         if (response.data.correct) {
-          socket.to(socket.data.current_lobby).emit("answered_correctly", {
-            message: `${socket.data.name} answered question ${user_game.question_at} correctly.`,
-          });
+          // socket.to(socket.data.current_lobby).emit("answered_correctly", {
+          //   message: `${socket.data.name} answered question ${user_game.question_at} correctly.`,
+          // });
 
-          addMessage(`${socket.data.name} answered question ${user_game.question_at} correctly.`, socket.data.current_lobby)
+          addMessage({
+            nickname: "ingame_events",
+            message: `${socket.data.name} answered question ${user_game.question_at} correctly.`,
+            avatar: socket.data.avatar
+          }, socket.data.current_lobby)
 
           socket.data.question_at = user_game.question_at;
           sendUserList(socket.data.current_lobby)
@@ -250,16 +258,25 @@ socketIO.on("connection", (socket) => {
             message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
           });
 
-          addMessage(`${socket.data.name} answered question ${user_game.question_at + 1} wrong.`, socket.data.current_lobby)
+          addMessage({
+            nickname: "ingame_events",
+            message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
+            avatar: socket.data.avatar
+          }, socket.data.current_lobby)
+
           socket.data.hearts_remaining--
           sendUserList(socket.data.current_lobby)
 
           if (user_game.dead) {
-            socket.to(socket.data.current_lobby).emit("other_lost", {
-              message: `${socket.data.name} has lost!`,
-            });
+            // socket.to(socket.data.current_lobby).emit("other_lost", {
+            //   message: `${socket.data.name} has lost!`,
+            // });
 
-            addMessage(`${socket.data.name} has lost!`, socket.data.current_lobby)
+            addMessage({
+              nickname: "ingame_events",
+              message: `${socket.data.name} has lost!`,
+              avatar: socket.data.avatar
+            }, socket.data.current_lobby)
 
             socketIO.to(socket.id).emit("user_finished", {
               message: `YOU LOST`,
