@@ -3,14 +3,15 @@ const cors = require("cors");
 const sessions = require("express-session");
 var cookieParser = require("cookie-parser");
 const app = express();
-const PORT = 4000;
+const PORT = 7500;
+const host = '0.0.0.0';
 const http = require("http");
 require("dotenv").config();
 const server = http.createServer(app);
 const axios = require("axios");
 
 const maxMembersOnLobby = 4;
-const laravelRoute = "http://http://codexpertapi.alumnes.inspedralbes.cat/public/";
+const laravelRoute = "http://codexpertapi.alumnes.inspedralbes.cat/public/";
 
 var lobbies = [];
 var sesiones = [];
@@ -534,6 +535,6 @@ async function sendUserList(room) {
 
 // ================ LISTEN SERVER ================
 
-server.listen(PORT, () => {
+server.listen(PORT, host, () => {
   console.log("Listening on *:" + PORT);
 });
