@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GameController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +25,30 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/login', [AuthController::class, 'login']);
 
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::post('/isUserLogged', [AuthController::class, 'isUserLogged']);
+    
+    Route::post('/getProfile', [AuthController::class, 'getProfile']);
+
+    Route::post('/getUserId', [AuthController::class, 'getUserId']);
+
+    Route::post('/getUserInfo', [AuthController::class, 'getUserInfo']);    
+    
+    Route::get('/getRanking', [UserController::class, 'getRanking']);
+
     Route::post('/getAvatar', [UserController::class, 'getAvatar']);
 
     Route::post('/setAvatar', [UserController::class, 'setAvatar']);
+        
+    Route::get('/startGame', [GameController::class, 'startGame']);
+
+    Route::post('/setUserGame', [GameController::class, 'setUserGame']);
+
+    Route::post('/checkAnswer', [GameController::class, 'checkAnswer']);
+
+    Route::post('/updateUserLvl', [GameController::class, 'updateUserLvl']);
+
+    //Descomentar despues de migrate fresh y volver a comentar
+    //Route::get('/getQuestions', [GameController::class, 'getQuestions']);
 });

@@ -7,6 +7,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\NewAccessToken;
+use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\PersonalAccessToken;
+
 class AuthController extends Controller
 {
     public function checkUserDuplicated($userData)
@@ -50,7 +55,8 @@ class AuthController extends Controller
                 'regex:/[a-z]/',      // must contain at least one lowercase letter
                 'regex:/[A-Z]/',      // must contain at least one uppercase letter
                 'regex:/[0-9]/',      // must contain at least one digit
-                'regex:/[@$!%*#?&.]/', // must contain a special character
+                'regex:/[@$!%*#?&;.]/', // must contain a special character
+                'confirmed'
             ],
         ]);
 
@@ -71,9 +77,11 @@ class AuthController extends Controller
 
                 $request->session()->put('userId', $user -> id);
                 $request->session()->save();
+                $token = $user->createToken('token')->plainTextToken;
                 $sendUser = (object) 
                 ["valid" => true,
-                'message' => $request->session()->get("userId")
+                'message' => $request->session()->get("userId"),
+                'token' => $token
                 ];
             } else {
                 $duplicated = $this->findWhatIsDuplicated($request);
@@ -96,28 +104,104 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $user = "User not found.";
+    {   
+        $sendUser = (object)
+        ['valid' => false,
+        'message' => "User not found.",
+        'token' => null
+        ];
 
         $userFound = User::where('email', strtolower($request -> email))->first();
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
                 $request -> session()->put('userId', $user->id);
+                $token = $user->createToken('token')->plainTextToken;
+                $sendUser = (object) 
+                ['valid' => true,
+                'message' => "Logged in successfully",
+                'token' => $token
+                ];
 
-                //Session::put('userId', $user -> id);
             } else {
-                $user = "Password and e-mail don't match.";
+                $sendUser = (object)
+                ['valid' => false,
+                'message' => "Password and e-mail don't match.",
+                'token' => null
+                ];
             }
         }
 
-        return json_encode($user);
+        return json_encode($sendUser);
     }
 
     public function logout(Request $request)
-    {
-        Session::flush();
+    {   
+        [$id, $token] = explode('|', $request -> token, 2);
+        
+        PersonalAccessToken::find($id)->delete();
 
-        return json_encode("Logged out.");
+        $returnResponse = (object)['logout' => true];
+        return response() -> json($returnResponse);
     }
+
+    public function getUserId(Request $request)
+    {
+        $returnUserId = null;
+
+        [$id, $token] = explode('|', $request -> token, 2);
+        $accessToken = PersonalAccessToken::find($id);
+
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            $returnUserId = $accessToken -> tokenable_id;
+            $request -> session()->put('userId', $returnUserId);
+        }
+
+        return response() -> json($returnUserId);
+    }    
+
+    public function getUserInfo(Request $request)
+    {
+        $returnUserId = null;
+        $userFound = null;
+        
+        [$id, $token] = explode('|', $request -> token, 2);
+        $accessToken = PersonalAccessToken::find($id);
+
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            $returnUserId = $accessToken -> tokenable_id;
+            $request -> session()->put('userId', $returnUserId);
+
+            $userFound = User::where('id', $returnUserId)->first();
+        }
+
+        return response() -> json($userFound);
+    }    
+
+    public function isUserLogged(Request $request)
+    {
+        $logged = false;
+        
+        [$id, $token] = explode('|', $request -> token, 2);
+        $accessToken = PersonalAccessToken::find($id);
+
+        if (hash_equals($accessToken->token, hash('sha256', $token))) {
+            $logged = true;
+        }
+
+        return response() -> json($logged);
+    }    
+    
+    public function getProfile(Request $request)
+    {
+        $profile = null;
+
+        $userId = $this->getUserId($request);
+        if ($userId != null) {
+            $profile = User::where('id', $userId) -> first();
+        }
+        
+        return response() -> json($profile);
+    }     
+
 }

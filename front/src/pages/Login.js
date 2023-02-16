@@ -1,66 +1,109 @@
 import "../normalize.css";
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import routeFetch from "../index"
+import routes from "../index";
+import Cookies from "universal-cookie";
+import { Link, useNavigate } from "react-router-dom"; //Rutas
 
-function Login() {
+function Login({ socket }) {
   const [login, setLogin] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mantenerSesion, setMantenerSesion] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  const cookies = new Cookies();
+  const navigate = useNavigate();
 
   useEffect(() => {
-
     if (login != 0) {
-      const user = new FormData()
+      const user = new FormData();
       user.append("email", email);
       user.append("password", password);
 
-      fetch(routeFetch + "/index.php/login", {
-        method: 'POST',
-        mode: 'cors',
+      fetch(routes.fetchLaravel + "/index.php/login", {
+        method: "POST",
+        mode: "cors",
         body: user,
-        credentials: 'include'
+        credentials: "include",
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-        }
-        );
+          if (data.valid) {
+            //Si se ha logueado
+            cookies.set("token", data.token, { path: "/" });
+            socket.emit("send token", {
+              token: cookies.get("token"),
+            });
+            navigate("/lobbies");
+          } else {
+            setErrorText(data.message)
+          }
+        });
     }
-
   }, [login]);
 
   useEffect(() => {
     if (mantenerSesion) {
-      document.getElementById('checkboxText').style.color = '#ad7bf8';
-      document.getElementById('checkboxText').style.transition = 'all 0.3s';
+      document.getElementById("checkboxText").style.color = "#3d7934";
+      document.getElementById("checkboxText").style.transition = "all 0.3s";
     }
 
     if (!mantenerSesion) {
-      document.getElementById('checkboxText').style.color = '#b9b9b9';
+      document.getElementById("checkboxText").style.color = "#b9b9b9";
     }
-  }, [mantenerSesion])
+  }, [mantenerSesion]);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      setLogin(login + 1);
+    }
+  };
   return (
     <div className="form">
-      <h1>LOG IN</h1>
+      <h1>LOGIN</h1>
       <br />
       <div className="form__form">
+        <p>{errorText}</p>
+
         <div className="form__inputGroup">
-          <input id="email" className="form__input" placeholder=" " type="text" onChange={(e) => setEmail(e.target.value)} required></input>
+          <input
+            id="email"
+            className="form__input"
+            placeholder=" "
+            type="text"
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          ></input>
           <span className="form__inputBar"></span>
           <label className="form__inputlabel">E-mail</label>
         </div>
         <div className="form__inputGroup">
-          <input id="password" className="form__input" placeholder=" " type="password" onChange={(e) => setPassword(e.target.value)} required></input>
+          <input
+            id="password"
+            className="form__input"
+            placeholder=" "
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
+            required
+          ></input>
           <span className="form__inputBar"></span>
           <label className="form__inputlabel">Password</label>
           <br />
           <div className="form__checkboxInput">
-            <label id="switch" className="form__checkboxLabel"><input id="checkbox" className="form__inputCheckbox" type="checkbox" onChange={(e) => setMantenerSesion(!mantenerSesion)}></input> <div className="slider round"></div></label><label className="form__checkboxText" htmlFor="checkbox"><p id="checkboxText">mantener sesión iniciada</p></label>
+            <label id="switch" className="form__checkboxLabel">
+              <input
+                id="checkbox"
+                className="form__inputCheckbox"
+                type="checkbox"
+                onChange={(e) => setMantenerSesion(!mantenerSesion)}
+              ></input>{" "}
+              <div className="slider round"></div>
+            </label>
+            <label className="form__checkboxText" htmlFor="checkbox">
+              <p id="checkboxText">keep signed in</p>
+            </label>
           </div>
         </div>
-
       </div>
       <div className="form__buttonsLinks">
         <div className="form__buttons">

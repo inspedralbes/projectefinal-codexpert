@@ -1,31 +1,94 @@
-import "../normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import routeFetch from "../index";
-import session from "../components/UserSession";
+import Cookies from 'universal-cookie';
+import { useNavigate } from "react-router-dom"; //Rutas
+import routes from "../index";
+import Tippy from '@tippyjs/react'; //Tooltip
+import 'tippy.js/dist/tippy.css' //Tooltip styles
+import 'tippy.js/themes/light-border.css'; //Tooltip theme
+import 'tippy.js/animations/shift-away-extreme.css'; //Tooltip animation
 
-function Register() {
+function Register({ socket }) {
     const [registro, setRegistro] = useState(0);
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordValidation, setPasswordValidation] = useState("");
+
+    const [userData, setUserData] = useState({
+        username: "",
+        email: "",
+        password: "",
+        passwordValidation: "",
+    });
+    const [color, setColor] = useState({
+        username: "red",
+        email: "red",
+        password: "red",
+        passwordValidation: "red",
+    });
+
+    const [errorText, setErrorText] = useState("");
+    const cookies = new Cookies();
+    const navigate = useNavigate();
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+            setRegistro(registro + 1);
+        }
+    };
+
+    useEffect(() => {
+        if (userData.username.length >= 3 && userData.username.length <= 20) {
+            setColor({ ...color, username: "green" })
+        } else {
+            setColor({ ...color, username: "red" })
+        }
+    }, [userData.username]);
+
+    useEffect(() => {
+        console.log();
+        if (userData.email.length <= 255 && userData.email.includes("@") && userData.email.includes(".")) {
+            setColor({ ...color, email: "green" })
+        } else {
+            setColor({ ...color, email: "red" })
+        }
+    }, [userData.email]);
+
+    useEffect(() => {
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/;
+        if (regex.test(userData.password)) {
+            setColor({ ...color, password: "green" })
+        } else {
+            setColor({ ...color, password: "red" })
+        }
+    }, [userData.password]);
+
+    useEffect(() => {
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/;
+        if (userData.passwordValidation === userData.password && regex.test(userData.passwordValidation)) {
+            setColor({ ...color, passwordValidation: "green" })
+        } else {
+            setColor({ ...color, passwordValidation: "red" })
+        }
+    }, [userData.passwordValidation]);
+
     useEffect(() => {
         if (registro != 0) {
             const user = new FormData()
-            user.append("name", username);
-            user.append("email", email);
-            user.append("password", password);
-            user.append("password_confirmation", passwordValidation);
+            user.append("name", userData.username);
+            user.append("email", userData.email);
+            user.append("password", userData.password);
+            user.append("password_confirmation", userData.passwordValidation);
 
-            fetch(routeFetch + "/index.php/register", {
+            fetch(routes.fetchLaravel + "/index.php/register", {
                 method: 'POST',
                 mode: 'cors',
                 body: user,
                 credentials: 'include'
             }).then((response) => response.json()).then((data) => {
                 if (data.valid) {
-                    console.log(data);
+                    cookies.set('token', data.token, { path: '/' })
+                    socket.emit("send token", {
+                        token: cookies.get('token')
+                    });
+                    navigate("/avatarMaker")
                 } else {
                     console.log(data);
                 }
@@ -40,22 +103,30 @@ function Register() {
             <br />
             <div className="form__form">
                 <div className="form__inputGroup">
-                    <input className="form__input" placeholder=" " type="text" onChange={(e) => setUsername(e.target.value)} required></input>
+                    <input className="form__input" style={{ color: color.username }} placeholder=" " type="text" onChange={(e) => setUserData({ ...userData, username: e.target.value })} required></input>
                     <span className="form__inputBar"></span>
                     <label className="form__inputlabel">Username</label>
                 </div>
                 <div className="form__inputGroup">
-                    <input className="form__input" placeholder=" " type="text" onChange={(e) => setEmail(e.target.value)} required></input>
+                    <input className="form__input" style={{ color: color.email }} placeholder=" " type="text" onChange={(e) => setUserData({ ...userData, email: e.target.value })} required></input>
                     <span className="form__inputBar"></span>
                     <label className="form__inputlabel">E-mail</label>
                 </div>
                 <div className="form__inputGroup">
-                    <input className="form__input" placeholder=" " type="password" name="password" onChange={(e) => setPassword(e.target.value)} required></input>
+                    <Tippy theme={'light-border'}
+                        content={<div>Password must</div>}
+                        placement={'right'}
+                        animation={"shift-away-extreme"}
+
+                    >
+                        <button>I</button>
+                    </Tippy>
+                    <input className="form__input" style={{ color: color.password }} placeholder=" " type="password" name="password" onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
                     <span className="form__inputBar"></span>
                     <label className="form__inputlabel">Password</label>
                 </div>
                 <div className="form__inputGroup">
-                    <input className="form__input" placeholder=" " type="password" onChange={(e) => setPasswordValidation(e.target.value)} required></input>
+                    <input className="form__input" style={{ color: color.passwordValidation }} placeholder=" " type="password" onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
                     <span className="form__inputBar"></span>
                     <label className="form__inputlabel">Repeat password</label>
                 </div>
@@ -81,14 +152,11 @@ function Register() {
                             <span className="circle2" aria-hidden="true">
                                 <span className="icon2 arrow2"></span>
                             </span>
-                            <span className="button-text">REGISTER</span>
+                            <span className="button-text">SUBMIT</span>
                         </button>
                     </div>
                 </div>
             </div>
-            <Link to="/avatarMaker">
-                <button>Avatar</button>
-            </Link>
         </div>
 
     );
