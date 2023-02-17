@@ -225,20 +225,21 @@ function AvatarMaker({ socket }) {
       <div className="Avatar">
         <div className="avatar__left">
           <img className="avatar__img" src={avatar} alt="avatar" />
-          <button className="avatar__save" onClick={() => setSave(save + 1)}>Save</button>
+          <br />
+          <button className="avatar__menu-btn" onClick={() => setSave(save + 1)}>Save</button>
 
         </div>
         <div className="avatar__right">
 
           <div className="avatar__menu">
-            <button className="avatar__menu" onClick={() => changeOption("background")}>Background</button>
-            <button className="avatar__menu" onClick={() => changeOption("cloth")}>Cloth</button>
-            <button className="avatar__menu" onClick={() => changeOption("hair")}>Hair</button>
-            <button className="avatar__menu" onClick={() => changeOption("skinColor")}>Skin Color</button>
-            <button className="avatar__menu" onClick={() => changeOption("glasses")}>Glasses</button>
-            <button className="avatar__menu" onClick={() => changeOption("accessories")}>Accessories</button>
-            <button className="avatar__menu" onClick={() => changeOption("mouth")}>Mouth</button>
-            <button className="avatar__menu" onClick={() => changeOption("eyes")}>Eyes</button>
+            <button className="avatar__menu-btn" onClick={() => changeOption("background")}>Background</button>
+            <button className="avatar__menu-btn" onClick={() => changeOption("cloth")}>Cloth</button>
+            <button className="avatar__menu-btn" onClick={() => changeOption("hair")}>Hair</button>
+            <button className="avatar__menu-btn" onClick={() => changeOption("skinColor")}>Skin Color</button>
+            <button className="avatar__menu-btn" onClick={() => changeOption("glasses")}>Glasses</button>
+            <button className="avatar__menu-btn" onClick={() => changeOption("accessories")}>Accessories</button>
+            <button className="avatar__menu-btn" onClick={() => changeOption("mouth")}>Mouth</button>
+            <button className="avatar__menu-btn" onClick={() => changeOption("eyes")}>Eyes</button>
           </div>
           {menu.background && (
             <div>

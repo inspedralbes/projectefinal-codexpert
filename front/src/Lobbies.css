@@ -91,14 +91,13 @@
 
 #form {
     /* background: rgba(0, 0, 0, 0.021); */
-    padding: 20px;
+    padding: 10px 20px;
     width: fit-content;
-    /* position: fixed; */
+    position: fixed;
     /* bottom: 0; */
     left: 0;
     right: 0;
-    bottom: 10%;
-    display: flex;
+    bottom: 30px;
     height: 5rem;
     box-sizing: border-box;
     /* backdrop-filter: blur(10px); */
@@ -127,7 +126,7 @@
 }
 
 #form>button:disabled {
-    background: #0d631852;
+    background: #c7face52;
     border: none;
     padding: 0 1rem;
     margin: 0.25rem;
@@ -138,21 +137,28 @@
 
 #messages {
     list-style-type: none;
-    margin: 0;
+    float: inline-start;
+    z-index: 2;
     padding: 0;
-    background-color: #fff;
+    background-color: #c2ffbc;
 }
 
 #messages>li {
+    justify-content: center;
     padding: 0.5rem 1rem;
 }
 
 #messages>li:nth-child(odd) {
-    background: #efefef;
+    background: #e0ffd8;
 }
 
 #input_message {
     font-size: 14px;
+}
+
+#input_message:focus {
+    outline: none;
+    background-color: #baffb1;
 }
 
 /* ================================================================================= */
@@ -324,10 +330,22 @@
     color: white
 }
 
+.connectedUsers_title {
+    clear: both;
+    text-align: center;
+    text-transform: uppercase;
+}
+
 .chat__body {
-    max-height: 30vh;
-    max-width: 70%;
-    overflow: auto;
+    display: block;
+    max-height: 20vh;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    bottom: 50px;
+    max-width: 30%;
+    transition: all 2s;
+    margin: 0;
 }
 
 .chat__title {
@@ -336,12 +354,6 @@
 
 .chat__message {
     font-size: 14px;
-}
-
-.lobby__chat,
-.game__chat {
-    bottom: 0;
-    /* background-color: #ffffff; */
 }
 
 .chat__chatbox {
@@ -578,6 +590,11 @@
     grid-area: 2 / 1 / 3 / 2;
 }
 
+.item__image {
+    margin: 0 auto;
+    align-self: center;
+}
+
 .item__imgDiv {
     align-self: center;
     margin: 0 auto;
@@ -593,10 +610,11 @@
     grid-template-columns: 1fr;
     grid-template-rows: repeat(2, 1fr);
     clear: both;
-    width: 20%;
-    background-color: #fdc69a;
+    width: 15%;
+    color: #baffb1;
+    background-color: #124d00;
     margin: 0 auto;
-    height: 60vh;
+    height: 50vh;
     padding: 20px;
     border-color: #000000;
     border-style: solid;
@@ -634,4 +652,196 @@
     text-align: center;
     font-family: pixel_operator;
     src: url(fonts/pixel_operator/PixelOperator8.ttf);
+}
+
+.button-startGame {
+    text-align: center;
+}
+
+.startGame {
+    background-color: green;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #ffffff;
+    display: inline-block;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+    transition: all 0.5s;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.37);
+}
+
+.startGame::after {
+    background-color: green;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.startGame::before {
+    background-color: green;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.startGame:hover {
+    box-shadow: none;
+    background-color: #027202;
+    transform: translate(0, 5px);
+    cursor: pointer;
+}
+
+.startGame:hover::after,
+.startGame:hover::before {
+    background-color: #027202;
+}
+
+.send__button {
+    background-color: green;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #ffffff;
+    display: inline-block;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+    transition: all 0.5s;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.37);
+}
+
+.send__button::after {
+    background-color: green;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.send__button::before {
+    background-color: green;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.send__button:hover {
+    box-shadow: none;
+    background-color: #027202;
+    transform: translate(0, 2px);
+    cursor: pointer;
+}
+
+.send__button:hover::after,
+.send__button:hover::before {
+    background-color: #027202;
+}
+
+.form--grid {
+    display: flex;
+
+}
+
+.inputMsg-div {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+.buttonMsg-div {
+    margin: 0 auto;
+    grid-area: 1 / 2 / 2 / 3;
+}
+
+
+
+.inputMsg-div {
+    margin: 0 auto;
+    margin-right: 40px;
+    position: relative;
+    margin-bottom: 45px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 4px 0;
+    color: #000000;
+    position: relative;
+    transition: all 1s;
+}
+
+#input_message:focus {
+    transition: all 1s;
+    background-color: #daffc1;
+}
+
+#input_message {
+    font-size: 30px;
+    display: block;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    border: none;
+}
+
+.inputMsg-div::after {
+    background-color: white;
+    box-shadow: 4px 0 0 #000000, 0 -4px #000000, 0 4px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    outline: none;
+}
+
+.inputMsg-div::before {
+    background-color: rgb(246, 255, 235);
+    box-shadow: -4px 0 0 #000000, 0 -4px #000000, 0 4px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+#input_message:focus {
+    outline: none;
 }

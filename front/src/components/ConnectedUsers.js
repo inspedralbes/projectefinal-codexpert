@@ -33,7 +33,7 @@ function ConnectedUsers({ socket }, u) {
                             <div className="item__imgDiv">
                                 <img
                                     src={user.avatar}
-                                    width="100px"
+                                    width="150px"
                                     className="item__image"
                                     alt={user.name + "'s avatar"}
                                 ></img>
