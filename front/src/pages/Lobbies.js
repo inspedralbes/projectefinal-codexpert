@@ -128,8 +128,6 @@ const Lobbies = ({ socket }) => {
           <>
           <IconUser></IconUser>
           <div id="lobbyList" className="lobbies__lobbylist lobbylist">
-            <IconUser></IconUser>
-
             <div className="lobbylist__container">
               <img
                 className="lobbies__title"
