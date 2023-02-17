@@ -11,11 +11,6 @@ import { Blocks } from 'react-loader-spinner'
 import lobbyTitle from '../img/lobbies.gif'
 import arrow from '../img/arrow.gif'
 
-
-
-
-
-
 // socket.io
 
 const Lobbies = ({ socket }) => {
@@ -25,6 +20,8 @@ const Lobbies = ({ socket }) => {
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
   const [fetchUser, setfetchUser] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
   const cookies = new Cookies();
 
@@ -56,7 +53,7 @@ const Lobbies = ({ socket }) => {
       rank: "Member",
     });
 
-    console.log(socket);
+    // console.log(socket);
     setJoined(true);
   };
 
@@ -104,14 +101,31 @@ const Lobbies = ({ socket }) => {
       navigate("/game");
     });
 
+    socket.on("YOU_ARE_ON_LOBBY", (data) => {
+      setLobbyName(data.lobby_name);
+      setJoined(true);
+    })
+
+    socket.on("LOBBY_FULL_ERROR", (data) => {
+      setLobbyName("");
+      setJoined(false);
+      setErrorMessage(data.message)
+    })
+
+    socket.on("YOU_LEFT_LOBBY", () => {
+      setJoined(false);
+      setLobbyName("");
+    })
+
   }, []);
+
 
   if (fetchUser) {
     return (
       <div className="lobbies">
-        <IconUser></IconUser>
         {!joinedLobby && (
           <div id="lobbyList" className="lobbies__lobbylist lobbylist">
+            <IconUser></IconUser>
 
             <div className="lobbylist__container">
               <img
@@ -138,7 +152,7 @@ const Lobbies = ({ socket }) => {
                       />
                     </div>
                   }
-                  {lobbyList.map((element, index) => {
+                  {Array.isArray(lobbyList) ? lobbyList.map((element, index) => {
                     return (
                       <li
                         className="table__row row"
@@ -172,12 +186,13 @@ const Lobbies = ({ socket }) => {
                           className="col col-4"
                           data-label="Players"
                         >
-                          {element.members.length} / 5
+                          {element.members.length} / 4
                         </div>
                       </li>
                     );
 
-                  })}
+
+                  }) : null}
                 </div>
               </ul>
 
@@ -190,7 +205,7 @@ const Lobbies = ({ socket }) => {
                     id="email"
                     className="lobbiesForm__input"
                     value={lobbyName}
-                    placeholder="CREATE LOBBY"
+                    placeholder="INTRODUCE LOBBY NAME"
                     type="text"
                     onChange={(e) => {
                       setLobbyName(e.target.value);
@@ -203,18 +218,19 @@ const Lobbies = ({ socket }) => {
                   Create lobby
                 </button>
               </form>
+              {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             </div>
           </div>
         )}
 
         {joinedLobby && (
           <div id="lobbyJoined" className="lobbies__lobby lobby">
-            <button
-              id="leaveLobby"
-              className="lobby__leaveButton pixel-button"
-              onClick={handleLeave}
-            >
-              Leave current lobby
+            <button id="goBackToLobby__button" onClick={handleLeave}>
+              <span className="circle" aria-hidden="true">
+                <span className="icon arrow"></span>
+              </span>
+              <span className="button-text">LEAVE CURRENT LOBBY
+              </span>
             </button>
             <ConnectedUsers socket={socket} ></ConnectedUsers>
             <button className="pixel-button" onClick={startGame}>Start game</button>

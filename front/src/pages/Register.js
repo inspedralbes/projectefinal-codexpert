@@ -7,6 +7,8 @@ import Tippy from '@tippyjs/react'; //Tooltip
 import 'tippy.js/dist/tippy.css' //Tooltip styles
 import 'tippy.js/themes/light-border.css'; //Tooltip theme
 import 'tippy.js/animations/shift-away-extreme.css'; //Tooltip animation
+import information_icon from '../img/information_icon.gif'
+
 
 function Register({ socket }) {
     const [registro, setRegistro] = useState(0);
@@ -119,16 +121,18 @@ function Register({ socket }) {
                         animation={"shift-away-extreme"}
 
                     >
-                        <button>I</button>
+                        <img src={information_icon} alt="" height="20px" />
                     </Tippy>
+
                     <input className="form__input" style={{ color: color.password }} placeholder=" " type="password" name="password" onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
                     <span className="form__inputBar"></span>
-                    <label className="form__inputlabel">Password</label>
+                    <label className="form__inputlabel">Password
+                    </label>
                 </div>
                 <div className="form__inputGroup">
                     <input className="form__input" style={{ color: color.passwordValidation }} placeholder=" " type="password" onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
                     <span className="form__inputBar"></span>
-                    <label className="form__inputlabel">Repeat password</label>
+                    <label className="form__inputlabel">Repeat password </label>
                 </div>
             </div>
 
