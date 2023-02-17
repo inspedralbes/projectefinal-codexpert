@@ -22,15 +22,6 @@ class GameController extends Controller
     public function getQuestions(Request $request)
     {
         $questions = Question::all()->random(5);
-        // $question = new Question;
-        // $question -> statement = "Sort the following array";
-        // $question -> userExpectedInput = serialize(array( 3, 7, 5 ));
-        // $question -> userExpectedOutput = serialize(array( 3, 5, 7 ));
-        // $question -> testInput1 = serialize(array( 10, 3, 7 ));
-        // $question -> testOutput1 = serialize(array( 3, 7, 10 ));
-        // $question -> testInput2 = serialize(array( 6, 2, 8 ));
-        // $question -> testOutput2 = serialize(array( 2, 6, 8 ));
-        // $question -> save();
         return ($questions);
     }
 
@@ -213,5 +204,4 @@ class GameController extends Controller
 
         return response() -> json($updatedProfiles);
     }    
-    
 }

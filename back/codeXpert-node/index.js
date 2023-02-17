@@ -171,7 +171,11 @@ socketIO.on("connection", (socket) => {
     socket.join(data.lobby_name);
     socket.data.current_lobby = data.lobby_name;
     console.log(socket.data.name + " joined the lobby -> " + data.lobby_name);
-    socketIO.to(data.lobby_name).emit("player joined", socket.data.name);
+    addMessage({
+      nickname: "ingame_events",
+      message: `${socket.data.name} joined the lobby.`,
+      avatar: socket.data.avatar
+    }, socket.data.current_lobby)
 
     sendUserList(data.lobby_name);
     sendMessagesToLobby(data.lobby_name);
@@ -191,15 +195,6 @@ socketIO.on("connection", (socket) => {
       avatar: socket.data.avatar
     }, data.room);
   });
-
-  function addMessage(msgData, room) {
-    lobbies.forEach((lobby) => {
-      if (lobby.lobby_name == room) {
-        lobby.messages.push(msgData);
-      }
-    });
-    sendMessagesToLobby(room);
-  }
 
   socket.on("start_game", () => {
     lobbies.forEach((lobby) => {
@@ -230,6 +225,7 @@ socketIO.on("connection", (socket) => {
         evalPassed: data.evalPassed,
       })
       .then(function (response) {
+        console.log(response);
         var user_game = response.data.user_game;
         var game = response.data.game;
         if (response.data.correct) {
@@ -244,6 +240,14 @@ socketIO.on("connection", (socket) => {
           }, socket.data.current_lobby)
 
           socket.data.question_at = user_game.question_at;
+          lobbies.forEach((lobby) => {
+            // console.log(socket.data.lobby_name);
+            if (lobby.lobby_name == socket.data.current_lobby) {
+              socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
+            }
+          });
+
+          // socket.data.idQuestion = game.questions[user_game.question_at];
           sendUserList(socket.data.current_lobby)
           // console.log(socket.data);
           // Only passes if not dead
@@ -325,6 +329,15 @@ socketIO.on("connection", (socket) => {
   });
 });
 
+function addMessage(msgData, room) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobby_name == room) {
+      lobby.messages.push(msgData);
+    }
+  });
+  sendMessagesToLobby(room);
+}
+
 // async function usuariDisponible(socketId, room) {
 //   let disponible = true
 //   const sockets = await socketIO.in(room).fetchSockets();
@@ -352,7 +365,7 @@ async function startGame(room) {
           setGameData(response.data, room);
 
           socketIO.to(room).emit("game_started");
-          console.log(lobby.game_data);
+          // console.log(lobby.game_data);
           socketIO.to(room).emit("lobby_name", {
             lobby: room
           });
@@ -391,7 +404,7 @@ async function enviarDadesGame(room) {
       idGame: idGame,
     })
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
     })
     .catch(function (error) {
       console.log(error);
@@ -417,7 +430,7 @@ async function updateUserLvl(room) {
       idGame: idGame,
     })
     .then(function (response) {
-      console.log(response.data);
+      // console.log(response.data);
       setUserLvl(response.data, room)
       sendUserStats(room)
     })
@@ -503,6 +516,11 @@ async function leaveLobby(socket) {
       lobby.members.forEach((member, index) => {
         if (member.nom == socket.data.name) {
           lobby.members.splice(index, 1);
+          addMessage({
+            nickname: "ingame_events",
+            message: `${socket.data.name} left the lobby.`,
+            avatar: socket.data.avatar
+          }, socket.data.current_lobby)
         }
       });
     }
@@ -512,6 +530,8 @@ async function leaveLobby(socket) {
   });
 
   socket.leave(socket.data.current_lobby);
+  socket.data.current_lobby = null
+  socketIO.to(socket.id).emit("YOU_LEFT_LOBBY")
   sendLobbyList();
 }
 

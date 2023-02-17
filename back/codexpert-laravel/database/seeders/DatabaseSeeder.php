@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-          //Example 1
+        //Example 1
         $question = new Question;
         $question -> statement = "Sort Array in ASCENDING order";
         $question -> userExpectedInput = serialize(array( 3, 7, 5 ));
@@ -68,6 +68,6 @@ class DatabaseSeeder extends Seeder
         $question -> testOutput1 = serialize(1);
         $question -> testInput2 = serialize(array( 5, 90, 30, 1, 17 ));
         $question -> testOutput2 = serialize(0);
-        $question -> save(); 
+        $question -> save();        
     }
 }

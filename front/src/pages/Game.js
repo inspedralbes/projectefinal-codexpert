@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../normalize.css";
 import "../game.css";
 import "../Lobbies.css";
-import routes from "../index";
+import { useNavigate, Link } from "react-router-dom";
 import Chat from "../components/Chat";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 
@@ -28,6 +28,8 @@ function Game({ socket }) {
   const [rivalCorrect, setRivalCorrect] = useState("");
   const [rivalWrong, setRivalWrong] = useState("");
   const [otherLost, setOtherLost] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -60,6 +62,15 @@ function Game({ socket }) {
       });
     }
   };
+
+  function goBackToLobby() {
+    navigate("/lobbies");
+  }
+
+  function leaveLobby() {
+    socket.emit("leave lobby", lobbyName);
+    // navigate("/lobbies");
+  }
 
   useEffect(() => {
 
@@ -108,6 +119,10 @@ function Game({ socket }) {
         eloEarned: data.eloEarned,
       })
     })
+
+    socket.on("YOU_LEFT_LOBBY", () => {
+      navigate("/lobbies");
+    })
   }, []);
 
   // useEffect(() => {
@@ -143,14 +158,13 @@ function Game({ socket }) {
         </div>
 
         <div className="container__right">
-          {playable && <div >
-
+          {playable && <div className="game__playing" >
             <div className="game__statement">
               <h2>Statement:</h2>
               <h1 className="game__statementTitle">{qst.statement}</h1>
             </div>
-
             <div className="game--grid">
+
               <div className="game__expectedInput">
                 <h2>Example input:</h2>
                 <h1>{qst.inputs[0].toString()}</h1>
@@ -165,7 +179,7 @@ function Game({ socket }) {
             <form className="editor" onSubmit={handleSubmit}>
 
               <div className="input-header">
-                <h1>Input</h1>
+                <h1 className="editor__title">Input</h1>
                 <div className="toggle">
                   <input onClick={() => setColorTema(!colorTema)} type="checkbox" />
                   <label></label>
@@ -222,8 +236,9 @@ function Game({ socket }) {
               <li>Elo: {rewards.eloEarned}</li>
             </ul>
             <p className="game__buttons">
-              <button className="pixel-button game__button">GO BACK TO LOBBY</button>
-              <button className="pixel-button game__button">LOBBY LIST</button>
+              <button className="pixel-button game__button" onClick={goBackToLobby}>GO BACK TO LOBBY</button>
+
+              <button className="pixel-button game__button" onClick={leaveLobby}>LOBBY LIST</button>
             </p>
           </div>}
         </div>
