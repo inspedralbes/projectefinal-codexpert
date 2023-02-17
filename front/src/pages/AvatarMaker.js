@@ -129,6 +129,7 @@ function AvatarMaker({ socket }) {
       const changeOption = !menuCopy[option];
       Object.keys(menuCopy).forEach((key) => (menuCopy[key] = false));
       menuCopy[option] = changeOption;
+      console.log(menuCopy);
       setMenu(menuCopy);
     }
   }

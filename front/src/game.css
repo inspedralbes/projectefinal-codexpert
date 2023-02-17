@@ -76,7 +76,7 @@ body {
     width: 30%;
     float: left;
     padding: 20px;
-    border: 2px solid red;
+    /* border: 2px solid red; */
     height: 100%;
 }
 
@@ -85,10 +85,15 @@ body {
     float: right;
     padding: 20px;
     height: 100%;
-    border: 2px solid red;
+    /* border: 2px solid red; */
+}
+
+.game__playing{
+    display: block;
 }
 
 .game--grid {
+    margin-top: 0px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 1fr;
@@ -132,7 +137,7 @@ body {
 .game__expectedOutput,
 .game__expectedInput {
     background: var(--pixel-bg);
-    margin: 50px;
+    margin: 10px;
     padding: 10px;
     border-color: #000000;
     border-style: solid;
@@ -230,13 +235,17 @@ h2 {
     text-align: left;
     width: 90%;
     margin: 0 auto;
-    padding: 30px;
+    margin-top: 10px;
+    padding: 15px;
     border-radius: 4px;
     overflow: hidden;
     /* border-color: #000000; */
     /* border-style: solid; */
     /* border-width: 6px 0; */
     color: #000000;
+    border-color: #252525;
+    border-width: 1px;
+    border-style: solid;
     position: relative;
 }
 
@@ -270,6 +279,10 @@ h2 {
     line-height: 150%;
     padding: 0;
     margin: 0;
+}
+
+.editor__title {
+    color: #000000;
 }
 
 .editor .input-header {
