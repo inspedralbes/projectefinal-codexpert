@@ -29,11 +29,24 @@ function Chat({ socket, lobbyName }) {
         <ul id="messages" className="lobby__chat chat">
           {Array.isArray(messages)
             ? messages.map((element, index) => {
-              return (
-                <li className="chat__message" key={index}>
-                  {element}
-                </li>
-              );
+              if (element.nickname != "ingame_events") {
+                return (
+                  <li className="chat__message" key={index}>
+                    <img
+                      src={element.avatar}
+                      width="50px"
+                      className="user__image"
+                      alt={element.nickname + "'s avatar"}
+                    ></img>{element.nickname + ": " + element.message}
+                  </li>
+                );
+              } else {
+                return (
+                  <li className="chat__message chat__message--event" key={index}>
+                    {element.message}
+                  </li>
+                );
+              }
             })
             : null}
         </ul>

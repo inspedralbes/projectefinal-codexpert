@@ -152,7 +152,7 @@
 }
 
 #input_message {
-    font-size: 10px;
+    font-size: 14px;
 }
 
 /* ================================================================================= */
@@ -331,13 +331,21 @@
 }
 
 .chat__title {
-    color: white
+    color: #000
+}
+
+.chat__message {
+    font-size: 14px;
 }
 
 .lobby__chat,
 .game__chat {
     bottom: 0;
     /* background-color: #ffffff; */
+}
+
+.chat__chatbox {
+    bottom: 0;
 }
 
 @media all and (max-width: 767px) {
@@ -619,4 +627,11 @@
     left: -6px;
     top: 6px;
     width: 6px;
+}
+
+.lobbies__error {
+    color: red;
+    text-align: center;
+    font-family: pixel_operator;
+    src: url(fonts/pixel_operator/PixelOperator8.ttf);
 }

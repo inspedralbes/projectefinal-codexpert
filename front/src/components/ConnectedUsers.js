@@ -3,8 +3,12 @@ import { useState, useEffect } from "react";
 
 function ConnectedUsers({ socket }, u) {
     const [userList, setUserList] = useState([]);
+    const [firstTime, setFirstTime] = useState(true);
 
     useEffect(() => {
+        if (firstTime) {
+            socket.emit("lobby_data_pls");
+        }
         socket.on("lobby user list", (data) => {
             setUserList(data.list);
         });
@@ -20,7 +24,7 @@ function ConnectedUsers({ socket }, u) {
 
 
     return (
-        <div className="lobby__connectedUsers">
+        <div className="game__connectedUsers">
             <h1 className="connectedUsers_title">Connected users</h1>
             <ul id="userList" className="connectedUsers__userList userList">
                 {userList.map((user, index) => {

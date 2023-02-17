@@ -20,6 +20,8 @@ const Lobbies = ({ socket }) => {
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
   const [fetchUser, setfetchUser] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  
   const navigate = useNavigate();
   const cookies = new Cookies();
 
@@ -51,7 +53,7 @@ const Lobbies = ({ socket }) => {
       rank: "Member",
     });
 
-    console.log(socket);
+    // console.log(socket);
     setJoined(true);
   };
 
@@ -99,6 +101,17 @@ const Lobbies = ({ socket }) => {
       navigate("/game");
     });
 
+    socket.on("YOU_ARE_ON_LOBBY", (data) => {
+      setLobbyName(data.lobby_name);
+      setJoined(true);
+    })
+
+    socket.on("LOBBY_FULL_ERROR", (data) => {
+      setLobbyName("");
+      setJoined(false);
+      setErrorMessage(data.message)
+    })
+
   }, []);
 
 
@@ -134,7 +147,7 @@ const Lobbies = ({ socket }) => {
                       />
                     </div>
                   }
-                  {lobbyList.map((element, index) => {
+                  {Array.isArray(lobbyList) ? lobbyList.map((element, index) => {
                     return (
                       <li
                         className="table__row row"
@@ -168,12 +181,13 @@ const Lobbies = ({ socket }) => {
                           className="col col-4"
                           data-label="Players"
                         >
-                          {element.members.length} / 5
+                          {element.members.length} / 4
                         </div>
                       </li>
                     );
 
-                  })}
+
+                  }) : null}
                 </div>
               </ul>
 
@@ -199,6 +213,7 @@ const Lobbies = ({ socket }) => {
                   Create lobby
                 </button>
               </form>
+              {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             </div>
           </div>
         )}

@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const axios = require("axios");
 
 const maxMembersOnLobby = 4;
-const laravelRoute = "http://127.0.0.1:8000/";
+const laravelRoute = "http://127.0.0.1:8000/index.php/";
 
 var lobbies = [];
 var sesiones = [];
@@ -69,7 +69,8 @@ app.use(
 socketIO.on("connection", (socket) => {
   console.log("CONECTADO");
   var socketId = socket.id;
-  const ses = sesiones;
+  socket.data.current_lobby = null;
+  // const ses = sesiones;
 
   socket.join("chat-general");
   socketIO.to(`${socketId}`).emit("hello", "Welcome to the general chat");
@@ -81,7 +82,7 @@ socketIO.on("connection", (socket) => {
     let token = data.token;
 
     axios
-      .post(laravelRoute + "index.php/getUserInfo", {
+      .post(laravelRoute + "getUserInfo", {
         token: token,
       })
       .then(function (response) {
@@ -97,6 +98,7 @@ socketIO.on("connection", (socket) => {
         socket.data.name = response.data.name;
         socket.data.avatar = response.data.avatar;
         socket.data.hearts_remaining = -1
+        socket.data.question_at = -1
       })
       .catch(function (error) {
         console.log(error);
@@ -104,10 +106,24 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("hello", (m) => {
-    sendLobbyList();
+    if (socket.data.current_lobby != null) {
+      socket.emit("YOU_ARE_ON_LOBBY", {
+        lobby_name: socket.data.current_lobby
+      })
+      // socket.join(socket.data.current_lobby)
+    } else {
+      sendLobbyList();
+    }
+
+
   });
 
   sendLobbyList();
+
+  socket.on("lobby_data_pls", () => {
+    sendUserList(socket.data.current_lobby);
+    sendMessagesToLobby(socket.data.current_lobby);
+  })
 
   socket.on("new lobby", (lobby) => {
     let existeix = false;
@@ -124,8 +140,6 @@ socketIO.on("connection", (socket) => {
         messages: [],
       });
     }
-
-    sendLobbyList();
   });
 
   socket.on("join room", (data) => {
@@ -136,11 +150,21 @@ socketIO.on("connection", (socket) => {
             message: "The selected lobby is full",
           });
         } else {
-          lobby.members.push({
-            nom: socket.data.name,
-            rank: data.rank,
-            idUser: socket.data.userId,
+          var disponible = true;
+
+          lobby.members.forEach(member => {
+            if (member.nom == socket.data.name) {
+              disponible = false;
+            }
           });
+
+          if (disponible) {
+            lobby.members.push({
+              nom: socket.data.name,
+              rank: data.rank,
+              idUser: socket.data.userId,
+            });
+          }
         }
       }
     });
@@ -151,6 +175,7 @@ socketIO.on("connection", (socket) => {
 
     sendUserList(data.lobby_name);
     sendMessagesToLobby(data.lobby_name);
+    sendLobbyList();
   });
 
   socket.on("leave lobby", (roomName) => {
@@ -160,13 +185,17 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("chat message", (data) => {
-    addMessage(`${socket.data.name}: ${data.message}`, data.room);
+    addMessage({
+      nickname: socket.data.name,
+      message: data.message,
+      avatar: socket.data.avatar
+    }, data.room);
   });
 
-  function addMessage(msg, room) {
+  function addMessage(msgData, room) {
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == room) {
-        lobby.messages.push(msg);
+        lobby.messages.push(msgData);
       }
     });
     sendMessagesToLobby(room);
@@ -193,7 +222,7 @@ socketIO.on("connection", (socket) => {
     );
     */
     axios
-      .post(laravelRoute + "index.php/checkAnswer", {
+      .post(laravelRoute + "checkAnswer", {
         idQuestion: socket.data.idQuestion,
         idGame: socket.data.game_data.idGame,
         idUser: socket.data.userId,
@@ -204,13 +233,18 @@ socketIO.on("connection", (socket) => {
         var user_game = response.data.user_game;
         var game = response.data.game;
         if (response.data.correct) {
-          socket.to(socket.data.current_lobby).emit("answered_correctly", {
-            message: `${socket.data.name} answered question ${user_game.question_at} correctly.`,
-          });
+          // socket.to(socket.data.current_lobby).emit("answered_correctly", {
+          //   message: `${socket.data.name} answered question ${user_game.question_at} correctly.`,
+          // });
 
-          addMessage(`${socket.data.name} answered question ${user_game.question_at} correctly.`, socket.data.current_lobby)
+          addMessage({
+            nickname: "ingame_events",
+            message: `${socket.data.name} answered question ${user_game.question_at} correctly.`,
+            avatar: socket.data.avatar
+          }, socket.data.current_lobby)
 
           socket.data.question_at = user_game.question_at;
+          sendUserList(socket.data.current_lobby)
           // console.log(socket.data);
           // Only passes if not dead
           if (user_game.finished) {
@@ -244,20 +278,29 @@ socketIO.on("connection", (socket) => {
             );
           }
         } else {
-          socket.to(socket.data.current_lobby).emit("answered_wrong", {
-            message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
-          });
+          // socket.to(socket.data.current_lobby).emit("answered_wrong", {
+          //   message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
+          // });
 
-          addMessage(`${socket.data.name} answered question ${user_game.question_at + 1} wrong.`, socket.data.current_lobby)
+          addMessage({
+            nickname: "ingame_events",
+            message: `${socket.data.name} answered question ${user_game.question_at + 1} wrong.`,
+            avatar: socket.data.avatar
+          }, socket.data.current_lobby)
+
           socket.data.hearts_remaining--
           sendUserList(socket.data.current_lobby)
 
           if (user_game.dead) {
-            socket.to(socket.data.current_lobby).emit("other_lost", {
-              message: `${socket.data.name} has lost!`,
-            });
+            // socket.to(socket.data.current_lobby).emit("other_lost", {
+            //   message: `${socket.data.name} has lost!`,
+            // });
 
-            addMessage(`${socket.data.name} has lost!`, socket.data.current_lobby)
+            addMessage({
+              nickname: "ingame_events",
+              message: `${socket.data.name} has lost!`,
+              avatar: socket.data.avatar
+            }, socket.data.current_lobby)
 
             socketIO.to(socket.id).emit("user_finished", {
               message: `YOU LOST`,
@@ -282,9 +325,22 @@ socketIO.on("connection", (socket) => {
   });
 });
 
+// async function usuariDisponible(socketId, room) {
+//   let disponible = true
+//   const sockets = await socketIO.in(room).fetchSockets();
+
+//   sockets.forEach((element) => {
+//     if (element.id == socketId) {
+//       disponible = false;
+//     }
+//   });
+
+//   return disponible;
+// }
+
 async function startGame(room) {
   await axios
-    .get(laravelRoute + "index.php/startGame")
+    .get(laravelRoute + "startGame")
     .then(function (response) {
       // console.log(response.data);
       // console.log(response);
@@ -330,7 +386,7 @@ async function enviarDadesGame(room) {
     }
   });
   await axios
-    .post(laravelRoute + "index.php/setUserGame", {
+    .post(laravelRoute + "setUserGame", {
       users: members,
       idGame: idGame,
     })
@@ -356,7 +412,7 @@ async function updateUserLvl(room) {
     }
   });
   await axios
-    .post(laravelRoute + "index.php/updateUserLvl", {
+    .post(laravelRoute + "updateUserLvl", {
       users: members,
       idGame: idGame,
     })
@@ -483,7 +539,8 @@ async function sendUserList(room) {
     list.push({
       name: socketIO.sockets.sockets.get(element.id).data.name,
       avatar: socketIO.sockets.sockets.get(element.id).data.avatar,
-      hearts_remaining: socketIO.sockets.sockets.get(element.id).data.hearts_remaining
+      hearts_remaining: socketIO.sockets.sockets.get(element.id).data.hearts_remaining,
+      question_at: socketIO.sockets.sockets.get(element.id).data.question_at
     });
   });
 
