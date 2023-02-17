@@ -368,6 +368,10 @@ body {
     padding-left: 20px;
 }
 
+.information__icon:hover::before {
+    content: "<p>Password must</p>";
+}
+
 /* active state */
 .form__input:focus~.form__inputlabel,
 .form__input:valid~.form__inputlabel {
