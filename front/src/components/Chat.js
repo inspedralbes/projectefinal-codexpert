@@ -20,12 +20,22 @@ function Chat({ socket, lobbyName }) {
     socket.on("lobby-message", function (data) {
       setMessages(data.messages);
     });
+
+    if (document.getElementById('input_message') === document.click) {
+      document.getElementById('chat__body').style.display = "block";
+      document.getElementById('chat__body').style.transition = "all 2s ease-in";
+    }
+    if (!document.getElementById('input_message') === document.click) {
+      document.getElementById('chat__body').style.display = "none";
+    }
+
+    document.getElementById('chat__body').scrollTop = document.getElementById('chat__body').scrollHeight;
+
   })
 
   return (
     <div className="lobby__chat chat">
-      <h3 className="chat__title">Lobby chat</h3>
-      <div className="chat__body">
+      <div className="chat__body" id="chat__body">
         <ul id="messages" className="lobby__chat chat">
           {Array.isArray(messages)
             ? messages.map((element, index) => {
@@ -52,13 +62,20 @@ function Chat({ socket, lobbyName }) {
         </ul>
       </div>
       <form id="form" onSubmit={handleSendMessage}>
-        <input
-          id="input_message"
-          autoComplete="off"
-          value={msg}
-          onChange={(e) => setMsg(e.target.value)}
-        />
-        <button className="pixel-button">Send</button>
+        <div className="form--grid">
+          <div className="inputMsg-div">
+            <input
+              id="input_message"
+              autoComplete="off"
+              value={msg}
+              onChange={(e) => setMsg(e.target.value)}
+            />
+          </div>
+
+          <div className="buttonMsg-div">
+            <button className="send__button">Send</button>
+          </div>
+        </div>
       </form>
     </div>
 

@@ -21,7 +21,7 @@ const Lobbies = ({ socket }) => {
   const [firstTime, setFirstTime] = useState(true);
   const [fetchUser, setfetchUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const navigate = useNavigate();
   const cookies = new Cookies();
 
@@ -228,11 +228,16 @@ const Lobbies = ({ socket }) => {
               </span>
             </button>
             <ConnectedUsers socket={socket} ></ConnectedUsers>
-            <button className="pixel-button" onClick={startGame}>Start game</button>
-            <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
+            <div className="button-startGame">
+              <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
+            </div>
+            <div className="lobby__chat">
+              <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
+            </div>
           </div>
-        )}
-      </div>
+        )
+        }
+      </div >
     );
   } else {
     return (
