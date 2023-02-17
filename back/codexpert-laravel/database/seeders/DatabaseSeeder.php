@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $question = new Question;
         $question -> statement = "Reverse the String";
         $question -> userExpectedInput = serialize("Hello");
-        $question -> userExpectedOutput = serialize("olleh");
+        $question -> userExpectedOutput = serialize("olleH");
         $question -> testInput1 = serialize("Howdy");
         $question -> testOutput1 = serialize("ydwoH");
         $question -> testInput2 = serialize("Greetings from Earth");
