@@ -112,11 +112,6 @@ const Lobbies = ({ socket }) => {
       setErrorMessage(data.message)
     })
 
-    socket.on("YOU_LEFT_LOBBY", () => {
-      setJoined(false);
-      setLobbyName("");
-    })
-
   }, []);
 
 
