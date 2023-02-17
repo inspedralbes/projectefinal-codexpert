@@ -125,8 +125,10 @@ const Lobbies = ({ socket }) => {
   if (fetchUser) {
     return (
       <div className="lobbies">
-        <IconUser></IconUser>
+        
         {!joinedLobby && (
+          <>
+          <IconUser></IconUser>
           <div id="lobbyList" className="lobbies__lobbylist lobbylist">
             <div className="lobbylist__container">
               <h2
@@ -210,6 +212,7 @@ const Lobbies = ({ socket }) => {
               </button>
             </form>
           </div>
+          </>
         )}
 
         {joinedLobby && (
