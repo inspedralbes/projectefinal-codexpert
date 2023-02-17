@@ -11,11 +11,6 @@ import { Blocks } from 'react-loader-spinner'
 import lobbyTitle from '../img/lobbies.gif'
 import arrow from '../img/arrow.gif'
 
-
-
-
-
-
 // socket.io
 
 const Lobbies = ({ socket }) => {
@@ -106,12 +101,13 @@ const Lobbies = ({ socket }) => {
 
   }, []);
 
+
   if (fetchUser) {
     return (
       <div className="lobbies">
-        <IconUser></IconUser>
         {!joinedLobby && (
           <div id="lobbyList" className="lobbies__lobbylist lobbylist">
+            <IconUser></IconUser>
 
             <div className="lobbylist__container">
               <img
@@ -190,7 +186,7 @@ const Lobbies = ({ socket }) => {
                     id="email"
                     className="lobbiesForm__input"
                     value={lobbyName}
-                    placeholder="CREATE LOBBY"
+                    placeholder="INTRODUCE LOBBY NAME"
                     type="text"
                     onChange={(e) => {
                       setLobbyName(e.target.value);
@@ -209,12 +205,12 @@ const Lobbies = ({ socket }) => {
 
         {joinedLobby && (
           <div id="lobbyJoined" className="lobbies__lobby lobby">
-            <button
-              id="leaveLobby"
-              className="lobby__leaveButton pixel-button"
-              onClick={handleLeave}
-            >
-              Leave current lobby
+            <button id="goBackToLobby__button" onClick={handleLeave}>
+              <span className="circle" aria-hidden="true">
+                <span className="icon arrow"></span>
+              </span>
+              <span className="button-text">LEAVE CURRENT LOBBY
+              </span>
             </button>
             <ConnectedUsers socket={socket} ></ConnectedUsers>
             <button className="pixel-button" onClick={startGame}>Start game</button>
