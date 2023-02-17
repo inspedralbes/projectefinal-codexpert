@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../normalize.css";
 import "../game.css";
 import "../Lobbies.css";
-import routes from "../index";
+import { useNavigate, Link } from "react-router-dom";
 import Chat from "../components/Chat";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 
@@ -28,6 +28,8 @@ function Game({ socket }) {
   const [rivalCorrect, setRivalCorrect] = useState("");
   const [rivalWrong, setRivalWrong] = useState("");
   const [otherLost, setOtherLost] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -60,6 +62,15 @@ function Game({ socket }) {
       });
     }
   };
+
+  function goBackToLobby() {
+    navigate("/lobbies");
+  }
+
+  function leaveLobby() {
+    socket.emit("leave lobby", lobbyName);
+    // navigate("/lobbies");
+  }
 
   useEffect(() => {
 
@@ -222,8 +233,11 @@ function Game({ socket }) {
               <li>Elo: {rewards.eloEarned}</li>
             </ul>
             <p className="game__buttons">
-              <button className="pixel-button game__button">GO BACK TO LOBBY</button>
-              <button className="pixel-button game__button">LOBBY LIST</button>
+              <button className="pixel-button game__button" onClick={goBackToLobby}>GO BACK TO LOBBY</button>
+
+              <Link to="/lobbies">
+                <button className="pixel-button game__button" onClick={leaveLobby}>LOBBY LIST</button>
+              </Link>
             </p>
           </div>}
         </div>

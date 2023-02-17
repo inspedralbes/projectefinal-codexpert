@@ -352,7 +352,7 @@ async function startGame(room) {
           setGameData(response.data, room);
 
           socketIO.to(room).emit("game_started");
-          console.log(lobby.game_data);
+          // console.log(lobby.game_data);
           socketIO.to(room).emit("lobby_name", {
             lobby: room
           });
@@ -391,7 +391,7 @@ async function enviarDadesGame(room) {
       idGame: idGame,
     })
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
     })
     .catch(function (error) {
       console.log(error);
@@ -417,7 +417,7 @@ async function updateUserLvl(room) {
       idGame: idGame,
     })
     .then(function (response) {
-      console.log(response.data);
+      // console.log(response.data);
       setUserLvl(response.data, room)
       sendUserStats(room)
     })
@@ -512,6 +512,7 @@ async function leaveLobby(socket) {
   });
 
   socket.leave(socket.data.current_lobby);
+  socketIO.to(socket.id).emit("YOU_LEFT_LOBBY")
   sendLobbyList();
 }
 

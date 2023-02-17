@@ -26,7 +26,7 @@ const Lobbies = ({ socket }) => {
   const [firstTime, setFirstTime] = useState(true);
   const [fetchUser, setfetchUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const navigate = useNavigate();
   const cookies = new Cookies();
 
@@ -115,6 +115,11 @@ const Lobbies = ({ socket }) => {
       setLobbyName("");
       setJoined(false);
       setErrorMessage(data.message)
+    })
+
+    socket.on("YOU_LEFT_LOBBY", () => {
+      setJoined(false);
+      setLobbyName("");
     })
 
   }, []);
