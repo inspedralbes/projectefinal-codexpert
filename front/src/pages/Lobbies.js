@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../normalize.css";
 import "../Lobbies.css";
 import Chat from "../components/Chat";
+import ConnectedUsers from "../components/ConnectedUsers";
 import IconUser from "../components/IconUser";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import routes from "../index";
 import { Blocks } from 'react-loader-spinner'
-
-
-
+import lobbyTitle from '../img/lobbies.gif'
+import arrow from '../img/arrow.gif'
 
 // socket.io
 
@@ -19,9 +19,9 @@ const Lobbies = ({ socket }) => {
   const [userList, setUserList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
-  const [messages, setMessages] = useState([]);
   const [fetchUser, setfetchUser] = useState(false);
-  const [msg, setMsg] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
   const cookies = new Cookies();
 
@@ -32,7 +32,7 @@ const Lobbies = ({ socket }) => {
     setJoined(false);
     setLobbyName("");
     setLobbyList([]);
-    setMessages([]);
+    // setMessages([]);
   };
 
   const handleSubmit = (e) => {
@@ -53,19 +53,8 @@ const Lobbies = ({ socket }) => {
       rank: "Member",
     });
 
-    console.log(socket);
+    // console.log(socket);
     setJoined(true);
-  };
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (msg != "") {
-      socket.emit("chat message", {
-        message: msg,
-        room: lobbyName,
-      });
-      setMsg("");
-    }
   };
 
   function startGame() {
@@ -104,23 +93,32 @@ const Lobbies = ({ socket }) => {
       setLobbyList(lobbylist);
     });
 
-    socket.on("lobby user list", (data) => {
-      setUserList(data.list);
-    });
-
     socket.on("player joined", (id) => {
       console.log(id + " joined the lobby");
-    });
-
-    socket.on("lobby-message", function (data) {
-      setMessages(data.messages);
     });
 
     socket.on("game_started", () => {
       navigate("/game");
     });
 
+    socket.on("YOU_ARE_ON_LOBBY", (data) => {
+      setLobbyName(data.lobby_name);
+      setJoined(true);
+    })
+
+    socket.on("LOBBY_FULL_ERROR", (data) => {
+      setLobbyName("");
+      setJoined(false);
+      setErrorMessage(data.message)
+    })
+
+    socket.on("YOU_LEFT_LOBBY", () => {
+      setJoined(false);
+      setLobbyName("");
+    })
+
   }, []);
+
 
   if (fetchUser) {
     return (
@@ -130,15 +128,16 @@ const Lobbies = ({ socket }) => {
           <>
           <IconUser></IconUser>
           <div id="lobbyList" className="lobbies__lobbylist lobbylist">
+            <IconUser></IconUser>
+
             <div className="lobbylist__container">
-              <h2
+              <img
                 className="lobbies__title"
-                onClick={() => {
+                src={lobbyTitle} alt="LOBBIES"
+              />
+              {/* onClick={() => {
                   socket.emit("hello", "gimme gimme");
-                }}
-              >
-                Lobby list
-              </h2>
+                }} */}
               <ul className="lobbies__table table">
                 <li className="table__header">
                   <div className="col col-1">ID</div>
@@ -147,7 +146,16 @@ const Lobbies = ({ socket }) => {
                   <div className="col col-4">Players</div>
                 </li>
                 <div className="table__body">
-                  {lobbyList.map((element, index) => {
+                  {lobbyList.length == 0 &&
+                    <div className="lobbies__noLobbies">
+                      <h1>There are no lobbies yet</h1>
+                      <h2>You can create one!!</h2>
+                      <img
+                        src={arrow} alt=" " height="100px"
+                      />
+                    </div>
+                  }
+                  {Array.isArray(lobbyList) ? lobbyList.map((element, index) => {
                     return (
                       <li
                         className="table__row row"
@@ -181,85 +189,56 @@ const Lobbies = ({ socket }) => {
                           className="col col-4"
                           data-label="Players"
                         >
-                          {element.members.length} / 5
+                          {element.members.length} / 4
                         </div>
                       </li>
                     );
-                  })}
+
+
+                  }) : null}
                 </div>
               </ul>
+
+              <form
+                className="lobbies__form"
+                onSubmit={handleSubmit}
+              >
+                <div className="lobbiesForm__inputGroup">
+                  <input
+                    id="email"
+                    className="lobbiesForm__input"
+                    value={lobbyName}
+                    placeholder="INTRODUCE LOBBY NAME"
+                    type="text"
+                    onChange={(e) => {
+                      setLobbyName(e.target.value);
+                    }}
+                    autoComplete="off"
+                    required
+                  ></input>
+                </div>
+                <button className="lobbies__button" disabled={lobbyName === ""}>
+                  Create lobby
+                </button>
+              </form>
+              {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             </div>
-            <form
-              id="form"
-              className="lobbies__form form"
-              onSubmit={handleSubmit}
-            >
-              <label>
-                <input
-                  id="inputLobby"
-                  className="form__inputLobby"
-                  autoComplete="off"
-                  type="text"
-                  value={lobbyName}
-                  placeholder="Lobby name"
-                  onChange={(e) => {
-                    setLobbyName(e.target.value);
-                  }}
-                />
-              </label>
-              <button className="lobbies__button" disabled={lobbyName === ""}>
-                Create lobby
-              </button>
-            </form>
           </div>
           </>
         )}
 
         {joinedLobby && (
           <div id="lobbyJoined" className="lobbies__lobby lobby">
-            <button
-              id="leaveLobby"
-              className="lobby__leaveButton pixel-button"
-              onClick={handleLeave}
-            >
-              Leave current lobby
+            <button id="goBackToLobby__button" onClick={handleLeave}>
+              <span className="circle" aria-hidden="true">
+                <span className="icon arrow"></span>
+              </span>
+              <span className="button-text">LEAVE CURRENT LOBBY
+              </span>
             </button>
-            <div className="lobby__connectedUsers">
-              <h1 className="connectedUsers_title">Connected users</h1>
-              <ul id="userList" className="connectedUsers__userList userList">
-                {userList.map((user, index) => {
-                  return (
-                    <li className="userList__item item" key={index}>
-                      <img
-                        src={user.avatar}
-                        width="50px"
-                        className="item__image"
-                        alt={user.name + "'s avatar"}
-                      ></img>
-                      {user.name}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+            <ConnectedUsers socket={socket} ></ConnectedUsers>
             <button className="pixel-button" onClick={startGame}>Start game</button>
-            {/* Chat :) */}
-            <div className="lobby__chat chat">
-              <h3 className="chat__title">Lobby chat</h3>
-              <div className="chat__body">
-                <Chat className="chat__chatbox" messages={messages}></Chat>
-              </div>
-              <form id="form" onSubmit={handleSendMessage}>
-                <input
-                  id="input_message"
-                  autoComplete="off"
-                  value={msg}
-                  onChange={(e) => setMsg(e.target.value)}
-                />
-                <button className="pixel-button">Send</button>
-              </form>
-            </div>
-            {/* Fin del chat */}
+            <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
           </div>
         )}
       </div>

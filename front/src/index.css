@@ -139,7 +139,7 @@ body {
 /* ========================================================================================================================================== */
 
 .form {
-    margin: 15vh auto;
+    margin: 10vh auto;
     width: 30%;
     background-color: var(--white);
     padding: 30px;
@@ -366,6 +366,10 @@ body {
     -webkit-transition: 0.2s ease all;
     margin-left: 20px;
     padding-left: 20px;
+}
+
+.information__icon:hover::before {
+    content: "<p>Password must</p>";
 }
 
 /* active state */

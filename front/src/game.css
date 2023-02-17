@@ -4,7 +4,7 @@
 }
 
 :root {
-    --pixel-bg: #8c6db4;
+    --pixel-bg: #75b152;
     /* ↑ Inner background color */
 
     --pixel-border: #8c6db4;
@@ -24,14 +24,68 @@ body {
     background-color: #252525;
 }
 
-.game {
-    background-color: #5a59a5;
+/* .game {
+    background-color: #dcffd1;
     margin: 3vh auto;
     font-size: 20px;
     text-align: center;
     padding: 30px;
     width: 90%;
+    height: fit-content;
     color: #252525;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    position: relative;
+}
+
+.game::after {
+    background-color: #dcffd1;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: flex;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game::before {
+    background-color: #dcffd1;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: flex;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+} */
+
+.game__container {
+    border: 3px solid #fff;
+    background-color: #fff;
+    padding: 20px;
+    width: 99vw;
+    margin: 0 auto;
+    height: 100vh;
+}
+
+.container__left {
+    width: 30%;
+    float: left;
+    padding: 20px;
+    border: 2px solid red;
+    height: 100%;
+}
+
+.container__right {
+    width: 70%;
+    float: right;
+    padding: 20px;
+    height: 100%;
+    border: 2px solid red;
 }
 
 .game--grid {
@@ -48,72 +102,118 @@ body {
     margin-bottom: 30px;
 } */
 
+.connectedUsers_title {
+    color: #000000;
+}
+
+.connectedUsers__userList {
+    display: grid;
+    grid-template-columns: repeat(2, 49%);
+    grid-template-rows: 1fr;
+    row-gap: 2%;
+    column-gap: 2%;
+    margin: 20px;
+}
+
+.userList__user {
+    background: var(--pixel-bg);
+    padding: 10px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
+    text-align: center;
+    width: 90%;
+    margin: 0 auto
+}
+
 .game__statement,
 .game__expectedOutput,
 .game__expectedInput {
     background: var(--pixel-bg);
     margin: 50px;
     padding: 10px;
-    box-shadow:
-
-        /* Inner Background Color */
-        0 calc(var(--pixel) * -3) 0 calc(var(--pixel) * -1) var(--pixel-bg),
-        0 calc(var(--pixel) * 3) 0 calc(var(--pixel) * -1) var(--pixel-bg),
-        0 calc(var(--pixel) * -6) 0 calc(var(--pixel) * -2) var(--pixel-bg),
-        0 calc(var(--pixel) * 6) 0 calc(var(--pixel) * -2) var(--pixel-bg),
-        0 calc(var(--pixel) * -9) 0 calc(var(--pixel) * -4) var(--pixel-bg),
-        0 calc(var(--pixel) * 9) 0 calc(var(--pixel) * -4) var(--pixel-bg),
-        0 calc(var(--pixel) * -12) 0 calc(var(--pixel) * -6) var(--pixel-bg),
-        0 calc(var(--pixel) * 12) 0 calc(var(--pixel) * -6) var(--pixel-bg),
-
-        /* Pixel Border Layer 1 */
-        calc(var(--pixel) * -1) 0 0 0 var(--pixel-border),
-        var(--pixel) 0 0 0 var(--pixel-border),
-        0 calc(var(--pixel) * -2) 0 0 var(--pixel-border),
-        0 calc(var(--pixel) * 2) 0 0 var(--pixel-border),
-        0 calc(var(--pixel) * -5) 0 calc(var(--pixel) * -1) var(--pixel-border),
-        0 calc(var(--pixel) * 5) 0 calc(var(--pixel) * -1) var(--pixel-border),
-        0 calc(var(--pixel) * -7) 0 calc(var(--pixel) * -2) var(--pixel-border),
-        0 calc(var(--pixel) * 7) 0 calc(var(--pixel) * -2) var(--pixel-border),
-        0 calc(var(--pixel) * -10) 0 calc(var(--pixel) * -4) var(--pixel-border),
-        0 calc(var(--pixel) * 10) 0 calc(var(--pixel) * -4) var(--pixel-border),
-        0 calc(var(--pixel) * -13) 0 calc(var(--pixel) * -6) var(--pixel-border),
-        0 calc(var(--pixel) * 13) 0 calc(var(--pixel) * -6) var(--pixel-border),
-
-        /* Pixel Border Layer 2 */
-        calc(var(--pixel) * -2) 0 0 0 var(--pixel-border-2),
-        calc(var(--pixel) * 2) 0 0 0 var(--pixel-border-2),
-        0 calc(var(--pixel) * -1) 0 var(--pixel) var(--pixel-border-2),
-        0 var(--pixel) 0 var(--pixel) var(--pixel-border-2),
-        0 calc(var(--pixel) * -4) 0 0 var(--pixel-border-2),
-        0 calc(var(--pixel) * 4) 0 0 var(--pixel-border-2),
-        0 calc(var(--pixel) * -6) 0 calc(var(--pixel) * -1) var(--pixel-border-2),
-        0 calc(var(--pixel) * 6) 0 calc(var(--pixel) * -1) var(--pixel-border-2),
-        0 calc(var(--pixel) * -8) 0 calc(var(--pixel) * -2) var(--pixel-border-2),
-        0 calc(var(--pixel) * 8) 0 calc(var(--pixel) * -2) var(--pixel-border-2),
-        0 calc(var(--pixel) * -11) 0 calc(var(--pixel) * -4) var(--pixel-border-2),
-        0 calc(var(--pixel) * 11) 0 calc(var(--pixel) * -4) var(--pixel-border-2),
-        0 calc(var(--pixel) * -14) 0 calc(var(--pixel) * -6) var(--pixel-border-2),
-        0 calc(var(--pixel) * 14) 0 calc(var(--pixel) * -6) var(--pixel-border-2),
-
-        /* Border Layer 3: --pixel-border-3 */
-        calc(var(--pixel) * -3) 0 0 0 var(--pixel-border-3),
-        calc(var(--pixel) * 3) 0 0 0 var(--pixel-border-3),
-        0 0 0 calc(var(--pixel) * 2) var(--pixel-border-3),
-        0 calc(var(--pixel) * -3) 0 var(--pixel) var(--pixel-border-3),
-        0 calc(var(--pixel) * 3) 0 var(--pixel) var(--pixel-border-3),
-        0 calc(var(--pixel) * -5) 0 0 var(--pixel-border-3),
-        0 calc(var(--pixel) * 5) 0 0 var(--pixel-border-3),
-        0 calc(var(--pixel) * -7) 0 calc(var(--pixel) * -1) var(--pixel-border-3),
-        0 calc(var(--pixel) * 7) 0 calc(var(--pixel) * -1) var(--pixel-border-3),
-        0 calc(var(--pixel) * -9) 0 calc(var(--pixel) * -2) var(--pixel-border-3),
-        0 calc(var(--pixel) * 9) 0 calc(var(--pixel) * -2) var(--pixel-border-3),
-        0 calc(var(--pixel) * -12) 0 calc(var(--pixel) * -4) var(--pixel-border-3),
-        0 calc(var(--pixel) * 12) 0 calc(var(--pixel) * -4) var(--pixel-border-3),
-        0 calc(var(--pixel) * -15) 0 calc(var(--pixel) * -6) var(--pixel-border-3),
-        0 calc(var(--pixel) * 15) 0 calc(var(--pixel) * -6) var(--pixel-border-3);
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
 }
 
+.game__statement::after,
+.game__expectedOutput::after,
+.game__expectedInput::after,
+.userList__user::after {
+    background-color: var(--pixel-bg);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__statement::before,
+.game__expectedOutput::before,
+.game__expectedInput::before,
+.userList__user::before {
+    background-color: var(--pixel-bg);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__results {
+    color: black;
+    margin: 0 auto;
+    width: fit-content;
+    text-align: left;
+    height: 100vh;
+}
+
+.game__yourResult {
+    font-size: 2em;
+}
+
+.game__rewards {
+    list-style: none;
+}
+
+.game__buttons {
+    margin: 30vh auto;
+}
+
+.game__button {
+    margin: 20px;
+}
+
+/* .userList__user {
+    background: #20bf55;
+    padding: 10px;
+    border-radius: 5px;
+} */
+
+.user__image {
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+.user__name {
+    font-size: 20px;
+    margin: 0 auto
+}
+
+.user__level {
+    font-size: 20px;
+}
 
 /* ======================================================================================= */
 
@@ -127,18 +227,46 @@ h2 {
 }
 
 .editor {
-    position: relative;
     text-align: left;
-    width: 50%;
+    width: 90%;
     margin: 0 auto;
-    border: solid 10px #00000059;
+    padding: 30px;
     border-radius: 4px;
     overflow: hidden;
+    /* border-color: #000000; */
+    /* border-style: solid; */
+    /* border-width: 6px 0; */
+    color: #000000;
+    position: relative;
+}
+
+.editor::after {
+    background-color: #6e41a1;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.editor::before {
+    background-color: #6e41a1;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
 }
 
 .editor * {
     font-family: monospace;
-    font-size: 14px;
+    font-size: 18px;
     line-height: 150%;
     padding: 0;
     margin: 0;
@@ -193,8 +321,9 @@ h2 {
 
 
 .editor textarea {
-    font-family: monoid;
-    font-weight: bold;
+    font-family: monospace;
+    /* font-weight: bold; */
+    font-size: 18px;
     letter-spacing: 1px;
     border: none;
     width: calc(100% - 44px);
