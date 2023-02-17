@@ -67,10 +67,9 @@ body {
     border: 3px solid #fff;
     background-color: #fff;
     padding: 20px;
-    width: 100vw;
+    width: 99vw;
     margin: 0 auto;
     height: 100vh;
-    /* height: 450px; */
 }
 
 .container__left {
@@ -103,21 +102,37 @@ body {
     margin-bottom: 30px;
 } */
 
-.game__statement,
-.game__expectedOutput,
-.game__expectedInput {
+.connectedUsers_title {
+    color: #000000;
+}
+
+.connectedUsers__userList {
+    display: grid;
+    grid-template-columns: repeat(2, 49%);
+    grid-template-rows: 1fr;
+    row-gap: 2%;
+    column-gap: 2%;
+    margin: 20px;
+}
+
+.userList__user {
     background: var(--pixel-bg);
-    margin: 50px;
     padding: 10px;
     border-color: #000000;
     border-style: solid;
     border-width: 6px 0;
     color: #000000;
     position: relative;
+    text-align: center;
+    width: 90%;
+    margin: 0 auto
 }
 
-.userList__user {
+.game__statement,
+.game__expectedOutput,
+.game__expectedInput {
     background: var(--pixel-bg);
+    margin: 50px;
     padding: 10px;
     border-color: #000000;
     border-style: solid;
@@ -156,8 +171,28 @@ body {
     width: 6px;
 }
 
+.game__results {
+    color: black;
+    margin: 0 auto;
+    width: fit-content;
+    text-align: left;
+    height: 100vh;
+}
+
+.game__yourResult {
+    font-size: 2em;
+}
+
 .game__rewards {
     list-style: none;
+}
+
+.game__buttons {
+    margin: 30vh auto;
+}
+
+.game__button {
+    margin: 20px;
 }
 
 /* .userList__user {

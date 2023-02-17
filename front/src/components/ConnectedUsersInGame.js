@@ -9,7 +9,7 @@ function ConnectedUsersInGame({ socket }) {
             setUserList(data.list);
             console.log(userList);
         });
-    })
+    }, [])
 
     return (
         <div className="lobby__connectedUsers">
