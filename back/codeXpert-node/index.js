@@ -172,7 +172,11 @@ socketIO.on("connection", (socket) => {
     socket.join(data.lobby_name);
     socket.data.current_lobby = data.lobby_name;
     console.log(socket.data.name + " joined the lobby -> " + data.lobby_name);
-    socketIO.to(data.lobby_name).emit("player joined", socket.data.name);
+    addMessage({
+      nickname: "ingame_events",
+      message: `${socket.data.name} joined the lobby.`,
+      avatar: socket.data.avatar
+    }, socket.data.current_lobby)
 
     sendUserList(data.lobby_name);
     sendMessagesToLobby(data.lobby_name);
@@ -192,15 +196,6 @@ socketIO.on("connection", (socket) => {
       avatar: socket.data.avatar
     }, data.room);
   });
-
-  function addMessage(msgData, room) {
-    lobbies.forEach((lobby) => {
-      if (lobby.lobby_name == room) {
-        lobby.messages.push(msgData);
-      }
-    });
-    sendMessagesToLobby(room);
-  }
 
   socket.on("start_game", () => {
     lobbies.forEach((lobby) => {
@@ -325,6 +320,15 @@ socketIO.on("connection", (socket) => {
     leaveLobby(socket);
   });
 });
+
+function addMessage(msgData, room) {
+  lobbies.forEach((lobby) => {
+    if (lobby.lobby_name == room) {
+      lobby.messages.push(msgData);
+    }
+  });
+  sendMessagesToLobby(room);
+}
 
 // async function usuariDisponible(socketId, room) {
 //   let disponible = true
@@ -504,6 +508,11 @@ async function leaveLobby(socket) {
       lobby.members.forEach((member, index) => {
         if (member.nom == socket.data.name) {
           lobby.members.splice(index, 1);
+          addMessage({
+            nickname: "ingame_events",
+            message: `${socket.data.name} left the lobby.`,
+            avatar: socket.data.avatar
+          }, socket.data.current_lobby)
         }
       });
     }
@@ -513,6 +522,7 @@ async function leaveLobby(socket) {
   });
 
   socket.leave(socket.data.current_lobby);
+  socket.data.current_lobby = null
   socketIO.to(socket.id).emit("YOU_LEFT_LOBBY")
   sendLobbyList();
 }

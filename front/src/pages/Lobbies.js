@@ -112,18 +112,16 @@ const Lobbies = ({ socket }) => {
       setErrorMessage(data.message)
     })
 
-    socket.on("YOU_LEFT_LOBBY", () => {
-      setJoined(false);
-      setLobbyName("");
-    })
-
   }, []);
 
 
   if (fetchUser) {
     return (
       <div className="lobbies">
+        
         {!joinedLobby && (
+          <>
+          <IconUser></IconUser>
           <div id="lobbyList" className="lobbies__lobbylist lobbylist">
             <IconUser></IconUser>
 
@@ -221,6 +219,7 @@ const Lobbies = ({ socket }) => {
               {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             </div>
           </div>
+          </>
         )}
 
         {joinedLobby && (
