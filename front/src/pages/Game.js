@@ -119,6 +119,10 @@ function Game({ socket }) {
         eloEarned: data.eloEarned,
       })
     })
+
+    socket.on("YOU_LEFT_LOBBY", () => {
+      navigate("/lobbies");
+    })
   }, []);
 
   // useEffect(() => {
@@ -235,9 +239,7 @@ function Game({ socket }) {
             <p className="game__buttons">
               <button className="pixel-button game__button" onClick={goBackToLobby}>GO BACK TO LOBBY</button>
 
-              <Link to="/lobbies">
-                <button className="pixel-button game__button" onClick={leaveLobby}>LOBBY LIST</button>
-              </Link>
+              <button className="pixel-button game__button" onClick={leaveLobby}>LOBBY LIST</button>
             </p>
           </div>}
         </div>
