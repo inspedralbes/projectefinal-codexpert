@@ -47,8 +47,4 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/checkAnswer', [GameController::class, 'checkAnswer']);
 
-    Route::post('/updateUserLvl', [GameController::class, 'updateUserLvl']);
-
-    //Descomentar despues de migrate fresh y volver a comentar
-    //Route::get('/getQuestions', [GameController::class, 'getQuestions']);
 });

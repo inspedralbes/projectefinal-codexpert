@@ -225,6 +225,7 @@ socketIO.on("connection", (socket) => {
         evalPassed: data.evalPassed,
       })
       .then(function (response) {
+        console.log(response);
         var user_game = response.data.user_game;
         var game = response.data.game;
         if (response.data.correct) {
@@ -239,6 +240,14 @@ socketIO.on("connection", (socket) => {
           }, socket.data.current_lobby)
 
           socket.data.question_at = user_game.question_at;
+          lobbies.forEach((lobby) => {
+            // console.log(socket.data.lobby_name);
+            if (lobby.lobby_name == socket.data.current_lobby) {
+              socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
+            }
+          });
+
+          // socket.data.idQuestion = game.questions[user_game.question_at];
           sendUserList(socket.data.current_lobby)
           // console.log(socket.data);
           // Only passes if not dead
