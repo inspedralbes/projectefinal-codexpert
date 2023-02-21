@@ -244,7 +244,9 @@ socketIO.on("connection", (socket) => {
           lobbies.forEach((lobby) => {
             // console.log(socket.data.lobby_name);
             if (lobby.lobby_name == socket.data.current_lobby) {
-              socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
+              if (socket.data.question_at < 5) {
+                socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
+              }
             }
           });
 
