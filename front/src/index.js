@@ -19,9 +19,9 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 const routes = {
-  fetchLaravel: "http://codexpertapi.alumnes.inspedralbes.cat/public",
-  fetchNode: "http://codexpertsbx.alumnes.inspedralbes.cat:7500/",
-  wsNode: "ws://codexpertsbx.alumnes.inspedralbes.cat:7500",
+  fetchLaravel: "http://localhost:8000",
+  fetchNode: "http://localhost:4000",
+  wsNode: "ws://localhost:4000",
 };
 
 var socket = socketIO(routes.wsNode, {
