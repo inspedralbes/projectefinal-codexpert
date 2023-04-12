@@ -40,4 +40,18 @@ class UserController extends Controller
         return response() -> json($ranking);
     }    
     
+    public function getUserData(Request $request)
+    {
+        if ($request -> session()->get('userId') != null) {
+            $userFound = User::where('id', $request->session()->get('userId'))->first();
+            $returnUser = (object) ['name' => $userFound -> name,
+                                    'email' => $userFound -> avatar,
+                                    'avatar' => $userFound -> avatar,
+                                    ];
+        } else {
+            $returnUser = (object) ['error' => "User is not logged in."];
+        }
+        
+        return response() -> json($returnUser);
+    }
 }
