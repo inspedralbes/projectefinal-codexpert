@@ -12,7 +12,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Lobbies from "./pages/Lobbies";
 import reportWebVitals from "./reportWebVitals";
 import AvatarMaker from "./pages/AvatarMaker";
-import socketIO from "socket.io-client";
+import {network, socket} from "./network.js";
 import Error404 from "./pages/404";
 import Cookies from 'universal-cookie';
 
@@ -23,7 +23,7 @@ const routes = {
   fetchNode: "http://localhost:7500",
   wsNode: "ws://localhost:7500",
 };
-
+/*
 var socket = socketIO(routes.wsNode, {
   withCredentials: true,
   cors: {
@@ -31,7 +31,7 @@ var socket = socketIO(routes.wsNode, {
     credentials: true,
   },
   transports: ["websocket"],
-});
+});*/
 
 if (cookies.get("token") != undefined) {
   socket.emit("send token", {
