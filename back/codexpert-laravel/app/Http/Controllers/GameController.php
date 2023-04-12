@@ -21,7 +21,7 @@ class GameController extends Controller
 
     public function getQuestions(Request $request)
     {
-        $questions = Question::all()->random(5);
+        $questions = Question::all()->inRandomOrder(5);
         return ($questions);
     }
 
