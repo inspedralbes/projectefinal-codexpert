@@ -209,9 +209,10 @@ function AvatarMaker({ socket }) {
           .then((response) => response.json())
           .then((data) => {
             if (cookies.get("token") != undefined) {
-              socket.emit("send token", {
-                token: cookies.get("token"),
-              });
+              window.postMessage({
+                type: 'send_token-emit',
+                token: cookies.get("token")
+              }, '*')
             }
           });
       };

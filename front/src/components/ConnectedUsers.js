@@ -5,13 +5,32 @@ function ConnectedUsers({ socket }, u) {
     const [userList, setUserList] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
 
+    const handleMessage = (event) => {
+        switch (event.data.type) {
+
+            case 'lobby_user_list-event':
+                setUserList(event.data.userList);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     useEffect(() => {
         if (firstTime) {
             socket.emit("lobby_data_pls");
+            setFirstTime(false);
         }
-        socket.on("lobby user list", (data) => {
+        socket.on("lobby_user_list", (data) => {
             setUserList(data.list);
         });
+
+        window.addEventListener('message', handleMessage);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
     }, [])
 
     // useEffect(() => {

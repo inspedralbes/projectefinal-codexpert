@@ -5,9 +5,8 @@ function ConnectedUsersInGame({ socket }) {
     const [userList, setUserList] = useState([]);
 
     useEffect(() => {
-        socket.on("lobby user list", (data) => {
+        socket.on("lobby_user_list", (data) => {
             setUserList(data.list);
-            console.log(userList);
         });
     }, [])
 

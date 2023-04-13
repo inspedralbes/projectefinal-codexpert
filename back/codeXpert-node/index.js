@@ -79,7 +79,7 @@ socketIO.on("connection", (socket) => {
   // socket.data.name = i;
   // i++;
 
-  socket.on("send token", (data) => {
+  socket.on("send_token", (data) => {
     let token = data.token;
 
     axios
@@ -92,7 +92,7 @@ socketIO.on("connection", (socket) => {
           userId: response.data.id,
           userName: response.data.name,
         };
-        // console.log(user);
+        console.log(user);
         sesiones.push(user);
 
         socket.data.userId = response.data.id;
@@ -106,17 +106,14 @@ socketIO.on("connection", (socket) => {
       });
   });
 
-  socket.on("hello", (m) => {
+  socket.on("hello_firstTime", () => {
     if (socket.data.current_lobby != null) {
       socket.emit("YOU_ARE_ON_LOBBY", {
         lobby_name: socket.data.current_lobby
       })
-      // socket.join(socket.data.current_lobby)
     } else {
       sendLobbyList();
     }
-
-
   });
 
   sendLobbyList();
@@ -126,7 +123,7 @@ socketIO.on("connection", (socket) => {
     sendMessagesToLobby(socket.data.current_lobby);
   })
 
-  socket.on("new lobby", (lobby) => {
+  socket.on("new_lobby", (lobby) => {
     let existeix = false;
     lobbies.forEach((element) => {
       if (element.lobby == lobby) {
@@ -143,7 +140,7 @@ socketIO.on("connection", (socket) => {
     }
   });
 
-  socket.on("join room", (data) => {
+  socket.on("join_room", (data) => {
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == data.lobby_name) {
         if (lobby.members.length == maxMembersOnLobby) {
@@ -341,19 +338,6 @@ function addMessage(msgData, room) {
   sendMessagesToLobby(room);
 }
 
-// async function usuariDisponible(socketId, room) {
-//   let disponible = true
-//   const sockets = await socketIO.in(room).fetchSockets();
-
-//   sockets.forEach((element) => {
-//     if (element.id == socketId) {
-//       disponible = false;
-//     }
-//   });
-
-//   return disponible;
-// }
-
 async function startGame(room) {
   await axios
     .get(laravelRoute + "startGame")
@@ -549,7 +533,7 @@ function sendMessagesToLobby(lobby) {
 }
 
 async function sendLobbyList() {
-  await socketIO.emit("lobbies list", lobbies);
+  await socketIO.emit("lobbies_list", lobbies);
 }
 
 async function sendUserList(room) {
@@ -558,7 +542,6 @@ async function sendUserList(room) {
   const sockets = await socketIO.in(room).fetchSockets();
 
   sockets.forEach((element) => {
-    // console.log(socketIO.sockets.sockets.get(element.id).data.name);
     list.push({
       name: socketIO.sockets.sockets.get(element.id).data.name,
       avatar: socketIO.sockets.sockets.get(element.id).data.avatar,
@@ -567,30 +550,11 @@ async function sendUserList(room) {
     });
   });
 
-  socketIO.to(room).emit("lobby user list", {
+  socketIO.to(room).emit("lobby_user_list", {
     list: list,
     message: "user list",
   });
 }
-
-// ==================== MY SQL ===================
-
-// var mysql = require("mysql");
-
-// var con = mysql.createConnection({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASS,
-//   database: process.env.DB_DATABASE,
-// });
-
-// con.connect(function (err) {
-//   if (err != null) {
-//     console.log(err);
-//   } else {
-//     console.log("Connected to database!");
-//   }
-// });
 
 // ================ LISTEN SERVER ================
 
