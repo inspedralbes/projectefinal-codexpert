@@ -64,9 +64,9 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $sendUser = (object) 
-            ["valid" => false,
-            'message' => "Validation errors."
+            $sendUser = (object) [
+                'valid' => false,
+                'message' => "Validation errors."
             ];
         } else {
             //If the validation doesn't fail we check if the user has already been created or any fields are repeated
@@ -85,22 +85,22 @@ class AuthController extends Controller
                 $token = $user->createToken('token')->plainTextToken;
                 
                 $sendUser = (object) [
-                    "valid" => true,
+                    'valid' => true,
                     'message' => $request->session()->get("userId"),
                     'token' => $token
                 ];
             } else {
                 //If fields are valid but email or name are already in use we warn the user
                 $duplicated = $this->findWhatIsDuplicated($request);
-                $sendUser = (object) 
-                ["valid" => false,
-                'message' => "Name already in use."
+                $sendUser = (object) [
+                    'valid' => false,
+                    'message' => "Name already in use."
                 ];
                 
                 if ($duplicated == 'email') {
-                    $sendUser = (object) 
-                    ["valid" => false,
-                    'message' => "Email already registered."
+                    $sendUser = (object) [
+                        'valid' => false,
+                        'message' => "Email already registered."
                     ];
                 }
                 
@@ -127,17 +127,17 @@ class AuthController extends Controller
                 $user = $userFound;
                 $request -> session()->put('userId', $user->id);
                 $token = $user->createToken('token')->plainTextToken;
-                $sendUser = (object) 
-                ['valid' => true,
-                'message' => "Logged in successfully",
-                'token' => $token
+                $sendUser = (object) [
+                    'valid' => true,
+                    'message' => "Logged in successfully",
+                    'token' => $token
                 ];
 
             } else {
-                $sendUser = (object)
-                ['valid' => false,
-                'message' => "Password and e-mail don't match.",
-                'token' => null
+                $sendUser = (object) [
+                    'valid' => false,
+                    'message' => "Password and e-mail don't match.",
+                    'token' => null
                 ];
             }
         }

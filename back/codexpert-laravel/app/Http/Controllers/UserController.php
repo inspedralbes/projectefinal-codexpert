@@ -13,9 +13,13 @@ class UserController extends Controller
         //Check if the user id is null, if not not we get the user's avatar.
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $returnAvatar = (object) ['url' => $userFound -> avatar];
+            $returnAvatar = (object) [
+                'url' => $userFound -> avatar
+            ];
         } else {
-            $returnAvatar = (object) ['url' => null];
+            $returnAvatar = (object) [
+                'url' => null
+            ];
         }
         
         return response() -> json($returnAvatar);
@@ -28,9 +32,13 @@ class UserController extends Controller
             $userFound = User::where('id', $request->session()->get('userId'))->first();
             $userFound -> avatar = $request -> newAvatar;
             $userFound -> save();
-            $returnResponse = (object) ['changed' => true];
+            $returnResponse = (object) [
+                'changed' => true
+            ];
         } else {
-            $returnResponse = (object) ['changed' => null];
+            $returnResponse = (object) [
+                'changed' => null
+            ];
         }  
 
         return response() -> json($returnResponse);
@@ -71,11 +79,17 @@ class UserController extends Controller
         //Check if user has changed the name                      
         if ($request -> session()->get('userId') != null) {
             if ($userFound -> name == $request -> newName) {
-                $validName = (object) ['willChange' => false, 'error' => "Name has not been modified, no changes were made."];  
+                $validName = (object) [
+                    'willChange' => false, 
+                    'error' => "Name has not been modified, no changes were made."
+                ];  
             } else {
                 //If the name has been modified, we check that is valid.
                 if (( strlen ($request -> newName) < 3) || ( strlen($request -> newName) > 20)) {
-                    $validName = (object) ['willChange' => false, 'error' => "Name must have a minimum amount of 3 characters and 20 max."];
+                    $validName = (object) [
+                        'willChange' => false, 
+                        'error' => "Name must have a minimum amount of 3 characters and 20 max."
+                    ];
                 } else {
                     //If the name is valid we check if it's not repeated.
                     $getAllNames = User::get('name');
@@ -86,10 +100,14 @@ class UserController extends Controller
                     }
                     //Check if the name is repeated.
                     if ($nameRepeated) {
-                        $validName = (object) ['willChange' => false,
-                        'error' => "Name already in use."]; 
+                        $validName = (object) [
+                            'willChange' => false,
+                            'error' => "Name already in use."
+                        ]; 
                     } else {
-                        $validName = (object) ['willChange' => true];
+                        $validName = (object) [
+                            'willChange' => true
+                        ];
                     }
                 }
             }
@@ -112,9 +130,13 @@ class UserController extends Controller
             if ($validName -> willChange) {
                 $userFound -> name = $request -> newName;
                 $userFound -> save(); 
-                $returnUser = (object) ['success' => "Name has been changed."];
+                $returnUser = (object) [
+                    'success' => "Name has been changed."
+                ];
             } else {
-                $returnUser = (object) ['error' => $validName -> error];
+                $returnUser = (object) [
+                    'error' => $validName -> error
+                ];
             }
         } else {
             $returnUser = (object) ['error' => "User is not logged in."];
