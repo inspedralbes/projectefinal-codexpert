@@ -32,7 +32,7 @@ class UserController extends Controller
         } else {
             $returnResponse = (object) ['changed' => null];
         }  
-        
+
         return response() -> json($returnResponse);
     }
 
@@ -119,4 +119,5 @@ class UserController extends Controller
         
         return response() -> json($returnUser);
     }
+    
 }
