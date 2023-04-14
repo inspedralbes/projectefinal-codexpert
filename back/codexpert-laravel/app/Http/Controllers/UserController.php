@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function getAvatar(Request $request)
@@ -126,20 +126,31 @@ class UserController extends Controller
             $userFound = User::where('id', $request->session()->get('userId'))->first();
             $validName = $this->checkValidName($request, $userFound);
 
-            //If after validating the name can be changed we change it, if not we return the error.
-            if ($validName -> willChange) {
-                $userFound -> name = $request -> newName;
-                $userFound -> save(); 
-                $returnUser = (object) [
-                    'success' => "Name has been changed."
-                ];
+            //Check if password is correct.
+            if (Hash::check($request -> password, $userFound -> password)) {
+                //If after validating the name can be changed we change it, if not we return the error.
+                if ($validName -> willChange) {
+                    $userFound -> name = $request -> newName;
+                    $userFound -> save(); 
+                    $returnUser = (object) [
+                        'success' => "Name has been changed."
+                    ];
+                } else {
+                    $returnUser = (object) [
+                        'error' => $validName -> error
+                    ];
+                }
+
             } else {
                 $returnUser = (object) [
-                    'error' => $validName -> error
+                    'error' => "Password is incorrect."
                 ];
             }
+
         } else {
-            $returnUser = (object) ['error' => "User is not logged in."];
+            $returnUser = (object) [
+                'error' => "User is not logged in."
+            ];
         }
         
         return response() -> json($returnUser);
