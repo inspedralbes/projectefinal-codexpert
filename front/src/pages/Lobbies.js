@@ -147,12 +147,6 @@ const Lobbies = () => {
                   className="lobbies__title"
                   src={lobbyTitle} alt="LOBBIES"
                 />
-<<<<<<< HEAD
-                {/* onClick={() => {
-                  socket.emit("hello", "gimme gimme");
-                }} */}
-=======
->>>>>>> develop
                 <ul className="lobbies__table table">
                   <li className="table__header">
                     <div className="col col-1">ID</div>
