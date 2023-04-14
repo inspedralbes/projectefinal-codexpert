@@ -42,6 +42,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/getUserData', [UserController::class, 'getUserData']);
         
     Route::post('/setUsername', [UserController::class, 'setUsername']);
+
+    Route::post('/setEmail', [UserController::class, 'setEmail']);
     
     Route::get('/startGame', [GameController::class, 'startGame']);
 

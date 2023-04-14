@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     public function getAvatar(Request $request)
@@ -74,7 +75,9 @@ class UserController extends Controller
     public function checkValidName($request, $userFound)
     {
         $nameRepeated = false;
-        $validName = (object) ['willChange' => true];
+        $validName = (object) [
+            'willChange' => true
+        ];
        
         //Check if user has changed the name                      
         if ($request -> session()->get('userId') != null) {
@@ -158,4 +161,98 @@ class UserController extends Controller
         return response() -> json($returnUser);
     }
     
+    public function checkValidEmail($request, $userFound)
+    {
+        $emailRepeated = false;
+        $validEmail = (object) [
+            'willChange' => true
+        ];
+       
+        //Check if user has changed the email                      
+        if ($request -> session()->get('userId') != null) {
+            if ($userFound -> email == $request -> newEmail) {
+                $validEmail = (object) [
+                    'willChange' => false, 
+                    'error' => "Email has not been modified, no changes were made."
+                ];  
+            } else {
+                //If the email has been modified, we check that is valid.
+                $validator =  Validator::make($request->all(), [
+                    'newEmail' => 'required|string|email|max:255'
+                ]);
+
+                if ($validator->fails()) {
+                    $validEmail = (object) [
+                        'willChange' => false, 
+                        'error' => "Email not valid."
+                    ];
+                    
+                } else {
+                    //If the email is valid we check if it's not repeated.
+                    $getAllEmails = User::get('email');
+                    for ($i = 0; $i < count($getAllEmails); $i++) { 
+                        if ($request -> newEmail == $getAllEmails[$i]) {
+                            $emailRepeated = true;
+                        }
+                    }
+                    //Check if the email is repeated.
+                    if ($emailRepeated) {
+                        $validEmail = (object) [
+                            'willChange' => false,
+                            'error' => "Email already in use."
+                        ]; 
+                    } else {
+                        $validEmail = (object) [
+                            'willChange' => true
+                        ];
+                    }
+                }
+            }
+            
+        } 
+
+        return $validEmail;
+    }
+
+    public function setEmail(Request $request)
+    {
+        $validEmail = (object) [
+            'willChange' => true
+        ];
+
+        //Check if the user id is not, if not null we continue to check
+        if ($request -> session()->get('userId') != null) {
+            $userFound = User::where('id', $request->session()->get('userId'))->first();
+            $validEmail = $this->checkValidEmail($request, $userFound);
+
+            //Check if password is correct.
+            if (Hash::check($request -> password, $userFound -> password)) {
+                //If after validating the email can be changed we change it, if not we return the error.
+                if ($validEmail -> willChange) {
+                    $userFound -> email = $request -> newEmail;
+                    $userFound -> save(); 
+                    $returnUser = (object) [
+                        'success' => "Email has been changed."
+                    ];
+                } else {
+                    $returnUser = (object) [
+                        'error' => $validEmail -> error
+                    ];
+                }
+
+            } else {
+                $returnUser = (object) [
+                    'error' => "Password is incorrect."
+                ];
+            }
+
+        } else {
+            $returnUser = (object) [
+                'error' => "User is not logged in."
+            ];
+        }
+        
+        return response() -> json($returnUser);
+    }
+
 }
