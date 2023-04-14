@@ -12,7 +12,11 @@ import ResetPassword from "./pages/ResetPassword";
 import Lobbies from "./pages/Lobbies";
 import reportWebVitals from "./reportWebVitals";
 import AvatarMaker from "./pages/AvatarMaker";
+<<<<<<< HEAD
 import Profile from "./pages/Profile";
+=======
+import "./network.js";
+>>>>>>> develop
 import Error404 from "./pages/404";
 import Cookies from 'universal-cookie';
 import socketIO from "socket.io-client";
@@ -25,19 +29,11 @@ const routes = {
   wsNode: "ws://localhost:7500",
 };
 
-var socket = socketIO(routes.wsNode, {
-  withCredentials: true,
-  cors: {
-    origin: "*",
-    credentials: true,
-  },
-  transports: ["websocket"],
-});
-
 if (cookies.get("token") != undefined) {
-  socket.emit("send token", {
-    token: cookies.get("token"),
-  });
+  window.postMessage({
+    type: 'send_token-emit',
+    token: cookies.get("token")
+  }, '*')
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -47,14 +43,19 @@ root.render(
       <Routes>
         <Route path="/">
           <Route index element={<LandingPage />} />
-          <Route path="login" element={<Login socket={socket} />} />
-          <Route path="register" element={<Register socket={socket} />} />
-          <Route path="game" element={<Game socket={socket} />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="game" element={<Game />} />
           <Route path="forgotPassword" element={<ForgotPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
+<<<<<<< HEAD
           <Route path="avatarMaker" element={<AvatarMaker socket={socket} />} />
           <Route path="lobbies" element={<Lobbies socket={socket} />}></Route>
           <Route path="profile" element={<Profile socket={socket} />}></Route>
+=======
+          <Route path="avatarMaker" element={<AvatarMaker />} />
+          <Route path="lobbies" element={<Lobbies />}></Route>
+>>>>>>> develop
           <Route path="404" element={<Error404 />}></Route>
           <Route path="*" element={<Navigate to="/404" />} />
         </Route>

@@ -1,14 +1,28 @@
 import "../normalize.css";
 import { useState, useEffect } from "react";
 
-function ConnectedUsersInGame({ socket }) {
+function ConnectedUsersInGame() {
     const [userList, setUserList] = useState([]);
 
+    const handleMessage = (event) => {
+        let eventData = event.data
+        
+        switch (eventData.type) {
+            case 'lobby_user_list-event':
+                setUserList(window.network.getLobbyUserList());
+                break;
+
+            default:
+                break;
+        }
+    }
+
     useEffect(() => {
-        socket.on("lobby user list", (data) => {
-            setUserList(data.list);
-            console.log(userList);
-        });
+        window.addEventListener('message', handleMessage);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
     }, [])
 
     return (
