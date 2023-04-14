@@ -4,7 +4,7 @@ import routes from "../index";
 import Cookies from "universal-cookie";
 import { Link, useNavigate } from "react-router-dom"; //Rutas
 
-function Login({ socket }) {
+function Login() {
   const [login, setLogin] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,9 +30,11 @@ function Login({ socket }) {
           if (data.valid) {
             //Si se ha logueado
             cookies.set("token", data.token, { path: "/" });
-            socket.emit("send token", {
-              token: cookies.get("token"),
-            });
+            window.postMessage({
+              type: 'send_token-emit',
+              token: cookies.get("token")
+            }, '*')
+            
             navigate("/lobbies");
           } else {
             setErrorText(data.message)

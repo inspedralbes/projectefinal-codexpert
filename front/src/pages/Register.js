@@ -10,7 +10,7 @@ import 'tippy.js/animations/shift-away-extreme.css'; //Tooltip animation
 import information_icon from '../img/information_icon.gif'
 
 
-function Register({ socket }) {
+function Register() {
     const [registro, setRegistro] = useState(0);
 
     const [userData, setUserData] = useState({
@@ -87,9 +87,11 @@ function Register({ socket }) {
             }).then((response) => response.json()).then((data) => {
                 if (data.valid) {
                     cookies.set('token', data.token, { path: '/' })
-                    socket.emit("send token", {
-                        token: cookies.get('token')
-                    });
+                    window.postMessage({
+                        type: 'send_token-emit',
+                        token: cookies.get("token")
+                    }, '*')
+                    
                     navigate("/avatarMaker")
                 } else {
                     console.log(data);

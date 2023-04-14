@@ -11,9 +11,8 @@ import { Blocks } from 'react-loader-spinner'
 import lobbyTitle from '../img/lobbies.gif'
 import arrow from '../img/arrow.gif'
 
-// socket.io
 
-const Lobbies = ({ socket }) => {
+const Lobbies = () => {
   const [lobbyName, setLobbyName] = useState("");
   const [lobbyList, setLobbyList] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -25,40 +24,76 @@ const Lobbies = ({ socket }) => {
   const navigate = useNavigate();
   const cookies = new Cookies();
 
+  const handleMessage = (event) => {
+    let eventData = event.data
+
+    switch (eventData.type) {
+      case 'YOU_ARE_ON_LOBBY-event':
+        setLobbyName(window.network.getLobbyName());
+        setJoined(true);
+        break;
+
+      case 'lobbies_list-event':
+        setLobbyList(window.network.getLobbyUserList());
+        break;
+
+      case 'game_started-event':
+        navigate("/game");
+        break;
+
+      case 'LOBBY_FULL_ERROR-event':
+        setLobbyName("");
+        setJoined(false);
+        setErrorMessage(window.ne.message)
+        break;
+
+      default:
+        break;
+    }
+  }
+
   const handleLeave = (e) => {
     e.preventDefault();
     console.log("has abandonat la sala " + lobbyName);
-    socket.emit("leave lobby", lobbyName);
+    window.postMessage({
+      type: 'leave_lobby-emit',
+      lobbyName: lobbyName
+    }, '*')
     setJoined(false);
     setLobbyName("");
     setLobbyList([]);
-    // setMessages([]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("new lobby", lobbyName);
-    socket.emit("join room", {
+    window.postMessage({
+      type: 'new_lobby-emit',
+      lobby_name: lobbyName
+    }, '*')
+    window.postMessage({
+      type: 'join_room-emit',
       lobby_name: lobbyName,
       rank: "Owner",
-    });
+    }, '*')
     setJoined(true);
   };
 
   const handleJoin = (e) => {
     e.preventDefault();
     setLobbyName(e.target.id);
-    socket.emit("join room", {
+    window.postMessage({
+      type: 'join_room-emit',
       lobby_name: e.target.id,
       rank: "Member",
-    });
+    }, '*')
 
-    // console.log(socket);
     setJoined(true);
   };
 
   function startGame() {
-    socket.emit("start_game");
+    window.postMessage({
+      type: 'start_game-emit'
+    }, '*')
     navigate("/game");
   }
 
@@ -85,138 +120,119 @@ const Lobbies = ({ socket }) => {
     }
 
     if (firstTime) {
-      socket.emit("hello", "gimme gimme");
+      window.postMessage({
+        type: 'hello_firstTime-emit'
+      }, '*')
       setFirstTime(true);
     }
 
-    socket.on("lobbies list", function (lobbylist) {
-      setLobbyList(lobbylist);
-    });
+    window.addEventListener('message', handleMessage);
 
-    socket.on("player joined", (id) => {
-      console.log(id + " joined the lobby");
-    });
-
-    socket.on("game_started", () => {
-      navigate("/game");
-    });
-
-    socket.on("YOU_ARE_ON_LOBBY", (data) => {
-      setLobbyName(data.lobby_name);
-      setJoined(true);
-    })
-
-    socket.on("LOBBY_FULL_ERROR", (data) => {
-      setLobbyName("");
-      setJoined(false);
-      setErrorMessage(data.message)
-    })
-
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   }, []);
 
 
   if (fetchUser) {
     return (
       <div className="lobbies">
-        
+
         {!joinedLobby && (
           <>
-          <IconUser></IconUser>
-          <div id="lobbyList" className="lobbies__lobbylist lobbylist">
-            <div className="lobbylist__container">
-              <img
-                className="lobbies__title"
-                src={lobbyTitle} alt="LOBBIES"
-              />
-              {/* onClick={() => {
-                  socket.emit("hello", "gimme gimme");
-                }} */}
-              <ul className="lobbies__table table">
-                <li className="table__header">
-                  <div className="col col-1">ID</div>
-                  <div className="col col-2">Lobby Name</div>
-                  <div className="col col-3">Owner</div>
-                  <div className="col col-4">Players</div>
-                </li>
-                <div className="table__body">
-                  {lobbyList.length == 0 &&
-                    <div className="lobbies__noLobbies">
-                      <h1>There are no lobbies yet</h1>
-                      <h2>You can create one!!</h2>
-                      <img
-                        src={arrow} alt=" " height="100px"
-                      />
-                    </div>
-                  }
-                  {Array.isArray(lobbyList) ? lobbyList.map((element, index) => {
-                    return (
-                      <li
-                        className="table__row row"
-                        onClick={handleJoin}
-                        key={index}
-                        id={element.lobby_name}
-                      >
-                        <div
+            <IconUser></IconUser>
+            <div id="lobbyList" className="lobbies__lobbylist lobbylist">
+              <div className="lobbylist__container">
+                <img
+                  className="lobbies__title"
+                  src={lobbyTitle} alt="LOBBIES"
+                />
+                <ul className="lobbies__table table">
+                  <li className="table__header">
+                    <div className="col col-1">ID</div>
+                    <div className="col col-2">Lobby Name</div>
+                    <div className="col col-3">Owner</div>
+                    <div className="col col-4">Players</div>
+                  </li>
+                  <div className="table__body">
+                    {lobbyList.length == 0 &&
+                      <div className="lobbies__noLobbies">
+                        <h1>There are no lobbies yet</h1>
+                        <h2>You can create one!!</h2>
+                        <img
+                          src={arrow} alt=" " height="100px"
+                        />
+                      </div>
+                    }
+                    {Array.isArray(lobbyList) ? lobbyList.map((element, index) => {
+                      return (
+                        <li
+                          className="table__row row"
+                          onClick={handleJoin}
+                          key={index}
                           id={element.lobby_name}
-                          className="col col-1"
-                          data-label="Lobby Id"
                         >
-                          {index + 1}
-                        </div>
-                        <div
-                          id={element.lobby_name}
-                          className="col col-2"
-                          data-label="Lobby Name"
-                        >
-                          {element.lobby_name}
-                        </div>
-                        <div
-                          id={element.lobby_name}
-                          className="col col-3"
-                          data-label="Owner"
-                        >
-                          {element.members[0].nom}
-                        </div>
-                        <div
-                          id={element.lobby_name}
-                          className="col col-4"
-                          data-label="Players"
-                        >
-                          {element.members.length} / 4
-                        </div>
-                      </li>
-                    );
+                          <div
+                            id={element.lobby_name}
+                            className="col col-1"
+                            data-label="Lobby Id"
+                          >
+                            {index + 1}
+                          </div>
+                          <div
+                            id={element.lobby_name}
+                            className="col col-2"
+                            data-label="Lobby Name"
+                          >
+                            {element.lobby_name}
+                          </div>
+                          <div
+                            id={element.lobby_name}
+                            className="col col-3"
+                            data-label="Owner"
+                          >
+                            {element.members[0].nom}
+                          </div>
+                          <div
+                            id={element.lobby_name}
+                            className="col col-4"
+                            data-label="Players"
+                          >
+                            {element.members.length} / 4
+                          </div>
+                        </li>
+                      );
 
 
-                  }) : null}
-                </div>
-              </ul>
+                    }) : null}
+                  </div>
+                </ul>
 
-              <form
-                className="lobbies__form"
-                onSubmit={handleSubmit}
-              >
-                <div className="lobbiesForm__inputGroup">
-                  <input
-                    id="email"
-                    className="lobbiesForm__input"
-                    value={lobbyName}
-                    placeholder="INTRODUCE LOBBY NAME"
-                    type="text"
-                    onChange={(e) => {
-                      setLobbyName(e.target.value);
-                    }}
-                    autoComplete="off"
-                    required
-                  ></input>
-                </div>
-                <button className="lobbies__button" disabled={lobbyName === ""}>
-                  Create lobby
-                </button>
-              </form>
-              {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
+                <form
+                  className="lobbies__form"
+                  onSubmit={handleSubmit}
+                >
+                  <div className="lobbiesForm__inputGroup">
+                    <input
+                      id="email"
+                      className="lobbiesForm__input"
+                      value={lobbyName}
+                      placeholder="INTRODUCE LOBBY NAME"
+                      type="text"
+                      onChange={(e) => {
+                        setLobbyName(e.target.value);
+                      }}
+                      autoComplete="off"
+                      required
+                    ></input>
+                  </div>
+                  <button className="lobbies__button" disabled={lobbyName === ""}>
+                    Create lobby
+                  </button>
+                </form>
+                {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
+              </div>
             </div>
-          </div>
           </>
         )}
 
@@ -229,12 +245,12 @@ const Lobbies = ({ socket }) => {
               <span className="button-text">LEAVE CURRENT LOBBY
               </span>
             </button>
-            <ConnectedUsers socket={socket} ></ConnectedUsers>
+            <ConnectedUsers></ConnectedUsers>
             <div className="button-startGame">
               <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
             </div>
             <div className="lobby__chat">
-              <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
+              <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
             </div>
           </div>
         )

@@ -5,9 +5,22 @@ import Cookies from "universal-cookie";
 import routes from "../index";
 import logo from '../img/logo.gif'
 
-function App() {
+function LandingPage({ network }) {
   const cookies = new Cookies();
   const [login, setLogin] = useState(false);
+
+  const handleMessage = (event) => {
+    let eventData = event.data
+    
+    switch (eventData.type) {
+      case 'welcome_message-updated':
+        console.log(window.network.getMessage());
+        break;
+
+      default:
+        break;
+    }
+  }
 
   useEffect(() => {
     const token = new FormData();
@@ -26,9 +39,13 @@ function App() {
           }
         });
     }
+    window.addEventListener('message', handleMessage);
 
-
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   }, [])
+
   return (
     <div>
       <div className="landingPage">
@@ -52,4 +69,4 @@ function App() {
   );
 }
 
-export default App;
+export default LandingPage;
