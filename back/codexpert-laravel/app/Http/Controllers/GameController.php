@@ -211,5 +211,6 @@ class GameController extends Controller
         }
 
         return response() -> json($updatedProfiles);
-    }    
+    }   
+     
 }
