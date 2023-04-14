@@ -49,12 +49,15 @@ class UserController extends Controller
         //If the user id is not null we return the information from the user (name, email, avatar)
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $returnUser = (object) ['name' => $userFound -> name,
-                                    'email' => $userFound -> email,
-                                    'avatar' => $userFound -> avatar,
-                                    ];
+            $returnUser = (object) [
+                'name' => $userFound -> name,
+                'email' => $userFound -> email,
+                'avatar' => $userFound -> avatar,
+            ];
         } else {
-            $returnUser = (object) ['error' => "User is not logged in."];
+            $returnUser = (object) [
+                'error' => "User is not logged in."
+            ];
         }
         
         return response() -> json($returnUser);
