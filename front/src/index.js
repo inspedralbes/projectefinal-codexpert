@@ -25,7 +25,6 @@ const cookies = new Cookies();
 
 const routes = {
   fetchLaravel: "http://localhost:8000",
-  fetchNode: "http://localhost:7500",
   wsNode: "ws://localhost:7500",
 };
 
