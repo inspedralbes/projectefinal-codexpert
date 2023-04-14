@@ -70,7 +70,7 @@ function IconUser() {
         {state && (
           <div className="dropdown">
             <ul className="dropdown__list list">
-              <li className="list__item">Profile</li>
+              <li className="list__item"><button className="button" onClick={() => navigate("/profile")}>Profile</button></li>
               <li className="list__item"><button className="button" onClick={() => navigate("/avatarMaker")}>Avatar Maker</button></li>
               <li className="list__item"> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
             </ul>
