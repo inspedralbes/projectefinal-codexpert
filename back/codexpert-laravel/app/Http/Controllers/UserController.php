@@ -21,7 +21,6 @@ class UserController extends Controller
         return response() -> json($returnAvatar);
     }
     
-
     public function setAvatar(Request $request)
     {
         //Check if the user is id null, if not we change the avatar.
@@ -33,9 +32,9 @@ class UserController extends Controller
         } else {
             $returnResponse = (object) ['changed' => null];
         }  
+        
         return response() -> json($returnResponse);
     }
-
 
     public function getRanking(Request $request)
     {
@@ -45,7 +44,6 @@ class UserController extends Controller
         return response() -> json($ranking);
     }    
     
-
     public function getUserData(Request $request)
     {
         //If the user id is not null we return the information from the user (name, email, avatar)
@@ -61,7 +59,6 @@ class UserController extends Controller
         
         return response() -> json($returnUser);
     }
-
 
     public function checkValidName($request, $userFound)
     {
@@ -95,10 +92,10 @@ class UserController extends Controller
             }
             
         } 
+
         return $validName;
     }
     
-
     public function setUsername(Request $request)
     {
         $validName = (object) ['willChange' => true];

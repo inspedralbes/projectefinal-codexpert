@@ -14,38 +14,45 @@ class GameController extends Controller
 {
     public function createNewGame(Request $request)
     {
+        //Create a new empty game and return it.
         $newGame = new Game;
         $newGame -> save();
+
         return ($newGame);
     }
 
     public function getQuestions(Request $request)
     {        
+        //Return X number of questions, where X is given by the frontend
         $questions = Question::inRandomOrder()->limit(5)->get();
+
         return ($questions);
     }
 
     public function addQuestionsToGame($newGame, $getQuestions)
     {
+        //Relate the given questions to the created game.
         for ($i = 0; $i < count($getQuestions); $i++) {
             $gameQuestion = new Game_question;
             $gameQuestion -> game_id = $newGame->id;
             $gameQuestion -> question_id = $getQuestions[$i]->id;
             $gameQuestion -> save();
         }
-        // $gameQuestion = new Game_question;
-        // $gameQuestion -> game_id = $newGame->id;
-        // $gameQuestion -> question_id = $getQuestions->id;
-        // $gameQuestion -> save();
     }
     
     public function startGame(Request $request)
     {
+        //Start an empty game
         $newGame = $this->createNewGame($request);
+
+        //Get the questions that will be added to the game
         $getQuestions = $this->getQuestions($request);
+
+        //Relate the questions to the game
         $this->addQuestionsToGame($newGame, $getQuestions);
         $allQuestions = [];
 
+        //Unserialize the questions and add them to the array that will be returned
         for ($i = 0; $i < count($getQuestions); $i++) {
             $getQuestions[$i] -> userExpectedInput = unserialize($getQuestions[$i] -> userExpectedInput);
             $getQuestions[$i] -> userExpectedOutput = unserialize($getQuestions[$i] -> userExpectedOutput);
@@ -58,17 +65,22 @@ class GameController extends Controller
             $allQuestions[$i] = $getQuestions[$i];
         }
 
-        $game = (object) 
-            ['idGame' => $newGame -> id,
+        //Return object
+        $game = (object) [
+            'idGame' => $newGame -> id,
             'winner' => null,
-            'questions' => $allQuestions,
-            ];
+            'questions' => $allQuestions
+        ];
+
         return response() -> json($game);
     }
 
     public function setUserGame(Request $request)
     {
+        //Game members
         $members = $request -> users;
+
+        //Related that users that are playing to the game
         for ($i = 0; $i < count($members); $i++) {
             $newUserGame = new User_game;
             $newUserGame -> game_id = $request -> idGame;
@@ -88,26 +100,19 @@ class GameController extends Controller
 
     public function checkAnswer(Request $request)
     {
-        $returnObject = (object) 
-            ['correct'=> false,
+        $returnObject = (object) [
+            'correct'=> true,
             'testsPassed' => null,
             'user_game'=> null,
             'game' => null
-            ];
+        ];
 
-        $request -> idQuestion;
-        $request -> idGame;
-        $request -> idUser;
-        $request -> evalRes;
-        $request -> evalPassed; 
-
+        //If any of the tests doesn't pass we return that it's not a correct answer.
         if ($request -> evalPassed) {
             $question = Question::where('id', $request -> idQuestion) -> first();
             $userExpectedOutput = unserialize($question -> userExpectedOutput);
             $testOutput1 = unserialize($question -> testOutput1);
             $testOutput2 = unserialize($question -> testOutput2);
-
-            $returnObject -> correct = true;
             
             if ($userExpectedOutput == $request -> evalRes[0]) {
                 $returnObject -> testsPassed++;
@@ -125,7 +130,6 @@ class GameController extends Controller
                 $returnObject -> testsPassed++;
             } else {
                 $returnObject -> correct = false;
-
             }
         }
 
@@ -136,16 +140,17 @@ class GameController extends Controller
         -> first();
 
         if ($user_game -> question_at < 5) {
+            //If the user responded correctly, we move his position and check if he has either won, or finished (this would mean someone else has won)
             if ($returnObject -> correct) {
                 $user_game -> question_at = $user_game -> question_at + 1;
                 if ($user_game -> question_at == 5) {
                     $user_game -> finished = true;
                     if ($game -> winner_id == null) {
-                    $game -> winner_id = $request -> idUser;
-                    
+                        $game -> winner_id = $request -> idUser;
                     }
                 }
             } else {
+                //If he responded incorrectly we update their number of hearts. If he has 0 hearts it's game over.
                 $user_game -> hearts_remaining = $user_game -> hearts_remaining - 1;
                 if ($user_game -> hearts_remaining == 0) {
                     $user_game -> finished = true;
@@ -165,6 +170,9 @@ class GameController extends Controller
 
     public function updateUserLvl(Request $request)
     {
+        //In this function, given if the user has won, and their position, we update their elo, XP and number of coins.
+        //If the user has won their multiplayer to all this is twice the multiplayer a user that hasn't won would be.
+        //The higher the question_at (therefore, how many questions they have answered correctly), the higher the reward is.
         $updatedProfiles = [];
 
         $multiplier = 1;
@@ -190,11 +198,11 @@ class GameController extends Controller
             $myProfile -> coins += $newCoins;
             $myProfile -> elo += $newElo;
             
-            $updatedStats = (object) 
-            ['idUser' =>  $members[$i]['idUser'],
-            'xpEarned' =>  $newXp,
-            'coinsEarned' => $newCoins,
-            'eloEarned' => $newElo,
+            $updatedStats = (object) [
+                'idUser' =>  $members[$i]['idUser'],
+                'xpEarned' =>  $newXp,
+                'coinsEarned' => $newCoins,
+                'eloEarned' => $newElo,
             ];
 
             $updatedProfiles[$i] = $updatedStats;
