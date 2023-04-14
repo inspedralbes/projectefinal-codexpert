@@ -41,10 +41,12 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('/getUserData', [UserController::class, 'getUserData']);
         
-    Route::post('/setUsername', [UserController::class, 'setUsername']);
+    Route::post('/changeUsername', [UserController::class, 'changeUsername']);
 
-    Route::post('/setEmail', [UserController::class, 'setEmail']);
+    Route::post('/changeEmail', [UserController::class, 'changeEmail']);
     
+    Route::post('/changePassword', [UserController::class, 'changePassword']);
+
     Route::get('/startGame', [GameController::class, 'startGame']);
 
     Route::post('/setUserGame', [GameController::class, 'setUserGame']);

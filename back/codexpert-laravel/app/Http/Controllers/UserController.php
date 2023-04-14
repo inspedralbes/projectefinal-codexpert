@@ -114,13 +114,17 @@ class UserController extends Controller
                     }
                 }
             }
-            
-        } 
+        } else {
+            $validName = (object) [
+                'willChange' => false,
+                'error' => "User is not logged in."
+            ]; 
+        }
 
         return $validName;
     }
     
-    public function setUsername(Request $request)
+    public function changeUsername(Request $request)
     {
         $validName = (object) [
             'willChange' => true
@@ -145,13 +149,11 @@ class UserController extends Controller
                         'error' => $validName -> error
                     ];
                 }
-
             } else {
                 $returnUser = (object) [
                     'error' => "Password is incorrect."
                 ];
             }
-
         } else {
             $returnUser = (object) [
                 'error' => "User is not logged in."
@@ -185,8 +187,7 @@ class UserController extends Controller
                     $validEmail = (object) [
                         'willChange' => false, 
                         'error' => "Email not valid."
-                    ];
-                    
+                    ];  
                 } else {
                     //If the email is valid we check if it's not repeated.
                     $getAllEmails = User::get('email');
@@ -208,13 +209,17 @@ class UserController extends Controller
                     }
                 }
             }
-            
-        } 
+        } else {
+            $validName = (object) [
+                'willChange' => false,
+                'error' => "User is not logged in."
+            ]; 
+        }
 
         return $validEmail;
     }
 
-    public function setEmail(Request $request)
+    public function changeEmail(Request $request)
     {
         $validEmail = (object) [
             'willChange' => true
@@ -239,13 +244,11 @@ class UserController extends Controller
                         'error' => $validEmail -> error
                     ];
                 }
-
             } else {
                 $returnUser = (object) [
                     'error' => "Password is incorrect."
                 ];
             }
-
         } else {
             $returnUser = (object) [
                 'error' => "User is not logged in."
@@ -254,5 +257,96 @@ class UserController extends Controller
         
         return response() -> json($returnUser);
     }
+
+    public function checkValidPassword($request, $userFound)
+    {
+        $validPassword = (object) [
+            'willChange' => true
+        ];
+       
+        //To start checking the user must be logged in.
+        if ($request -> session()->get('userId') != null) { 
+            //We check if the currentPassword that the user has introduced is the same as the password in the database for that user.
+            //if it's correct we continue
+            if (Hash::check($request -> currentPassword, $userFound -> password)) {
+                $validator =  Validator::make($request->all(), [
+                    'newPassword' => [
+                        'required',
+                        'string',
+                        'min:6',             // must be at least 6 characters in length
+                        'regex:/[a-z]/',      // must contain at least one lowercase letter
+                        'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                        'regex:/[0-9]/',      // must contain at least one digit
+                        'regex:/[@$!%*#?&;.]/', // must contain a special character
+                        'confirmed'
+                    ],
+                ]);
+
+                //If the validation fails we warn the user.
+                if ($validator->fails()) {
+                    $validPassword = (object) [
+                        'willChange' => false,
+                        'error' => "Validation errors."
+                    ];
+                    //If it doesn't fail we continue to change it.
+                } else { 
+                    if ((strcasecmp($request -> currentPassword, $request -> newPassword) == 0)) {
+                        $validPassword = (object) [
+                            'willChange' => false,
+                            'error' => "Password has not been modified, no changes were made."
+                        ];
+                    } else {
+                        $validPassword = (object) [
+                            'willChange' => true
+                        ];
+                    }
+                }
+            } else {
+                $validPassword = (object) [
+                    'willChange' => false,
+                    'error' => "Current password is incorrect."
+                ];
+            } 
+        } else {
+            $validPassword = (object) [
+                'willChange' => false,
+                'error' => "User is not logged in."
+            ]; 
+        }
+
+        return $validPassword;
+    }    
+    
+    public function changePassword(Request $request)
+    {
+        $validPassword = (object) [
+            'willChange' => true
+        ];
+
+        //Check if the user id is not, if not null we continue to check
+        if ($request -> session()->get('userId') != null) {
+            $userFound = User::where('id', $request->session()->get('userId'))->first();
+            $validPassword = $this->checkValidPassword($request, $userFound);
+
+            //If after validating the password can be changed we change it, if not we return the error.
+            if ($validPassword -> willChange) {
+                $userFound -> password = Hash::make($request -> newPassword);
+                $userFound -> save(); 
+                $returnUser = (object) [
+                    'success' => "Password has been changed."
+                ];
+            } else {
+                $returnUser = (object) [
+                    'error' => $validPassword -> error
+                ];
+            }
+        } else {
+            $returnUser = (object) [
+                'error' => "User is not logged in."
+            ];
+        }
+        
+        return response() -> json($returnUser);
+    }    
 
 }
