@@ -151,8 +151,10 @@ class AuthController extends Controller
         [$id, $token] = explode('|', $request -> token, 2);
         
         PersonalAccessToken::find($id)->delete();
-
+        Session::flush();
+        
         $returnResponse = (object)['logout' => true];
+        
         return response() -> json($returnResponse);
     }
 
@@ -196,5 +198,5 @@ class AuthController extends Controller
 
         return response() -> json($logged);
     }   
-        
+
 }
