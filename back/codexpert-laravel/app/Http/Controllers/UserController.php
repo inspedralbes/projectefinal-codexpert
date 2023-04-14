@@ -119,7 +119,9 @@ class UserController extends Controller
     
     public function setUsername(Request $request)
     {
-        $validName = (object) ['willChange' => true];
+        $validName = (object) [
+            'willChange' => true
+        ];
 
         //Check if the user id is not, if not null we continue to check
         if ($request -> session()->get('userId') != null) {
