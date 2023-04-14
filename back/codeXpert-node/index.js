@@ -92,7 +92,6 @@ socketIO.on("connection", (socket) => {
           userId: response.data.id,
           userName: response.data.name,
         };
-        console.log(user);
         sesiones.push(user);
 
         socket.data.userId = response.data.id;
@@ -126,7 +125,7 @@ socketIO.on("connection", (socket) => {
   socket.on("new_lobby", (lobby) => {
     let existeix = false;
     lobbies.forEach((element) => {
-      if (element.lobby == lobby) {
+      if (element.lobby_name == lobby) {
         existeix = true;
       }
     });
@@ -180,13 +179,13 @@ socketIO.on("connection", (socket) => {
     sendLobbyList();
   });
 
-  socket.on("leave lobby", (roomName) => {
+  socket.on("leave_lobby", (roomName) => {
     leaveLobby(socket);
     sendUserList(roomName);
     sendLobbyList();
   });
 
-  socket.on("chat message", (data) => {
+  socket.on("chat_message", (data) => {
     addMessage({
       nickname: socket.data.name,
       message: data.message,
@@ -223,7 +222,6 @@ socketIO.on("connection", (socket) => {
         evalPassed: data.evalPassed,
       })
       .then(function (response) {
-        console.log(response);
         var user_game = response.data.user_game;
         var game = response.data.game;
         if (response.data.correct) {
@@ -356,7 +354,7 @@ async function startGame(room) {
           socketIO.to(room).emit("lobby_name", {
             lobby: room
           });
-          socketIO.sockets.in(room).emit("lobby-message", {
+          socketIO.sockets.in(room).emit("lobby_message", {
             messages: lobby.messages,
           });
           sendUserList(room)
@@ -525,7 +523,7 @@ async function leaveLobby(socket) {
 function sendMessagesToLobby(lobby) {
   lobbies.forEach((element) => {
     if (element.lobby_name == lobby) {
-      socketIO.sockets.in(lobby).emit("lobby-message", {
+      socketIO.sockets.in(lobby).emit("lobby_message", {
         messages: element.messages,
       });
     }

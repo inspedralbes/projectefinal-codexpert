@@ -11,7 +11,6 @@ import { Blocks } from 'react-loader-spinner'
 import lobbyTitle from '../img/lobbies.gif'
 import arrow from '../img/arrow.gif'
 
-// socket.io
 
 const Lobbies = () => {
   const [lobbyName, setLobbyName] = useState("");
@@ -26,14 +25,26 @@ const Lobbies = () => {
   const cookies = new Cookies();
 
   const handleMessage = (event) => {
-    switch (event.data.type) {
+    let eventData = event.data
+
+    switch (eventData.type) {
       case 'YOU_ARE_ON_LOBBY-event':
-        setLobbyName(event.data.lobby_name);
+        setLobbyName(window.network.getLobbyName());
         setJoined(true);
         break;
 
       case 'lobbies_list-event':
-        setLobbyList(event.data.lobbylist);
+        setLobbyList(window.network.getLobbyUserList());
+        break;
+
+      case 'game_started-event':
+        navigate("/game");
+        break;
+
+      case 'LOBBY_FULL_ERROR-event':
+        setLobbyName("");
+        setJoined(false);
+        setErrorMessage(window.ne.message)
         break;
 
       default:
@@ -44,7 +55,10 @@ const Lobbies = () => {
   const handleLeave = (e) => {
     e.preventDefault();
     console.log("has abandonat la sala " + lobbyName);
-    // socket.emit("leave lobby", lobbyName);
+    window.postMessage({
+      type: 'leave_lobby-emit',
+      lobbyName: lobbyName
+    }, '*')
     setJoined(false);
     setLobbyName("");
     setLobbyList([]);
@@ -54,14 +68,12 @@ const Lobbies = () => {
     e.preventDefault();
     window.postMessage({
       type: 'new_lobby-emit',
-      lobbyName: lobbyName
+      lobby_name: lobbyName
     }, '*')
     window.postMessage({
       type: 'join_room-emit',
-      data: {
-        lobby_name: lobbyName,
-        rank: "Owner",
-      }
+      lobby_name: lobbyName,
+      rank: "Owner",
     }, '*')
     setJoined(true);
   };
@@ -71,17 +83,17 @@ const Lobbies = () => {
     setLobbyName(e.target.id);
     window.postMessage({
       type: 'join_room-emit',
-      data: {
-        lobby_name: e.target.id,
-        rank: "Member",
-      }
+      lobby_name: e.target.id,
+      rank: "Member",
     }, '*')
 
     setJoined(true);
   };
 
   function startGame() {
-    // socket.emit("start_game");
+    window.postMessage({
+      type: 'start_game-emit'
+    }, '*')
     navigate("/game");
   }
 
@@ -113,20 +125,6 @@ const Lobbies = () => {
       }, '*')
       setFirstTime(true);
     }
-/*
-    socket.on("player joined", (id) => {
-      console.log(id + " joined the lobby");
-    });
-
-    socket.on("game_started", () => {
-      navigate("/game");
-    });
-
-    socket.on("LOBBY_FULL_ERROR", (data) => {
-      setLobbyName("");
-      setJoined(false);
-      setErrorMessage(data.message)
-    })*/
 
     window.addEventListener('message', handleMessage);
 
@@ -247,12 +245,12 @@ const Lobbies = () => {
               <span className="button-text">LEAVE CURRENT LOBBY
               </span>
             </button>
-            {/* <ConnectedUsers socket={socket} ></ConnectedUsers> */}
+            <ConnectedUsers></ConnectedUsers>
             <div className="button-startGame">
               <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
             </div>
             <div className="lobby__chat">
-              {/* <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat> */}
+              <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
             </div>
           </div>
         )

@@ -12,7 +12,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Lobbies from "./pages/Lobbies";
 import reportWebVitals from "./reportWebVitals";
 import AvatarMaker from "./pages/AvatarMaker";
-import network from "./network.js";
+import "./network.js";
 import Error404 from "./pages/404";
 import Cookies from 'universal-cookie';
 
@@ -24,19 +24,11 @@ const routes = {
   wsNode: "ws://localhost:7500",
 };
 
-/*
 if (cookies.get("token") != undefined) {
-  socket.emit("send token", {
-    token: cookies.get("token"),
-  });
-}*/
-
-let socket;
-
-window.network = network;
-
-const msgChanged = () => {
-  console.log(window.network.getMensaje());
+  window.postMessage({
+    type: 'send_token-emit',
+    token: cookies.get("token")
+  }, '*')
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

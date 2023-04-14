@@ -10,17 +10,15 @@ function LandingPage({ network }) {
   const [login, setLogin] = useState(false);
 
   const handleMessage = (event) => {
-    if (event.isTrusted) {
-      switch (event.data.type) {
-        case 'welcome_message-updated':
-          console.log(event.data.recievedData.msg);
-          break;
+    let eventData = event.data
+    
+    switch (eventData.type) {
+      case 'welcome_message-updated':
+        console.log(window.network.getMessage());
+        break;
 
-        default:
-          break;
-      }
-    } else {
-      console.log("NOT TRUSTED");
+      default:
+        break;
     }
   }
 

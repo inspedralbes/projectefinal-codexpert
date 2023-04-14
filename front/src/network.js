@@ -1,5 +1,4 @@
 import socketIO from "socket.io-client";
-// import msgChanged from "./index.js";
 
 let socket = socketIO("ws://localhost:7500", {
     withCredentials: true,
@@ -11,13 +10,14 @@ let socket = socketIO("ws://localhost:7500", {
 })
 
 const handleMessage = (event) => {
+    let eventData = event.data
+
     // Event handle
-    switch (event.data.type) {
+    switch (eventData.type) {
         case 'send_token-emit':
-            console.log(event.data.token);
-            network.setToken(event.data.token);
+            window.network.setToken(eventData.token);
             socket.emit("send_token", {
-                token: event.data.token,
+                token: eventData.token,
             })
             break;
 
@@ -26,13 +26,45 @@ const handleMessage = (event) => {
             break;
 
         case "new_lobby-emit":
-            socket.emit("new_lobby", event.data.lobbyName);
+            socket.emit("new_lobby", eventData.lobby_name);
             break;
 
         case "join_room-emit":
             socket.emit("join_room", {
-                lobby_name: event.data.lobbyName,
-                rank: event.data.rank,
+                lobby_name: eventData.lobby_name,
+                rank: eventData.rank,
+            });
+            break;
+
+        case "send_token-emit":
+            socket.emit("send_token", {
+                token: eventData.token,
+            });
+            break;
+
+        case "lobby_data_pls-emit":
+            socket.emit("lobby_data_pls");
+            break;
+
+        case "chat_message-emit":
+            socket.emit("chat_message", {
+                message: eventData.message,
+                room: eventData.lobbyName,
+            });
+            break;
+
+        case "leave_lobby-emit":
+            socket.emit("leave_lobby", eventData.lobbyName);
+            break;
+
+        case "start_game-emit":
+            socket.emit("start_game");
+            break;
+
+        case "check_answer-emit":
+            socket.emit("check_answer", {
+                resultsEval: eventData.resultsEval,
+                evalPassed: eventData.evalPassed,
             });
             break;
 
@@ -42,17 +74,22 @@ const handleMessage = (event) => {
 }
 
 class ConnectionNetwork {
-    mensaje = "";
+    message = "";
     token = "";
     lobby_name = "";
-    userList = []
+    userList = [];
+    lobbyMessages = [];
+    questionData = {};
+    winnerMessage = "";
+    result = "";
+    rewards = {};
 
-    setMensaje(msg) {
-        this.mensaje = msg;
+    setMessage(msg) {
+        this.message = msg;
     }
 
-    getMensaje() {
-        return this.mensaje;
+    getMessage() {
+        return this.message;
     }
 
     setToken(token) {
@@ -74,42 +111,121 @@ class ConnectionNetwork {
     setLobbyUserList(userList) {
         this.userList = userList;
     }
-    
+
     getLobbyUserList() {
         return this.userList;
     }
+
+    setLobbyMessages(list) {
+        this.lobbyMessages = list;
+    }
+
+    getLobbyMessages() {
+        return this.lobbyMessages;
+    }
+
+    setQuestionData(data) {
+        this.questionData = data;
+    }
+
+    getQuestionData() {
+        return this.questionData;
+    }
+
+    setWinnerMessage(msg) {
+        this.winnerMessage = msg;
+    }
+
+    getWinnerMessage() {
+        return this.winnerMessage;
+    }
+
+    setResult(result) {
+        this.result = result;
+    }
+
+    getResult() {
+        return this.result;
+    }
+
+    setRewards(rewards) {
+        this.rewards = rewards;
+    }
+
+    getRewards() {
+        return this.rewards;
+    }
 }
 
-let network = new ConnectionNetwork();
+window.network = new ConnectionNetwork();
 
 // Window event listener for event handling
 window.addEventListener('message', handleMessage);
 
 // Eventos socket
 socket.on("hello", (msg) => {
-    network.setMensaje(msg);
-    window.postMessage({ type: 'welcome_message-updated', recievedData: { msg: network.getMensaje() } }, '*')
+    window.network.setMessage(msg);
+    window.postMessage({ type: 'welcome_message-updated' }, '*')
 })
 
 socket.on("YOU_ARE_ON_LOBBY", (data) => {
-    network.setLobbyName(data.lobby_name);
+    window.network.setLobbyName(data.lobby_name);
     window.postMessage({ type: 'YOU_ARE_ON_LOBBY-event' }, '*')
 })
 
 socket.on("lobbies_list", (data) => {
-    network.setLobbyName(data.lobby_name);
-    window.postMessage({ type: 'lobbies_list-event', lobbylist: network.getLobbyName() }, '*')
+    window.network.setLobbyName(data.lobby_name);
+    window.postMessage({ type: 'lobbies_list-event' }, '*')
 })
 
 socket.on("lobby_user_list", (data) => {
-    network.setLobbyUserList(data.list);
-    window.postMessage({ type: 'lobby_user_list-event', list: network.getLobbyUserList() }, '*')
+    window.network.setLobbyUserList(data.list);
+    window.postMessage({ type: 'lobby_user_list-event' }, '*')
+})
+
+socket.on("lobby_message", function (data) {
+    window.network.setLobbyMessages(data.messages);
+    window.postMessage({ type: 'lobby_message-event' }, '*')
+});
+
+socket.on("game_started", () => {
+    window.postMessage({ type: 'game_started-event' }, '*')
+});
+
+socket.on("lobby_name", (data) => {
+    window.postMessage({ type: 'lobby_name-event' }, '*')
+})
+
+socket.on("question_data", function (data) {
+    window.network.setQuestionData(data)
+    window.postMessage({ type: 'question_data-event' }, '*')
+});
+
+socket.on("game_over", function (data) {
+    window.network.setWinnerMessage(data.message);
+    window.postMessage({ type: 'game_over-event' }, '*')
+});
+
+socket.on("user_finished", function (data) {
+    window.network.setResult(data.message);
+    window.postMessage({ type: 'user_finished-event' }, '*')
+});
+
+socket.on("stats", (data) => {
+    window.postMessage({ type: 'stats-event' }, '*')
+    window.network.setRewards({
+        xpEarned: data.xpEarned,
+        coinsEarned: data.coinsEarned,
+        eloEarned: data.eloEarned,
+    })
+})
+
+socket.on("YOU_LEFT_LOBBY", () => {
+    window.postMessage({ type: 'YOU_LEFT_LOBBY-event' }, '*')
 })
 
 // ERROR EVENTS
 socket.on("LOBBY_FULL_ERROR", (data) => {
-    network.setMensaje(data.message);
-    window.postMessage({ type: 'LOBBY_FULL_ERROR-event', message: network.getMensaje() }, '*')
+    window.network.setMessage(data.message);
+    window.postMessage({ type: 'LOBBY_FULL_ERROR-event' }, '*')
 })
-
-export default network;
