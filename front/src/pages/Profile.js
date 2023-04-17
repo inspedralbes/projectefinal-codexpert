@@ -32,8 +32,6 @@ function Profile() {
             });
     }
 
-    // currentPassword, newPassword, newPassword_confirmation
-
     useEffect(() => {
         getUserData();
         setEditUser(userData);
@@ -55,11 +53,28 @@ function Profile() {
             credentials: "include",
         })
             .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
+            .then(() => {
             });
         setModals(prev => ({ ...prev, name: false }));
         setUserData(prev => ({ ...prev, name: editUser.name, email: editUser.email }));
+    }
+
+    const savePassword = () => {
+        // currentPassword, newPassword, newPassword_confirmation
+        const password = new FormData();
+        password.append("currentPassword", editUser.password);
+        password.append("newPassword", editUser.newPassword);
+        password.append("newPassword_confirmation", editUser.rNewPassword);
+        fetch(routes.fetchLaravel + "changePassword", {
+            method: "POST",
+            mode: "cors",
+            body: password,
+            credentials: "include",
+        })
+            .then((response) => response.json())
+            .then(() => {
+            });
+        setModals(prev => ({ ...prev, password: false }));
     }
 
     return (
@@ -85,9 +100,9 @@ function Profile() {
                             shouldCloseOnOverlayClick={true}
                             isOpen={modals.name}
                         >
-
-                            <input placeholder="username" name="name" onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
-                            <input placeholder="password" name="password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                            <h1>Change your username</h1>
+                            <input placeholder="username" onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
+                            <input placeholder="password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
                             <button onClick={() => setModals(prev => ({ ...prev, name: false }))}>Close</button>
                             <button onClick={() => saveChanges("newName")}>Save</button>
 
@@ -111,22 +126,43 @@ function Profile() {
                             shouldCloseOnOverlayClick={true}
                             isOpen={modals.email}
                         >
-
-                            <input placeholder="email" name="name" onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
-                            <input placeholder="password" name="password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                            <h1>Change your email</h1>
+                            <input placeholder="email" onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+                            <input placeholder="password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
                             <button onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
                             <button onClick={() => saveChanges("newEmail")}>Save</button>
 
                         </Modal>
                     </tr>
                     <tr>
-                        <td><button onClick={() => setModals(prev => ({ ...prev, name: true }))}>Change password</button></td>
+                        <td><button onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button></td>
+                        <Modal
+                            style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+                                content: {
+                                    top: '50%',
+                                    left: '50%',
+                                    right: 'auto',
+                                    bottom: 'auto',
+                                    marginRight: '-50%',
+                                    transform: 'translate(-50%, -50%)',
+                                },
+                            }}
+                            onRequestClose={() => setModals(prev => ({ ...prev, password: false }))}
+                            shouldCloseOnOverlayClick={true}
+                            isOpen={modals.password}
+                        >
+                            <h1>Update password</h1>
+                            <input placeholder="Current password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                            <input placeholder="New password" onChange={(e) => setEditUser(prev => ({ ...prev, newPassword: e.target.value }))}></input><br></br>
+                            <input placeholder="Repeat new password" onChange={(e) => setEditUser(prev => ({ ...prev, rNewPassword: e.target.value }))}></input><br></br>
+                            <button onClick={() => setModals(prev => ({ ...prev, password: false }))}>Close</button>
+                            <button onClick={() => savePassword("newPassword")}>Save</button>
+
+                        </Modal>
                     </tr>
 
                 </tbody>
             </table>
-
-
             <img src={userData.avatar}></img>
             <button className="pixel-button" onClick={() => navigate("/avatarMaker")}>Edit avatar</button>
         </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import routes from "../index";
 import logo from '../img/logo.gif'
+import IconUser from "../components/IconUser";
 
 function LandingPage({ network }) {
   const cookies = new Cookies();
@@ -46,6 +47,7 @@ function LandingPage({ network }) {
 
   return (
     <div>
+      <IconUser />
       <div className="landingPage">
         <img src={logo} alt="codeXpert"></img>
         <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
