@@ -53,14 +53,6 @@ class UserController extends Controller
         return response() -> json($returnResponse);
     }
 
-    public function getRanking(Request $request)
-    {
-        //Return the list of users ordered by their elo.
-        $ranking = User::orderBy('elo', 'DESC')->get();
-
-        return response() -> json($ranking);
-    }    
-    
     public function getUserData(Request $request)
     {
         //If the user id is not null we return the information from the user (name, email, avatar)

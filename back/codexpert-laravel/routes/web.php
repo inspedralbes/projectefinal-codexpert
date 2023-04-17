@@ -33,8 +33,6 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/getUserInfo', [AuthController::class, 'getUserInfo']);    
     
-    Route::get('/getRanking', [UserController::class, 'getRanking']);
-
     Route::post('/getAvatar', [UserController::class, 'getAvatar']);
 
     Route::post('/setAvatar', [UserController::class, 'setAvatar']);
