@@ -11,17 +11,18 @@ class UserController extends Controller
 {
     public function getAvatar(Request $request)
     {
+        $userFound = (object) ['url' => null];
+        $returnAvatar = (object) ['url' => null];
+
         //Check if the user id is null, if not not we get the user's avatar.
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $returnAvatar = (object) [
-                'url' => $userFound -> avatar
-            ];
-        } else {
-            $returnAvatar = (object) [
-                'url' => null
-            ];
-        }
+            if ($userFound != null) {
+                $returnAvatar = (object) [
+                    'url' => $userFound -> avatar
+                ];
+            }
+        } 
         
         return response() -> json($returnAvatar);
     }

@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Question;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -68,7 +70,9 @@ class DatabaseSeeder extends Seeder
         // $question -> testOutput1 = serialize(1);
         // $question -> testInput2 = serialize(array( 5, 90, 30, 1, 17 ));
         // $question -> testOutput2 = serialize(0);
-        // $question -> save();        
+        // $question -> save();      
+        
+        //Example 5 is not working as expected so we repeat question 1.
         $question = new Question;
         $question -> statement = "Sort Array in ASCENDING order";
         $question -> userExpectedInput = serialize(array( 3, 7, 5 ));
@@ -78,5 +82,14 @@ class DatabaseSeeder extends Seeder
         $question -> testInput2 = serialize(array( 6, 2, 8 ));
         $question -> testOutput2 = serialize(array( 2, 6, 8 ));
         $question -> save();
+
+        //When migrating it will always create this test user
+        $user = new User;
+        $user -> name = strtolower("codexpert_test");
+        $user -> email = strtolower("codexpert_test@codexpert.com");
+        $user -> password = Hash::make("Qwerty123456.");
+        $user -> avatar = "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
+        $user -> save();
+
     }
 }
