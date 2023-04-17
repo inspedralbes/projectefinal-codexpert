@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "../styles/LobbyCreation.css";
 
 function Settings({ start }) {
     const [gameDuration, setGameDuration] = useState(0);
