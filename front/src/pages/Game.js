@@ -5,10 +5,7 @@ import "../Lobbies.css";
 import { useNavigate, Link } from "react-router-dom";
 import Chat from "../components/ChatGame";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
-import CodeMirror from '@uiw/react-codemirror';
-import 'codemirror/keymap/sublime';
-import 'codemirror/theme/monokai.css';
-const code = 'const a = 0;';
+import CodeMirror from "../components/CodeMirror";
 
 function Game({ socket }) {
   const [lobbyName, setLobbyName] = useState("");
@@ -34,6 +31,7 @@ function Game({ socket }) {
   const [otherLost, setOtherLost] = useState("");
 
   const navigate = useNavigate();
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -180,15 +178,8 @@ function Game({ socket }) {
               </div>
             </div>
 
-            <CodeMirror
-              onSubmit={handleSubmit}
-              value={code}
-              options={{
-                theme: 'monokai',
-                keyMap: 'sublime',
-                mode: 'jsx',
-              }}
-            />
+            <CodeMirror></CodeMirror>
+
 
             <form className="editor" onSubmit={handleSubmit}>
 
