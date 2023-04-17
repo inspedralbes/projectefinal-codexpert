@@ -23,9 +23,9 @@ function Settings({ start }) {
 
         switch (eventData.type) {
             case 'lobby_settings-event':
-                setHeartAmount(window.network.getErrorMessage());
-                setGameDuration(window.network.getErrorMessage());
-                setUnlimitedHearts(window.network.getErrorMessage());
+                setHeartAmount(window.network.getHeartAmount());
+                setGameDuration(window.network.getGameDuration());
+                setUnlimitedHearts(window.network.getUnlimitedHearts());
                 break;
 
             case 'GAME_TIME_UNDER_MIN-event':
@@ -77,7 +77,7 @@ function Settings({ start }) {
 
     return (
         <div className="settings__zone">
-            <h2>SETTINGS </h2>
+            {/* <h2>SETTINGS </h2> */}
             {errorMessage != "" && <h1 className="error">{errorMessage}</h1>}
             <form className="App" autoComplete="off">
                 <span className="addCategory__formSpanTA">

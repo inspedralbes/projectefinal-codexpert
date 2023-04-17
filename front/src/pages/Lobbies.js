@@ -18,8 +18,9 @@ const Lobbies = () => {
   const [lobbyList, setLobbyList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
-  const [fetchUser, setfetchUser] = useState(false);
+  const [fetchUser, setFetchUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showSettings, setShowSettings] = useState(false);
 
   const navigate = useNavigate();
   const cookies = new Cookies();
@@ -34,7 +35,7 @@ const Lobbies = () => {
         break;
 
       case 'lobbies_list-event':
-        setLobbyList(window.network.getLobbyUserList());
+        setLobbyList(window.network.getLobbyList());
         break;
 
       case 'game_started-event':
@@ -44,7 +45,17 @@ const Lobbies = () => {
       case 'LOBBY_FULL_ERROR-event':
         setLobbyName("");
         setJoined(false);
-        setErrorMessage(window.ne.message)
+        setErrorMessage(window.network.getMessage())
+        break;
+
+      case 'show_settings-event':
+        setShowSettings(window.network.getShowSettings())
+        // console.log("SHOW",window.network.getShowSettings());
+        break;
+
+      case 'ALREADY_ON_LOBBY-event':
+        setErrorMessage(window.network.getMessage())
+        setJoined(false);
         break;
 
       default:
@@ -56,8 +67,7 @@ const Lobbies = () => {
     e.preventDefault();
     console.log("has abandonat la sala " + lobbyName);
     window.postMessage({
-      type: 'leave_lobby-emit',
-      lobbyName: lobbyName
+      type: 'leave_lobby-emit'
     }, '*')
     setJoined(false);
     setLobbyName("");
@@ -110,7 +120,7 @@ const Lobbies = () => {
         .then((response) => response.json())
         .then((data) => {
           if (data) {
-            setfetchUser(true)
+            setFetchUser(true)
           } else {
             navigate("/login");
           }
@@ -247,12 +257,12 @@ const Lobbies = () => {
             </button>
             <ConnectedUsers></ConnectedUsers>
             <div className="button-startGame">
-              <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
+              {showSettings && <button className="startGame" id="startGame" onClick={startGame}>Start game</button>}
             </div>
             <div className="lobby__chat">
               <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
             </div>
-
+          {showSettings && <Settings></Settings>}
           </div>
         )
         }

@@ -1,4 +1,5 @@
 import socketIO from "socket.io-client";
+import ConnectionNetwork from "./ConnectionNetwork.js";
 
 let socket = socketIO("ws://localhost:7500", {
     withCredentials: true,
@@ -9,103 +10,7 @@ let socket = socketIO("ws://localhost:7500", {
     transports: ["websocket"],
 })
 
-class ConnectionNetwork {
-    message = "";
-    winnerMessage = "";
-    errorMessage = "";
-    token = "";
-    lobby_name = "";
-    userList = [];
-    lobbyMessages = [];
-    questionData = {};
-    result = "";
-    rewards = {};
-
-    setMessage(msg) {
-        this.message = msg;
-    }
-
-    getMessage() {
-        return this.message;
-    }
-
-    setErrorMessage(msg) {
-        this.errorMessage = msg;
-    }
-
-    getErrorMessage() {
-        return this.errorMessage;
-    }
-
-    setWinnerMessage(msg) {
-        this.winnerMessage = msg;
-    }
-
-    getWinnerMessage() {
-        return this.winnerMessage;
-    }
-
-    setToken(token) {
-        this.token = token;
-    }
-
-    getToken() {
-        return this.token;
-    }
-
-    setLobbyName(lobby_name) {
-        this.lobby_name = lobby_name;
-    }
-
-    getLobbyName() {
-        return this.lobby_name;
-    }
-
-    setLobbyUserList(userList) {
-        this.userList = userList;
-    }
-
-    getLobbyUserList() {
-        return this.userList;
-    }
-
-    setLobbyMessages(list) {
-        this.lobbyMessages = list;
-    }
-
-    getLobbyMessages() {
-        return this.lobbyMessages;
-    }
-
-    setQuestionData(data) {
-        this.questionData = data;
-    }
-
-    getQuestionData() {
-        return this.questionData;
-    }
-
-    setResult(result) {
-        this.result = result;
-    }
-
-    getResult() {
-        return this.result;
-    }
-
-    setRewards(rewards) {
-        this.rewards = rewards;
-    }
-
-    getRewards() {
-        return this.rewards;
-    }
-}
-
 window.network = new ConnectionNetwork();
-
-// Window event listener for event handling
-window.addEventListener('message', handleMessage);
 
 const handleMessage = (event) => {
     let eventData = event.data
@@ -152,7 +57,7 @@ const handleMessage = (event) => {
             break;
 
         case "leave_lobby-emit":
-            socket.emit("leave_lobby", eventData.lobbyName);
+            socket.emit("leave_lobby");
             break;
 
         case "start_game-emit":
@@ -179,6 +84,9 @@ const handleMessage = (event) => {
     }
 }
 
+// Window event listener for event handling
+window.addEventListener('message', handleMessage);
+
 // Eventos socket
 socket.on("YOU_ARE_ON_LOBBY", (data) => {
     window.network.setLobbyName(data.lobby_name);
@@ -186,7 +94,7 @@ socket.on("YOU_ARE_ON_LOBBY", (data) => {
 })
 
 socket.on("lobbies_list", (data) => {
-    window.network.setLobbyName(data.lobby_name);
+    window.network.setLobbyList(data);
     window.postMessage({ type: 'lobbies_list-event' }, '*')
 })
 
@@ -236,11 +144,21 @@ socket.on("YOU_LEFT_LOBBY", () => {
     window.postMessage({ type: 'YOU_LEFT_LOBBY-event' }, '*')
 })
 
+socket.on("show_settings", (data) => {
+    window.network.setShowSettings(data.show);
+    window.postMessage({ type: 'show_settings-event' }, '*')
+})
+
 socket.on("lobby_settings", (data) => {
     window.network.setGameDuration(data.gameDuration);
     window.network.setHeartAmount(data.heartAmount);
     window.network.setUnlimitedHearts(data.unlimitedHearts);
     window.postMessage({ type: 'lobby_settings-event' }, '*')
+});
+
+socket.on("ALREADY_ON_LOBBY", (data) => {
+    window.network.setMessage(data.message);
+    window.postMessage({ type: 'ALREADY_ON_LOBBY-event' }, '*')
 });
 
 // ERROR EVENTS

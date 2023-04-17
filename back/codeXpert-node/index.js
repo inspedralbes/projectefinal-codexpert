@@ -61,6 +61,19 @@ app.use(
   })
 );
 
+const defaultSettings = {
+  gameDuration: 600,
+  heartAmount: 5,
+  unlimitedHearts: false
+};
+
+const maxSettings = {
+  minTime: 300,
+  maxTime: 3600,
+  minHeartAmount: 1,
+  maxHeartAmount: 99,
+};
+
 socketIO.on("connection", (socket) => {
   console.log("CONECTADO");
   var socketId = socket.id;
@@ -127,11 +140,19 @@ socketIO.on("connection", (socket) => {
         lobby_name: lobby,
         members: [],
         messages: [],
+        settings: {
+          gameDuration: defaultSettings.gameDuration,
+          heartAmount: defaultSettings.heartAmount,
+          unlimitedHearts: defaultSettings.unlimitedHearts
+        }
       });
     }
   });
 
   socket.on("join_room", (data) => {
+    let settings;
+    var disponible = true;
+
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == data.lobby_name) {
         if (lobby.members.length == maxMembersOnLobby) {
@@ -139,8 +160,6 @@ socketIO.on("connection", (socket) => {
             message: "The selected lobby is full",
           });
         } else {
-          var disponible = true;
-
           lobby.members.forEach(member => {
             if (member.nom == socket.data.name) {
               disponible = false;
@@ -153,25 +172,44 @@ socketIO.on("connection", (socket) => {
               rank: data.rank,
               idUser: socket.data.userId,
             });
+            settings = lobby.settings
+          } else {
+            socketIO.to(`${socketId}`).emit("ALREADY_ON_LOBBY", {
+              message: "YOU ARE ALREADY ON LOBBY",
+            });
           }
         }
       }
     });
-    socket.join(data.lobby_name);
-    socket.data.current_lobby = data.lobby_name;
-    console.log(socket.data.name + " joined the lobby -> " + data.lobby_name);
-    addMessage({
-      nickname: "ingame_events",
-      message: `${socket.data.name} joined the lobby.`,
-      avatar: socket.data.avatar
-    }, socket.data.current_lobby)
 
-    sendUserList(data.lobby_name);
-    sendMessagesToLobby(data.lobby_name);
-    sendLobbyList();
+    if (disponible) {
+      socket.join(data.lobby_name);
+      socket.data.current_lobby = data.lobby_name;
+      console.log(socket.data.name + " joined the lobby -> " + data.lobby_name);
+      addMessage({
+        nickname: "ingame_events",
+        message: `${socket.data.name} joined the lobby.`,
+        avatar: socket.data.avatar
+      }, socket.data.current_lobby)
+
+      sendUserList(data.lobby_name);
+      sendMessagesToLobby(data.lobby_name);
+      sendLobbyList();
+
+      // if (data.rank == "Owner") {
+        if (settings != null) {
+          socketIO.to(socket.id).emit("lobby_settings", settings);
+
+          socketIO.to(socket.id).emit("show_settings", {
+            show: true,
+          });
+        }
+      // }
+    }
   });
 
-  socket.on("leave_lobby", (roomName) => {
+  socket.on("leave_lobby", () => {
+    roomName = socket.data.current_lobby
     leaveLobby(socket);
     sendUserList(roomName);
     sendLobbyList();
@@ -284,6 +322,54 @@ socketIO.on("connection", (socket) => {
       .catch(function (error) {
         console.log(error);
       });
+  });
+
+  socket.on("save_settings", (data) => {
+    let valid = true;
+    lobbies.forEach((lobby) => {
+      if (
+        lobby.lobbyIdentifier == socket.data.current_lobby &&
+        lobby.ownerId == socket.data.id
+      ) {
+        if (data.gameDuration < maxSettings.minTime) {
+          socketIO.to(socket.id).emit("GAME_TIME_UNDER_MIN", {
+            min: maxSettings.minTime,
+          });
+
+          valid = false;
+        } else if (data.gameDuration > maxSettings.maxTime) {
+          socketIO.to(socket.id).emit("GAME_TIME_ABOVE_MAX", {
+            max: maxSettings.maxTime,
+          });
+
+          valid = false;
+        }
+
+        if (valid) {
+          if (data.heartAmount < maxSettings.minHeartAmount) {
+            socketIO.to(socket.id).emit("HEARTS_AMT_UNDER_MIN", {
+              min: maxSettings.minHeartAmount,
+            });
+
+            valid = false;
+          } else if (data.heartAmount > maxSettings.maxHeartAmount) {
+            socketIO.to(socket.id).emit("HEARTS_AMT_UNDER_MIN", {
+              max: maxSettings.maxHeartAmount,
+            });
+
+            valid = false;
+          }
+        }
+
+        if (valid) {
+          lobby.settings = data;
+        }
+
+        socketIO.to(socket.id).emit("starting_errors", {
+          valid: valid,
+        });
+      }
+    });
   });
 
   socket.on("disconnect", () => {
