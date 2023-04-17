@@ -17,7 +17,7 @@ function Profile() {
     });
 
     const getUserData = () => {
-        fetch(routes.fetchLaravel + "/index.php/getUserData", {
+        fetch(routes.fetchLaravel + "getUserData", {
             method: "GET",
             mode: "cors",
             credentials: "include",
@@ -48,7 +48,7 @@ function Profile() {
         }
 
         user.append("password", editUser.password);
-        fetch(routes.fetchLaravel + "/index.php/" + (type === "newName" ? "changeUsername" : "changeEmail"), {
+        fetch(routes.fetchLaravel + (type === "newName" ? "changeUsername" : "changeEmail"), {
             method: "POST",
             mode: "cors",
             body: user,
