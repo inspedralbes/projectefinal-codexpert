@@ -119,9 +119,14 @@ function Profile() {
 
                         </Modal>
                     </tr>
+                    <tr>
+                        <td><button onClick={() => setModals(prev => ({ ...prev, name: true }))}>Change password</button></td>
+                    </tr>
 
                 </tbody>
             </table>
+
+
             <img src={userData.avatar}></img>
             <button className="pixel-button" onClick={() => navigate("/avatarMaker")}>Edit avatar</button>
         </div>
