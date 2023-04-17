@@ -7,15 +7,15 @@ import IconUser from "../components/IconUser";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import routes from "../index";
-import { Blocks } from 'react-loader-spinner'
-import lobbyTitle from '../img/lobbies.gif'
-import arrow from '../img/arrow.gif'
+import { Blocks } from 'react-loader-spinner';
+import lobbyTitle from '../img/lobbies.gif';
+import arrow from '../img/arrow.gif';
+import Settings from '../components/Settings';
 
 
 const Lobbies = () => {
   const [lobbyName, setLobbyName] = useState("");
   const [lobbyList, setLobbyList] = useState([]);
-  const [userList, setUserList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
   const [fetchUser, setfetchUser] = useState(false);
@@ -252,6 +252,7 @@ const Lobbies = () => {
             <div className="lobby__chat">
               <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
             </div>
+
           </div>
         )
         }
