@@ -1,4 +1,4 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { useNavigate } from "react-router-dom";
 import routes from "../index";
 import Cookies from "universal-cookie";
@@ -10,7 +10,7 @@ function Profile() {
     if (document.cookie.indexOf("token" + "=") != -1) {
         const token = new FormData();
         token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
-        fetch(routes.fetchLaravel + "/index.php/isUserLogged", {
+        fetch(routes.fetchLaravel + "isUserLogged", {
             method: "POST",
             mode: "cors",
             body: token,
@@ -27,7 +27,7 @@ function Profile() {
     } else {
         navigate("/login");
     }
-    fetch(routes.fetchLaravel + "/index.php/getUserData", {
+    fetch(routes.fetchLaravel + "getUserData", {
         method: "GET",
         mode: "cors",
         credentials: "include",

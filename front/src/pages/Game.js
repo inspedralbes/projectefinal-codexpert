@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "../normalize.css";
-import "../game.css";
-import "../Lobbies.css";
+import "../styles/normalize.css";
+import "../styles/game.css";
+import "../styles/Lobbies.css";
 import { useNavigate, Link } from "react-router-dom";
 import Chat from "../components/Chat";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";

@@ -1,4 +1,4 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { useState, useEffect } from "react";
 import routes from "../index";
 import Cookies from "universal-cookie";
@@ -19,7 +19,7 @@ function Login() {
       user.append("email", email);
       user.append("password", password);
 
-      fetch(routes.fetchLaravel + "/index.php/login", {
+      fetch(routes.fetchLaravel + "login", {
         method: "POST",
         mode: "cors",
         body: user,

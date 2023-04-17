@@ -1,4 +1,4 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
@@ -11,7 +11,7 @@ function LandingPage({ network }) {
 
   const handleMessage = (event) => {
     let eventData = event.data
-    
+
     switch (eventData.type) {
       case 'welcome_message-updated':
         console.log(window.network.getMessage());
@@ -24,9 +24,8 @@ function LandingPage({ network }) {
 
   useEffect(() => {
     const token = new FormData();
-<<<<<<< HEAD
     token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
-    fetch(routes.fetchLaravel + "/index.php/isUserLogged", {
+    fetch(routes.fetchLaravel + "isUserLogged", {
       method: "POST",
       mode: "cors",
       body: token,
@@ -38,25 +37,8 @@ function LandingPage({ network }) {
           setLogin(true)
         }
       });
-=======
-    if (document.cookie.indexOf("token" + "=") == 0) {  //Si existe token en cookies hace la comprobación (sino da error)
-      token.append("token", cookies.get('token'))
-      fetch(routes.fetchLaravel + "/index.php/isUserLogged", {
-        method: "POST",
-        mode: "cors",
-        body: token,
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            setLogin(true)
-          }
-        });
-    }
-    window.addEventListener('message', handleMessage);
->>>>>>> develop
 
+    window.addEventListener('message', handleMessage);
     return () => {
       window.removeEventListener('message', handleMessage);
     };

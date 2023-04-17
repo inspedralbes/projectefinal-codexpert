@@ -1,4 +1,4 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { useState, useEffect } from "react";
 
 function ConnectedUsers() {
