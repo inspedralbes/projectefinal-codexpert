@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 class UserController extends Controller
 {
     public function getAvatar(Request $request)
@@ -29,18 +31,23 @@ class UserController extends Controller
     
     public function setAvatar(Request $request)
     {
+        $returnResponse = (object) [
+            'changed' => false
+        ];
+
         //Check if the user is id null, if not we change the avatar.
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $userFound -> avatar = $request -> newAvatar;
-            $userFound -> save();
-            $returnResponse = (object) [
-                'changed' => true
-            ];
-        } else {
-            $returnResponse = (object) [
-                'changed' => null
-            ];
+            if ($userFound != null) {
+                if (Str::contains($request -> newAvatar, 'https://api.dicebear.com/5.x/pixel-art/svg')) {
+                    $userFound -> avatar = $request -> newAvatar;
+                    $userFound -> save();
+
+                    $returnResponse = (object) [
+                        'changed' => true
+                    ];
+                }
+            }
         }  
 
         return response() -> json($returnResponse);
