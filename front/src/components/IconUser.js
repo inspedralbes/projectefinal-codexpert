@@ -16,15 +16,6 @@ function IconUser() {
     setState(!state)
   };
 
-  function clickOutDropDown() {
-    $(document).click(function (e) {
-      if ($(e.target).is('#openModal')) {
-          $('#openModal').fadeOut(500);
-      }
-  
-  });
-  }
-
   useEffect(() => {
     const token = new FormData();
     token.append("token", cookies.get("token"));
