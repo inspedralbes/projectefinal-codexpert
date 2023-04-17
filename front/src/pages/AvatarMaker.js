@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import routes from "../index"
-import '../avatarMaker.css';
+import '../styles/avatarMaker.css';
 import { CirclePicker } from "react-color";
 import { useNavigate } from "react-router-dom"; //Rutas
 import Cookies from 'universal-cookie';
@@ -61,7 +61,7 @@ function AvatarMaker() {
     const fetchData = async () => {
       const token = new FormData()
       token.append("token", cookies.get('token'))
-      await fetch(routes.fetchLaravel + "/index.php/getAvatar", {
+      await fetch(routes.fetchLaravel + "getAvatar", {
         method: "POST",
         mode: "cors",
         body: token,
@@ -199,7 +199,7 @@ function AvatarMaker() {
       sendAvatar.append("newAvatar", avatar);
       sendAvatar.append("token", cookies.get('token'))
       const fetchData = async () => {
-        await fetch(routes.fetchLaravel + "/index.php/setAvatar", {
+        await fetch(routes.fetchLaravel + "setAvatar", {
           method: "POST",
           mode: "cors",
           body: sendAvatar,

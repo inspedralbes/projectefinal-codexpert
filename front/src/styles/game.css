@@ -1,6 +1,6 @@
 @font-face {
     font-family: monoid;
-    src: url(fonts/Monoid/Monoid-Regular.ttf);
+    src: url(../fonts/Monoid/Monoid-Regular.ttf);
 }
 
 :root {

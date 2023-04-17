@@ -67,7 +67,6 @@ socketIO.on("connection", (socket) => {
   socket.data.current_lobby = null;
 
   socket.join("chat-general");
-  socketIO.to(`${socketId}`).emit("hello", "Welcome to the general chat");
 
   // socket.data.name = i;
   // i++;

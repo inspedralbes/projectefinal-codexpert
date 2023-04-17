@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"; //Rutas
-import "./index.css";
-import "./mobileStyle.css";
+import "./styles/index.css";
+import "./styles/mobileStyle.css";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,12 +16,11 @@ import Profile from "./pages/Profile";
 import "./network.js";
 import Error404 from "./pages/404";
 import Cookies from 'universal-cookie';
-import socketIO from "socket.io-client";
 
 const cookies = new Cookies();
 
 const routes = {
-  fetchLaravel: "http://localhost:8000",
+  fetchLaravel: "http://localhost:8000/index.php/",
   wsNode: "ws://localhost:7500",
 };
 

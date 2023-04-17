@@ -1,4 +1,4 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
@@ -11,7 +11,7 @@ function LandingPage({ network }) {
 
   const handleMessage = (event) => {
     let eventData = event.data
-    
+
     switch (eventData.type) {
       case 'welcome_message-updated':
         console.log(window.network.getMessage());
@@ -25,7 +25,7 @@ function LandingPage({ network }) {
   useEffect(() => {
     const token = new FormData();
     token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
-    fetch(routes.fetchLaravel + "/index.php/isUserLogged", {
+    fetch(routes.fetchLaravel + "isUserLogged", {
       method: "POST",
       mode: "cors",
       body: token,
@@ -38,6 +38,7 @@ function LandingPage({ network }) {
         }
       });
 
+    window.addEventListener('message', handleMessage);
     return () => {
       window.removeEventListener('message', handleMessage);
     };

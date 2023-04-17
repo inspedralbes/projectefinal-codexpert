@@ -1,4 +1,4 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { useNavigate } from "react-router-dom";
 import routes from "../index";
 import { useState, useEffect } from "react";

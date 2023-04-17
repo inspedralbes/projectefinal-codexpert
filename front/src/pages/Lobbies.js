@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "../normalize.css";
-import "../Lobbies.css";
+import "../styles/normalize.css";
+import "../styles/Lobbies.css";
 import Chat from "../components/Chat";
 import ConnectedUsers from "../components/ConnectedUsers";
 import IconUser from "../components/IconUser";
@@ -101,7 +101,7 @@ const Lobbies = () => {
     if (document.cookie.indexOf("token" + "=") != -1) {
       const token = new FormData();
       token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
-      fetch(routes.fetchLaravel + "/index.php/isUserLogged", {
+      fetch(routes.fetchLaravel + "isUserLogged", {
         method: "POST",
         mode: "cors",
         body: token,
