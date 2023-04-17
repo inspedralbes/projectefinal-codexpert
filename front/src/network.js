@@ -163,11 +163,6 @@ window.network = new ConnectionNetwork();
 window.addEventListener('message', handleMessage);
 
 // Eventos socket
-socket.on("hello", (msg) => {
-    window.network.setMessage(msg);
-    window.postMessage({ type: 'welcome_message-updated' }, '*')
-})
-
 socket.on("YOU_ARE_ON_LOBBY", (data) => {
     window.network.setLobbyName(data.lobby_name);
     window.postMessage({ type: 'YOU_ARE_ON_LOBBY-event' }, '*')

@@ -8,7 +8,7 @@
 
 @font-face {
     font-family: pixel_operator;
-    src: url(fonts/pixel_operator/PixelOperator8.ttf);
+    src: url(../fonts/pixel_operator/PixelOperator8.ttf);
 }
 
 * {
@@ -16,7 +16,7 @@
 }
 
 body {
-    background: url('img/uwu.jpg');
+    background: url('../img/uwu.jpg');
     background-size: 200vh 100vh;
     font-family: pixel_operator;
     font-size: 30px;
