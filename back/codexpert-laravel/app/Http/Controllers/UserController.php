@@ -192,7 +192,7 @@ class UserController extends Controller
                     //If the email is valid we check if it's not repeated.
                     $getAllEmails = User::get('email');
                     for ($i = 0; $i < count($getAllEmails); $i++) { 
-                        if ($request -> newEmail == $getAllEmails[$i]) {
+                        if (strcasecmp($request -> newEmail, $getAllEmails[$i] -> email) == 0) {
                             $emailRepeated = true;
                         }
                     }
@@ -210,7 +210,7 @@ class UserController extends Controller
                 }
             }
         } else {
-            $validName = (object) [
+            $validEmail = (object) [
                 'willChange' => false,
                 'error' => "User is not logged in."
             ]; 
@@ -250,9 +250,9 @@ class UserController extends Controller
                 ];
             }
         } else {
-            $returnUser = (object) [
-                'error' => "User is not logged in."
-            ];
+        //     $returnUser = (object) [
+        //         'error' => "User is not logged in."
+        //     ];
         }
         
         return response() -> json($returnUser);

@@ -24,7 +24,6 @@ function LandingPage({ network }) {
 
   useEffect(() => {
     const token = new FormData();
-<<<<<<< HEAD
     token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
     fetch(routes.fetchLaravel + "/index.php/isUserLogged", {
       method: "POST",
@@ -38,24 +37,6 @@ function LandingPage({ network }) {
           setLogin(true)
         }
       });
-=======
-    if (document.cookie.indexOf("token" + "=") == 0) {  //Si existe token en cookies hace la comprobación (sino da error)
-      token.append("token", cookies.get('token'))
-      fetch(routes.fetchLaravel + "/index.php/isUserLogged", {
-        method: "POST",
-        mode: "cors",
-        body: token,
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            setLogin(true)
-          }
-        });
-    }
-    window.addEventListener('message', handleMessage);
->>>>>>> develop
 
     return () => {
       window.removeEventListener('message', handleMessage);
