@@ -1,5 +1,5 @@
-import "../normalize.css";
-import "../IconUser.css";
+import "../styles/normalize.css";
+import "../styles/IconUser.css";
 import routes from "../index";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ function IconUser() {
   useEffect(() => {
     const token = new FormData();
     token.append("token", cookies.get("token"));
-    fetch(routes.fetchLaravel + "/index.php/getAvatar", {
+    fetch(routes.fetchLaravel + "getAvatar", {
       method: "POST",
       mode: "cors",
       body: token,
@@ -35,7 +35,7 @@ function IconUser() {
     if (logOut) {
       const token = new FormData();
       token.append("token", cookies.get("token"));
-      fetch(routes.fetchLaravel + "/index.php/logout", {
+      fetch(routes.fetchLaravel + "logout", {
         method: "POST",
         mode: "cors",
         body: token,
@@ -70,7 +70,7 @@ function IconUser() {
         {state && (
           <div className="dropdown">
             <ul className="dropdown__list list">
-              <li className="list__item">Profile</li>
+              <li className="list__item"><button className="button" onClick={() => navigate("/profile")}>Profile</button></li>
               <li className="list__item"><button className="button" onClick={() => navigate("/avatarMaker")}>Avatar Maker</button></li>
               <li className="list__item"> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
             </ul>

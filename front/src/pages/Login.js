@@ -1,10 +1,10 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { useState, useEffect } from "react";
 import routes from "../index";
 import Cookies from "universal-cookie";
 import { Link, useNavigate } from "react-router-dom"; //Rutas
 
-function Login({ socket }) {
+function Login() {
   const [login, setLogin] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +19,7 @@ function Login({ socket }) {
       user.append("email", email);
       user.append("password", password);
 
-      fetch(routes.fetchLaravel + "/index.php/login", {
+      fetch(routes.fetchLaravel + "login", {
         method: "POST",
         mode: "cors",
         body: user,
@@ -30,9 +30,11 @@ function Login({ socket }) {
           if (data.valid) {
             //Si se ha logueado
             cookies.set("token", data.token, { path: "/" });
-            socket.emit("send token", {
-              token: cookies.get("token"),
-            });
+            window.postMessage({
+              type: 'send_token-emit',
+              token: cookies.get("token")
+            }, '*')
+            
             navigate("/lobbies");
           } else {
             setErrorText(data.message)

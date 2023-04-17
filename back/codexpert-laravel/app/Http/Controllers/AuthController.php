@@ -16,6 +16,7 @@ class AuthController extends Controller
 {
     public function checkUserDuplicated($userData)
     {
+        //Check if any fields are duplicated
         $canCreate = true;
 
         $findDuplicated = User::where('email', strtolower($userData -> email))
@@ -31,6 +32,7 @@ class AuthController extends Controller
 
     public function findWhatIsDuplicated($userData)
     {
+        //Check whether the user's name or the email is duplicated
         $isDuplicated = 'name';
 
         $emailDuplicated = User::where('email', strtolower($userData -> email))
@@ -45,6 +47,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        //Validate the fields
         $validator =  Validator::make($request->all(), [
             'name' => 'required|string|min:3|max:20',
             'email' => 'required|string|email|max:255',
@@ -61,13 +64,15 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $sendUser = (object) 
-            ["valid" => false,
-            'message' => "Validation errors."
+            $sendUser = (object) [
+                'valid' => false,
+                'message' => "Validation errors."
             ];
         } else {
+            //If the validation doesn't fail we check if the user has already been created or any fields are repeated
             $createUser = $this->checkUserDuplicated($request);
 
+            //If we can crete the user, we save the user in the database, all in lowercase and password hashed.
             if ($createUser) {
                 $user = new User;
                 $user -> name = strtolower($request -> name);
@@ -75,25 +80,27 @@ class AuthController extends Controller
                 $user -> password = Hash::make($request -> password);
                 $user -> save();
 
-                $request->session()->put('userId', $user -> id);
-                $request->session()->save();
+                //Save the userId in the laravel session
+                $request -> session()->put('userId', $user->id);
                 $token = $user->createToken('token')->plainTextToken;
-                $sendUser = (object) 
-                ["valid" => true,
-                'message' => $request->session()->get("userId"),
-                'token' => $token
+                
+                $sendUser = (object) [
+                    'valid' => true,
+                    'message' => $request->session()->get("userId"),
+                    'token' => $token
                 ];
             } else {
+                //If fields are valid but email or name are already in use we warn the user
                 $duplicated = $this->findWhatIsDuplicated($request);
-                $sendUser = (object) 
-                ["valid" => false,
-                'message' => "Name already in use."
+                $sendUser = (object) [
+                    'valid' => false,
+                    'message' => "Name already in use."
                 ];
                 
                 if ($duplicated == 'email') {
-                    $sendUser = (object) 
-                    ["valid" => false,
-                    'message' => "Email already registered."
+                    $sendUser = (object) [
+                        'valid' => false,
+                        'message' => "Email already registered."
                     ];
                 }
                 
@@ -105,29 +112,32 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {   
-        $sendUser = (object)
-        ['valid' => false,
-        'message' => "User not found.",
-        'token' => null
+        //If the user doesn't exist we warn the user
+        $sendUser = (object) [
+            'valid' => false,
+            'message' => "User not found.",
+            'token' => null
         ];
 
         $userFound = User::where('email', strtolower($request -> email))->first();
+
+        //If the user has been found we check if the password and email match, if they do we log it in, if it doesn't we warn the user.
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
                 $request -> session()->put('userId', $user->id);
                 $token = $user->createToken('token')->plainTextToken;
-                $sendUser = (object) 
-                ['valid' => true,
-                'message' => "Logged in successfully",
-                'token' => $token
+                $sendUser = (object) [
+                    'valid' => true,
+                    'message' => "Logged in successfully",
+                    'token' => $token
                 ];
 
             } else {
-                $sendUser = (object)
-                ['valid' => false,
-                'message' => "Password and e-mail don't match.",
-                'token' => null
+                $sendUser = (object) [
+                    'valid' => false,
+                    'message' => "Password and e-mail don't match.",
+                    'token' => null
                 ];
             }
         }
@@ -137,42 +147,35 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {   
+        //Remove the token when logging out
         [$id, $token] = explode('|', $request -> token, 2);
         
         PersonalAccessToken::find($id)->delete();
-
+        Session::flush();
+        
         $returnResponse = (object)['logout' => true];
+        
         return response() -> json($returnResponse);
     }
-
-    public function getUserId(Request $request)
-    {
-        $returnUserId = null;
-
-        [$id, $token] = explode('|', $request -> token, 2);
-        $accessToken = PersonalAccessToken::find($id);
-
-        if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $returnUserId = $accessToken -> tokenable_id;
-            $request -> session()->put('userId', $returnUserId);
-        }
-
-        return response() -> json($returnUserId);
-    }    
 
     public function getUserInfo(Request $request)
     {
         $returnUserId = null;
         $userFound = null;
         
-        [$id, $token] = explode('|', $request -> token, 2);
-        $accessToken = PersonalAccessToken::find($id);
+        //Return the info from the user if the token is not null
+        if ($request -> token == null || $request -> token == "" || $request -> token == "null") {
+            $userFound = null;
+        } else { 
+            [$id, $token] = explode('|', $request -> token, 2);
+            $accessToken = PersonalAccessToken::find($id);
 
-        if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $returnUserId = $accessToken -> tokenable_id;
-            $request -> session()->put('userId', $returnUserId);
+            if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                $returnUserId = $accessToken -> tokenable_id;
+                $request -> session()->put('userId', $returnUserId);
 
-            $userFound = User::where('id', $returnUserId)->first();
+                $userFound = User::where('id', $returnUserId)->first();
+            }
         }
 
         return response() -> json($userFound);
@@ -180,28 +183,20 @@ class AuthController extends Controller
 
     public function isUserLogged(Request $request)
     {
-        $logged = false;
-        
-        [$id, $token] = explode('|', $request -> token, 2);
-        $accessToken = PersonalAccessToken::find($id);
+        //Check if we have recieved a token
+        if ($request -> token == null || $request -> token == "" || $request -> token == "null") {
+            $logged = false;
+        } else { 
+            //Return if the user is logged in or not from the token
+            [$id, $token] = explode('|', $request -> token, 2);
+            $accessToken = PersonalAccessToken::find($id);
 
-        if (hash_equals($accessToken->token, hash('sha256', $token))) {
-            $logged = true;
+            if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                $logged = true;
+            }
         }
 
         return response() -> json($logged);
-    }    
-    
-    public function getProfile(Request $request)
-    {
-        $profile = null;
-
-        $userId = $this->getUserId($request);
-        if ($userId != null) {
-            $profile = User::where('id', $userId) -> first();
-        }
-        
-        return response() -> json($profile);
-    }     
+    }   
 
 }

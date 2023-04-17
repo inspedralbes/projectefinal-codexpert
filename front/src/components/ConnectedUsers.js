@@ -1,17 +1,36 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { useState, useEffect } from "react";
 
-function ConnectedUsers({ socket }, u) {
+function ConnectedUsers() {
     const [userList, setUserList] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
 
+    const handleMessage = (event) => {
+        let eventData = event.data
+
+        switch (eventData.type) {
+            case 'lobby_user_list-event':
+                setUserList(window.network.getLobbyUserList());
+                break;
+
+            default:
+                break;
+        }
+    }
+
     useEffect(() => {
         if (firstTime) {
-            socket.emit("lobby_data_pls");
+            window.postMessage({
+                type: 'lobby_data_pls-emit'
+            }, '*')
+            setFirstTime(false);
         }
-        socket.on("lobby user list", (data) => {
-            setUserList(data.list);
-        });
+
+        window.addEventListener('message', handleMessage);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
     }, [])
 
     // useEffect(() => {

@@ -657,7 +657,7 @@
     color: red;
     text-align: center;
     font-family: pixel_operator;
-    src: url(fonts/pixel_operator/PixelOperator8.ttf);
+    src: url(../fonts/pixel_operator/PixelOperator8.ttf);
 }
 
 .button-startGame {

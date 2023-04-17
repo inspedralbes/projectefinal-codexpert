@@ -1,16 +1,16 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { Link } from "react-router-dom";
 
 
-function Game() {
+function E404() {
   return (
     <div>
       <h1>404 Error</h1>
       <Link to="/">
-        <button>Go to landing Page</button>
+        <button>Go to Home</button>
       </Link>
     </div>
   );
 }
 
-export default Game;
+export default E404;

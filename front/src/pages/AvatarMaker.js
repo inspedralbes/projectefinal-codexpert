@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import routes from "../index"
-import '../avatarMaker.css';
+import '../styles/avatarMaker.css';
 import { CirclePicker } from "react-color";
 import { useNavigate } from "react-router-dom"; //Rutas
 import Cookies from 'universal-cookie';
 
 
-function AvatarMaker({ socket }) {
+function AvatarMaker() {
   const cookies = new Cookies();
   const navigate = useNavigate();
   let urlStr = "";
@@ -61,7 +61,7 @@ function AvatarMaker({ socket }) {
     const fetchData = async () => {
       const token = new FormData()
       token.append("token", cookies.get('token'))
-      await fetch(routes.fetchLaravel + "/index.php/getAvatar", {
+      await fetch(routes.fetchLaravel + "getAvatar", {
         method: "POST",
         mode: "cors",
         body: token,
@@ -70,7 +70,6 @@ function AvatarMaker({ socket }) {
         .then((response) => response.json())
         .then((data) => {
           urlStr = data.url;
-          //urlStr = "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
           if (urlStr !== null) {
             getAvatar(urlStr);
           } else {
@@ -200,7 +199,7 @@ function AvatarMaker({ socket }) {
       sendAvatar.append("newAvatar", avatar);
       sendAvatar.append("token", cookies.get('token'))
       const fetchData = async () => {
-        await fetch(routes.fetchLaravel + "/index.php/setAvatar", {
+        await fetch(routes.fetchLaravel + "setAvatar", {
           method: "POST",
           mode: "cors",
           body: sendAvatar,
@@ -209,9 +208,10 @@ function AvatarMaker({ socket }) {
           .then((response) => response.json())
           .then((data) => {
             if (cookies.get("token") != undefined) {
-              socket.emit("send token", {
-                token: cookies.get("token"),
-              });
+              window.postMessage({
+                type: 'send_token-emit',
+                token: cookies.get("token")
+              }, '*')
             }
           });
       };

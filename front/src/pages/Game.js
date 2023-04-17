@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import "../normalize.css";
-import "../game.css";
-import "../Lobbies.css";
+import "../styles/normalize.css";
+import "../styles/game.css";
+import "../styles/Lobbies.css";
 import { useNavigate, Link } from "react-router-dom";
 import Chat from "../components/ChatGame";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import CodeMirror from "../components/CodeMirror";
 
-function Game({ socket }) {
+function Game() {
   const [lobbyName, setLobbyName] = useState("");
   const [colorTema, setColorTema] = useState(false);
   const [code, setCode] = useState("");
@@ -26,12 +26,46 @@ function Game({ socket }) {
     coinsEarned: 0,
     eloEarned: 0,
   });
-  const [rivalCorrect, setRivalCorrect] = useState("");
-  const [rivalWrong, setRivalWrong] = useState("");
-  const [otherLost, setOtherLost] = useState("");
 
   const navigate = useNavigate();
 
+  const handleMessage = (event) => {
+    let eventData = event.data
+
+    switch (eventData.type) {
+      case 'lobby_name-event':
+        setLobbyName(window.network.getLobbyName())
+        break;
+
+      case 'question_data-event':
+        setQst(window.network.getQuestionData());
+        setCode("");
+        break;
+
+      case 'game_over-event':
+        console.log(window.network.getWinnerMessage());
+        setWinnerMessage(window.network.getWinnerMessage());
+        setPlayable(false)
+        break;
+
+      case 'user_finished-event':
+        setResult(window.network.getResult());
+        setPlayable(false)
+        break;
+
+      case 'stats-event':
+        setRewards(window.network.getRewards());
+        break;
+
+      case 'YOU_LEFT_LOBBY-event':
+        navigate("/lobbies");
+        break;
+
+      default:
+        console.log("Unknown event")
+        break;
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -58,10 +92,11 @@ function Game({ socket }) {
 
       console.log(resultsEval, evalPassed);
 
-      socket.emit("check_answer", {
+      window.postMessage({
+        type: 'check_answer-emit',
         resultsEval: resultsEval,
         evalPassed: evalPassed,
-      });
+      }, '*')
     }
   };
 
@@ -70,66 +105,19 @@ function Game({ socket }) {
   }
 
   function leaveLobby() {
-    socket.emit("leave lobby", lobbyName);
-    // navigate("/lobbies");
+    window.postMessage({
+      type: 'leave_lobby-emit',
+      lobbyName: lobbyName
+    }, '*')
   }
 
   useEffect(() => {
+    window.addEventListener('message', handleMessage);
 
-    socket.on("lobby_name", (data) => {
-      setLobbyName(data.lobby)
-    })
-
-    socket.on("question_data", function (data) {
-      setQst(data);
-      setCode("");
-    });
-
-    socket.on("game_over", function (data) {
-      console.log(data.message);
-      setWinnerMessage(data.message);
-      setPlayable(false)
-    });
-
-    socket.on("user_finished", function (data) {
-      console.log(data);
-      // setFinished(true);
-      setResult(data.message);
-      setPlayable(false)
-    });
-
-    socket.on("answered_correctly", function (data) {
-      console.log(data);
-      setRivalCorrect(data.message);
-    });
-
-    socket.on("answered_wrong", function (data) {
-      console.log(data);
-      setRivalWrong(data.message);
-    });
-
-    socket.on("other_lost", function (data) {
-      console.log(data);
-      setOtherLost(data.message);
-    });
-
-    socket.on("stats", (data) => {
-      console.log(data);
-      setRewards({
-        xpEarned: data.xpEarned,
-        coinsEarned: data.coinsEarned,
-        eloEarned: data.eloEarned,
-      })
-    })
-
-    socket.on("YOU_LEFT_LOBBY", () => {
-      navigate("/lobbies");
-    })
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   }, []);
-
-  // useEffect(() => {
-  //   console.log(qst);
-  // }, [qst]);
 
   useEffect(() => {
 
@@ -155,8 +143,8 @@ function Game({ socket }) {
       <div className="game__container ">
 
         <div className="container__left">
-          <ConnectedUsersInGame socket={socket} ></ConnectedUsersInGame>
-          <Chat className="chat__chatbox" socket={socket} lobbyName={lobbyName}></Chat>
+          <ConnectedUsersInGame></ConnectedUsersInGame>
+          <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
         </div>
 
         <div className="container__right">

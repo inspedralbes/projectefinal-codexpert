@@ -1,26 +1,36 @@
-import "../normalize.css";
+import "../styles/normalize.css";
 import { useState, useEffect } from "react";
 
-function ChatLobby({ socket, lobbyName }) {
+function Chat({ lobbyName }) {
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
+
+  const handleMessage = (event) => {
+    let eventData = event.data
+
+    switch (eventData.type) {
+      case 'lobby_message-event':
+        setMessages(window.network.getLobbyMessages());
+        break;
+
+      default:
+        break;
+    }
+  }
 
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (msg != "") {
-      socket.emit("chat message", {
+      window.postMessage({
+        type: 'chat_message-emit',
         message: msg,
-        room: lobbyName,
-      });
+        lobbyName: lobbyName,
+      }, '*')
       setMsg("");
     }
   };
 
   useEffect(() => {
-    socket.on("lobby-message", function (data) {
-      setMessages(data.messages);
-    });
-
     if (document.getElementById('input_message') === document.click) {
       document.getElementById('chat__body').style.display = "block";
       document.getElementById('chat__body').style.transition = "all 2s ease-in";
@@ -30,6 +40,11 @@ function ChatLobby({ socket, lobbyName }) {
     }
     document.getElementById('chat__body').scrollTop = document.getElementById('chat__body').scrollHeight;
 
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   })
 
   return (
