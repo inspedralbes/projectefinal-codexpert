@@ -16,6 +16,15 @@ function IconUser() {
     setState(!state)
   };
 
+  function clickOutDropDown() {
+    $(document).click(function (e) {
+      if ($(e.target).is('#openModal')) {
+          $('#openModal').fadeOut(500);
+      }
+  
+  });
+  }
+
   useEffect(() => {
     const token = new FormData();
     token.append("token", cookies.get("token"));
@@ -58,24 +67,22 @@ function IconUser() {
   }, [logOut]);
 
   return (
-    <div className="App">
-      <div className="container">
-        <button
-          type="button"
-          className="button"
-          onClick={handleButtonClick}
-        >
-          <img className="button__image" src={avatarURL} height="50" width="50"></img>
-        </button>
-        {state && (
-          <div className="dropdown">
-            <ul className="dropdown__list list">
-              <li className="list__item"><button className="button" onClick={() => navigate("/profile")}>Profile</button></li>
-              <li className="list__item"> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
-            </ul>
-          </div>
-        )}
-      </div>
+    <div className="container">
+      <button
+        type="button"
+        className="button"
+        onClick={handleButtonClick}
+      >
+        <img className="button__image" src={avatarURL} height="50" width="50"></img>
+      </button>
+      {state && (
+        <div className="dropdown">
+          <ul className="dropdown__list list">
+            <li className="list__item"><button className="button" onClick={() => navigate("/profile")}>Profile</button></li>
+            <li className="list__item"> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
