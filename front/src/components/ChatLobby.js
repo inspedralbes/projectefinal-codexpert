@@ -1,7 +1,7 @@
 import "../normalize.css";
 import { useState, useEffect } from "react";
 
-function Chat({ socket, lobbyName }) {
+function ChatLobby({ socket, lobbyName }) {
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
 
@@ -28,7 +28,6 @@ function Chat({ socket, lobbyName }) {
     if (!document.getElementById('input_message') === document.click) {
       document.getElementById('chat__body').style.display = "none";
     }
-
     document.getElementById('chat__body').scrollTop = document.getElementById('chat__body').scrollHeight;
 
   })
@@ -82,4 +81,4 @@ function Chat({ socket, lobbyName }) {
   );
 }
 
-export default Chat;
+export default ChatLobby;

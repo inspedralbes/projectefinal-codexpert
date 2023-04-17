@@ -67,7 +67,7 @@ body {
     border: 3px solid #fff;
     background-color: #fff;
     padding: 20px;
-    width: 99vw;
+    width: 100%;
     margin: 0 auto;
     height: 100vh;
 }
@@ -88,7 +88,7 @@ body {
     /* border: 2px solid red; */
 }
 
-.game__playing{
+.game__playing {
     display: block;
 }
 
@@ -208,7 +208,6 @@ body {
 
 .user__image {
     border-radius: 50%;
-    margin: 0 auto;
 }
 
 .user__name {

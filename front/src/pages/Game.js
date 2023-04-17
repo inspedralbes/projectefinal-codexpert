@@ -3,8 +3,12 @@ import "../normalize.css";
 import "../game.css";
 import "../Lobbies.css";
 import { useNavigate, Link } from "react-router-dom";
-import Chat from "../components/Chat";
+import Chat from "../components/ChatGame";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
+import CodeMirror from '@uiw/react-codemirror';
+import 'codemirror/keymap/sublime';
+import 'codemirror/theme/monokai.css';
+const code = 'const a = 0;';
 
 function Game({ socket }) {
   const [lobbyName, setLobbyName] = useState("");
@@ -175,6 +179,16 @@ function Game({ socket }) {
                 <h1>{qst.output.toString()}</h1>
               </div>
             </div>
+
+            <CodeMirror
+              onSubmit={handleSubmit}
+              value={code}
+              options={{
+                theme: 'monokai',
+                keyMap: 'sublime',
+                mode: 'jsx',
+              }}
+            />
 
             <form className="editor" onSubmit={handleSubmit}>
 
