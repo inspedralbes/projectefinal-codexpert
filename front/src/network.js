@@ -39,12 +39,6 @@ const handleMessage = (event) => {
             });
             break;
 
-        case "send_token-emit":
-            socket.emit("send_token", {
-                token: eventData.token,
-            });
-            break;
-
         case "lobby_data_pls-emit":
             socket.emit("lobby_data_pls");
             break;
@@ -75,7 +69,8 @@ const handleMessage = (event) => {
             socket.emit("save_settings", {
                 gameDuration: eventData.gameDuration,
                 heartAmount: eventData.heartAmount,
-                unlimitedHearts: eventData.unlimitedHearts
+                unlimitedHearts: eventData.unlimitedHearts,
+                questionAmount: eventData.questionAmount,
             });
             break;
 
@@ -154,6 +149,7 @@ socket.on("lobby_settings", (data) => {
     window.network.setGameDuration(data.gameDuration);
     window.network.setHeartAmount(data.heartAmount);
     window.network.setUnlimitedHearts(data.unlimitedHearts);
+    window.network.setQuestionAmount(data.questionAmount);
     window.postMessage({ type: 'lobby_settings-event' }, '*')
 });
 

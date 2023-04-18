@@ -14,6 +14,7 @@ class ConnectionNetwork {
     settings = {
         heartAmount: 0,
         gameDuration: 0,
+        questionAmount: 0,
         unlimitedHearts: false,
     }
 
@@ -113,6 +114,10 @@ class ConnectionNetwork {
         this.settings.heartAmount = amt;
     }
 
+    setQuestionAmount(amt) {
+        this.settings.questionAmount = amt;
+    }
+
     setUnlimitedHearts(unlimited) {
         this.settings.unlimitedHearts = unlimited;
     }
@@ -123,6 +128,10 @@ class ConnectionNetwork {
 
     getHeartAmount() {
         return this.settings.heartAmount;
+    }
+
+    getQuestionAmount() {
+        return this.settings.questionAmount;
     }
 
     getUnlimitedHearts() {

@@ -237,20 +237,22 @@ socketIO.on("connection", (socket) => {
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == socket.data.current_lobby) {
         socketIO.to(lobby.lobby_name).emit("game_started");
-        startGame(lobby.lobby_name);
+        startGame(lobby.lobby_name, lobby.settings.questionAmount);
       }
     });
   });
 
   socket.on("check_answer", (data) => {
+    let postData = {
+      idQuestion: socket.data.idQuestion,
+      idGame: socket.data.game_data.idGame,
+      idUser: socket.data.userId,
+      evalRes: data.resultsEval,
+      evalPassed: data.evalPassed,
+    }
+
     axios
-      .post(laravelRoute + "checkAnswer", {
-        idQuestion: socket.data.idQuestion,
-        idGame: socket.data.game_data.idGame,
-        idUser: socket.data.userId,
-        evalRes: data.resultsEval,
-        evalPassed: data.evalPassed,
-      })
+      .post(laravelRoute + "checkAnswer", postData)
       .then(function (response) {
         var user_game = response.data.user_game;
         var game = response.data.game;
@@ -264,7 +266,7 @@ socketIO.on("connection", (socket) => {
           socket.data.question_at = user_game.question_at;
           lobbies.forEach((lobby) => {
             if (lobby.lobby_name == socket.data.current_lobby) {
-              if (socket.data.question_at < lobby.settings.questionNumber) {
+              if (socket.data.question_at < lobby.settings.questionAmount) {
                 socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
               }
             }
@@ -409,10 +411,13 @@ function addMessage(msgData, room) {
   sendMessagesToLobby(room);
 }
 
-async function startGame(room) {
+async function startGame(room, amount) {
   await axios
-    .post(laravelRoute + "startGame")
+    .post(laravelRoute + "startGame", {
+      numQuestions: amount
+    })
     .then(function (response) {
+      console.log(response.data);
       lobbies.forEach((lobby) => {
         if (lobby.lobby_name == room) {
           lobby.game_data = response.data;

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 function Settings({ start }) {
     const [gameDuration, setGameDuration] = useState(0);
     const [heartAmount, setHeartAmount] = useState(0);
-    const [questionNumber, setQuestionNumber] = useState(0);
+    const [questionAmount, setQuestionAmount] = useState(0);
     const [unlimitedHearts, setUnlimitedHearts] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showSettings, setShowSettings] = useState(false);
@@ -20,8 +20,8 @@ function Settings({ start }) {
         setHeartAmount(e.target.value);
     }
 
-    function handleChangeQuestionNumber(e) {
-        setQuestionNumber(e.target.value);
+    function handleChangeQuestionAmount(e) {
+        setQuestionAmount(e.target.value);
     }
 
     const handleMessage = (event) => {
@@ -32,6 +32,7 @@ function Settings({ start }) {
                 setHeartAmount(window.network.getHeartAmount());
                 setGameDuration(window.network.getGameDuration());
                 setUnlimitedHearts(window.network.getUnlimitedHearts());
+                setQuestionAmount(window.network. getQuestionAmount());
                 break;
 
             case 'GAME_TIME_UNDER_MIN-event':
@@ -89,7 +90,7 @@ function Settings({ start }) {
                 gameDuration: gameDuration,
                 heartAmount: heartAmount,
                 unlimitedHearts: unlimitedHearts,
-                questionNumber: questionNumber
+                questionAmount: questionAmount
             }, '*')
         }
     }, [start]);
@@ -108,7 +109,7 @@ function Settings({ start }) {
 
                         <span className="addCategory__formSpanTA">
                             <p className="settings__zone__title">Amount of questions:</p>
-                            <input type="number" value={questionNumber} onChange={handleChangeQuestionNumber} />
+                            <input type="number" value={questionAmount} onChange={handleChangeQuestionAmount} />
                         </span>
 
                         <span className="addCategory__formSpanTA">
