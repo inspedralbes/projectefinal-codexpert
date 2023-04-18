@@ -1,25 +1,88 @@
-var React = require('react');
-var CodeMirror = require('react-codemirror');
-import "../../node_modules/codemirror/lib/codemirror.css";
+import React from 'react';
+import { useState, useEffect } from "react";
+import CodeMirror from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import '../styles/avatarMaker.css';
+import { cobalt, amy, boysAndGirls, tomorrow, rosePineDawn, noctisLilac, espresso, coolGlow, dracula, barf, birdsOfParadise } from 'thememirror';
 
 
-var App = React.createClass({
-    getInitialState: function () {
-        return {
-            code: "// Code",
-        };
-    },
-    updateCode: function (newCode) {
-        this.setState({
-            code: newCode,
-        });
-    },
-    render: function () {
-        var options = {
-            lineNumbers: true,
-        };
-        return <CodeMirror value={this.state.code} onChange={this.updateCode} options={options} />
+
+function App() {
+    var [theme, setTheme] = useState("cobalt");
+    const onChange = React.useCallback((value, viewUpdate) => {
+        console.log('value:', value);
+
+    }, []);
+
+    let themeShow;
+
+    switch (theme) {
+        case 'cobalt':
+            themeShow = cobalt;
+            break;
+        case 'amy':
+            themeShow = amy;
+            break;
+        case 'boyAndGirls':
+            themeShow = boysAndGirls;
+            break;
+        case 'tomorrow':
+            themeShow = tomorrow;
+            break;
+        case 'rosePineDawn':
+            themeShow = rosePineDawn;
+            break;
+        case 'noctisLilac':
+            themeShow = noctisLilac;
+            break;
+        case 'espresso':
+            themeShow = espresso;
+            break;
+        case 'coolGlow':
+            themeShow = coolGlow;
+            break;
+        case 'dracula':
+            themeShow = dracula;
+            break;
+        case 'barf':
+            themeShow = barf;
+            break;
+        case 'birdsOfParadise':
+            themeShow = birdsOfParadise;
+            break;
     }
-});
 
+    return (
+        <div className='codemirror__editor'>
+            <CodeMirror
+                value='function yourCode(input){
+                        //code here
+
+ 
+
+                        return input;
+            }'
+                style={{ fontSize: '1.1rem' }}
+                height="400px"
+                width='100%'
+                theme={themeShow}
+                extensions={[javascript({ jsx: true })]}
+                onChange={onChange}
+            />
+            <select id='select' value={theme} onChange={e => setTheme(e.target.value)}>
+                <option value="cobalt">cobalt</option>
+                <option value="amy">amy</option>
+                <option value="boyAndGirls">boyAndGirls</option>
+                <option value="tomorrow">tomorrow</option>
+                <option value="rosePineDawn">rosePineDawn</option>
+                <option value="noctisLilac">noctisLilac</option>
+                <option value="espresso">espresso</option>
+                <option value="coolGlow">coolGlow</option>
+                <option value="dracula">dracula</option>
+                <option value="barf">barf</option>
+                <option value="birdsOfParadise">birdsOfParadise</option>
+            </select>
+        </div >
+    );
+}
 export default App;

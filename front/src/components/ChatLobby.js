@@ -1,7 +1,7 @@
 import "../styles/normalize.css";
 import { useState, useEffect } from "react";
 
-function Chat({ lobbyName }) {
+function ChatLobby({ lobbyName }) {
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
 

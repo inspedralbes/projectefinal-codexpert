@@ -1,27 +1,36 @@
-import "../normalize.css";
-import "../chat.css";
+import "../styles/normalize.css";
+import "../styles/chat.css";
 import { useState, useEffect } from "react";
 
 function ChatGame({ socket, lobbyName }) {
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
 
+  const handleMessage = (event) => {
+    let eventData = event.data
+
+    switch (eventData.type) {
+      case 'lobby_message-event':
+        setMessages(window.network.getLobbyMessages());
+        break;
+
+      default:
+        break;
+    }
+  }
+
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (msg != "") {
-      socket.emit("chat message", {
+      window.postMessage({
+        type: 'chat_message-emit',
         message: msg,
-        room: lobbyName,
-      });
-      setMsg("");
+        lobbyName: lobbyName,
+      }, '*')("");
     }
   };
 
   useEffect(() => {
-    socket.on("lobby-message", function (data) {
-      setMessages(data.messages);
-    });
-
     if (document.getElementById('input_message') === document.click) {
       document.getElementById('game__chatBody').style.display = "block";
       document.getElementById('game__chatBody').style.transition = "all 2s ease-in";
@@ -31,7 +40,11 @@ function ChatGame({ socket, lobbyName }) {
     }
 
     document.getElementById('game__chatBody').scrollTop = document.getElementById('game__chatBody').scrollHeight;
+    window.addEventListener('message', handleMessage);
 
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
   })
 
   return (
