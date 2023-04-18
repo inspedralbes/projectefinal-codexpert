@@ -336,30 +336,30 @@ class UserController extends Controller
         $validPassword = (object) [
             'willChange' => true
         ];
+        $returnUser = (object) [
+            'error' => "User is not logged in."
+        ];
 
         //Check if the user id is not, if not null we continue to check
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $validPassword = $this->checkValidPassword($request, $userFound);
+            if ($userFound != null) {
+                $validPassword = $this->checkValidPassword($request, $userFound);
 
-            //If after validating the password can be changed we change it, if not we return the error.
-            if ($validPassword -> willChange) {
-                $userFound -> password = Hash::make($request -> newPassword);
-                $userFound -> save(); 
-                $returnUser = (object) [
-                    'success' => "Password has been changed."
-                ];
-            } else {
-                $returnUser = (object) [
-                    'error' => $validPassword -> error
-                ];
+                //If after validating the password can be changed we change it, if not we return the error.
+                if ($validPassword -> willChange) {
+                    $userFound -> password = Hash::make($request -> newPassword);
+                    $userFound -> save(); 
+                    $returnUser = (object) [
+                        'success' => "Password has been changed."
+                    ];
+                } else {
+                    $returnUser = (object) [
+                        'error' => $validPassword -> error
+                    ];
+                }
             }
-        } else {
-            $returnUser = (object) [
-                'error' => "User is not logged in."
-            ];
-        }
-        
+        } 
         return response() -> json($returnUser);
     }    
 
