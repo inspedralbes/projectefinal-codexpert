@@ -88,7 +88,7 @@ class UserController extends Controller
         return response() -> json($returnUser);
     }
 
-    public function checkValidName($request, $userFound)
+    private function checkValidName($request, $userFound)
     {
         $validName = (object) [
             'willChange' => false,
@@ -178,7 +178,7 @@ class UserController extends Controller
         return response() -> json($returnUser);
     }
     
-    public function checkValidEmail($request, $userFound)
+    private function checkValidEmail($request, $userFound)
     {
         $validEmail = (object) [
             'willChange' => false,
@@ -272,7 +272,7 @@ class UserController extends Controller
         return response() -> json($returnUser);
     }
 
-    public function checkValidPassword($request, $userFound)
+    private function checkValidPassword($request, $userFound)
     {
         $validPassword = (object) [
             'willChange' => true
