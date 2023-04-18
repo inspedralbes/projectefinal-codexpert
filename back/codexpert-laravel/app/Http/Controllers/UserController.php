@@ -180,7 +180,7 @@ class UserController extends Controller
        
         //Check if user has changed the email                      
         if ($request -> session()->get('userId') != null) {
-            if ($userFound -> email == $request -> newEmail) {
+            if (strcmp($userFound -> email, $request -> newEmail) == 0) {
                 $validEmail = (object) [
                     'willChange' => false, 
                     'error' => "Email has not been modified, no changes were made."
@@ -236,31 +236,37 @@ class UserController extends Controller
         //Check if the user id is not, if not null we continue to check
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $validEmail = $this->checkValidEmail($request, $userFound);
+            if ($userFound  == null) {
+                $returnUser = (object) [
+                    'error' => "User doesn't exist."
+                ];
+            } else {
+                $validEmail = $this->checkValidEmail($request, $userFound);
 
-            //Check if password is correct.
-            if (Hash::check($request -> password, $userFound -> password)) {
-                //If after validating the email can be changed we change it, if not we return the error.
-                if ($validEmail -> willChange) {
-                    $userFound -> email = $request -> newEmail;
-                    $userFound -> save(); 
-                    $returnUser = (object) [
-                        'success' => "Email has been changed."
-                    ];
+                //Check if password is correct.
+                if (Hash::check($request -> password, $userFound -> password)) {
+                    //If after validating the email can be changed we change it, if not we return the error.
+                    if ($validEmail -> willChange) {
+                        $userFound -> email = $request -> newEmail;
+                        $userFound -> save(); 
+                        $returnUser = (object) [
+                            'success' => "Email has been changed."
+                        ];
+                    } else {
+                        $returnUser = (object) [
+                            'error' => $validEmail -> error
+                        ];
+                    }
                 } else {
                     $returnUser = (object) [
-                        'error' => $validEmail -> error
+                        'error' => "Password is incorrect."
                     ];
                 }
-            } else {
-                $returnUser = (object) [
-                    'error' => "Password is incorrect."
-                ];
             }
         } else {
-        //     $returnUser = (object) [
-        //         'error' => "User is not logged in."
-        //     ];
+            $returnUser = (object) [
+                'error' => "User is not logged in."
+            ];
         }
         
         return response() -> json($returnUser);
