@@ -87,7 +87,7 @@ class changeEmailTest extends TestCase
         $response
         ->assertStatus(200)
         ->assertJson([
-            'error' => "User doesn't exist."
+            'error' => 'User is not logged in.',
         ]);
     }     
 

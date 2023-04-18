@@ -17,7 +17,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a correct userId but the same name return that the name hasn't been changed
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456.']);
+        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
@@ -30,7 +30,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a correct userId but the name is too short return that the name hasn't been changed
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'co', 'password' => 'Qwerty123456.']);
+        ->postJson("/changeUsername", ['newName' => 'co', 'password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
@@ -43,7 +43,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a correct userId but the name is too long return that the name hasn't been changed
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'djasdhkjadhkjhakdkhadkjhaskdkhakdsahka', 'password' => 'Qwerty123456.']);
+        ->postJson("/changeUsername", ['newName' => 'djasdhkjadhkjhakdkhadkjhaskdkhakdsahka', 'password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
@@ -56,7 +56,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a correct userId but no variable name
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['password' => 'Qwerty123456.']);
+        ->postJson("/changeUsername", ['password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
@@ -95,12 +95,12 @@ class changeUsernameTest extends TestCase
     {
         //Given an id that doesn't exist return that the user doesn't exist
         $response = $this->withSession(['userId' => -1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456.']);
+        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
-            'error' => "User doesn't exist."
+            'error' => "User is not logged in."
         ]);
     }     
 
@@ -108,7 +108,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a null id return return that the user doesn't exist
         $response = $this->withSession(['userId' => null])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456.']);
+        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
@@ -120,7 +120,7 @@ class changeUsernameTest extends TestCase
     public function test_no_session()
     {
         //Given a null id return return that the user doesn't exist
-        $response = $this->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456.']);
+        $response = $this->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
@@ -133,7 +133,7 @@ class changeUsernameTest extends TestCase
     {
         //Given everything correct update the user
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test.', 'password' => 'Qwerty123456.']);
+        ->postJson("/changeUsername", ['newName' => 'codexpert_test.', 'password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
@@ -146,7 +146,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a name that another user has do not update
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test2', 'password' => 'Qwerty123456.']);
+        ->postJson("/changeUsername", ['newName' => 'codexpert_test2', 'password' => 'Qwerty123456!']);
 
         $response
         ->assertStatus(200)
