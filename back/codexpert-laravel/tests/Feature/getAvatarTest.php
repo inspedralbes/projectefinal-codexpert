@@ -13,7 +13,7 @@ class getAvatarTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function test_correct()
     {
         //Given an existing id return the correct url.
         $response = $this->withSession(['userId' => 1])->post("/getAvatar");
@@ -25,7 +25,7 @@ class getAvatarTest extends TestCase
         ]);
     }
     
-    public function test_example2()
+    public function test_null_id()
     {
         //Given a null id return the correct url.
         $response = $this->withSession(['userId' => null])->post("/getAvatar");
@@ -37,7 +37,7 @@ class getAvatarTest extends TestCase
         ]);
     }    
 
-    public function test_example3()
+    public function test_incorrect_id()
     {
         //Given an exist that doesn't exist return null.
         $response = $this->withSession(['userId' => -1])->post("/getAvatar");
@@ -48,5 +48,17 @@ class getAvatarTest extends TestCase
             'url' => null
         ]);
     }      
+
+    public function test_no_session()
+    {
+        //Given an exist that doesn't exist return null.
+        $response = $this->post("/getAvatar");
+
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'url' => null
+        ]);
+    }    
 
 }

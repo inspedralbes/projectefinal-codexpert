@@ -83,7 +83,7 @@ class UserController extends Controller
        
         //Check if user has changed the name                      
         if ($request -> session()->get('userId') != null) {
-            if ($userFound -> name == $request -> newName) {
+            if (strcmp($userFound -> name, $request -> newName) == 0) {
                 $validName = (object) [
                     'willChange' => false, 
                     'error' => "Name has not been modified, no changes were made."
@@ -99,7 +99,7 @@ class UserController extends Controller
                     //If the name is valid we check if it's not repeated.
                     $getAllNames = User::get('name');
                     for ($i = 0; $i < count($getAllNames); $i++) { 
-                        if ($request -> newName == $getAllNames[$i]) {
+                        if (strcasecmp($request -> newName, $getAllNames[$i] -> name) == 0) {
                             $nameRepeated = true;
                         }
                     }
@@ -135,26 +135,32 @@ class UserController extends Controller
         //Check if the user id is not, if not null we continue to check
         if ($request -> session()->get('userId') != null) {
             $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $validName = $this->checkValidName($request, $userFound);
+            if ($userFound  == null) {
+                $returnUser = (object) [
+                    'error' => "User doesn't exist."
+                ];
+            } else {
+                $validName = $this->checkValidName($request, $userFound);
 
-            //Check if password is correct.
-            if (Hash::check($request -> password, $userFound -> password)) {
-                //If after validating the name can be changed we change it, if not we return the error.
-                if ($validName -> willChange) {
-                    $userFound -> name = $request -> newName;
-                    $userFound -> save(); 
-                    $returnUser = (object) [
-                        'success' => "Name has been changed."
-                    ];
+                //Check if password is correct.
+                if (Hash::check($request -> password, $userFound -> password)) {
+                    //If after validating the name can be changed we change it, if not we return the error.
+                    if ($validName -> willChange) {
+                        $userFound -> name = $request -> newName;
+                        $userFound -> save(); 
+                        $returnUser = (object) [
+                            'success' => "Name has been changed."
+                        ];
+                    } else {
+                        $returnUser = (object) [
+                            'error' => $validName -> error
+                        ];
+                    }
                 } else {
                     $returnUser = (object) [
-                        'error' => $validName -> error
+                        'error' => "Password is incorrect."
                     ];
                 }
-            } else {
-                $returnUser = (object) [
-                    'error' => "Password is incorrect."
-                ];
             }
         } else {
             $returnUser = (object) [

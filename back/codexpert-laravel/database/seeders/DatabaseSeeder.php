@@ -91,5 +91,13 @@ class DatabaseSeeder extends Seeder
         $user -> avatar = "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
         $user -> save();
 
+        //When migrating it will always create this test user 2
+        $user = new User;
+        $user -> name = strtolower("codexpert_test2");
+        $user -> email = strtolower("codexpert_test2@codexpert.com");
+        $user -> password = Hash::make("Qwerty123456.");
+        $user -> avatar = "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
+        $user -> save();        
+
     }
 }
