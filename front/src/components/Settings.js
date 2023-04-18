@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 function Settings({ start }) {
     const [gameDuration, setGameDuration] = useState(0);
     const [heartAmount, setHeartAmount] = useState(0);
+    const [questionNumber, setQuestionNumber] = useState(0);
     const [unlimitedHearts, setUnlimitedHearts] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [showSettings, setShowSettings] = useState(false);
@@ -17,6 +18,10 @@ function Settings({ start }) {
 
     function handleChangeHeartAmount(e) {
         setHeartAmount(e.target.value);
+    }
+
+    function handleChangeQuestionNumber(e) {
+        setQuestionNumber(e.target.value);
     }
 
     const handleMessage = (event) => {
@@ -42,6 +47,14 @@ function Settings({ start }) {
                 break;
 
             case 'HEARTS_AMT_ABOVE_MAX-event':
+                setErrorMessage(window.network.getErrorMessage());
+                break;
+
+            case 'QUESTION_AMT_UNDER_MIN-event':
+                setErrorMessage(window.network.getErrorMessage());
+                break;
+
+            case 'QUESTION_AMT_ABOVE_MAX-event':
                 setErrorMessage(window.network.getErrorMessage());
                 break;
 
@@ -75,7 +88,8 @@ function Settings({ start }) {
                 type: 'save_settings-emit',
                 gameDuration: gameDuration,
                 heartAmount: heartAmount,
-                unlimitedHearts: unlimitedHearts
+                unlimitedHearts: unlimitedHearts,
+                questionNumber: questionNumber
             }, '*')
         }
     }, [start]);
@@ -91,6 +105,12 @@ function Settings({ start }) {
                             <p className="settings__zone__title">Game duration (seconds)</p>
                             <input type="number" value={gameDuration} onChange={handleChangeGameDuration} />
                         </span>
+
+                        <span className="addCategory__formSpanTA">
+                            <p className="settings__zone__title">Amount of questions:</p>
+                            <input type="number" value={questionNumber} onChange={handleChangeQuestionNumber} />
+                        </span>
+
                         <span className="addCategory__formSpanTA">
                             <p className="settings__zone__title">Amount of hearts per player:</p>
                             <input type="number" value={heartAmount} onChange={handleChangeHeartAmount} />
@@ -98,18 +118,19 @@ function Settings({ start }) {
 
                         <div className="list__container__text settingCreator__checkbox">
                             <input
-                                id='hola'
+                                id='unl_hearts-check'
                                 className="check"
                                 type="checkbox"
                                 value={unlimitedHearts}
                                 onChange={handleChangeUnlimitedHearts}
+                                checked={unlimitedHearts}
                             />
                             <label
-                                htmlFor='hola'
+                                htmlFor='unl_hearts-check'
                                 className="list__container__text__label settingCreator__label"
                             >
                                 <span
-                                    htmlFor='hola'
+                                    htmlFor='unl_hearts-check'
                                     className="settings__zone__title"
                                 >Unlimited hearts</span>
                             </label>

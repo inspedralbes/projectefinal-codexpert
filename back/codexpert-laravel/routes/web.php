@@ -47,7 +47,7 @@ Route::group(['middleware' => ['web']], function () {
     
     Route::post('/changePassword', [UserController::class, 'changePassword']);
 
-    Route::get('/startGame', [GameController::class, 'startGame']);
+    Route::post('/startGame', [GameController::class, 'startGame']);
 
     Route::post('/setUserGame', [GameController::class, 'setUserGame']);
 

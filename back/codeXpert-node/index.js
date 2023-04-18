@@ -64,7 +64,8 @@ app.use(
 const defaultSettings = {
   gameDuration: 600,
   heartAmount: 5,
-  unlimitedHearts: false
+  unlimitedHearts: false,
+  questionAmount: 5
 };
 
 const maxSettings = {
@@ -72,6 +73,8 @@ const maxSettings = {
   maxTime: 3600,
   minHeartAmount: 1,
   maxHeartAmount: 99,
+  minQuestionAmount: 1,
+  maxQuestionAmount: 10
 };
 
 socketIO.on("connection", (socket) => {
@@ -139,11 +142,7 @@ socketIO.on("connection", (socket) => {
         lobby_name: lobby,
         members: [],
         messages: [],
-        settings: {
-          gameDuration: defaultSettings.gameDuration,
-          heartAmount: defaultSettings.heartAmount,
-          unlimitedHearts: defaultSettings.unlimitedHearts
-        }
+        settings: defaultSettings
       });
     }
   });
@@ -265,7 +264,7 @@ socketIO.on("connection", (socket) => {
           socket.data.question_at = user_game.question_at;
           lobbies.forEach((lobby) => {
             if (lobby.lobby_name == socket.data.current_lobby) {
-              if (socket.data.question_at < 5) {
+              if (socket.data.question_at < lobby.settings.questionNumber) {
                 socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
               }
             }
@@ -361,8 +360,24 @@ socketIO.on("connection", (socket) => {
 
             valid = false;
           } else if (data.heartAmount > maxSettings.maxHeartAmount) {
-            socketIO.to(socket.id).emit("HEARTS_AMT_UNDER_MIN", {
+            socketIO.to(socket.id).emit("HEARTS_AMT_ABOVE_MAX", {
               max: maxSettings.maxHeartAmount,
+            });
+
+            valid = false;
+          }
+        }
+
+        if (valid) {
+          if (data.heartAmount < maxSettings.minQuestionAmount) {
+            socketIO.to(socket.id).emit("QUESTION_AMT_UNDER_MIN", {
+              min: maxSettings.minQuestionAmount,
+            });
+
+            valid = false;
+          } else if (data.questionAmount > maxSettings.maxQuestionAmount) {
+            socketIO.to(socket.id).emit("QUESTION_AMT_ABOVE_MAX", {
+              max: maxSettings.maxQuestionAmount,
             });
 
             valid = false;
@@ -396,7 +411,7 @@ function addMessage(msgData, room) {
 
 async function startGame(room) {
   await axios
-    .get(laravelRoute + "startGame")
+    .post(laravelRoute + "startGame")
     .then(function (response) {
       lobbies.forEach((lobby) => {
         if (lobby.lobby_name == room) {

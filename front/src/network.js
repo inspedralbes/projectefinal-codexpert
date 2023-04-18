@@ -193,9 +193,19 @@ socket.on("HEARTS_AMT_UNDER_MIN", (data) => {
     window.postMessage({ type: 'HEARTS_AMT_UNDER_MIN-event' }, '*')
 });
 
-socket.on("HEARTS_AMT_UNDER_MIN", (data) => {
+socket.on("HEARTS_AMT_ABOVE_MAX", (data) => {
     window.network.setErrorMessage(`Selected amount of hearts was too high -> Maximum: ${data.max}`);
-    window.postMessage({ type: 'HEARTS_AMT_UNDER_MIN-event' }, '*')
+    window.postMessage({ type: 'HEARTS_AMT_ABOVE_MAX-event' }, '*')
+});
+
+socket.on("QUESTION_AMT_UNDER_MIN", (data) => {
+    window.network.setErrorMessage(`Selected amount of questions was too low -> Minimum: ${data.min}`);
+    window.postMessage({ type: 'QUESTION_AMT_UNDER_MIN-event' }, '*')
+});
+
+socket.on("QUESTION_AMT_ABOVE_MAX", (data) => {
+    window.network.setErrorMessage(`Selected amount of questions was too high -> Maximum: ${data.max}`);
+    window.postMessage({ type: 'QUESTION_AMT_ABOVE_MAX-event' }, '*')
 });
 
 socket.on("INVALID_SETTINGS", () => {

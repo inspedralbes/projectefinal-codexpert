@@ -78,6 +78,7 @@ function Game() {
           // console.log(qst.inputs[1]);
           // let x = qst.testInput1;
           // console.log(code);
+          console.log(res)
           // console.log(qst.input);
           setError("");
         } catch (e) {
