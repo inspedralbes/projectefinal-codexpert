@@ -12,7 +12,7 @@ use App\Models\User;
 
 class GameController extends Controller
 {
-    public function createNewGame(Request $request)
+    private function createNewGame(Request $request)
     {
         //Create a new empty game and return it.
         $newGame = new Game;
@@ -21,7 +21,7 @@ class GameController extends Controller
         return ($newGame);
     }
 
-    public function getQuestions(Request $request)
+    private function getQuestions(Request $request)
     {        
         //Return X number of questions, where X is given by the frontend
         $questions = Question::inRandomOrder()->limit(5)->get();
@@ -29,7 +29,7 @@ class GameController extends Controller
         return ($questions);
     }
 
-    public function addQuestionsToGame($newGame, $getQuestions)
+    private function addQuestionsToGame($newGame, $getQuestions)
     {
         //Relate the given questions to the created game.
         for ($i = 0; $i < count($getQuestions); $i++) {
@@ -102,7 +102,7 @@ class GameController extends Controller
     {
         $returnObject = (object) [
             'correct'=> true,
-            'testsPassed' => null,
+            'testsPassed' => 0,
             'user_game'=> null,
             'game' => null
         ];
@@ -114,23 +114,17 @@ class GameController extends Controller
             $testOutput1 = unserialize($question -> testOutput1);
             $testOutput2 = unserialize($question -> testOutput2);
             
-            if ($userExpectedOutput == $request -> evalRes[0]) {
-                $returnObject -> testsPassed++;
-            } else {
-                $returnObject -> correct = false;
+            $output = [$userExpectedOutput, $testOutput1, $testOutput2];
+
+
+            foreach($output as $key => $val) {
+                if ($val == $request -> evalRes[$key]) {
+                    $returnObject -> testsPassed++;
+                } else {
+                    $returnObject -> correct = false;
+                }
             }
 
-            if ($testOutput1 == $request -> evalRes[1]) {
-                $returnObject -> testsPassed++;
-            } else {
-                $returnObject -> correct = false;
-            }
-
-            if ($testOutput2 == $request -> evalRes [2]) {
-                $returnObject -> testsPassed++;
-            } else {
-                $returnObject -> correct = false;
-            }
         }
 
         $game = Game::where('id', $request -> idGame) -> first();
