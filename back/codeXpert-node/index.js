@@ -75,7 +75,6 @@ const maxSettings = {
 };
 
 socketIO.on("connection", (socket) => {
-  console.log("CONECTADO");
   var socketId = socket.id;
   socket.data.current_lobby = null;
 
@@ -152,6 +151,7 @@ socketIO.on("connection", (socket) => {
   socket.on("join_room", (data) => {
     let settings;
     var disponible = true;
+    var hayOwner = false;
 
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == data.lobby_name) {
@@ -164,6 +164,11 @@ socketIO.on("connection", (socket) => {
             if (member.nom == socket.data.name) {
               disponible = false;
             }
+
+            if (member.rank == "Owner" && data.rank == "Owner") {
+              hayOwner = true;
+              disponible = false;
+            }
           });
 
           if (disponible) {
@@ -174,9 +179,16 @@ socketIO.on("connection", (socket) => {
             });
             settings = lobby.settings
           } else {
-            socketIO.to(`${socketId}`).emit("ALREADY_ON_LOBBY", {
-              message: "YOU ARE ALREADY ON LOBBY",
-            });
+            if (!hayOwner) {
+              socketIO.to(`${socketId}`).emit("ALREADY_ON_LOBBY", {
+                message: "YOU ARE ALREADY ON LOBBY",
+              });
+            } else {
+              socketIO.to(`${socketId}`).emit("LOBBY_ALREADY_EXISTS", {
+                message: "THE LOBBY YOU TRIED TO CREATE ALREADY EXISTS",
+              });
+            }
+
           }
         }
       }
@@ -195,16 +207,15 @@ socketIO.on("connection", (socket) => {
       sendUserList(data.lobby_name);
       sendMessagesToLobby(data.lobby_name);
       sendLobbyList();
-
-      // if (data.rank == "Owner") {
+      if (data.rank == "Owner") {
         if (settings != null) {
-          socketIO.to(socket.id).emit("lobby_settings", settings);
-
           socketIO.to(socket.id).emit("show_settings", {
             show: true,
           });
+
+          socketIO.to(socket.id).emit("lobby_settings", settings);
         }
-      // }
+      }
     }
   });
 
@@ -327,10 +338,7 @@ socketIO.on("connection", (socket) => {
   socket.on("save_settings", (data) => {
     let valid = true;
     lobbies.forEach((lobby) => {
-      if (
-        lobby.lobbyIdentifier == socket.data.current_lobby &&
-        lobby.ownerId == socket.data.id
-      ) {
+      if (lobby.lobby_name == socket.data.current_lobby) {
         if (data.gameDuration < maxSettings.minTime) {
           socketIO.to(socket.id).emit("GAME_TIME_UNDER_MIN", {
             min: maxSettings.minTime,
@@ -364,7 +372,6 @@ socketIO.on("connection", (socket) => {
         if (valid) {
           lobby.settings = data;
         }
-
         socketIO.to(socket.id).emit("starting_errors", {
           valid: valid,
         });

@@ -75,6 +75,7 @@ const handleMessage = (event) => {
             socket.emit("save_settings", {
                 gameDuration: eventData.gameDuration,
                 heartAmount: eventData.heartAmount,
+                unlimitedHearts: eventData.unlimitedHearts
             });
             break;
 
@@ -161,11 +162,21 @@ socket.on("ALREADY_ON_LOBBY", (data) => {
     window.postMessage({ type: 'ALREADY_ON_LOBBY-event' }, '*')
 });
 
+socket.on("starting_errors", (data) => {
+    console.log("ENTRA STARTING");
+    window.postMessage({ type: 'starting_errors-event', valid: data.valid }, '*')
+});
+
 // ERROR EVENTS
 socket.on("LOBBY_FULL_ERROR", (data) => {
     window.network.setMessage(data.message);
     window.postMessage({ type: 'LOBBY_FULL_ERROR-event' }, '*')
 })
+
+socket.on("LOBBY_ALREADY_EXISTS", (data) => {
+    window.network.setMessage(data.message);
+    window.postMessage({ type: 'LOBBY_ALREADY_EXISTS-event' }, '*')
+});
 
 socket.on("GAME_TIME_UNDER_MIN", (data) => {
     window.network.setErrorMessage(`Selected game duration was too low -> Minimum: ${data.min}`);

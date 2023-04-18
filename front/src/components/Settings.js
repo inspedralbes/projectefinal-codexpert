@@ -5,6 +5,7 @@ function Settings({ start }) {
     const [heartAmount, setHeartAmount] = useState(0);
     const [unlimitedHearts, setUnlimitedHearts] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [showSettings, setShowSettings] = useState(false);
 
     function handleChangeUnlimitedHearts() {
         setUnlimitedHearts(!unlimitedHearts);
@@ -48,6 +49,10 @@ function Settings({ start }) {
                 setErrorMessage(window.network.getErrorMessage());
                 break;
 
+            case 'show_settings-event':
+                setShowSettings(window.network.getShowSettings())
+                break;
+
             default:
                 // UNKNOWN EVENT TO THAT COMPONENT
                 break;
@@ -76,39 +81,44 @@ function Settings({ start }) {
     }, [start]);
 
     return (
-        <div className="settings__zone">
-            {/* <h2>SETTINGS </h2> */}
-            {errorMessage != "" && <h1 className="error">{errorMessage}</h1>}
-            <form className="App" autoComplete="off">
-                <span className="addCategory__formSpanTA">
-                    <p className="settings__zone__title">Game duration (seconds)</p>
-                    <input type="number" value={gameDuration} onChange={handleChangeGameDuration} />
-                </span>
-                <span className="addCategory__formSpanTA">
-                    <p className="settings__zone__title">Amount of hearts per player:</p>
-                    <input type="number" value={heartAmount} onChange={handleChangeHeartAmount} />
-                </span>
+        <>
+            {showSettings ?
+                <div className="settings__zone">
+                    {/* <h2>SETTINGS </h2> */}
+                    {errorMessage != "" && <h1 className="error">{errorMessage}</h1>}
+                    <form className="App" autoComplete="off">
+                        <span className="addCategory__formSpanTA">
+                            <p className="settings__zone__title">Game duration (seconds)</p>
+                            <input type="number" value={gameDuration} onChange={handleChangeGameDuration} />
+                        </span>
+                        <span className="addCategory__formSpanTA">
+                            <p className="settings__zone__title">Amount of hearts per player:</p>
+                            <input type="number" value={heartAmount} onChange={handleChangeHeartAmount} />
+                        </span>
 
-                <div className="list__container__text settingCreator__checkbox">
-                    <input
-                        id='hola'
-                        className="check"
-                        type="checkbox"
-                        value={unlimitedHearts}
-                        onChange={handleChangeUnlimitedHearts}
-                    />
-                    <label
-                        htmlFor='hola'
-                        className="list__container__text__label settingCreator__label"
-                    >
-                        <span
-                            htmlFor='hola'
-                            className="settings__zone__title"
-                        >Unlimited hearts</span>
-                    </label>
-                </div>
-            </form>
-        </div>
+                        <div className="list__container__text settingCreator__checkbox">
+                            <input
+                                id='hola'
+                                className="check"
+                                type="checkbox"
+                                value={unlimitedHearts}
+                                onChange={handleChangeUnlimitedHearts}
+                            />
+                            <label
+                                htmlFor='hola'
+                                className="list__container__text__label settingCreator__label"
+                            >
+                                <span
+                                    htmlFor='hola'
+                                    className="settings__zone__title"
+                                >Unlimited hearts</span>
+                            </label>
+                        </div>
+                    </form>
+                </div> :
+                <></>}
+        </>
+
     );
 }
 

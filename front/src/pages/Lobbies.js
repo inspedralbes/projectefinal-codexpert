@@ -20,7 +20,8 @@ const Lobbies = () => {
   const [firstTime, setFirstTime] = useState(true);
   const [fetchUser, setFetchUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showSettings, setShowSettings] = useState(false);
+  const [starting, setStarting] = useState(false);
+  const [sent, setSent] = useState(false);
 
   const navigate = useNavigate();
   const cookies = new Cookies();
@@ -48,14 +49,27 @@ const Lobbies = () => {
         setErrorMessage(window.network.getMessage())
         break;
 
-      case 'show_settings-event':
-        setShowSettings(window.network.getShowSettings())
-        // console.log("SHOW",window.network.getShowSettings());
-        break;
-
       case 'ALREADY_ON_LOBBY-event':
         setErrorMessage(window.network.getMessage())
         setJoined(false);
+        break;
+
+        case 'LOBBY_ALREADY_EXISTS-event':
+          setErrorMessage(window.network.getMessage())
+          setJoined(false);
+          break;
+
+      case 'starting_errors-event':
+        if (eventData.valid) {
+          if (!sent) {
+            window.postMessage({
+              type: 'start_game-emit'
+            }, '*')
+          }
+          setSent(true);
+        } else {
+          setStarting(false);
+        }
         break;
 
       default:
@@ -65,7 +79,6 @@ const Lobbies = () => {
 
   const handleLeave = (e) => {
     e.preventDefault();
-    console.log("has abandonat la sala " + lobbyName);
     window.postMessage({
       type: 'leave_lobby-emit'
     }, '*')
@@ -97,14 +110,14 @@ const Lobbies = () => {
       rank: "Member",
     }, '*')
 
+    setErrorMessage("");
     setJoined(true);
   };
 
-  function startGame() {
-    window.postMessage({
-      type: 'start_game-emit'
-    }, '*')
-    navigate("/game");
+  function handleStartGame(e) {
+    e.preventDefault();
+    setSent(false);
+    setStarting(true);
   }
 
   useEffect(() => {
@@ -255,14 +268,15 @@ const Lobbies = () => {
               <span className="button-text">LEAVE CURRENT LOBBY
               </span>
             </button>
+            {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             <ConnectedUsers></ConnectedUsers>
             <div className="button-startGame">
-              {showSettings && <button className="startGame" id="startGame" onClick={startGame}>Start game</button>}
+              <button className="startGame" id="startGame" onClick={handleStartGame}>Start game</button>
             </div>
             <div className="lobby__chat">
               <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
             </div>
-          {showSettings && <Settings></Settings>}
+            <Settings start={starting}></Settings>
           </div>
         )
         }
