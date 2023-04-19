@@ -1,11 +1,10 @@
+import React from "react";
 import "../styles/normalize.css";
 import IconUser from "../components/IconUser";
 import lobbyTitle from '../img/lobbies.gif'
 import arrow from '../img/arrow.gif'
 
-function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setJoined }) {
-
-
+function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage, setErrorMessage }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         window.postMessage({
@@ -29,8 +28,10 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setJoined
             rank: "Member",
         }, '*')
 
+        setErrorMessage("");
         setJoined(true);
     };
+
     return (
         <>
             <IconUser></IconUser>

@@ -2,29 +2,75 @@ import "../styles/normalize.css";
 import Chat from "../components/Chat";
 import ConnectedUsers from "../components/ConnectedUsers";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Settings from './Settings';
+import Modal from 'react-modal';
 
-function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList }) {
+Modal.setAppElement('body');
+
+function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList, errorMessage }) {
+    const [sent, setSent] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [fetchSettings, setFetchSettings] = useState(false);
+
     const navigate = useNavigate();
+
+    const handleMessage = (event) => {
+        let eventData = event.data
+
+        switch (eventData.type) {
+            case 'starting_errors-event':
+                if (eventData.valid) {
+                    if (!sent) {
+                        window.postMessage({
+                            type: 'start_game-emit'
+                        }, '*')
+                    }
+                    setSent(true);
+                }
+                break;
+
+            case 'show_settings-event':
+                setShowSettings(window.network.getShowSettings())
+                break;
+
+            case 'lobby_settings-event':
+                setFetchSettings(true);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     const handleLeave = (e) => {
         e.preventDefault();
-        console.log("has abandonat la sala " + lobbyName);
         window.postMessage({
-            type: 'leave_lobby-emit',
-            lobbyName: lobbyName
+            type: 'leave_lobby-emit'
         }, '*')
         setJoined(false);
         setLobbyName("");
         setLobbyList([]);
     };
 
-
-
-    function startGame() {
+    function startGame(e) {
+        e.preventDefault();
+        setSent(false);
         window.postMessage({
             type: 'start_game-emit'
         }, '*')
         navigate("/game");
     }
+
+    useEffect(() => {
+        window.addEventListener('message', handleMessage);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
+    }, [])
+
     return (
         <div id="lobbyJoined" className="lobbies__lobby lobby">
             <button id="goBackToLobby__button" onClick={handleLeave}>
@@ -34,10 +80,35 @@ function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList }) {
                 <span className="button-text">LEAVE CURRENT LOBBY
                 </span>
             </button>
+            {showSettings ?
+                <>
+                    <button onClick={() => setShowModal(true)}>Settings</button>
+                    <Modal
+                        style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+                            content: {
+                                top: '50%',
+                                left: '50%',
+                                right: 'auto',
+                                bottom: 'auto',
+                                marginRight: '-50%',
+                                transform: 'translate(-50%, -50%)',
+                                padding: "5%"
+                            },
+                        }}
+                        onRequestClose={() => setShowModal(false)}
+                        shouldCloseOnOverlayClick={true}
+                        isOpen={showModal}
+                    >
+                        <Settings fetchSettings={fetchSettings}></Settings>
+                    </Modal>
+                </> :
+                <></>}
+            {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             <ConnectedUsers></ConnectedUsers>
-            <div className="button-startGame">
-                <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
-            </div>
+            {showSettings &&
+                <div className="button-startGame">
+                    <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
+                </div>}
             <div className="lobby__chat">
                 <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
             </div>

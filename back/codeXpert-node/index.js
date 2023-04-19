@@ -530,11 +530,13 @@ async function setGameData(game_data, room) {
   const sockets = await socketIO.in(room).fetchSockets();
 
   sockets.forEach((socket) => {
-    socket.data.game_data = game_data;
-    socket.data.idQuestion = game_data.questions[0].id;
-    socket.data.question_at = 0;
-    socket.data.hearts_remaining = 3;
-    socket.data.idGame = game_data.idGame;
+    if (game_data.questions.length > 0) {
+      socket.data.game_data = game_data;
+      socket.data.idQuestion = game_data.questions[0].id;
+      socket.data.question_at = 0;
+      socket.data.hearts_remaining = 3;
+      socket.data.idGame = game_data.idGame;
+    }
   });
 }
 
