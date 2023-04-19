@@ -28,7 +28,7 @@ class bLoginTest extends TestCase
 
     public function test_incorrect_password()
     {
-        //Given a correct userId but the new password is not valid
+        //Email registered, incorrect password
         $response = $this->postJson("/login", ['email' => 'codexpert_test@codexpert.com','password' => 'Qwerty123456']);
 
         $response
@@ -37,97 +37,32 @@ class bLoginTest extends TestCase
             'valid' => false,
             'message' => "Password and e-mail don't match."
         ]);
-    } 
+    }   
 
-    public function test_email_already_used()
+    public function test_user_doesnt_exist()
     {
-        //Given a correct userId but the new password is not valid
-        $response = $this->postJson("/register", ['name' => 'registertest2', 'email' => 'registertest@gmail.com','password' => 'Qwerty123456.', 'password_confirmation' => 'Qwerty123456.']);
+        //Email not registered
+        $response = $this->postJson("/login", ['email' => 'incorrect_email@codexpert.com','password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
             'valid' => false,
-            'message' => "Email already registered."
+            'message' => "User not found.",
         ]);
-    } 
-
-    public function test_name_not_valid()
-    {
-        //Given a correct userId but the new password is not valid
-        $response = $this->postJson("/register", ['name' => 'a', 'email' => 'registertest2@gmail.com','password' => 'Qwerty123456.', 'password_confirmation' => 'Qwerty123456.']);
-
-        $response
-        ->assertStatus(200)
-        ->assertJson([
-            'valid' => false,
-            'message' => "Validation errors."
-        ]);
-    }     
-
-    public function test_email_not_valid()
-    {
-        //Given a correct userId but the new password is not valid
-        $response = $this->postJson("/register", ['name' => 'registertest2', 'email' => 'a','password' => 'Qwerty123456.', 'password_confirmation' => 'Qwerty123456.']);
-
-        $response
-        ->assertStatus(200)
-        ->assertJson([
-            'valid' => false,
-            'message' => "Validation errors."
-        ]);
-    }     
-
-    public function test_password_not_valid()
-    {
-        //Given a correct userId but the new password is not valid
-        $response = $this->postJson("/register", ['name' => 'registertest2', 'email' => 'registertest2@gmail.com','password' => 'Qwerty123456', 'password_confirmation' => 'Qwerty123456.']);
-
-        $response
-        ->assertStatus(200)
-        ->assertJson([
-            'valid' => false,
-            'message' => "Validation errors."
-        ]);
-    }     
-
-    public function test_password_not_confirmed()
-    {
-        //Given a correct userId but the new password is not valid
-        $response = $this->postJson("/register", ['name' => 'registertest2', 'email' => 'registertest2@gmail.com','password' => 'Qwerty123456.', 'password_confirmation' => 'Qwerty123456']);
-
-        $response
-        ->assertStatus(200)
-        ->assertJson([
-            'valid' => false,
-            'message' => "Validation errors."
-        ]);
-    }    
-    
-    public function test_no_name()
-    {
-        //Given a correct userId but the new password is not valid
-        $response = $this->postJson("/register", ['email' => 'registertest2@gmail.com','password' => 'Qwerty123456.', 'password_confirmation' => 'Qwerty123456']);
-
-        $response
-        ->assertStatus(200)
-        ->assertJson([
-            'valid' => false,
-            'message' => "Validation errors."
-        ]);
-    }       
+    }        
 
     public function test_no_email()
     {
-        //Given a correct userId but the new password is not valid
-        $response = $this->postJson("/register", ['name' => 'registertest2','password' => 'Qwerty123456.', 'password_confirmation' => 'Qwerty123456']);
+        //Email field empty
+        $response = $this->postJson("/login", ['password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
             'valid' => false,
-            'message' => "Validation errors."
+            'message' => "User not found.",
         ]);
-    }     
+    }    
     
 }
