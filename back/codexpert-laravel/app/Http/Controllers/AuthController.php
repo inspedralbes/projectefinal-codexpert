@@ -161,12 +161,12 @@ class AuthController extends Controller
     public function getUserInfo(Request $request)
     {
         $returnUserId = null;
-        $userFound = null;
+        $userFound = (object) [
+            'error' => true,
+        ];
         
         //Return the info from the user if the token is not null
-        if ($request -> token == null || $request -> token == "" || $request -> token == "null") {
-            $userFound = null;
-        } else { 
+        if ( !($request -> token == null || $request -> token == "" || $request -> token == "null") ) {
             [$id, $token] = explode('|', $request -> token, 2);
             $accessToken = PersonalAccessToken::find($id);
 
