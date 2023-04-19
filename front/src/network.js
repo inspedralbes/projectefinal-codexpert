@@ -1,4 +1,5 @@
 import socketIO from "socket.io-client";
+import ConnectionNetwork from "./ConnectionNetwork.js";
 
 let socket = socketIO("ws://localhost:7500", {
     withCredentials: true,
@@ -8,6 +9,8 @@ let socket = socketIO("ws://localhost:7500", {
     },
     transports: ["websocket"],
 })
+
+window.network = new ConnectionNetwork();
 
 const handleMessage = (event) => {
     let eventData = event.data
@@ -36,12 +39,6 @@ const handleMessage = (event) => {
             });
             break;
 
-        case "send_token-emit":
-            socket.emit("send_token", {
-                token: eventData.token,
-            });
-            break;
-
         case "lobby_data_pls-emit":
             socket.emit("lobby_data_pls");
             break;
@@ -54,7 +51,7 @@ const handleMessage = (event) => {
             break;
 
         case "leave_lobby-emit":
-            socket.emit("leave_lobby", eventData.lobbyName);
+            socket.emit("leave_lobby");
             break;
 
         case "start_game-emit":
@@ -68,96 +65,20 @@ const handleMessage = (event) => {
             });
             break;
 
+        case "save_settings-emit":
+            socket.emit("save_settings", {
+                gameDuration: window.network.getGameDuration(),
+                heartAmount: window.network.getHeartAmount(),
+                unlimitedHearts: window.network.getUnlimitedHearts(),
+                questionAmount: window.network.getQuestionAmount(),
+            });
+            break;
+
         default:
+            // UNKNOWN EVENT
             break;
     }
 }
-
-class ConnectionNetwork {
-    message = "";
-    token = "";
-    lobby_name = "";
-    userList = [];
-    lobbyMessages = [];
-    questionData = {};
-    winnerMessage = "";
-    result = "";
-    rewards = {};
-
-    setMessage(msg) {
-        this.message = msg;
-    }
-
-    getMessage() {
-        return this.message;
-    }
-
-    setToken(token) {
-        this.token = token;
-    }
-
-    getToken() {
-        return this.token;
-    }
-
-    setLobbyName(lobby_name) {
-        this.lobby_name = lobby_name;
-    }
-
-    getLobbyName() {
-        return this.lobby_name;
-    }
-
-    setLobbyUserList(userList) {
-        this.userList = userList;
-    }
-
-    getLobbyUserList() {
-        return this.userList;
-    }
-
-    setLobbyMessages(list) {
-        this.lobbyMessages = list;
-    }
-
-    getLobbyMessages() {
-        return this.lobbyMessages;
-    }
-
-    setQuestionData(data) {
-        this.questionData = data;
-    }
-
-    getQuestionData() {
-        return this.questionData;
-    }
-
-    setWinnerMessage(msg) {
-        this.winnerMessage = msg;
-    }
-
-    getWinnerMessage() {
-        return this.winnerMessage;
-    }
-
-    setResult(result) {
-        this.result = result;
-    }
-
-    getResult() {
-        return this.result;
-    }
-
-    setRewards(rewards) {
-        this.rewards = rewards;
-    }
-
-    getRewards() {
-        return this.rewards;
-    }
-}
-
-window.network = new ConnectionNetwork();
 
 // Window event listener for event handling
 window.addEventListener('message', handleMessage);
@@ -169,7 +90,7 @@ socket.on("YOU_ARE_ON_LOBBY", (data) => {
 })
 
 socket.on("lobbies_list", (data) => {
-    window.network.setLobbyName(data.lobby_name);
+    window.network.setLobbyList(data);
     window.postMessage({ type: 'lobbies_list-event' }, '*')
 })
 
@@ -219,8 +140,71 @@ socket.on("YOU_LEFT_LOBBY", () => {
     window.postMessage({ type: 'YOU_LEFT_LOBBY-event' }, '*')
 })
 
+socket.on("show_settings", (data) => {
+    window.network.setShowSettings(data.show);
+    window.postMessage({ type: 'show_settings-event' }, '*')
+})
+
+socket.on("lobby_settings", (data) => {
+    window.network.setGameDuration(data.gameDuration);
+    window.network.setHeartAmount(data.heartAmount);
+    window.network.setUnlimitedHearts(data.unlimitedHearts);
+    window.network.setQuestionAmount(data.questionAmount);
+    window.postMessage({ type: 'lobby_settings-event' }, '*')
+});
+
+socket.on("ALREADY_ON_LOBBY", (data) => {
+    window.network.setMessage(data.message);
+    window.postMessage({ type: 'ALREADY_ON_LOBBY-event' }, '*')
+});
+
+socket.on("starting_errors", (data) => {
+    console.log("ENTRA STARTING");
+    window.postMessage({ type: 'starting_errors-event', valid: data.valid }, '*')
+});
+
 // ERROR EVENTS
 socket.on("LOBBY_FULL_ERROR", (data) => {
     window.network.setMessage(data.message);
     window.postMessage({ type: 'LOBBY_FULL_ERROR-event' }, '*')
 })
+
+socket.on("LOBBY_ALREADY_EXISTS", (data) => {
+    window.network.setMessage(data.message);
+    window.postMessage({ type: 'LOBBY_ALREADY_EXISTS-event' }, '*')
+});
+
+socket.on("GAME_TIME_UNDER_MIN", (data) => {
+    window.network.setErrorMessage(`Selected game duration was too low -> Minimum: ${data.min}`);
+    window.postMessage({ type: 'GAME_TIME_UNDER_MIN-event' }, '*')
+});
+
+socket.on("GAME_TIME_ABOVE_MAX", (data) => {
+    window.network.setErrorMessage(`Selected game duration was too high -> Maximum: ${data.max}`);
+    window.postMessage({ type: 'GAME_TIME_ABOVE_MAX-event' }, '*')
+});
+
+socket.on("HEARTS_AMT_UNDER_MIN", (data) => {
+    window.network.setErrorMessage(`Selected amount of hearts was too low -> Minimum: ${data.min}`);
+    window.postMessage({ type: 'HEARTS_AMT_UNDER_MIN-event' }, '*')
+});
+
+socket.on("HEARTS_AMT_ABOVE_MAX", (data) => {
+    window.network.setErrorMessage(`Selected amount of hearts was too high -> Maximum: ${data.max}`);
+    window.postMessage({ type: 'HEARTS_AMT_ABOVE_MAX-event' }, '*')
+});
+
+socket.on("QUESTION_AMT_UNDER_MIN", (data) => {
+    window.network.setErrorMessage(`Selected amount of questions was too low -> Minimum: ${data.min}`);
+    window.postMessage({ type: 'QUESTION_AMT_UNDER_MIN-event' }, '*')
+});
+
+socket.on("QUESTION_AMT_ABOVE_MAX", (data) => {
+    window.network.setErrorMessage(`Selected amount of questions was too high -> Maximum: ${data.max}`);
+    window.postMessage({ type: 'QUESTION_AMT_ABOVE_MAX-event' }, '*')
+});
+
+socket.on("INVALID_SETTINGS", () => {
+    window.network.setErrorMessage(`Can't start the game with invalid settings`);
+    window.postMessage({ type: 'INVALID_SETTINGS-event' }, '*')
+});

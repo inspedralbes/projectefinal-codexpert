@@ -7,6 +7,11 @@ import routes from "../index";
 import Loading from "../components/Loading";
 import LobbyList from "../components/LobbyList";
 import JoinedLobby from "../components/JoinedLobby";
+import { Blocks } from 'react-loader-spinner';
+import lobbyTitle from '../img/lobbies.gif';
+
+
+Modal.setAppElement('body');
 
 const Lobbies = () => {
   const [lobbyList, setLobbyList] = useState([]);
@@ -16,94 +21,64 @@ const Lobbies = () => {
   const [firstTime, setFirstTime] = useState(true);
   const [fetchUser, setfetchUser] = useState(false);
 
+
   const navigate = useNavigate();
   const cookies = new Cookies();
 
-  const handleMessage = (event) => {
-    let eventData = event.data
 
-    switch (eventData.type) {
-      case 'YOU_ARE_ON_LOBBY-event':
-        setLobbyName(window.network.getLobbyName());
-        setJoined(true);
-        break;
+}
 
-      case 'lobbies_list-event':
-        setLobbyList(window.network.getLobbyUserList());
-        break;
-
-      case 'game_started-event':
-        navigate("/game");
-        break;
-
-      case 'LOBBY_FULL_ERROR-event':
-        setLobbyName("");
-        setJoined(false);
-        setErrorMessage(window.ne.message)
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  useEffect(() => {
-    if (document.cookie.indexOf("token" + "=") != -1) {
-      const token = new FormData();
-      token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
-      fetch(routes.fetchLaravel + "isUserLogged", {
-        method: "POST",
-        mode: "cors",
-        body: token,
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            setfetchUser(true)
-          } else {
-            navigate("/login");
-          }
-        });
-    } else {
-      navigate("/login");
-    }
-
-    if (firstTime) {
-      window.postMessage({
-        type: 'hello_firstTime-emit'
-      }, '*')
-      setFirstTime(true);
-    }
-
-    window.addEventListener('message', handleMessage);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, []);
-
-
-  if (fetchUser) {
-    return (
-      <div className="lobbies">
-
-        {!joinedLobby && (
-          <LobbyList lobbyName={lobbyName} setLobbyName={setLobbyName} lobbyList={lobbyList} errorMessage={errorMessage} setJoined={setJoined}></LobbyList>
-        )}
-
-        {joinedLobby && (
-          <JoinedLobby lobbyName={lobbyName} setJoined={setJoined} setLobbyName={setLobbyName} setLobbyList={setLobbyList}></JoinedLobby>
-        )
+useEffect(() => {
+  if (document.cookie.indexOf("token" + "=") != -1) {
+    const token = new FormData();
+    token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
+    fetch(routes.fetchLaravel + "isUserLogged", {
+      method: "POST",
+      mode: "cors",
+      body: token,
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data) {
+          setFetchUser(true)
+        } else {
+          navigate("/login");
         }
-      </div>
-    );
+      });
   } else {
-    return (
-      <Loading></Loading>
-    );
+    navigate("/login");
   }
 
-};
+  if (firstTime) {
+    window.postMessage({
+      type: 'hello_firstTime-emit'
+    }, '*')
+    setFirstTime(true);
+  }
+
+
+}, []);
+
+
+if (fetchUser) {
+  return (
+    <div className="lobbies">
+
+      {!joinedLobby && (
+        <LobbyList lobbyName={lobbyName} setLobbyName={setLobbyName} lobbyList={lobbyList} errorMessage={errorMessage} setJoined={setJoined}></LobbyList>
+      )}
+
+      {joinedLobby && (
+        <JoinedLobby lobbyName={lobbyName} setJoined={setJoined} setLobbyName={setLobbyName} setLobbyList={setLobbyList} showSettings={showSettings} errorMessage={errorMessage} setSent={setSent}></JoinedLobby>
+      )
+      }
+    </div>
+  );
+} else {
+  return (
+    <Loading></Loading>
+  );
+}
 
 export default Lobbies;
