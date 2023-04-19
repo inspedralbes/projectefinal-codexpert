@@ -183,16 +183,19 @@ class AuthController extends Controller
 
     public function isUserLogged(Request $request)
     {
+        $logged = (object) [
+            'correct' => false,
+        ];
+
         //Check if we have recieved a token
-        if ($request -> token == null || $request -> token == "" || $request -> token == "null") {
-            $logged = false;
-        } else { 
+        if ( !($request -> token == null || $request -> token == "" || $request -> token == "null") ) {
+            
             //Return if the user is logged in or not from the token
             [$id, $token] = explode('|', $request -> token, 2);
             $accessToken = PersonalAccessToken::find($id);
 
             if (hash_equals($accessToken->token, hash('sha256', $token))) {
-                $logged = true;
+                $logged -> correct = true;
             }
         }
 

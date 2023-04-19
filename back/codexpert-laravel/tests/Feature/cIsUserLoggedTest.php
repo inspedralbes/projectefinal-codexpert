@@ -13,10 +13,40 @@ class cIsUserLoggedTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function test_null_token()
     {
-        $response = $this->get('/');
+        //Email registered, incorrect password
+        $response = $this->postJson("/isUserLogged", ['token' => null]);
 
-        $response->assertStatus(200);
-    }
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'correct' => false
+        ]);
+    }   
+
+    public function test_no_token()
+    {
+        //No token stored in front
+        $response = $this->postJson("/isUserLogged");
+
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'correct' => false
+        ]);
+    }      
+
+    public function test_null_string_token()
+    {
+        //No token stored in front
+        $response = $this->postJson("/isUserLogged", ['token' => "null"]);
+
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'correct' => false
+        ]);
+        
+    }    
 }

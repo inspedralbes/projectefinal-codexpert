@@ -109,7 +109,7 @@ const Lobbies = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data) {
+          if (data.correct) {
             setfetchUser(true)
           } else {
             navigate("/login");

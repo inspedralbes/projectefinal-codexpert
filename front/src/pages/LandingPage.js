@@ -33,7 +33,7 @@ function LandingPage({ network }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data) {
+        if (data.correct) {
           setLogin(true)
         }
       });
