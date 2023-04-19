@@ -11,7 +11,8 @@ import { Blocks } from 'react-loader-spinner';
 import lobbyTitle from '../img/lobbies.gif';
 import arrow from '../img/arrow.gif';
 import Settings from '../components/Settings';
-
+import Modal from 'react-modal';
+Modal.setAppElement('body');
 
 const Lobbies = () => {
   const [lobbyName, setLobbyName] = useState("");
@@ -22,6 +23,9 @@ const Lobbies = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [starting, setStarting] = useState(false);
   const [sent, setSent] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [fetchSettings, setFetchSettings] = useState(false);
 
   const navigate = useNavigate();
   const cookies = new Cookies();
@@ -54,10 +58,10 @@ const Lobbies = () => {
         setJoined(false);
         break;
 
-        case 'LOBBY_ALREADY_EXISTS-event':
-          setErrorMessage(window.network.getMessage())
-          setJoined(false);
-          break;
+      case 'LOBBY_ALREADY_EXISTS-event':
+        setErrorMessage(window.network.getMessage())
+        setJoined(false);
+        break;
 
       case 'starting_errors-event':
         if (eventData.valid) {
@@ -70,6 +74,14 @@ const Lobbies = () => {
         } else {
           setStarting(false);
         }
+        break;
+
+      case 'show_settings-event':
+        setShowSettings(window.network.getShowSettings())
+        break;
+
+      case 'lobby_settings-event':
+        setFetchSettings(true);
         break;
 
       default:
@@ -117,7 +129,9 @@ const Lobbies = () => {
   function handleStartGame(e) {
     e.preventDefault();
     setSent(false);
-    setStarting(true);
+    window.postMessage({
+      type: 'save_settings-emit'
+  }, '*')
   }
 
   useEffect(() => {
@@ -268,15 +282,41 @@ const Lobbies = () => {
               <span className="button-text">LEAVE CURRENT LOBBY
               </span>
             </button>
+            {showSettings ?
+              <>
+                <button onClick={() => setShowModal(true)}>Settings</button>
+                <Modal
+                  style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+                    content: {
+                      top: '50%',
+                      left: '50%',
+                      right: 'auto',
+                      bottom: 'auto',
+                      marginRight: '-50%',
+                      transform: 'translate(-50%, -50%)',
+                      padding: "5%"
+                    },
+                  }}
+                  onRequestClose={() => setShowModal(false)}
+                  shouldCloseOnOverlayClick={true}
+                  isOpen={showModal}
+                >
+                  <Settings fetchSettings={fetchSettings}></Settings>
+                </Modal>
+              </> :
+              <></>}
+
             {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             <ConnectedUsers></ConnectedUsers>
-            <div className="button-startGame">
-              <button className="startGame" id="startGame" onClick={handleStartGame}>Start game</button>
-            </div>
+
+            {showSettings &&
+              <div className="button-startGame">
+                <button className="startGame" id="startGame" onClick={handleStartGame}>Start game</button>
+              </div>}
+
             <div className="lobby__chat">
               <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
             </div>
-            <Settings start={starting}></Settings>
           </div>
         )
         }

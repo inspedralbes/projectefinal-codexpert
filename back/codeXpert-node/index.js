@@ -337,6 +337,7 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("save_settings", (data) => {
+    console.log("SAVE SETTINGS")
     let valid = true;
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == socket.data.current_lobby) {

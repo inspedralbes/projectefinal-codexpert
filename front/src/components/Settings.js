@@ -1,39 +1,43 @@
 import { useState, useEffect } from "react";
 
-function Settings({ start }) {
-    const [gameDuration, setGameDuration] = useState(0);
+function Settings({ fetchSettings }) {
+    const [gameDuration, setGameDuration] = useState(301);
     const [heartAmount, setHeartAmount] = useState(0);
     const [questionAmount, setQuestionAmount] = useState(0);
     const [unlimitedHearts, setUnlimitedHearts] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [showSettings, setShowSettings] = useState(false);
 
     function handleChangeUnlimitedHearts() {
         setUnlimitedHearts(!unlimitedHearts);
+        window.network.setUnlimitedHearts(!unlimitedHearts);
     }
 
     function handleChangeGameDuration(e) {
         setGameDuration(e.target.value);
+        window.network.setGameDuration(e.target.value);
     }
 
     function handleChangeHeartAmount(e) {
         setHeartAmount(e.target.value);
+        window.network.setHeartAmount(e.target.value);
     }
 
     function handleChangeQuestionAmount(e) {
         setQuestionAmount(e.target.value);
+        window.network.setQuestionAmount(e.target.value);
+    }
+
+    const getSettings = () => {
+        setHeartAmount(window.network.getHeartAmount());
+        setGameDuration(window.network.getGameDuration());
+        setUnlimitedHearts(window.network.getUnlimitedHearts());
+        setQuestionAmount(window.network.getQuestionAmount());
     }
 
     const handleMessage = (event) => {
         let eventData = event.data
 
         switch (eventData.type) {
-            case 'lobby_settings-event':
-                setHeartAmount(window.network.getHeartAmount());
-                setGameDuration(window.network.getGameDuration());
-                setUnlimitedHearts(window.network.getUnlimitedHearts());
-                setQuestionAmount(window.network. getQuestionAmount());
-                break;
 
             case 'GAME_TIME_UNDER_MIN-event':
                 setErrorMessage(window.network.getErrorMessage());
@@ -63,10 +67,6 @@ function Settings({ start }) {
                 setErrorMessage(window.network.getErrorMessage());
                 break;
 
-            case 'show_settings-event':
-                setShowSettings(window.network.getShowSettings())
-                break;
-
             default:
                 // UNKNOWN EVENT TO THAT COMPONENT
                 break;
@@ -82,63 +82,52 @@ function Settings({ start }) {
     }, []);
 
     useEffect(() => {
-        if (start) {
-            setErrorMessage("");
-
-            window.postMessage({
-                type: 'save_settings-emit',
-                gameDuration: gameDuration,
-                heartAmount: heartAmount,
-                unlimitedHearts: unlimitedHearts,
-                questionAmount: questionAmount
-            }, '*')
+        if (fetchSettings) {
+            getSettings();
         }
-    }, [start]);
+    }, [fetchSettings]);
 
     return (
         <>
-            {showSettings ?
-                <div className="settings__zone">
-                    {/* <h2>SETTINGS </h2> */}
-                    {errorMessage != "" && <h1 className="error">{errorMessage}</h1>}
-                    <form className="App" autoComplete="off">
-                        <span className="addCategory__formSpanTA">
-                            <p className="settings__zone__title">Game duration (seconds)</p>
-                            <input type="number" value={gameDuration} onChange={handleChangeGameDuration} />
-                        </span>
+            <div className="settings__zone">
+                {errorMessage != "" && <h1 className="error">{errorMessage}</h1>}
+                <form className="AddCategory" autoComplete="off">
+                    <span className="addCategory__formSpanTA">
+                        <p className="settings__zone__title">Game duration (seconds)</p>
+                        <input type="number" value={gameDuration} onChange={handleChangeGameDuration} />
+                    </span>
 
-                        <span className="addCategory__formSpanTA">
-                            <p className="settings__zone__title">Amount of questions:</p>
-                            <input type="number" value={questionAmount} onChange={handleChangeQuestionAmount} />
-                        </span>
+                    <span className="addCategory__formSpanTA">
+                        <p className="settings__zone__title">Amount of questions:</p>
+                        <input type="number" value={questionAmount} onChange={handleChangeQuestionAmount} />
+                    </span>
 
-                        <span className="addCategory__formSpanTA">
-                            <p className="settings__zone__title">Amount of hearts per player:</p>
-                            <input type="number" value={heartAmount} onChange={handleChangeHeartAmount} />
-                        </span>
+                    <span className="addCategory__formSpanTA">
+                        <p className="settings__zone__title">Amount of hearts per player:</p>
+                        <input type="number" value={heartAmount} onChange={handleChangeHeartAmount} />
+                    </span>
 
-                        <div className="list__container__text settingCreator__checkbox">
-                            <input
-                                id='unl_hearts-check'
-                                className="check"
-                                type="checkbox"
-                                value={unlimitedHearts}
-                                onChange={handleChangeUnlimitedHearts}
-                                checked={unlimitedHearts}
-                            />
-                            <label
+                    <div className="list__container__text settingCreator__checkbox">
+                        <input
+                            id='unl_hearts-check'
+                            className="check"
+                            type="checkbox"
+                            value={unlimitedHearts}
+                            onChange={handleChangeUnlimitedHearts}
+                            checked={unlimitedHearts}
+                        />
+                        <label
+                            htmlFor='unl_hearts-check'
+                            className="list__container__text__label settingCreator__label"
+                        >
+                            <span
                                 htmlFor='unl_hearts-check'
-                                className="list__container__text__label settingCreator__label"
-                            >
-                                <span
-                                    htmlFor='unl_hearts-check'
-                                    className="settings__zone__title"
-                                >Unlimited hearts</span>
-                            </label>
-                        </div>
-                    </form>
-                </div> :
-                <></>}
+                                className="settings__zone__title"
+                            >Unlimited hearts</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
         </>
 
     );

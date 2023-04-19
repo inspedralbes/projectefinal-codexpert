@@ -67,10 +67,10 @@ const handleMessage = (event) => {
 
         case "save_settings-emit":
             socket.emit("save_settings", {
-                gameDuration: eventData.gameDuration,
-                heartAmount: eventData.heartAmount,
-                unlimitedHearts: eventData.unlimitedHearts,
-                questionAmount: eventData.questionAmount,
+                gameDuration: window.network.getGameDuration(),
+                heartAmount: window.network.getHeartAmount(),
+                unlimitedHearts: window.network.getUnlimitedHearts(),
+                questionAmount: window.network.getQuestionAmount(),
             });
             break;
 
