@@ -6,62 +6,50 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class changeUsernameTest extends TestCase
+class fChangeEmailTest extends TestCase
 {
     /**
      * A basic feature test example.
      *
      * @return void
      */
-    public function test_same_name()
+    
+        public function test_same_email()
     {
-        //Given a correct userId but the same name return that the name hasn't been changed
+        //Given a correct userId but the same email return that the email hasn't been changed
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456!']);
+        ->postJson("/changeEmail", ['newEmail' => 'codexpert_test@codexpert.com', 'password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
-            'error' => "Name has not been modified, no changes were made."
+            'error' => "Email has not been modified, no changes were made."
         ]);
     }
     
-    public function test_name_too_short()
+    public function test_email_not_valid()
     {
-        //Given a correct userId but the name is too short return that the name hasn't been changed
+        //Given a correct userId but the email is too short return that the email hasn't been changed
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'co', 'password' => 'Qwerty123456!']);
+        ->postJson("/changeEmail", ['newEmail' => 'co', 'password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
-            'error' => "Name must have a minimum amount of 3 characters and 20 max."
+            'error' => "Email not valid."
         ]);
-    }
+    } 
 
-    public function test_name_too_long()
+    public function test_no_email()
     {
-        //Given a correct userId but the name is too long return that the name hasn't been changed
+        //Given a correct userId but no variable email
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'djasdhkjadhkjhakdkhadkjhaskdkhakdsahka', 'password' => 'Qwerty123456!']);
+        ->postJson("/changeEmail", ['password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
-            'error' => "Name must have a minimum amount of 3 characters and 20 max."
-        ]);
-    }    
-
-    public function test_no_name()
-    {
-        //Given a correct userId but no variable name
-        $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['password' => 'Qwerty123456!']);
-
-        $response
-        ->assertStatus(200)
-        ->assertJson([
-            'error' => "Name must have a minimum amount of 3 characters and 20 max."
+            'error' => "Email not valid."
         ]);
     } 
 
@@ -69,7 +57,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a correct userId but password is incorrect
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test2', 'password' => 'Qwerty123456']);
+        ->postJson("/changeEmail", ['newEmail' => 'codexpert_test2@codexpert.com', 'password' => 'Qwerty123456']);
 
         $response
         ->assertStatus(200)
@@ -82,7 +70,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a correct userId but no password send
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test2']);
+        ->postJson("/changeEmail", ['newEmail' => 'codexpert_test2@codexpert.com']);
 
         $response
         ->assertStatus(200)
@@ -95,12 +83,12 @@ class changeUsernameTest extends TestCase
     {
         //Given an id that doesn't exist return that the user doesn't exist
         $response = $this->withSession(['userId' => -1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456!']);
+        ->postJson("/changeEmail", ['newEmail' => 'codexpert_test@codexpert.com', 'password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
-            'error' => "User is not logged in."
+            'error' => 'User is not logged in.',
         ]);
     }     
 
@@ -108,7 +96,7 @@ class changeUsernameTest extends TestCase
     {
         //Given a null id return return that the user doesn't exist
         $response = $this->withSession(['userId' => null])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456!']);
+        ->postJson("/changeEmail", ['newEmail' => 'codexpert_test@codexpert.com', 'password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
@@ -120,7 +108,7 @@ class changeUsernameTest extends TestCase
     public function test_no_session()
     {
         //Given a null id return return that the user doesn't exist
-        $response = $this->postJson("/changeUsername", ['newName' => 'codexpert_test', 'password' => 'Qwerty123456!']);
+        $response = $this->postJson("/changeEmail", ['newEmail' => 'codexpert_test@codexpert.com', 'password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
@@ -133,26 +121,25 @@ class changeUsernameTest extends TestCase
     {
         //Given everything correct update the user
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test.', 'password' => 'Qwerty123456!']);
+        ->postJson("/changeEmail", ['newEmail' => 'test@gmail.com', 'password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
-            'success' => "Name has been changed."
+            'success' => "Email has been changed."
         ]);
     }         
 
-    public function test_name_already_used()
+    public function test_email_already_used()
     {
-        //Given a name that another user has do not update
+        //Given a email that another user has do not update
         $response = $this->withSession(['userId' => 1])
-        ->postJson("/changeUsername", ['newName' => 'codexpert_test2', 'password' => 'Qwerty123456!']);
+        ->postJson("/changeEmail", ['newEmail' => 'codexpert_test2@codexpert.com', 'password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
         ->assertJson([
-            'error' => "Name already in use."
+            'error' => "Email already in use."
         ]);
     } 
-
 }

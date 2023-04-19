@@ -14,7 +14,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
-    public function checkUserDuplicated($userData)
+    private function checkUserDuplicated($userData)
     {
         //Check if any fields are duplicated
         $canCreate = true;
@@ -30,7 +30,7 @@ class AuthController extends Controller
         return $canCreate;
     }
 
-    public function findWhatIsDuplicated($userData)
+    private function findWhatIsDuplicated($userData)
     {
         //Check whether the user's name or the email is duplicated
         $isDuplicated = 'name';

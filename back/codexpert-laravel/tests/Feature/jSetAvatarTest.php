@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class setAvatarTest extends TestCase
+class jSetAvatarTest extends TestCase
 {
     /**
      * A basic feature test example.
@@ -76,5 +76,6 @@ class setAvatarTest extends TestCase
         ->assertJson([
             'changed' => false
         ]);
-    }    
+    }  
+    
 }
