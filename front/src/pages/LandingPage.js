@@ -1,4 +1,5 @@
 import "../styles/normalize.css";
+import "../styles/LandingPage.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
@@ -49,8 +50,6 @@ function LandingPage({ network }) {
       <div className="landingPage">
         <img src={logo} alt="codeXpert"></img>
         <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
-
-        {/* <p className="landingPage__codexpert">CODEPERT</p> */}
         <br />
         {!login && (
           <Link to="/login">
