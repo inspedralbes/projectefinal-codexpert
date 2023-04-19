@@ -5,7 +5,10 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Game;
 use App\Models\Question;
+use App\Models\Game_question;
+use App\Models\User_game;
 use App\Models\User;
 
 class DatabaseSeeder extends Seeder
@@ -98,6 +101,28 @@ class DatabaseSeeder extends Seeder
         $user -> password = Hash::make("Qwerty123456.");
         $user -> avatar = "https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b";
         $user -> save();        
+
+        //Create the first game for testing purposes
+        $newGame = new Game;
+        $newGame -> save();
+
+        //Add question 1 to the game
+        $gameQuestion = new Game_question;
+        $gameQuestion -> game_id = 1;
+        $gameQuestion -> question_id = 1;
+        $gameQuestion -> save();
+
+        //Add question 2 to the game
+        $gameQuestion = new Game_question;
+        $gameQuestion -> game_id = 1;
+        $gameQuestion -> question_id = 2;
+        $gameQuestion -> save();
+
+        //Relate the user 1 to the game 1
+        $newUserGame = new User_game;
+        $newUserGame -> game_id = 1;
+        $newUserGame -> user_id = 1;
+        $newUserGame -> save();
 
     }
 }
