@@ -2,6 +2,7 @@ import "../styles/normalize.css";
 import "../styles/IconUser.css";
 import routes from "../index";
 import Cookies from "universal-cookie";
+import { Loader } from "../components/Loading";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -59,13 +60,15 @@ function IconUser() {
 
   return (
     <div className="container">
-      <button
-        type="button"
-        className="button"
-        onClick={handleButtonClick}
-      >
-        <img className="button__image" src={avatarURL} height="50" width="50"></img>
-      </button>
+      {avatarURL !== null ? (
+        <button
+          type="button"
+          className="button"
+          onClick={handleButtonClick}
+        >
+          <img className="button__image" src={avatarURL} height="50" width="50"></img>
+        </button>
+      ) : <Loader className="loader"/>}
       {state && (
         <div className="dropdown">
           <ul className="dropdown__list list">
