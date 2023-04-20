@@ -147,14 +147,19 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {   
-        //Remove the token when logging out
-        [$id, $token] = explode('|', $request -> token, 2);
-        
-        PersonalAccessToken::find($id)->delete();
+        //Check if we have recieved a token
+        if ( !($request -> token == null || $request -> token == "" || $request -> token == "null") ) {
+            
+            //Remove the token when logging out
+            [$id, $token] = explode('|', $request -> token, 2);
+            
+            PersonalAccessToken::find($id)->delete();
+        }        
+
         Session::flush();
         
         $returnResponse = (object)['logout' => true];
-        
+         
         return response() -> json($returnResponse);
     }
 

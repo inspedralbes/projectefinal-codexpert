@@ -13,10 +13,28 @@ class pLogoutTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function test_no_session()
     {
-        $response = $this->get('/');
+        //Given an existing id return the correct url.
+        $response = $this->post("/logout");
 
-        $response->assertStatus(200);
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'logout' => true        
+        ]);
     }
+
+    public function test_null_session()
+    {
+        //Given an existing id return the correct url.
+        $response = $this->withSession(['token' => null])->post("/logout");
+
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'logout' => true        
+        ]);
+    }
+    
 }
