@@ -1,26 +1,17 @@
 import "../styles/normalize.css";
+import "../styles/LandingPage.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import routes from "../index";
 import logo from '../img/logo.gif'
+import { Loader } from "../components/Loading";
+import IconUser from "../components/IconUser";
 
-function LandingPage({ network }) {
+
+function LandingPage() {
   const cookies = new Cookies();
-  const [login, setLogin] = useState(false);
-
-  const handleMessage = (event) => {
-    let eventData = event.data
-
-    switch (eventData.type) {
-      case 'welcome_message-updated':
-        console.log(window.network.getMessage());
-        break;
-
-      default:
-        break;
-    }
-  }
+  const [buttonOption, setButtonOption] = useState("");
 
   useEffect(() => {
     const token = new FormData();
@@ -33,31 +24,31 @@ function LandingPage({ network }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.correct) {
-          setLogin(true)
+        if (data) {
+          setButtonOption("lobbies");
+        } else {
+          setButtonOption("started");
         }
       });
-
-    window.addEventListener('message', handleMessage);
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
   }, [])
 
   return (
     <div>
+      <IconUser />
       <div className="landingPage">
-        <img src={logo} alt="codeXpert"></img>
+      <Loader />
+        <img src={logo} alt="codeXpert" className="landingPage__codexpert"></img>
         <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
-
-        {/* <p className="landingPage__codexpert">CODEPERT</p> */}
         <br />
-        {!login && (
+        {buttonOption === "" && (
+          <button className="pixel-button"><Loader /></button>
+        )}
+        {buttonOption === "started" && (
           <Link to="/login">
             <button className="pixel-button">Get Started</button>
           </Link>
         )}
-        {login && (
+        {buttonOption === "lobbies" && (
           <Link to="/lobbies">
             <button className="pixel-button">Lobbies</button>
           </Link>

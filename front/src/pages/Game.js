@@ -3,13 +3,14 @@ import "../styles/normalize.css";
 import "../styles/game.css";
 import "../styles/Lobbies.css";
 import { useNavigate, Link } from "react-router-dom";
-import Chat from "../components/Chat";
+import ChatGame from "../components/ChatGame";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
+import CodeMirror from "../components/CodeMirror";
 
 function Game() {
   const [lobbyName, setLobbyName] = useState("");
   const [colorTema, setColorTema] = useState(false);
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState("function yourCode(input){ \n  //code here \n  return input;\n}");
   const [qst, setQst] = useState({
     statement: "",
     inputs: [""],
@@ -38,11 +39,10 @@ function Game() {
 
       case 'question_data-event':
         setQst(window.network.getQuestionData());
-        setCode("");
+        setCode("function yourCode(input){ \n  //code here \n  return input;\n}");
         break;
 
       case 'game_over-event':
-        console.log(window.network.getWinnerMessage());
         setWinnerMessage(window.network.getWinnerMessage());
         setPlayable(false)
         break;
@@ -61,7 +61,7 @@ function Game() {
         break;
 
       default:
-        console.log("Unknown event")
+        //
         break;
     }
   }
@@ -76,16 +76,11 @@ function Game() {
         try {
           let res = eval(code);
           resultsEval.push(res);
-          // console.log(qst.inputs[1]);
-          // let x = qst.testInput1;
-          // console.log(code);
-          // console.log(qst.input);
-          console.log(resultsEval);
+          console.log(res)
           setError("");
         } catch (e) {
           setError(e.message);
           evalPassed = false;
-          // console.log(EvalError(code));
         }
       });
 
@@ -118,32 +113,13 @@ function Game() {
     };
   }, []);
 
-  useEffect(() => {
-
-    if (colorTema) {
-      document.getElementById('file-window').style.backgroundColor = '#333';
-      document.getElementById('line-numbers').style.backgroundColor = '#222';
-      document.getElementById('file-window').style.color = '#999';
-      document.getElementById('textarea').style.color = '#999';
-      document.getElementById('line-numbers').style.transition = 'all 0.3s';
-      document.getElementById('file-window').style.transition = 'all 0.3s';
-
-    } else {
-      document.getElementById('file-window').style.backgroundColor = '#DDD';
-      document.getElementById('line-numbers').style.backgroundColor = '#CCC';
-      document.getElementById('file-window').style.color = '#666';
-      document.getElementById('textarea').style.color = '#666';
-
-    }
-  }, [colorTema])
-
   return (
     <div>
       <div className="game__container ">
 
         <div className="container__left">
           <ConnectedUsersInGame></ConnectedUsersInGame>
-          <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
+          <ChatGame className="chatGame__chatbox" lobbyName={lobbyName}></ChatGame>
         </div>
 
         <div className="container__right">
@@ -165,49 +141,12 @@ function Game() {
               </div>
             </div>
 
+
+
             <form className="editor" onSubmit={handleSubmit}>
-
-              <div className="input-header">
-                <h1 className="editor__title">Input</h1>
-                <div className="toggle">
-                  <input onClick={() => setColorTema(!colorTema)} type="checkbox" />
-                  <label></label>
-                </div>
-              </div>
-
-              <div id="file-window" className="file-window js-view">
-
-                <div id="line-numbers" className="line-numbers">
-                  1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />
-                  11<br />12<br />13<br />14<br />15<br />16<br />17<br />
-                </div>
-
-                {Array.isArray(qst.inputs[0]) && `let input = [${qst.inputs[0].toString()}];`}
-                {!Array.isArray(qst.inputs[0]) && `let input = "${qst.inputs[0].toString()}";`}<br />
-                {"function yourCode(input) {"}<br />
-
-                <textarea
-                  id="textarea"
-                  className="input-strobe"
-                  type="text"
-                  value={code}
-                  placeholder="Type in your code :)"
-                  onChange={(e) => {
-                    setCode(e.target.value);
-                  }}
-                ></textarea>
-                <br />
-                {"return input;"}<br />
-                {"}"}<br />
-                {"yourCode(input);"}
-
-                <div className="help">
-                  // This is your code input<br />
-                  // You can, we trust you!! <br />
-                </div>
-
-              </div>
-
+              <CodeMirror code={code} setCode={setCode}></CodeMirror>
+              {/* {Array.isArray(qst.inputs[0]) && `let input = [${qst.inputs[0].toString()}];`}
+              {!Array.isArray(qst.inputs[0]) && `let input = "${qst.inputs[0].toString()}";`}<br /> */}
               <button className="game__submit" disabled={code == ""}>
                 Submit
               </button>
@@ -232,8 +171,6 @@ function Game() {
           </div>}
         </div>
       </div>
-
-
     </div >
 
   );
