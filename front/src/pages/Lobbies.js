@@ -69,7 +69,7 @@ function Lobbies() {
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data) {
+          if (data.correct) {
             setFetchUser(true)
           } else {
             navigate("/login");

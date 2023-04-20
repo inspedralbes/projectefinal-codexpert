@@ -94,19 +94,24 @@ socketIO.on("connection", (socket) => {
         token: token,
       })
       .then(function (response) {
-        var user = {
-          token: token,
-          userId: response.data.id,
-          userName: response.data.name,
-        };
-        sesiones.push(user);
+        if (!response.data.error) {
+          var user = {
+            token: token,
+            userId: response.data.id,
+            userName: response.data.name,
+          };
+          sesiones.push(user);
 
-        socket.data.userId = response.data.id;
-        socket.data.name = response.data.name;
-        socket.data.avatar = response.data.avatar;
-        socket.data.hearts_remaining = -1
-        socket.data.question_at = -1
-      })
+          socket.data.userId = response.data.id;
+          socket.data.name = response.data.name;
+          socket.data.avatar = response.data.avatar;
+          socket.data.hearts_remaining = -1
+          socket.data.question_at = -1
+        } else {
+          //To do
+        }
+      }
+      )
       .catch(function (error) {
         console.log(error);
       });
