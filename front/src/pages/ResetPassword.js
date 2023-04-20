@@ -1,6 +1,5 @@
 import "../styles/normalize.css";
 import { Link } from "react-router-dom";
-import routes from "../index";
 
 function ResetPassword() {
     return (
