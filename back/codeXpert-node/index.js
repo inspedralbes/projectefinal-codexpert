@@ -94,19 +94,24 @@ socketIO.on("connection", (socket) => {
         token: token,
       })
       .then(function (response) {
-        var user = {
-          token: token,
-          userId: response.data.id,
-          userName: response.data.name,
-        };
-        sesiones.push(user);
+        if (!response.data.error) {
+          var user = {
+            token: token,
+            userId: response.data.id,
+            userName: response.data.name,
+          };
+          sesiones.push(user);
 
-        socket.data.userId = response.data.id;
-        socket.data.name = response.data.name;
-        socket.data.avatar = response.data.avatar;
-        socket.data.hearts_remaining = -1
-        socket.data.question_at = -1
-      })
+          socket.data.userId = response.data.id;
+          socket.data.name = response.data.name;
+          socket.data.avatar = response.data.avatar;
+          socket.data.hearts_remaining = -1
+          socket.data.question_at = -1
+        } else {
+          //To do
+        }
+      }
+      )
       .catch(function (error) {
         console.log(error);
       });
@@ -243,12 +248,22 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("check_answer", (data) => {
+    console.log(data)
+    let numQuestions;
+
+    lobbies.forEach(lobby => {
+      if (lobby.lobby_name == socket.data.current_lobby) {
+        numQuestions = lobby.settings.questionAmount;
+      }
+    });
+
     let postData = {
       idQuestion: socket.data.idQuestion,
       idGame: socket.data.game_data.idGame,
       idUser: socket.data.userId,
       evalRes: data.resultsEval,
       evalPassed: data.evalPassed,
+      numQuestions: numQuestions
     }
 
     axios
@@ -256,6 +271,7 @@ socketIO.on("connection", (socket) => {
       .then(function (response) {
         var user_game = response.data.user_game;
         var game = response.data.game;
+        console.log(response.data);
         if (response.data.correct) {
           addMessage({
             nickname: "ingame_events",
@@ -337,7 +353,6 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("save_settings", (data) => {
-    console.log("SAVE SETTINGS")
     let valid = true;
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == socket.data.current_lobby) {

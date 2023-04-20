@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../styles/normalize.css";
 import "../styles/Lobbies.css";
+import Chat from "../components/ChatLobby";
+import ConnectedUsers from "../components/ConnectedUsers";
+import IconUser from "../components/IconUser";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import routes from "../index";
@@ -69,7 +72,7 @@ function Lobbies() {
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data) {
+          if (data.correct) {
             setFetchUser(true)
           } else {
             navigate("/login");

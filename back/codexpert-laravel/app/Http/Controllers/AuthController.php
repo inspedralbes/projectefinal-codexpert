@@ -14,7 +14,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
-    public function checkUserDuplicated($userData)
+    private function checkUserDuplicated($userData)
     {
         //Check if any fields are duplicated
         $canCreate = true;
@@ -30,7 +30,7 @@ class AuthController extends Controller
         return $canCreate;
     }
 
-    public function findWhatIsDuplicated($userData)
+    private function findWhatIsDuplicated($userData)
     {
         //Check whether the user's name or the email is duplicated
         $isDuplicated = 'name';
@@ -161,12 +161,12 @@ class AuthController extends Controller
     public function getUserInfo(Request $request)
     {
         $returnUserId = null;
-        $userFound = null;
+        $userFound = (object) [
+            'error' => true,
+        ];
         
         //Return the info from the user if the token is not null
-        if ($request -> token == null || $request -> token == "" || $request -> token == "null") {
-            $userFound = null;
-        } else { 
+        if ( !($request -> token == null || $request -> token == "" || $request -> token == "null") ) {
             [$id, $token] = explode('|', $request -> token, 2);
             $accessToken = PersonalAccessToken::find($id);
 
@@ -183,16 +183,19 @@ class AuthController extends Controller
 
     public function isUserLogged(Request $request)
     {
+        $logged = (object) [
+            'correct' => false,
+        ];
+
         //Check if we have recieved a token
-        if ($request -> token == null || $request -> token == "" || $request -> token == "null") {
-            $logged = false;
-        } else { 
+        if ( !($request -> token == null || $request -> token == "" || $request -> token == "null") ) {
+            
             //Return if the user is logged in or not from the token
             [$id, $token] = explode('|', $request -> token, 2);
             $accessToken = PersonalAccessToken::find($id);
 
             if (hash_equals($accessToken->token, hash('sha256', $token))) {
-                $logged = true;
+                $logged -> correct = true;
             }
         }
 
