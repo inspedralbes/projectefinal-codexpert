@@ -189,10 +189,6 @@
     align-self: center;
 }
 
-.lobbies__title:hover {
-    cursor: pointer;
-}
-
 .lobbies__table {
     padding: 0;
 }
