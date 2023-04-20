@@ -45,7 +45,7 @@ class GameController extends Controller
         $game = (object) [
             'error' => true,
         ];
-        
+
         if ( !($request -> numQuestions == null || $request -> numQuestions == "null" || $request -> numQuestions == 0) ) {
             //Start an empty game
             $newGame = $this->createNewGame($request);
@@ -77,7 +77,6 @@ class GameController extends Controller
                 'questions' => $allQuestions
             ];
         }
-
 
         return response() -> json($game);
     }
