@@ -1,7 +1,8 @@
 import "../styles/normalize.css";
+import "../styles/chat.css";
 import { useState, useEffect } from "react";
 
-function Chat({ lobbyName }) {
+function ChatGame({ lobbyName }) {
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
 
@@ -32,15 +33,14 @@ function Chat({ lobbyName }) {
 
   useEffect(() => {
     if (document.getElementById('input_message') === document.click) {
-      document.getElementById('chat__body').style.display = "block";
-      document.getElementById('chat__body').style.transition = "all 2s ease-in";
+      document.getElementById('game__chatBody').style.display = "block";
+      document.getElementById('game__chatBody').style.transition = "all 2s ease-in";
     }
     if (!document.getElementById('input_message') === document.click) {
-      document.getElementById('chat__body').style.display = "none";
+      document.getElementById('game__chatBody').style.display = "none";
     }
 
-    document.getElementById('chat__body').scrollTop = document.getElementById('chat__body').scrollHeight;
-
+    document.getElementById('game__chatBody').scrollTop = document.getElementById('game__chatBody').scrollHeight;
     window.addEventListener('message', handleMessage);
 
     return () => {
@@ -49,25 +49,25 @@ function Chat({ lobbyName }) {
   })
 
   return (
-    <div className="lobby__chat chat">
-      <div className="chat__body" id="chat__body">
-        <ul id="messages" className="lobby__chat chat">
+    <div className="game__chat chat">
+      <div className="game__chatBody" id="game__chatBody">
+        <ul id="messages" className="game__chat chat">
           {Array.isArray(messages)
             ? messages.map((element, index) => {
               if (element.nickname != "ingame_events") {
                 return (
-                  <li className="chat__message" key={index}>
+                  <li className="game__chatMessage" key={index}>
                     <img
                       src={element.avatar}
                       width="50px"
-                      className="user__image"
+                      className="game__userImage"
                       alt={element.nickname + "'s avatar"}
                     ></img>{element.nickname + ": " + element.message}
                   </li>
                 );
               } else {
                 return (
-                  <li className="chat__message chat__message--event" key={index}>
+                  <li className="game__chatMessage game__chatMessage--event" key={index}>
                     <strong>{element.message}</strong>
                   </li>
                 );
@@ -77,8 +77,8 @@ function Chat({ lobbyName }) {
         </ul>
       </div>
       <form id="form" onSubmit={handleSendMessage}>
-        <div className="form--grid">
-          <div className="inputMsg-div">
+        <div className="game__form--grid">
+          <div className="game__inputMsg-div">
             <input
               id="input_message"
               autoComplete="off"
@@ -87,8 +87,8 @@ function Chat({ lobbyName }) {
             />
           </div>
 
-          <div className="buttonMsg-div">
-            <button className="send__button">Send</button>
+          <div className="game__buttonMsg-div">
+            <button className="game__sendButton">Send</button>
           </div>
         </div>
       </form>
@@ -97,4 +97,4 @@ function Chat({ lobbyName }) {
   );
 }
 
-export default Chat;
+export default ChatGame;
