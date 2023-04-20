@@ -243,6 +243,7 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("check_answer", (data) => {
+    console.log(data)
     let postData = {
       idQuestion: socket.data.idQuestion,
       idGame: socket.data.game_data.idGame,
@@ -256,6 +257,7 @@ socketIO.on("connection", (socket) => {
       .then(function (response) {
         var user_game = response.data.user_game;
         var game = response.data.game;
+        console.log(response.data);
         if (response.data.correct) {
           addMessage({
             nickname: "ingame_events",
@@ -337,7 +339,6 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("save_settings", (data) => {
-    console.log("SAVE SETTINGS")
     let valid = true;
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name == socket.data.current_lobby) {

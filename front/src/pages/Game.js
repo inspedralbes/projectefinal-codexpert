@@ -76,7 +76,7 @@ function Game() {
           let res = eval(code);
           resultsEval.push(res);
           // console.log(qst.inputs[1]);
-          // let x = qst.testInput1;
+          let x = qst.testInput1;
           // console.log(code);
           console.log(res)
           // console.log(qst.input);
