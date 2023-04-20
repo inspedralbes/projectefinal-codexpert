@@ -26,7 +26,9 @@ function ChatGame({ socket, lobbyName }) {
         type: 'chat_message-emit',
         message: msg,
         lobbyName: lobbyName,
-      }, '*')("");
+      }, '*')
+      setMsg("");
+
     }
   };
 

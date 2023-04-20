@@ -7,11 +7,10 @@ import { cobalt, amy, boysAndGirls, tomorrow, rosePineDawn, noctisLilac, espress
 
 
 
-function App() {
-    var [theme, setTheme] = useState("cobalt");
+function App({ code, setCode }) {
+    var [theme, setTheme] = useState("dark");
     const onChange = React.useCallback((value, viewUpdate) => {
-        console.log('value:', value);
-
+        setCode(value);
     }, []);
 
     let themeShow;
@@ -50,18 +49,15 @@ function App() {
         case 'birdsOfParadise':
             themeShow = birdsOfParadise;
             break;
+        case 'dark':
+            themeShow = 'dark';
+            break;
     }
 
     return (
         <div className='codemirror__editor'>
             <CodeMirror
-                value='function yourCode(input){
-                        //code here
-
- 
-
-                        return input;
-            }'
+                value={code}
                 style={{ fontSize: '1.1rem' }}
                 height="400px"
                 width='100%'
@@ -70,6 +66,7 @@ function App() {
                 onChange={onChange}
             />
             <select id='select' value={theme} onChange={e => setTheme(e.target.value)}>
+                <option value="dark">dark</option>
                 <option value="cobalt">cobalt</option>
                 <option value="amy">amy</option>
                 <option value="boyAndGirls">boyAndGirls</option>
