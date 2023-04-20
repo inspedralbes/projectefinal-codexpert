@@ -1,5 +1,5 @@
 import "../styles/normalize.css";
-import Chat from "../components/Chat";
+import ChatLobby from "../components/ChatLobby";
 import ConnectedUsers from "../components/ConnectedUsers";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -110,7 +110,7 @@ function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList, errorMe
                     <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
                 </div>}
             <div className="lobby__chat">
-                <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
+                <ChatLobby className="chat__chatbox" lobbyName={lobbyName}></ChatLobby>
             </div>
         </div>
     );
