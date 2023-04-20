@@ -6,6 +6,7 @@ import Cookies from "universal-cookie";
 import routes from "../index";
 import logo from '../img/logo.gif'
 import { Loader } from "../components/Loading";
+import IconUser from "../components/IconUser";
 
 
 function LandingPage() {
@@ -33,6 +34,7 @@ function LandingPage() {
 
   return (
     <div>
+      <IconUser />
       <div className="landingPage">
       <Loader />
         <img src={logo} alt="codeXpert" className="landingPage__codexpert"></img>
