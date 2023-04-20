@@ -3,7 +3,7 @@ import "../styles/normalize.css";
 import "../styles/game.css";
 import "../styles/Lobbies.css";
 import { useNavigate, Link } from "react-router-dom";
-import Chat from "../components/ChatGame";
+import ChatGame from "../components/ChatGame";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import CodeMirror from "../components/CodeMirror";
 
@@ -124,7 +124,7 @@ function Game() {
 
         <div className="container__left">
           <ConnectedUsersInGame></ConnectedUsersInGame>
-          <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
+          <ChatGame className="chatGame__chatbox" lobbyName={lobbyName}></ChatGame>
         </div>
 
         <div className="container__right">
