@@ -4,7 +4,7 @@ import "../styles/Lobbies.css";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import routes from "../index";
-import Loading from "../components/Loading";
+import { Loading } from "../components/Loading";
 import LobbyList from "../components/LobbyList";
 import JoinedLobby from "../components/JoinedLobby";
 

@@ -1,4 +1,5 @@
 import "../styles/normalize.css";
+import "../styles/Loading.css";
 import { Blocks } from 'react-loader-spinner'
 
 function Loading() {
@@ -19,4 +20,12 @@ function Loading() {
     );
 }
 
-export default Loading;
+function Loader() {
+    return (
+        <>
+            <span className="loader"></span>
+        </>
+    );
+}
+
+export { Loading, Loader }

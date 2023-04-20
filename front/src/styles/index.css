@@ -23,9 +23,8 @@ body {
     background-repeat: no-repeat;
 }
 
-/* =====================================LANDING===================================================================================================== */
-
 .pixel-button {
+    width: 40%;
     background-color: green;
     border-color: #000000;
     border-style: solid;
@@ -35,6 +34,7 @@ body {
     margin-left: 12px;
     padding: 20px;
     position: relative;
+    font-size: 80%;
     text-decoration: none;
     text-transform: uppercase;
     color: #ffffff;
