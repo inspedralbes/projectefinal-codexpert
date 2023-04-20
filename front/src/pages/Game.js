@@ -43,7 +43,6 @@ function Game() {
         break;
 
       case 'game_over-event':
-        console.log(window.network.getWinnerMessage());
         setWinnerMessage(window.network.getWinnerMessage());
         setPlayable(false)
         break;
@@ -62,7 +61,7 @@ function Game() {
         break;
 
       default:
-        console.log("Unknown event")
+        //
         break;
     }
   }
@@ -78,10 +77,10 @@ function Game() {
           let res = eval(code);
           resultsEval.push(res);
           // console.log(qst.inputs[1]);
-          // let x = qst.testInput1;
+          let x = qst.testInput1;
           // console.log(code);
+          console.log(res)
           // console.log(qst.input);
-          console.log(resultsEval);
           setError("");
         } catch (e) {
           setError(e.message);

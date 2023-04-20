@@ -21,37 +21,33 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register']); 
 
-    Route::post('/login', [AuthController::class, 'login']);
-
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/login', [AuthController::class, 'login']); 
 
     Route::post('/isUserLogged', [AuthController::class, 'isUserLogged']);
     
-    Route::post('/getUserId', [AuthController::class, 'getUserId']);
-
     Route::post('/getUserInfo', [AuthController::class, 'getUserInfo']);    
-    
-    Route::get('/getRanking', [UserController::class, 'getRanking']);
 
+    Route::post('/changeEmail', [UserController::class, 'changeEmail']);
+
+    Route::post('/changePassword', [UserController::class, 'changePassword']);
+
+    Route::post('/changeUsername', [UserController::class, 'changeUsername']);
+    
     Route::post('/getAvatar', [UserController::class, 'getAvatar']);
 
     Route::post('/setAvatar', [UserController::class, 'setAvatar']);
 
     Route::get('/getUserData', [UserController::class, 'getUserData']);
-        
-    Route::post('/changeUsername', [UserController::class, 'changeUsername']);
 
-    Route::post('/changeEmail', [UserController::class, 'changeEmail']);
-    
-    Route::post('/changePassword', [UserController::class, 'changePassword']);
-
-    Route::get('/startGame', [GameController::class, 'startGame']);
+    Route::post('/startGame', [GameController::class, 'startGame']);
 
     Route::post('/setUserGame', [GameController::class, 'setUserGame']);
 
     Route::post('/checkAnswer', [GameController::class, 'checkAnswer']);
 
     Route::post('/updateUserLvl', [GameController::class, 'updateUserLvl']);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
 });

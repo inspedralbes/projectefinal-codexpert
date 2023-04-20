@@ -7,19 +7,25 @@ import IconUser from "../components/IconUser";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import routes from "../index";
-import { Blocks } from 'react-loader-spinner'
-import lobbyTitle from '../img/lobbies.gif'
-import arrow from '../img/arrow.gif'
-
+import { Blocks } from 'react-loader-spinner';
+import lobbyTitle from '../img/lobbies.gif';
+import arrow from '../img/arrow.gif';
+import Settings from '../components/Settings';
+import Modal from 'react-modal';
+Modal.setAppElement('body');
 
 const Lobbies = () => {
   const [lobbyName, setLobbyName] = useState("");
   const [lobbyList, setLobbyList] = useState([]);
-  const [userList, setUserList] = useState([]);
   const [joinedLobby, setJoined] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
-  const [fetchUser, setfetchUser] = useState(false);
+  const [fetchUser, setFetchUser] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [starting, setStarting] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [fetchSettings, setFetchSettings] = useState(false);
 
   const navigate = useNavigate();
   const cookies = new Cookies();
@@ -34,7 +40,7 @@ const Lobbies = () => {
         break;
 
       case 'lobbies_list-event':
-        setLobbyList(window.network.getLobbyUserList());
+        setLobbyList(window.network.getLobbyList());
         break;
 
       case 'game_started-event':
@@ -44,7 +50,38 @@ const Lobbies = () => {
       case 'LOBBY_FULL_ERROR-event':
         setLobbyName("");
         setJoined(false);
-        setErrorMessage(window.ne.message)
+        setErrorMessage(window.network.getMessage())
+        break;
+
+      case 'ALREADY_ON_LOBBY-event':
+        setErrorMessage(window.network.getMessage())
+        setJoined(false);
+        break;
+
+      case 'LOBBY_ALREADY_EXISTS-event':
+        setErrorMessage(window.network.getMessage())
+        setJoined(false);
+        break;
+
+      case 'starting_errors-event':
+        if (eventData.valid) {
+          if (!sent) {
+            window.postMessage({
+              type: 'start_game-emit'
+            }, '*')
+          }
+          setSent(true);
+        } else {
+          setStarting(false);
+        }
+        break;
+
+      case 'show_settings-event':
+        setShowSettings(window.network.getShowSettings())
+        break;
+
+      case 'lobby_settings-event':
+        setFetchSettings(true);
         break;
 
       default:
@@ -54,10 +91,8 @@ const Lobbies = () => {
 
   const handleLeave = (e) => {
     e.preventDefault();
-    console.log("has abandonat la sala " + lobbyName);
     window.postMessage({
-      type: 'leave_lobby-emit',
-      lobbyName: lobbyName
+      type: 'leave_lobby-emit'
     }, '*')
     setJoined(false);
     setLobbyName("");
@@ -87,14 +122,16 @@ const Lobbies = () => {
       rank: "Member",
     }, '*')
 
+    setErrorMessage("");
     setJoined(true);
   };
 
-  function startGame() {
+  function handleStartGame(e) {
+    e.preventDefault();
+    setSent(false);
     window.postMessage({
-      type: 'start_game-emit'
-    }, '*')
-    navigate("/game");
+      type: 'save_settings-emit'
+  }, '*')
   }
 
   useEffect(() => {
@@ -109,8 +146,8 @@ const Lobbies = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data) {
-            setfetchUser(true)
+          if (data.correct) {
+            setFetchUser(true)
           } else {
             navigate("/login");
           }
@@ -245,10 +282,38 @@ const Lobbies = () => {
               <span className="button-text">LEAVE CURRENT LOBBY
               </span>
             </button>
+            {showSettings ?
+              <>
+                <button onClick={() => setShowModal(true)}>Settings</button>
+                <Modal
+                  style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+                    content: {
+                      top: '50%',
+                      left: '50%',
+                      right: 'auto',
+                      bottom: 'auto',
+                      marginRight: '-50%',
+                      transform: 'translate(-50%, -50%)',
+                      padding: "5%"
+                    },
+                  }}
+                  onRequestClose={() => setShowModal(false)}
+                  shouldCloseOnOverlayClick={true}
+                  isOpen={showModal}
+                >
+                  <Settings fetchSettings={fetchSettings}></Settings>
+                </Modal>
+              </> :
+              <></>}
+
+            {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             <ConnectedUsers></ConnectedUsers>
-            <div className="button-startGame">
-              <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
-            </div>
+
+            {showSettings &&
+              <div className="button-startGame">
+                <button className="startGame" id="startGame" onClick={handleStartGame}>Start game</button>
+              </div>}
+
             <div className="lobby__chat">
               <Chat className="chat__chatbox" lobbyName={lobbyName}></Chat>
             </div>

@@ -7,81 +7,99 @@ use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 class UserController extends Controller
 {
+    private function checkSessionId(Request $request)
+    {
+        $idInSession = null;
+
+        if ($request -> session()->get('userId') != null) {
+            $idInSession = session()->get('userId') ;
+        }
+
+        return $idInSession;
+    }     
+
     public function getAvatar(Request $request)
     {
+        $userFound = (object) ['url' => null];
+        $returnAvatar = (object) ['url' => null];
+        $userId = $this->checkSessionId($request);
+
         //Check if the user id is null, if not not we get the user's avatar.
-        if ($request -> session()->get('userId') != null) {
-            $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $returnAvatar = (object) [
-                'url' => $userFound -> avatar
-            ];
-        } else {
-            $returnAvatar = (object) [
-                'url' => null
-            ];
-        }
+        if ($userId != null) {
+            $userFound = User::where('id', $userId)->first();
+            if ($userFound != null) {
+                $returnAvatar = (object) [
+                    'url' => $userFound -> avatar
+                ];
+            }
+        } 
         
         return response() -> json($returnAvatar);
     }
     
     public function setAvatar(Request $request)
     {
+        $returnResponse = (object) [
+            'changed' => false
+        ];
+        $userId = $this->checkSessionId($request);
+
         //Check if the user is id null, if not we change the avatar.
-        if ($request -> session()->get('userId') != null) {
-            $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $userFound -> avatar = $request -> newAvatar;
-            $userFound -> save();
-            $returnResponse = (object) [
-                'changed' => true
-            ];
-        } else {
-            $returnResponse = (object) [
-                'changed' => null
-            ];
+        if ($userId != null) {
+            $userFound = User::where('id', $userId)->first();
+            if ($userFound != null) {
+                if (Str::contains($request -> newAvatar, 'https://api.dicebear.com/5.x/pixel-art/svg')) {
+                    $userFound -> avatar = $request -> newAvatar;
+                    $userFound -> save();
+
+                    $returnResponse = (object) [
+                        'changed' => true
+                    ];
+                }
+            }
         }  
 
         return response() -> json($returnResponse);
     }
 
-    public function getRanking(Request $request)
-    {
-        //Return the list of users ordered by their elo.
-        $ranking = User::orderBy('elo', 'DESC')->get();
-
-        return response() -> json($ranking);
-    }    
-    
     public function getUserData(Request $request)
     {
+        $returnUser = (object) [
+            'error' => "User is not logged in."
+        ];
+        $userId = $this->checkSessionId($request);
+
         //If the user id is not null we return the information from the user (name, email, avatar)
-        if ($request -> session()->get('userId') != null) {
-            $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $returnUser = (object) [
-                'name' => $userFound -> name,
-                'email' => $userFound -> email,
-                'avatar' => $userFound -> avatar,
-            ];
-        } else {
-            $returnUser = (object) [
-                'error' => "User is not logged in."
-            ];
+        if ($userId != null) {
+            $userFound = User::where('id', $userId)->first();
+            if ($userFound != null) {
+                $returnUser = (object) [
+                    'name' => $userFound -> name,
+                    'email' => $userFound -> email,
+                    'avatar' => $userFound -> avatar,
+                ];
+            }
         }
         
         return response() -> json($returnUser);
     }
 
-    public function checkValidName($request, $userFound)
+    private function checkValidName($request, $userFound)
     {
-        $nameRepeated = false;
         $validName = (object) [
-            'willChange' => true
-        ];
-       
+            'willChange' => false,
+            'error' => "User is not logged in."
+        ]; 
+        $nameRepeated = false;
+        $userId = $this->checkSessionId($request);
+
         //Check if user has changed the name                      
-        if ($request -> session()->get('userId') != null) {
-            if ($userFound -> name == $request -> newName) {
+        if ($userId != null) {
+            if (strcmp($userFound -> name, $request -> newName) == 0) {
                 $validName = (object) [
                     'willChange' => false, 
                     'error' => "Name has not been modified, no changes were made."
@@ -97,7 +115,7 @@ class UserController extends Controller
                     //If the name is valid we check if it's not repeated.
                     $getAllNames = User::get('name');
                     for ($i = 0; $i < count($getAllNames); $i++) { 
-                        if ($request -> newName == $getAllNames[$i]) {
+                        if (strcasecmp($request -> newName, $getAllNames[$i] -> name) == 0) {
                             $nameRepeated = true;
                         }
                     }
@@ -114,11 +132,6 @@ class UserController extends Controller
                     }
                 }
             }
-        } else {
-            $validName = (object) [
-                'willChange' => false,
-                'error' => "User is not logged in."
-            ]; 
         }
 
         return $validName;
@@ -129,50 +142,54 @@ class UserController extends Controller
         $validName = (object) [
             'willChange' => true
         ];
+        $returnUser = (object) [
+            'error' => "User is not logged in."
+        ];
+        $userId = $this->checkSessionId($request);
 
         //Check if the user id is not, if not null we continue to check
-        if ($request -> session()->get('userId') != null) {
-            $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $validName = $this->checkValidName($request, $userFound);
+        if ($userId != null) {
+            $userFound = User::where('id', $userId)->first();
+            if ($userFound  != null) {
+                $validName = $this->checkValidName($request, $userFound);
 
-            //Check if password is correct.
-            if (Hash::check($request -> password, $userFound -> password)) {
-                //If after validating the name can be changed we change it, if not we return the error.
-                if ($validName -> willChange) {
-                    $userFound -> name = $request -> newName;
-                    $userFound -> save(); 
-                    $returnUser = (object) [
-                        'success' => "Name has been changed."
-                    ];
+                //Check if password is correct.
+                if (Hash::check($request -> password, $userFound -> password)) {
+                    //If after validating the name can be changed we change it, if not we return the error.
+                    if ($validName -> willChange) {
+                        $userFound -> name = $request -> newName;
+                        $userFound -> save(); 
+                        $returnUser = (object) [
+                            'success' => "Name has been changed."
+                        ];
+                    } else {
+                        $returnUser = (object) [
+                            'error' => $validName -> error
+                        ];
+                    }
                 } else {
                     $returnUser = (object) [
-                        'error' => $validName -> error
+                        'error' => "Password is incorrect."
                     ];
                 }
-            } else {
-                $returnUser = (object) [
-                    'error' => "Password is incorrect."
-                ];
             }
-        } else {
-            $returnUser = (object) [
-                'error' => "User is not logged in."
-            ];
         }
         
         return response() -> json($returnUser);
     }
     
-    public function checkValidEmail($request, $userFound)
+    private function checkValidEmail($request, $userFound)
     {
-        $emailRepeated = false;
         $validEmail = (object) [
-            'willChange' => true
-        ];
-       
+            'willChange' => false,
+            'error' => "User is not logged in."
+        ]; 
+        $emailRepeated = false;
+        $userId = $this->checkSessionId($request);
+
         //Check if user has changed the email                      
-        if ($request -> session()->get('userId') != null) {
-            if ($userFound -> email == $request -> newEmail) {
+        if ($userId != null) {
+            if (strcmp($userFound -> email, $request -> newEmail) == 0) {
                 $validEmail = (object) [
                     'willChange' => false, 
                     'error' => "Email has not been modified, no changes were made."
@@ -192,7 +209,7 @@ class UserController extends Controller
                     //If the email is valid we check if it's not repeated.
                     $getAllEmails = User::get('email');
                     for ($i = 0; $i < count($getAllEmails); $i++) { 
-                        if ($request -> newEmail == $getAllEmails[$i]) {
+                        if (strcasecmp($request -> newEmail, $getAllEmails[$i] -> email) == 0) {
                             $emailRepeated = true;
                         }
                     }
@@ -209,12 +226,7 @@ class UserController extends Controller
                     }
                 }
             }
-        } else {
-            $validName = (object) [
-                'willChange' => false,
-                'error' => "User is not logged in."
-            ]; 
-        }
+        } 
 
         return $validEmail;
     }
@@ -224,48 +236,55 @@ class UserController extends Controller
         $validEmail = (object) [
             'willChange' => true
         ];
+        $returnUser = (object) [
+            'error' => "User is not logged in."
+        ];
+        $userId = $this->checkSessionId($request);
 
         //Check if the user id is not, if not null we continue to check
-        if ($request -> session()->get('userId') != null) {
-            $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $validEmail = $this->checkValidEmail($request, $userFound);
+        if ($userId != null) {
+            $userFound = User::where('id', $userId)->first();
+            if ($userFound  != null) {
+                $validEmail = $this->checkValidEmail($request, $userFound);
 
-            //Check if password is correct.
-            if (Hash::check($request -> password, $userFound -> password)) {
-                //If after validating the email can be changed we change it, if not we return the error.
-                if ($validEmail -> willChange) {
-                    $userFound -> email = $request -> newEmail;
-                    $userFound -> save(); 
-                    $returnUser = (object) [
-                        'success' => "Email has been changed."
-                    ];
+                //Check if password is correct.
+                if (Hash::check($request -> password, $userFound -> password)) {
+                    //If after validating the email can be changed we change it, if not we return the error.
+                    if ($validEmail -> willChange) {
+                        $userFound -> email = $request -> newEmail;
+                        $userFound -> save(); 
+                        $returnUser = (object) [
+                            'success' => "Email has been changed."
+                        ];
+                    } else {
+                        $returnUser = (object) [
+                            'error' => $validEmail -> error
+                        ];
+                    }
                 } else {
                     $returnUser = (object) [
-                        'error' => $validEmail -> error
+                        'error' => "Password is incorrect."
                     ];
                 }
-            } else {
-                $returnUser = (object) [
-                    'error' => "Password is incorrect."
-                ];
             }
-        } else {
-            $returnUser = (object) [
-                'error' => "User is not logged in."
-            ];
         }
         
         return response() -> json($returnUser);
     }
 
-    public function checkValidPassword($request, $userFound)
+    private function checkValidPassword($request, $userFound)
     {
         $validPassword = (object) [
             'willChange' => true
         ];
-       
+        $validPassword = (object) [
+            'willChange' => false,
+            'error' => "User is not logged in."
+        ];
+        $userId = $this->checkSessionId($request);
+
         //To start checking the user must be logged in.
-        if ($request -> session()->get('userId') != null) { 
+        if ($userId != null) { 
             //We check if the currentPassword that the user has introduced is the same as the password in the database for that user.
             //if it's correct we continue
             if (Hash::check($request -> currentPassword, $userFound -> password)) {
@@ -307,11 +326,6 @@ class UserController extends Controller
                     'error' => "Current password is incorrect."
                 ];
             } 
-        } else {
-            $validPassword = (object) [
-                'willChange' => false,
-                'error' => "User is not logged in."
-            ]; 
         }
 
         return $validPassword;
@@ -322,31 +336,32 @@ class UserController extends Controller
         $validPassword = (object) [
             'willChange' => true
         ];
+        $returnUser = (object) [
+            'error' => "User is not logged in."
+        ];
+        $userId = $this->checkSessionId($request);
 
         //Check if the user id is not, if not null we continue to check
-        if ($request -> session()->get('userId') != null) {
-            $userFound = User::where('id', $request->session()->get('userId'))->first();
-            $validPassword = $this->checkValidPassword($request, $userFound);
+        if ($userId != null) {
+            $userFound = User::where('id', $userId)->first();
+            if ($userFound != null) {
+                $validPassword = $this->checkValidPassword($request, $userFound);
 
-            //If after validating the password can be changed we change it, if not we return the error.
-            if ($validPassword -> willChange) {
-                $userFound -> password = Hash::make($request -> newPassword);
-                $userFound -> save(); 
-                $returnUser = (object) [
-                    'success' => "Password has been changed."
-                ];
-            } else {
-                $returnUser = (object) [
-                    'error' => $validPassword -> error
-                ];
+                //If after validating the password can be changed we change it, if not we return the error.
+                if ($validPassword -> willChange) {
+                    $userFound -> password = Hash::make($request -> newPassword);
+                    $userFound -> save(); 
+                    $returnUser = (object) [
+                        'success' => "Password has been changed."
+                    ];
+                } else {
+                    $returnUser = (object) [
+                        'error' => $validPassword -> error
+                    ];
+                }
             }
-        } else {
-            $returnUser = (object) [
-                'error' => "User is not logged in."
-            ];
-        }
-        
+        } 
         return response() -> json($returnUser);
     }    
-
+   
 }
