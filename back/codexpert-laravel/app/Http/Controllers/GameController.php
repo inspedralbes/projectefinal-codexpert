@@ -125,6 +125,8 @@ class GameController extends Controller
                 }
             }
 
+        } else {
+            $returnObject -> correct = false;
         }
 
         $game = Game::where('id', $request -> idGame) -> first();
@@ -136,7 +138,7 @@ class GameController extends Controller
         if ($user_game -> question_at < $request -> numQuestions) {
             //If the user responded correctly, we move his position and check if he has either won, or finished (this would mean someone else has won)
             if ($returnObject -> correct) {
-                $user_game -> question_at = $user_game -> question_at + 1;
+                $user_game -> question_at += 1;
                 if ($user_game -> question_at == $request -> numQuestions) {
                     $user_game -> finished = true;
                     if ($game -> winner_id == null) {
@@ -145,7 +147,7 @@ class GameController extends Controller
                 }
             } else {
                 //If he responded incorrectly we update their number of hearts. If he has 0 hearts it's game over.
-                $user_game -> hearts_remaining = $user_game -> hearts_remaining - 1;
+                $user_game -> hearts_remaining -= 1;
                 if ($user_game -> hearts_remaining == 0) {
                     $user_game -> finished = true;
                     $user_game -> dead = true;

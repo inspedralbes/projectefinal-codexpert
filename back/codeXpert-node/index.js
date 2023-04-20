@@ -249,12 +249,21 @@ socketIO.on("connection", (socket) => {
 
   socket.on("check_answer", (data) => {
     console.log(data)
+    let numQuestions;
+
+    lobbies.forEach(lobby => {
+      if (lobby.lobby_name == socket.data.current_lobby) {
+        numQuestions = lobby.settings.questionAmount;
+      }
+    });
+
     let postData = {
       idQuestion: socket.data.idQuestion,
       idGame: socket.data.game_data.idGame,
       idUser: socket.data.userId,
       evalRes: data.resultsEval,
       evalPassed: data.evalPassed,
+      numQuestions: numQuestions
     }
 
     axios
