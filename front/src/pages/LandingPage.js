@@ -5,10 +5,12 @@ import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import routes from "../index";
 import logo from '../img/logo.gif'
+import { Loader } from "../components/Loading";
+
 
 function LandingPage() {
   const cookies = new Cookies();
-  const [login, setLogin] = useState(false);
+  const [buttonOption, setButtonOption] = useState("");
 
   useEffect(() => {
     const token = new FormData();
@@ -22,7 +24,9 @@ function LandingPage() {
       .then((response) => response.json())
       .then((data) => {
         if (data) {
-          setLogin(true)
+          setButtonOption("lobbies");
+        } else {
+          setButtonOption("started");
         }
       });
   }, [])
@@ -30,15 +34,19 @@ function LandingPage() {
   return (
     <div>
       <div className="landingPage">
-        <img src={logo} alt="codeXpert"></img>
+      <Loader />
+        <img src={logo} alt="codeXpert" className="landingPage__codexpert"></img>
         <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
         <br />
-        {!login && (
+        {buttonOption === "" && (
+          <button className="pixel-button"><Loader /></button>
+        )}
+        {buttonOption === "started" && (
           <Link to="/login">
             <button className="pixel-button">Get Started</button>
           </Link>
         )}
-        {login && (
+        {buttonOption === "lobbies" && (
           <Link to="/lobbies">
             <button className="pixel-button">Lobbies</button>
           </Link>
