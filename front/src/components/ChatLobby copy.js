@@ -39,8 +39,8 @@ function ChatGame({ lobbyName }) {
     if (!document.getElementById('input_message') === document.click) {
       document.getElementById('game__chatBody').style.display = "none";
     }
-
     document.getElementById('game__chatBody').scrollTop = document.getElementById('game__chatBody').scrollHeight;
+
     window.addEventListener('message', handleMessage);
 
     return () => {
