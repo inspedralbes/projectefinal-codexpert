@@ -61,15 +61,6 @@ function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList, errorMe
         setLobbyList([]);
     };
 
-    function startGame(e) {
-        e.preventDefault();
-        setSent(false);
-        window.postMessage({
-            type: 'start_game-emit'
-        }, '*')
-        navigate("/game");
-    }
-
     useEffect(() => {
         window.addEventListener('message', handleMessage);
 
