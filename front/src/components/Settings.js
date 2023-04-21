@@ -25,6 +25,7 @@ function Settings({ fetchSettings }) {
     function handleChangeQuestionAmount(e) {
         setQuestionAmount(e.target.value);
         window.network.setQuestionAmount(e.target.value);
+        console.log(window.network.getQuestionAmount());
     }
 
     const getSettings = () => {

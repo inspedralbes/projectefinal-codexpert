@@ -85,7 +85,7 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
                                             className="col col-3"
                                             data-label="Owner"
                                         >
-                                            {element.members[0].nom}
+                                            {element.owner_name}
                                         </div>
                                         <div
                                             id={element.lobby_name}
@@ -96,8 +96,6 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
                                         </div>
                                     </li>
                                 );
-
-
                             }) : null}
                         </div>
                     </ul>
