@@ -1,6 +1,6 @@
 import socketIO from "socket.io-client";
 import ConnectionNetwork from "./ConnectionNetwork.js";
-import routes from "../index";
+import routes from "./index.js";
 
 let socket = socketIO(routes.wsNode, {
     withCredentials: true,
