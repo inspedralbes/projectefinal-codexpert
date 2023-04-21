@@ -20,8 +20,8 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 const routes = {
-  fetchLaravel: "http://localhost:8000/index.php/",
-  wsNode: "ws://localhost:7500",
+  fetchLaravel: "https://api.codexpert.alumnes.inspedralbes.cat/index.php/",
+  wsNode: "wss://codexpert.cat:7500",
 };
 
 if (cookies.get("token") != undefined) {
