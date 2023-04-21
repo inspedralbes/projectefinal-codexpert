@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class aRegisterTest extends TestCase
+class registerTest extends TestCase
 {
     /**
      * A basic feature test example.

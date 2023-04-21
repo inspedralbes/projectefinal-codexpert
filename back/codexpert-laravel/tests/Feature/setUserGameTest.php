@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use \stdClass;
 
-class mSetUserGameTest extends TestCase
+class setUserGameTest extends TestCase
 {
     /**
      * A basic feature test example.

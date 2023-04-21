@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class bLoginTest extends TestCase
+class loginTest extends TestCase
 {
     /**
      * A basic feature test example.
@@ -16,7 +16,7 @@ class bLoginTest extends TestCase
     public function test_correct()
     {
         //Given a correct userId but the new password is not valid
-        $response = $this->postJson("/login", ['email' => 'codexpert_test@codexpert.com','password' => 'Qwerty123456.']);
+        $response = $this->postJson("/login", ['email' => 'codexpert_test2@codexpert.com','password' => 'Qwerty123456.']);
 
         $response
         ->assertStatus(200)
@@ -29,7 +29,7 @@ class bLoginTest extends TestCase
     public function test_incorrect_password()
     {
         //Email registered, incorrect password
-        $response = $this->postJson("/login", ['email' => 'codexpert_test@codexpert.com','password' => 'Qwerty123456']);
+        $response = $this->postJson("/login", ['email' => 'codexpert_test2@codexpert.com','password' => 'Qwerty123456']);
 
         $response
         ->assertStatus(200)

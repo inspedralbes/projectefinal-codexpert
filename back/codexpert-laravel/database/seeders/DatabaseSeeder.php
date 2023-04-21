@@ -124,5 +124,12 @@ class DatabaseSeeder extends Seeder
         $newUserGame -> user_id = 1;
         $newUserGame -> save();
 
+        //Add testing user for teachers
+        $user = new User;
+        $user -> name = strtolower("pdaw");
+        $user -> email = strtolower("pdaw@inspedralbes.cat");
+        $user -> password = Hash::make("Pdaw2023!");
+        $user -> save();
+
     }
 }

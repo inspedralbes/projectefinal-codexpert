@@ -182,35 +182,39 @@ class GameController extends Controller
         $members = $request -> users;
         $game = Game::where('id', $request -> idGame) -> first();
         
-        for ($i = 0; $i < count($members); $i++) {
-            $myGame = User_game::where('game_id', $request -> idGame) 
-            -> where('user_id', $members[$i]['idUser'])
-            -> first();
+        if ($game != null) {
+            if ( !($game -> winner_id == null || $members == null)) {
+                for ($i = 0; $i < count($members); $i++) {
+                    $myGame = User_game::where('game_id', $request -> idGame) 
+                    -> where('user_id', $members[$i]['idUser'])
+                    -> first();
 
-            $myProfile = User::where('id', $members[$i]['idUser']) -> first();
+                    $myProfile = User::where('id', $members[$i]['idUser']) -> first();
 
-            if ($game -> winner_id == $members[$i]['idUser']) {
-                $multiplier = 2;
+                    if ($game -> winner_id == $members[$i]['idUser']) {
+                        $multiplier = 2;
+                    }
+
+                    $newXp = ($myGame -> question_at) * $multiplier;
+                    $newCoins = ($myGame -> question_at) * $multiplier;
+                    $newElo = (($myGame -> question_at) * 2) * $multiplier;
+
+                    $myProfile -> xp += $newXp;
+                    $myProfile -> coins += $newCoins;
+                    $myProfile -> elo += $newElo;
+                    
+                    $updatedStats = (object) [
+                        'idUser' =>  $members[$i]['idUser'],
+                        'xpEarned' =>  $newXp,
+                        'coinsEarned' => $newCoins,
+                        'eloEarned' => $newElo,
+                    ];
+
+                    $updatedProfiles[$i] = $updatedStats;
+                    
+                    $myProfile -> save();
+                }
             }
-
-            $newXp = ($myGame -> question_at) * $multiplier;
-            $newCoins = ($myGame -> question_at) * $multiplier;
-            $newElo = (($myGame -> question_at) * 2) * $multiplier;
-
-            $myProfile -> xp += $newXp;
-            $myProfile -> coins += $newCoins;
-            $myProfile -> elo += $newElo;
-            
-            $updatedStats = (object) [
-                'idUser' =>  $members[$i]['idUser'],
-                'xpEarned' =>  $newXp,
-                'coinsEarned' => $newCoins,
-                'eloEarned' => $newElo,
-            ];
-
-            $updatedProfiles[$i] = $updatedStats;
-            
-            $myProfile -> save();
         }
 
         return response() -> json($updatedProfiles);
