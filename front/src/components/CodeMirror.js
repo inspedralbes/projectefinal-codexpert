@@ -11,6 +11,7 @@ function App({ code, setCode }) {
     var [theme, setTheme] = useState("dark");
     const onChange = React.useCallback((value, viewUpdate) => {
         setCode(value);
+
     }, []);
 
     let themeShow;
