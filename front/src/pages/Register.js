@@ -26,7 +26,6 @@ function Register() {
         passwordValidation: "red",
     });
 
-    const [errorText, setErrorText] = useState("");
     const cookies = new Cookies();
     const navigate = useNavigate();
 

@@ -17,6 +17,11 @@
     border-radius: 50%;
 }
 
+.loader {
+    display: auto;
+    margin: 15px;
+}
+
 .dropdown {
     position: absolute;
     top: 100%;

@@ -5,17 +5,17 @@ import { Blocks } from 'react-loader-spinner'
 function Loading() {
 
     return (
-        <>
-            <h1>Loading</h1>
+        <div className="Loading__container">
+            <h1>Loading...</h1>
             <Blocks
                 visible={true}
-                height="80"
-                width="80"
+                height="130"
+                width="130"
                 ariaLabel="blocks-loading"
                 wrapperStyle={{}}
                 wrapperClass="blocks-wrapper"
             />
-        </>
+        </div>
 
     );
 }

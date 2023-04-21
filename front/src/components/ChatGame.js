@@ -41,6 +41,7 @@ function ChatGame({ lobbyName }) {
     }
 
     document.getElementById('game__chatBody').scrollTop = document.getElementById('game__chatBody').scrollHeight;
+    
     window.addEventListener('message', handleMessage);
 
     return () => {
