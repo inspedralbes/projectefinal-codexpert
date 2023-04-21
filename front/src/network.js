@@ -46,7 +46,6 @@ const handleMessage = (event) => {
         case "chat_message-emit":
             socket.emit("chat_message", {
                 message: eventData.message,
-                room: eventData.lobbyName,
             });
             break;
 
@@ -87,17 +86,22 @@ window.addEventListener('message', handleMessage);
 socket.on("YOU_ARE_ON_LOBBY", (data) => {
     window.network.setLobbyName(data.lobby_name);
     window.postMessage({ type: 'YOU_ARE_ON_LOBBY-event' }, '*')
-})
+});
+
+socket.on("lobby_name", (data) => {
+    window.network.setLobbyName(data.lobby_name);
+    window.postMessage({ type: 'lobby_name-event' }, '*')
+});
 
 socket.on("lobbies_list", (data) => {
     window.network.setLobbyList(data);
     window.postMessage({ type: 'lobbies_list-event' }, '*')
-})
+});
 
 socket.on("lobby_user_list", (data) => {
     window.network.setLobbyUserList(data.list);
     window.postMessage({ type: 'lobby_user_list-event' }, '*')
-})
+});
 
 socket.on("lobby_message", function (data) {
     window.network.setLobbyMessages(data.messages);
@@ -110,7 +114,7 @@ socket.on("game_started", () => {
 
 socket.on("lobby_name", (data) => {
     window.postMessage({ type: 'lobby_name-event' }, '*')
-})
+});
 
 socket.on("question_data", function (data) {
     window.network.setQuestionData(data)
@@ -134,16 +138,16 @@ socket.on("stats", (data) => {
         coinsEarned: data.coinsEarned,
         eloEarned: data.eloEarned,
     })
-})
+});
 
 socket.on("YOU_LEFT_LOBBY", () => {
     window.postMessage({ type: 'YOU_LEFT_LOBBY-event' }, '*')
-})
+});
 
 socket.on("show_settings", (data) => {
     window.network.setShowSettings(data.show);
     window.postMessage({ type: 'show_settings-event' }, '*')
-})
+});
 
 socket.on("lobby_settings", (data) => {
     window.network.setGameDuration(data.gameDuration);
@@ -159,7 +163,6 @@ socket.on("ALREADY_ON_LOBBY", (data) => {
 });
 
 socket.on("starting_errors", (data) => {
-    console.log("ENTRA STARTING");
     window.postMessage({ type: 'starting_errors-event', valid: data.valid }, '*')
 });
 
@@ -167,7 +170,7 @@ socket.on("starting_errors", (data) => {
 socket.on("LOBBY_FULL_ERROR", (data) => {
     window.network.setMessage(data.message);
     window.postMessage({ type: 'LOBBY_FULL_ERROR-event' }, '*')
-})
+});
 
 socket.on("LOBBY_ALREADY_EXISTS", (data) => {
     window.network.setMessage(data.message);

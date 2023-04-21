@@ -220,6 +220,9 @@ socketIO.on("connection", (socket) => {
           socketIO.to(socket.id).emit("lobby_settings", settings);
         }
       }
+      socketIO.to(socket.id).emit("lobby_name", {
+        lobby_name: data.lobby_name
+      })
     }
   });
 
@@ -235,7 +238,7 @@ socketIO.on("connection", (socket) => {
       nickname: socket.data.name,
       message: data.message,
       avatar: socket.data.avatar
-    }, data.room);
+    }, socket.data.current_lobby);
   });
 
   socket.on("start_game", () => {
@@ -248,7 +251,6 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("check_answer", (data) => {
-    console.log(data)
     let numQuestions;
 
     lobbies.forEach(lobby => {
@@ -271,7 +273,7 @@ socketIO.on("connection", (socket) => {
       .then(function (response) {
         var user_game = response.data.user_game;
         var game = response.data.game;
-        console.log(response.data);
+
         if (response.data.correct) {
           addMessage({
             nickname: "ingame_events",
@@ -433,7 +435,6 @@ async function startGame(room, amount) {
       numQuestions: amount
     })
     .then(function (response) {
-      console.log(response.data);
       lobbies.forEach((lobby) => {
         if (lobby.lobby_name == room) {
           lobby.game_data = response.data;
