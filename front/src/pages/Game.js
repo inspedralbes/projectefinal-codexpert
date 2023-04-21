@@ -8,8 +8,8 @@ import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import CodeMirror from "../components/CodeMirror";
 
 function Game() {
-  const [lobbyName, setLobbyName] = useState("");
-  const [code, setCode] = useState("function yourCode(input){ \n  //code here \n  return input;\n}");
+  const defaultCode = "function yourCode(input){ \n  //code here\n  \n  return input;\n}\nyourCode(input);";
+  const [code, setCode] = useState(defaultCode);
   const [error, setError] = useState("");
   const [result, setResult] = useState("");
   const [winnerMessage, setWinnerMessage] = useState("");
@@ -31,13 +31,9 @@ function Game() {
     let eventData = event.data
 
     switch (eventData.type) {
-      case 'lobby_name-event':
-        setLobbyName(window.network.getLobbyName())
-        break;
-
       case 'question_data-event':
         setQst(window.network.getQuestionData());
-        setCode("function yourCode(input){ \n  //code here \n  return input;\n}");
+        setCode(defaultCode);
         break;
 
       case 'game_over-event':
@@ -74,15 +70,12 @@ function Game() {
         try {
           let res = eval(code);
           resultsEval.push(res);
-          console.log(res)
           setError("");
         } catch (e) {
           setError(e.message);
           evalPassed = false;
         }
       });
-
-      console.log(resultsEval, evalPassed);
 
       window.postMessage({
         type: 'check_answer-emit',
@@ -99,7 +92,7 @@ function Game() {
   function leaveLobby() {
     window.postMessage({
       type: 'leave_lobby-emit',
-      lobbyName: lobbyName
+      lobbyName: window.network.getLobbyName()
     }, '*')
   }
 
@@ -117,7 +110,7 @@ function Game() {
 
         <div className="container__left">
           <ConnectedUsersInGame></ConnectedUsersInGame>
-          <ChatGame className="chatGame__chatbox" lobbyName={lobbyName}></ChatGame>
+          <ChatGame className="chatGame__chatbox"></ChatGame>
         </div>
 
         <div className="container__right">
