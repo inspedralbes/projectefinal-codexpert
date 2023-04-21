@@ -92,6 +92,7 @@ class GameController extends Controller
             $newUserGame = new User_game;
             $newUserGame -> game_id = $request -> idGame;
             $newUserGame -> user_id = $members[$i]['idUser'];
+            $newUserGame -> hearts_remaining = $request -> heartAmount;
             $newUserGame -> save();
             $checkUserGames [$i] = $newUserGame;
         }
