@@ -6,7 +6,7 @@ function ConnectedUsersInGame() {
 
     const handleMessage = (event) => {
         let eventData = event.data
-        
+
         switch (eventData.type) {
             case 'lobby_user_list-event':
                 setUserList(window.network.getLobbyUserList());
@@ -49,6 +49,15 @@ function ConnectedUsersInGame() {
                             </div>
 
                             <div>
+                                {user.hearts_remaining > 3 &&
+                                    <div>
+                                        <h1>
+                                            <img src={require('../img/hearts/one_heart_normal.png')}
+                                                width="50px"
+                                                className="user__health"
+                                                alt={user.hearts_remaining + " hearts remaining"} />{` x${user.hearts_remaining}`}
+                                        </h1>
+                                    </div>}
                                 {user.hearts_remaining == 3 &&
                                     <img src={require('../img/hearts/three_hearts.png')}
                                         height="50px"

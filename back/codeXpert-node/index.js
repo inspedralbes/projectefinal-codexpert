@@ -489,17 +489,20 @@ async function startGame(room, amount) {
 async function enviarDadesGame(room) {
   var members;
   var idGame;
+  var heartAmount;
 
   lobbies.forEach((lobby) => {
     if (lobby.lobby_name == room) {
       members = lobby.members;
       idGame = lobby.game_data.idGame;
+      heartAmount = lobby.settings.heartAmount;
     }
   });
   await axios
     .post(laravelRoute + "setUserGame", {
       users: members,
       idGame: idGame,
+      heartAmount: heartAmount
     })
     .catch(function (error) {
       console.log(error);
@@ -567,13 +570,20 @@ function setUserLvl(data, room) {
 
 async function setGameData(game_data, room) {
   const sockets = await socketIO.in(room).fetchSockets();
+  let hearts;
+
+  lobbies.forEach(lobby => {
+    if (lobby.lobby_name == room) {
+      hearts = lobby.settings.heartAmount;
+    }
+  });
 
   sockets.forEach((socket) => {
     if (game_data.questions.length > 0) {
       socket.data.game_data = game_data;
       socket.data.idQuestion = game_data.questions[0].id;
       socket.data.question_at = 0;
-      socket.data.hearts_remaining = 3;
+      socket.data.hearts_remaining = hearts;
       socket.data.idGame = game_data.idGame;
     }
   });
