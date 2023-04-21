@@ -12,6 +12,7 @@ function IconUser() {
   const [state, setState] = useState(false);
   const [avatarURL, setAvatarURL] = useState(null);
   const [logOut, setLogOut] = useState(false);
+  const [isUserLogged, setisUserLogged] = useState(false);
 
   const handleButtonClick = () => {
     setState(!state)
@@ -29,6 +30,20 @@ function IconUser() {
       .then((response) => response.json())
       .then((data) => {
         setAvatarURL(data.url);
+      });
+
+    token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
+    fetch(routes.fetchLaravel + "isUserLogged", {
+      method: "POST",
+      mode: "cors",
+      body: token,
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.correct) {
+          setisUserLogged(true)
+        }
       });
   }, []);
 
@@ -59,25 +74,29 @@ function IconUser() {
   }, [logOut]);
 
   return (
-    <div className="container">
-      {avatarURL !== null ? (
-        <button
-          type="button"
-          className="button"
-          onClick={handleButtonClick}
-        >
-          <img className="button__image" src={avatarURL} height="50" width="50"></img>
-        </button>
-      ) : <Loader className="loader"/>}
-      {state && (
-        <div className="dropdown">
-          <ul className="dropdown__list list">
-            <li className="list__item"><button className="button" onClick={() => navigate("/profile")}>Profile</button></li>
-            <li className="list__item"> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
-          </ul>
+    <>
+      {isUserLogged && (
+        <div className="container">
+          {avatarURL !== null ? (
+            <button
+              type="button"
+              className="button"
+              onClick={handleButtonClick}
+            >
+              <img className="button__image" src={avatarURL} height="50" width="50"></img>
+            </button>
+          ) : <Loader className="loader" />}
+          {state && (
+            <div className="dropdown">
+              <ul className="dropdown__list list">
+                <li className="list__item"><button className="button" onClick={() => navigate("/profile")}>Profile</button></li>
+                <li className="list__item"> <button className="button" onClick={() => setLogOut(!logOut)}>Log Out</button></li>
+              </ul>
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 }
 
