@@ -122,6 +122,27 @@ socketIO.on("connection", (socket) => {
       socket.emit("YOU_ARE_ON_LOBBY", {
         lobby_name: socket.data.current_lobby
       })
+
+      lobbies.forEach(lobby => {
+        if (lobby.lobby_name == socket.data.current_lobby) {
+          if (lobby.owner_name == socket.data.name) {
+            let settings = lobby.settings
+
+            if (settings != null) {
+              socketIO.to(socket.id).emit("show_settings", {
+                show: true,
+              });
+
+              socketIO.to(socket.id).emit("lobby_settings", settings);
+            }
+          }
+
+          socketIO.to(socket.id).emit("lobby_name", {
+            lobby_name: lobby.lobby_name
+          })
+        }
+      });
+
     } else {
       sendLobbyList();
     }
@@ -147,7 +168,8 @@ socketIO.on("connection", (socket) => {
         lobby_name: lobby,
         members: [],
         messages: [],
-        settings: defaultSettings
+        settings: defaultSettings,
+        owner_name: socket.data.name
       });
     }
   });

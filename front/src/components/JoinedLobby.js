@@ -80,7 +80,7 @@ function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList, errorMe
                 <span className="button-text">LEAVE CURRENT LOBBY
                 </span>
             </button>
-            {showSettings ?
+            {window.network.getShowSettings() ?
                 <>
                     <button onClick={() => setShowModal(true)}>Settings</button>
                     <Modal
@@ -105,7 +105,7 @@ function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList, errorMe
                 <></>}
             {errorMessage != "" && <h2 className="lobbies__error">{errorMessage}</h2>}
             <ConnectedUsers></ConnectedUsers>
-            {showSettings &&
+            {window.network.getShowSettings() &&
                 <div className="button-startGame">
                     <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
                 </div>}
