@@ -28,6 +28,10 @@ function Lobbies() {
         setJoined(true);
         break;
 
+      case 'lobby_name-event':
+        setLobbyName(window.network.getLobbyName());
+        break;
+
       case 'lobbies_list-event':
         setLobbyList(window.network.getLobbyList());
         break;

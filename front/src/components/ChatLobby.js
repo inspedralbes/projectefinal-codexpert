@@ -24,7 +24,6 @@ function ChatLobby({ lobbyName }) {
       window.postMessage({
         type: 'chat_message-emit',
         message: msg,
-        lobbyName: lobbyName,
       }, '*')
       setMsg("");
     }
@@ -35,9 +34,11 @@ function ChatLobby({ lobbyName }) {
       document.getElementById('chat__body').style.display = "block";
       document.getElementById('chat__body').style.transition = "all 2s ease-in";
     }
+
     if (!document.getElementById('input_message') === document.click) {
       document.getElementById('chat__body').style.display = "none";
     }
+
     document.getElementById('chat__body').scrollTop = document.getElementById('chat__body').scrollHeight;
 
     window.addEventListener('message', handleMessage);

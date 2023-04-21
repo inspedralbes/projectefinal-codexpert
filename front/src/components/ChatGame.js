@@ -2,7 +2,7 @@ import "../styles/normalize.css";
 import "../styles/chat.css";
 import { useState, useEffect } from "react";
 
-function ChatGame({ lobbyName }) {
+function ChatGame() {
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
 
@@ -11,6 +11,7 @@ function ChatGame({ lobbyName }) {
 
     switch (eventData.type) {
       case 'lobby_message-event':
+        console.log("Recibo msg")
         setMessages(window.network.getLobbyMessages());
         break;
 
@@ -22,10 +23,10 @@ function ChatGame({ lobbyName }) {
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (msg != "") {
+      console.log("Emit msg")
       window.postMessage({
         type: 'chat_message-emit',
         message: msg,
-        lobbyName: lobbyName,
       }, '*')
       setMsg("");
     }
@@ -36,6 +37,7 @@ function ChatGame({ lobbyName }) {
       document.getElementById('game__chatBody').style.display = "block";
       document.getElementById('game__chatBody').style.transition = "all 2s ease-in";
     }
+
     if (!document.getElementById('input_message') === document.click) {
       document.getElementById('game__chatBody').style.display = "none";
     }
