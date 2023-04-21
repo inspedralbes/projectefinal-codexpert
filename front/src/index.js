@@ -19,11 +19,6 @@ import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
 
-const routes = {
-  fetchLaravel: "https://api.codexpert.alumnes.inspedralbes.cat/index.php/",
-  wsNode: "wss://codexpert.cat:7500",
-};
-
 if (cookies.get("token") != undefined) {
   window.postMessage({
     type: 'send_token-emit',
@@ -54,7 +49,6 @@ root.render(
   //</React.StrictMode>
 );
 
-export default routes;
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
