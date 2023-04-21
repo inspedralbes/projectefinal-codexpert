@@ -65,6 +65,7 @@ const handleMessage = (event) => {
             break;
 
         case "save_settings-emit":
+            console.log("EMIT Qamt", window.network.getQuestionAmount())
             socket.emit("save_settings", {
                 gameDuration: window.network.getGameDuration(),
                 heartAmount: window.network.getHeartAmount(),

@@ -44,6 +44,13 @@ function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList, errorMe
         }
     }
 
+    const handleStartGame = (e) => {
+        e.preventDefault();
+        window.postMessage({
+            type: 'save_settings-emit'
+        }, '*')
+    };
+
     const handleLeave = (e) => {
         e.preventDefault();
         window.postMessage({
@@ -107,7 +114,7 @@ function JoinedLobby({ lobbyName, setJoined, setLobbyName, setLobbyList, errorMe
             <ConnectedUsers></ConnectedUsers>
             {window.network.getShowSettings() &&
                 <div className="button-startGame">
-                    <button className="startGame" id="startGame" onClick={startGame}>Start game</button>
+                    <button className="startGame" id="startGame" onClick={handleStartGame}>Start game</button>
                 </div>}
             <div className="lobby__chat">
                 <ChatLobby className="chat__chatbox" lobbyName={lobbyName}></ChatLobby>
