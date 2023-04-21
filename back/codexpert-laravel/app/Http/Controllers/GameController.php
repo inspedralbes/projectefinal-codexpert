@@ -85,7 +85,8 @@ class GameController extends Controller
     {
         //Game members
         $members = $request -> users;
-
+        $checkUserGames = [];
+        
         //Related that users that are playing to the game
         for ($i = 0; $i < count($members); $i++) {
             $newUserGame = new User_game;
