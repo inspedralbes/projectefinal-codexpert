@@ -2,29 +2,27 @@ import React, { useEffect, useState } from "react";
 import "../styles/normalize.css";
 import "../styles/game.css";
 import "../styles/Lobbies.css";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ChatGame from "../components/ChatGame";
 import ConnectedUsersInGame from "../components/ConnectedUsersInGame";
 import CodeMirror from "../components/CodeMirror";
 
 function Game() {
   const [lobbyName, setLobbyName] = useState("");
-  const [colorTema, setColorTema] = useState(false);
   const [code, setCode] = useState("function yourCode(input){ \n  //code here \n  return input;\n}");
-  const [qst, setQst] = useState({
-    statement: "",
-    inputs: [""],
-    output: "",
-  });
   const [error, setError] = useState("");
   const [result, setResult] = useState("");
   const [winnerMessage, setWinnerMessage] = useState("");
-  // const [finished, setFinished] = useState(false);
   const [playable, setPlayable] = useState(true);
   const [rewards, setRewards] = useState({
     xpEarned: 0,
     coinsEarned: 0,
     eloEarned: 0,
+  });
+  const [qst, setQst] = useState({
+    statement: "",
+    inputs: [""],
+    output: "",
   });
 
   const navigate = useNavigate();
