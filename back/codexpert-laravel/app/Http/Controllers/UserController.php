@@ -26,9 +26,9 @@ class UserController extends Controller
     {
         $userFound = (object) ['url' => null];
         $returnAvatar = (object) ['url' => null];
-        $userId = $this->checkSessionId($request);
+        $userId = $request -> session() -> get('userId');
 
-        //Check if the user id is null, if not not we get the user's avatar.
+        //Check if the user id is null, if not we get the user's avatar.
         if ($userId != null) {
             $userFound = User::where('id', $userId)->first();
             if ($userFound != null) {
