@@ -3,7 +3,7 @@ import "../styles/LandingPage.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
-import routes from "../index";
+import routes from '../env.js';
 import logo from '../img/logo.gif'
 import { Loader } from "../components/Loading";
 import IconUser from "../components/IconUser";

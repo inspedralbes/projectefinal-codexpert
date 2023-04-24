@@ -1,8 +1,8 @@
 import socketIO from "socket.io-client";
 import ConnectionNetwork from "./ConnectionNetwork.js";
-import routes from "./index.js";
+import routes from './env.js';
 
-let socket = socketIO(routes.wsNode, {
+let socket = socketIO(routes.wssNode, {
     withCredentials: true,
     cors: {
         origin: "*",

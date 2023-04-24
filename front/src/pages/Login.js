@@ -1,6 +1,6 @@
 import "../styles/normalize.css";
 import { useState, useEffect } from "react";
-import routes from "../index";
+import routes from '../env.js';
 import Cookies from "universal-cookie";
 import { Link, useNavigate } from "react-router-dom"; //Rutas
 
