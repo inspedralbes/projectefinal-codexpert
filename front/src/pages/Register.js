@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from 'universal-cookie';
 import { useNavigate } from "react-router-dom"; //Rutas
-import routes from "../index";
+import routes from "../conn_routes";
 import Tippy from '@tippyjs/react'; //Tooltip
 import 'tippy.js/dist/tippy.css' //Tooltip styles
 import 'tippy.js/themes/light-border.css'; //Tooltip theme

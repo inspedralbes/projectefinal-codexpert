@@ -1,6 +1,6 @@
 import "../styles/normalize.css";
 import { useNavigate } from "react-router-dom";
-import routes from "../index";
+import routes from "../conn_routes";
 import { useState, useEffect } from "react";
 import Modal from 'react-modal';
 Modal.setAppElement('body');

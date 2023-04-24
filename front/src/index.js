@@ -19,11 +19,6 @@ import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
 
-const routes = {
-  fetchLaravel: "http://localhost:8000/index.php/",
-  wsNode: "ws://localhost:7500",
-};
-
 if (cookies.get("token") != undefined) {
   window.postMessage({
     type: 'send_token-emit',
@@ -33,7 +28,7 @@ if (cookies.get("token") != undefined) {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  //<React.StrictMode>
+  <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/">
@@ -51,10 +46,9 @@ root.render(
         </Route>
       </Routes>
     </BrowserRouter>
-  //</React.StrictMode>
+  </React.StrictMode>
 );
 
-export default routes;
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

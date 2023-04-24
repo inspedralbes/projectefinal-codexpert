@@ -1,6 +1,6 @@
 import "../styles/normalize.css";
 import "../styles/IconUser.css";
-import routes from "../index";
+import routes from "../conn_routes";
 import Cookies from "universal-cookie";
 import { Loader } from "../components/Loading";
 import { useEffect, useState } from "react";
