@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import routes from '../env.js';
+import routes from "../conn_routes"
 import '../styles/avatarMaker.css';
 import { useNavigate } from "react-router-dom"; //Rutas
 import Cookies from 'universal-cookie';

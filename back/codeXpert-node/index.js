@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const axios = require("axios");
 
 const maxMembersOnLobby = 4;
-const laravelRoute = "https://api.codexpert.alumnes.inspedralbes.cat/index.php/";
+const laravelRoute = process.env.LARAVEL_ROUTE;
 
 var lobbies = [];
 var sesiones = [];

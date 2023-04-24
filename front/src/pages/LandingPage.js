@@ -3,7 +3,7 @@ import "../styles/LandingPage.css";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
-import routes from '../env.js';
+import routes from "../conn_routes";
 import logo from '../img/logo.gif'
 import { Loader } from "../components/Loading";
 import IconUser from "../components/IconUser";
@@ -12,7 +12,6 @@ import IconUser from "../components/IconUser";
 function LandingPage() {
   const cookies = new Cookies();
   const [buttonOption, setButtonOption] = useState("");
-
   useEffect(() => {
     const token = new FormData();
     token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
