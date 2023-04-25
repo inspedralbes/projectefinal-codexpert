@@ -39,7 +39,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/setAvatar', [UserController::class, 'setAvatar']);
 
-    Route::get('/getUserData', [UserController::class, 'getUserData']);
+    Route::post('/getUserData', [UserController::class, 'getUserData']);
 
     Route::post('/startGame', [GameController::class, 'startGame']);
 
