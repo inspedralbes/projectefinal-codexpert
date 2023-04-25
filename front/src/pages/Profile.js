@@ -1,6 +1,4 @@
 import "../styles/normalize.css";
-import Edit from "../img/Edit.png"
-import "../styles/profile.css";
 import { useNavigate } from "react-router-dom";
 import routes from "../index";
 import { useState, useEffect } from "react";
@@ -80,102 +78,94 @@ function Profile() {
     }
 
     return (
-        <div className="profile">
-            <div className="profile--grid">
-                <div className="profile__left">
-                    <div className="profile__button">
-                        <button onClick={() => navigate("/")} id="goBack__button">
-                            <span className="circle" aria-hidden="true">
-                                <span className="icon arrow"></span>
-                            </span>
-                            <span className="button-text">MENU</span>
-                        </button>
-                        <div></div>
-                    </div>
-                    <div className="profile__name--div">
-                        <p className="profile__name">{userData.name}</p>
-                        <button onClick={() => setModals(prev => ({ ...prev, name: true }))}><img height='35px' className="edit" src={Edit} alt="EDIT"></img></button>
-                    </div>
-                    <Modal
-                        style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
-                            content: {
-                                top: '50%',
-                                left: '50%',
-                                right: 'auto',
-                                bottom: 'auto',
-                                marginRight: '-50%',
-                                transform: 'translate(-50%, -50%)',
-                            },
-                        }}
-                        onRequestClose={() => setModals(prev => ({ ...prev, name: false }))}
-                        shouldCloseOnOverlayClick={true}
-                        isOpen={modals.name}
-                    >
-                        <h1>Change your username</h1>
-                        <input placeholder="username" onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
-                        <input placeholder="password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
-                        <button onClick={() => setModals(prev => ({ ...prev, name: false }))}>Close</button>
-                        <button onClick={() => saveChanges("newName")}>Save</button>
+        <div>
+            <button className="pixel-button" onClick={() => navigate("/")}>Main Menu</button>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><p>{userData.name}</p></td>
+                        <td><button onClick={() => setModals(prev => ({ ...prev, name: true }))}>Edit</button></td>
+                        <Modal
+                            style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+                                content: {
+                                    top: '50%',
+                                    left: '50%',
+                                    right: 'auto',
+                                    bottom: 'auto',
+                                    marginRight: '-50%',
+                                    transform: 'translate(-50%, -50%)',
+                                },
+                            }}
+                            onRequestClose={() => setModals(prev => ({ ...prev, name: false }))}
+                            shouldCloseOnOverlayClick={true}
+                            isOpen={modals.name}
+                        >
+                            <h1>Change your username</h1>
+                            <input placeholder="username" onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
+                            <input placeholder="password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                            <button onClick={() => setModals(prev => ({ ...prev, name: false }))}>Close</button>
+                            <button onClick={() => saveChanges("newName")}>Save</button>
 
-                    </Modal>
-                    <p>{userData.email}</p>
-                    <button onClick={() => setModals(prev => ({ ...prev, email: true }))}>Edit</button>
-                    <Modal
-                        style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
-                            content: {
-                                top: '50%',
-                                left: '50%',
-                                right: 'auto',
-                                bottom: 'auto',
-                                marginRight: '-50%',
-                                transform: 'translate(-50%, -50%)',
-                            },
-                        }}
-                        onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
-                        shouldCloseOnOverlayClick={true}
-                        isOpen={modals.email}
-                    >
-                        <h1>Change your email</h1>
-                        <input placeholder="email" onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
-                        <input placeholder="password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
-                        <button onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
-                        <button onClick={() => saveChanges("newEmail")}>Save</button>
+                        </Modal>
+                    </tr>
+                    <tr>
+                        <td><p>{userData.email}</p></td>
+                        <td><button onClick={() => setModals(prev => ({ ...prev, email: true }))}>Edit</button></td>
+                        <Modal
+                            style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+                                content: {
+                                    top: '50%',
+                                    left: '50%',
+                                    right: 'auto',
+                                    bottom: 'auto',
+                                    marginRight: '-50%',
+                                    transform: 'translate(-50%, -50%)',
+                                },
+                            }}
+                            onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
+                            shouldCloseOnOverlayClick={true}
+                            isOpen={modals.email}
+                        >
+                            <h1>Change your email</h1>
+                            <input placeholder="email" onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+                            <input placeholder="password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                            <button onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
+                            <button onClick={() => saveChanges("newEmail")}>Save</button>
 
-                    </Modal>
-                    <button onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
-                    <Modal
-                        style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
-                            content: {
-                                top: '50%',
-                                left: '50%',
-                                right: 'auto',
-                                bottom: 'auto',
-                                marginRight: '-50%',
-                                transform: 'translate(-50%, -50%)',
-                            },
-                        }}
-                        onRequestClose={() => setModals(prev => ({ ...prev, password: false }))}
-                        shouldCloseOnOverlayClick={true}
-                        isOpen={modals.password}
-                    >
-                        <h1>Update password</h1>
-                        <input placeholder="Current password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
-                        <input placeholder="New password" onChange={(e) => setEditUser(prev => ({ ...prev, newPassword: e.target.value }))}></input><br></br>
-                        <input placeholder="Repeat new password" onChange={(e) => setEditUser(prev => ({ ...prev, rNewPassword: e.target.value }))}></input><br></br>
-                        <button onClick={() => setModals(prev => ({ ...prev, password: false }))}>Close</button>
-                        <button onClick={() => savePassword("newPassword")}>Save</button>
+                        </Modal>
+                    </tr>
+                    <tr>
+                        <td><button onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button></td>
+                        <Modal
+                            style={{ //QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+                                content: {
+                                    top: '50%',
+                                    left: '50%',
+                                    right: 'auto',
+                                    bottom: 'auto',
+                                    marginRight: '-50%',
+                                    transform: 'translate(-50%, -50%)',
+                                },
+                            }}
+                            onRequestClose={() => setModals(prev => ({ ...prev, password: false }))}
+                            shouldCloseOnOverlayClick={true}
+                            isOpen={modals.password}
+                        >
+                            <h1>Update password</h1>
+                            <input placeholder="Current password" onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                            <input placeholder="New password" onChange={(e) => setEditUser(prev => ({ ...prev, newPassword: e.target.value }))}></input><br></br>
+                            <input placeholder="Repeat new password" onChange={(e) => setEditUser(prev => ({ ...prev, rNewPassword: e.target.value }))}></input><br></br>
+                            <button onClick={() => setModals(prev => ({ ...prev, password: false }))}>Close</button>
+                            <button onClick={() => savePassword("newPassword")}>Save</button>
 
-                    </Modal>
-                </div >
-                <div className="profile__right">
-                    <div className="profile__img">
-                        <img className='profile__avatar' src={userData.avatar}></img>
-                    </div>
-                    <button className="pixel-button profileBtn" onClick={() => navigate("/avatarMaker")}>Edit avatar</button>
-                </div>
-            </div >
-        </div >
+                        </Modal>
+                    </tr>
 
+                </tbody>
+            </table>
+            <img src={userData.avatar}></img>
+            <button className="pixel-button" onClick={() => navigate("/avatarMaker")}>Edit avatar</button>
+        </div>
     );
 }
 
