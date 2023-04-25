@@ -55,7 +55,12 @@ function ConnectedUsersInGame() {
                                             <img src={require('../img/hearts/one_heart_normal.png')}
                                                 width="50px"
                                                 className="user__health"
-                                                alt={user.hearts_remaining + " hearts remaining"} />{` x${user.hearts_remaining}`}
+                                                alt={user.hearts_remaining + " hearts remaining"} />
+                                            {user.unlimitedHearts ?
+                                                <img src={require('../img/hearts/infinito.png')}
+                                                    width="50px"
+                                                    className="user__health"
+                                                    alt="infinity" /> : ` x${user.hearts_remaining}`}
                                         </h1>
                                     </div>}
                                 {user.hearts_remaining == 3 &&

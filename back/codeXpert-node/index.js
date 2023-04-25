@@ -95,7 +95,7 @@ socketIO.on("connection", (socket) => {
         token: token,
       })
       .then(function (response) {
-        if (!response.data.error) {
+        if (!Boolean(response.data.error)) {
           var user = {
             token: token,
             userId: response.data.id,
@@ -164,7 +164,7 @@ socketIO.on("connection", (socket) => {
       }
     });
 
-    if (!existeix) {
+    if (!Boolean(existeix)) {
       lobbies.push({
         lobby_name: lobby,
         members: [],
@@ -206,7 +206,7 @@ socketIO.on("connection", (socket) => {
             });
             settings = lobby.settings
           } else {
-            if (!hayOwner) {
+            if (!Boolean(hayOwner)) {
               socketIO.to(`${socketId}`).emit("ALREADY_ON_LOBBY", {
                 message: "YOU ARE ALREADY ON LOBBY",
               });
@@ -275,10 +275,12 @@ socketIO.on("connection", (socket) => {
 
   socket.on("check_answer", (data) => {
     let numQuestions;
+    let unlimitedHearts;
 
     lobbies.forEach(lobby => {
       if (lobby.lobby_name == socket.data.current_lobby) {
         numQuestions = lobby.settings.questionAmount;
+        unlimitedHearts = lobby.settings.unlimitedHearts;
       }
     });
 
@@ -288,7 +290,8 @@ socketIO.on("connection", (socket) => {
       idUser: socket.data.userId,
       evalRes: data.resultsEval,
       evalPassed: data.evalPassed,
-      numQuestions: numQuestions
+      numQuestions: numQuestions,
+      unlimitedHearts: unlimitedHearts
     }
 
     axios
@@ -351,7 +354,9 @@ socketIO.on("connection", (socket) => {
             avatar: socket.data.avatar
           }, socket.data.current_lobby)
 
-          socket.data.hearts_remaining--
+          if (!Boolean(unlimitedHearts)) {
+            socket.data.hearts_remaining--
+          }
           sendUserList(socket.data.current_lobby)
 
           if (user_game.dead) {
@@ -650,15 +655,22 @@ async function sendLobbyList() {
 
 async function sendUserList(room) {
   var list = [];
+  let unlimitedHearts;
 
   const sockets = await socketIO.in(room).fetchSockets();
+  lobbies.forEach(lobby => {
+    if (lobby.lobby_name == room) {
+      unlimitedHearts = lobby.settings.unlimitedHearts
+    }
+  });
 
   sockets.forEach((socket) => {
     list.push({
       name: socket.data.name,
       avatar: socket.data.avatar,
       hearts_remaining: socket.data.hearts_remaining,
-      question_at: socket.data.question_at
+      question_at: socket.data.question_at,
+      unlimitedHearts: unlimitedHearts
     });
   });
 

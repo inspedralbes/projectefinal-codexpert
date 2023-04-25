@@ -16,7 +16,6 @@ import Eyes from "../components/AvatarMaker/Eyes";
 function AvatarMaker() {
   const cookies = new Cookies();
   const navigate = useNavigate();
-  let urlStr = "";
   const [optionCopy, setOptionCopy] = useState("background");
   const [save, setSave] = useState(0);
   const [avatar, setAvatar] = useState("");
@@ -64,8 +63,9 @@ function AvatarMaker() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = new FormData()
-      token.append("token", cookies.get('token'))
+      const token = new FormData();
+      console.log(cookies.get('token'));
+      token.append("token", cookies.get('token'));
       await fetch(routes.fetchLaravel + "getAvatar", {
         method: "POST",
         mode: "cors",
@@ -74,11 +74,11 @@ function AvatarMaker() {
       })
         .then((response) => response.json())
         .then((data) => {
-          urlStr = data.url;
-          if (urlStr !== null) {
-            getAvatar(urlStr);
+          console.log(data);
+          if (data.url != null) {
+            getAvatar(data.url);
           } else {
-            navigate("/login");
+            //navigate("/login");
           }
         });
     };

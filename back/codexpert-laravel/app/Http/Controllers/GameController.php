@@ -92,7 +92,13 @@ class GameController extends Controller
             $newUserGame = new User_game;
             $newUserGame -> game_id = $request -> idGame;
             $newUserGame -> user_id = $members[$i]['idUser'];
-            $newUserGame -> hearts_remaining = $request -> heartAmount;
+
+            if($request -> heartAmount != null) {
+                $newUserGame -> hearts_remaining = $request -> heartAmount;
+            } else {
+                $newUserGame -> hearts_remaining = 5;
+            }
+
             $newUserGame -> save();
             $checkUserGames [$i] = $newUserGame;
         }
@@ -155,10 +161,12 @@ class GameController extends Controller
                 }
             } else {
                 //If he responded incorrectly we update their number of hearts. If he has 0 hearts it's game over.
-                $user_game -> hearts_remaining -= 1;
-                if ($user_game -> hearts_remaining == 0) {
-                    $user_game -> finished = true;
-                    $user_game -> dead = true;
+                if (!$request -> unlimitedHearts) {
+                    $user_game -> hearts_remaining -= 1;
+                    if ($user_game -> hearts_remaining == 0) {
+                        $user_game -> finished = true;
+                        $user_game -> dead = true;
+                    }
                 }
             }
         }
