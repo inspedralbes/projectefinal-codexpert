@@ -11,6 +11,11 @@
     src: url(../fonts/pixel_operator/PixelOperator8.ttf);
 }
 
+@font-face {
+    font-family: karmatic;
+    src: url(../fonts/karmatic-arcade.regular.ttf);
+}
+
 * {
     box-sizing: border-box;
 }
