@@ -197,8 +197,8 @@ function AvatarMaker () {
 
   useEffect(() => {
     if (save > 0) {
-      const sendAvatar = new FormData();
-      sendAvatar.append('newAvatar', avatar);
+      const sendAvatar = new FormData()
+      sendAvatar.append('newAvatar', avatar)
       sendAvatar.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
       const fetchData = async () => {
         await fetch(routes.fetchLaravel + 'setAvatar', {
