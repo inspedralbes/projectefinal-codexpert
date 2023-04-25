@@ -11,6 +11,11 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
 {      
+    /**
+     * This function checks with the token recieved if the token is valid on the database, if it is it will return the user id
+     * @param string $checkToken is the session token
+     * @return int $userId is the user id found linked to the token in the database
+     */     
     private function getUserId($checkToken)
     {
         $userId = null;
@@ -30,6 +35,11 @@ class UserController extends Controller
         return $userId;
     }     
 
+    /**
+     * This function will recieve the userId from the user token and will send the url from the user's avatar found in the database
+     * @param string $token is the session token
+     * @return object $returnAvatar is the object containing the url from the user's avatar
+     */      
     public function getAvatar(Request $request)
     {
         $userFound = (object) ['url' => null];
@@ -49,6 +59,12 @@ class UserController extends Controller
         return response() -> json($returnAvatar);
     }
     
+    /**
+     * This function will recieve the userId from the user token and will check if the new avatar is valid, if valid it will change it, if not the avatar will remain unchanged
+     * @param string $token is the session token
+     * @param string $newAvatar is the url of the new avatar
+     * @return object $returnResponse contains the boolean attribute 'changed', if true the avatar has been updated
+     */       
     public function setAvatar(Request $request)
     {
         $returnResponse = (object) [
@@ -74,6 +90,11 @@ class UserController extends Controller
         return response() -> json($returnResponse);
     }
 
+    /**
+     * This function will recieve the userId from the user token and will return the user information if the user is found
+     * @param string $token is the session token
+     * @return object $returnUser will return 'name', 'email' and 'avatar' from the requested user. If the user id is not valid or the user could't be found it will return an error message.
+     */        
     public function getUserData(Request $request)
     {
         $returnUser = (object) [
@@ -96,6 +117,12 @@ class UserController extends Controller
         return response() -> json($returnUser);
     }
 
+    /**
+     * This function given a new user name, will check if the name is valid according to our validation rules or if the username is already used
+     * @param string $token is the session token
+     * @param string $newName is the new requested name
+     * @return object $validName contains the boolean attribute 'willChange' that determines if the name is valid to be changed, otherwise it will contain a new attribute named 'error' with an error message explaining why the name can' be changed
+     */      
     private function checkValidName($request, $userFound)
     {
         $validName = (object) [
@@ -145,6 +172,13 @@ class UserController extends Controller
         return $validName;
     }
     
+    /**
+     * This function given a name and the user password, and after checking if both are valid, it will change it or return the error caught on the function checkValidName
+     * @param string $token is the session token
+     * @param string $newName is the new requested name
+     * @param string $newPassword is the user's current password
+     * @return object $returnUser will return the attribute 'error' with the error message, otherwise it will return 'success' and a success message
+     */       
     public function changeUsername(Request $request)
     {
         $validName = (object) [
@@ -186,6 +220,12 @@ class UserController extends Controller
         return response() -> json($returnUser);
     }
     
+    /**
+     * This function given a new user email, will check if the email is valid according to our validation rules or if it's is already used
+     * @param string $token is the session token
+     * @param string $newEmail is the new requested email
+     * @return object $validEmail contains the boolean attribute 'willChange' that determines if the email is valid to be changed, otherwise it will contain a new attribute named 'error' with an error message explaining why the name can' be changed
+     */         
     private function checkValidEmail($request, $userFound)
     {
         $validEmail = (object) [
@@ -239,6 +279,13 @@ class UserController extends Controller
         return $validEmail;
     }
 
+    /**
+     * This function given a email and the user password, and after checking if both are valid, it will change it or return the error caught on the function checkValidEmail
+     * @param string $token is the session token
+     * @param string $newEmail is the new requested email
+     * @param string $newPassword is the user's current password
+     * @return object $returnUser will return the attribute 'error' with the error message, otherwise it will return 'success' and a success message
+     */    
     public function changeEmail(Request $request)
     {
         $validEmail = (object) [
@@ -280,6 +327,12 @@ class UserController extends Controller
         return response() -> json($returnUser);
     }
 
+    /**
+     * This function given a new password and the password confirmation, will check if the password is valid 
+     * @param string $token is the session token
+     * @param string $newPassword is the new requested password
+     * @return object $validPassword contains the boolean attribute 'willChange' that determines if the password is valid to be changed, otherwise it will contain a new attribute named 'error' with an error message explaining why the name can' be changed
+     */       
     private function checkValidPassword($request, $userFound)
     {
         $validPassword = (object) [
@@ -339,6 +392,14 @@ class UserController extends Controller
         return $validPassword;
     }    
     
+    /**
+     * This function given a password and the user current password, and after checking if both are valid, it will change it or return the error caught on the function checkValidPassword
+     * @param string $token is the session token
+     * @param string $newPassword is the new requested password
+     * @param string $currentPassword is the user's current password
+     * @param string $currentPassword_confirmation is the user's confirmation of the current password
+     * @return object $returnUser will return the attribute 'error' with the error message, otherwise it will return 'success' and a success message
+     */    
     public function changePassword(Request $request)
     {
         $validPassword = (object) [

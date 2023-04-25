@@ -191,7 +191,6 @@ class AuthController extends Controller
      * @param string $token is the session token for the logged in user. 
      * Given the token, it will extract the user id from the database and return the user information. If the token is null or doesn't exist in the database, it will return an error.
      * @return object $userFound is an object containing all the information from a user (name, email, elo, coins...) if the user has been found, or 'error' => true, if any error has occurred.
-     * 
      */      
     public function getUserInfo(Request $request)
     {
