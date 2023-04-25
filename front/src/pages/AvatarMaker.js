@@ -65,7 +65,7 @@ function AvatarMaker() {
     const fetchData = async () => {
       const token = new FormData();
       console.log(cookies.get('token'));
-      token.append("token", cookies.get('token'));
+      token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
       await fetch(routes.fetchLaravel + "getAvatar", {
         method: "POST",
         mode: "cors",
@@ -201,7 +201,7 @@ function AvatarMaker() {
     if (save > 0) {
       const sendAvatar = new FormData();
       sendAvatar.append("newAvatar", avatar);
-      sendAvatar.append("token", cookies.get('token'))
+      sendAvatar.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
       const fetchData = async () => {
         await fetch(routes.fetchLaravel + "setAvatar", {
           method: "POST",

@@ -20,7 +20,7 @@ function IconUser() {
 
   useEffect(() => {
     const token = new FormData();
-    token.append("token", cookies.get("token"));
+    token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
     fetch(routes.fetchLaravel + "getAvatar", {
       method: "POST",
       mode: "cors",
@@ -50,7 +50,7 @@ function IconUser() {
   useEffect(() => {
     if (logOut) {
       const token = new FormData();
-      token.append("token", cookies.get("token"));
+      token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null)
       fetch(routes.fetchLaravel + "logout", {
         method: "POST",
         mode: "cors",

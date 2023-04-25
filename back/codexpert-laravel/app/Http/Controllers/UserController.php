@@ -3,30 +3,38 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
-{
-    private function checkSessionId(Request $request)
+{      
+    private function getUserId($checkToken)
     {
-        $idInSession = null;
+        $userId = null;
+        //Check if we have recieved a token
+        if ( !($checkToken == null || $checkToken == "" || $checkToken == "null") ) {
+            
+            //Return if the user is logged in or not from the token
+            [$id, $token] = explode('|', $checkToken, 2);
+            $accessToken = PersonalAccessToken::find($id);
 
-        if ($request -> session()->get('userId') != null) {
-            $idInSession = session()->get('userId') ;
+            if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                $userId = $accessToken->tokenable_id;
+            }
         }
 
-        return $idInSession;
+
+        return $userId;
     }     
 
     public function getAvatar(Request $request)
     {
         $userFound = (object) ['url' => null];
         $returnAvatar = (object) ['url' => null];
-        $userId = $request -> session() -> get('userId');
+        $userId = $this->getUserId($request->token);
 
         //Check if the user id is null, if not we get the user's avatar.
         if ($userId != null) {
@@ -46,7 +54,7 @@ class UserController extends Controller
         $returnResponse = (object) [
             'changed' => false
         ];
-        $userId = $this->checkSessionId($request);
+        $userId = $this->getUserId($request->token);
 
         //Check if the user is id null, if not we change the avatar.
         if ($userId != null) {
@@ -71,7 +79,7 @@ class UserController extends Controller
         $returnUser = (object) [
             'error' => "User is not logged in."
         ];
-        $userId = $this->checkSessionId($request);
+        $userId = $this->getUserId($request->token);
 
         //If the user id is not null we return the information from the user (name, email, avatar)
         if ($userId != null) {
@@ -95,7 +103,7 @@ class UserController extends Controller
             'error' => "User is not logged in."
         ]; 
         $nameRepeated = false;
-        $userId = $this->checkSessionId($request);
+        $userId = $this->getUserId($request->token);
 
         //Check if user has changed the name                      
         if ($userId != null) {
@@ -145,7 +153,7 @@ class UserController extends Controller
         $returnUser = (object) [
             'error' => "User is not logged in."
         ];
-        $userId = $this->checkSessionId($request);
+        $userId = $this->getUserId($request->token);
 
         //Check if the user id is not, if not null we continue to check
         if ($userId != null) {
@@ -185,7 +193,7 @@ class UserController extends Controller
             'error' => "User is not logged in."
         ]; 
         $emailRepeated = false;
-        $userId = $this->checkSessionId($request);
+        $userId = $this->getUserId($request->token);
 
         //Check if user has changed the email                      
         if ($userId != null) {
@@ -239,7 +247,7 @@ class UserController extends Controller
         $returnUser = (object) [
             'error' => "User is not logged in."
         ];
-        $userId = $this->checkSessionId($request);
+        $userId = $this->getUserId($request->token);
 
         //Check if the user id is not, if not null we continue to check
         if ($userId != null) {
@@ -281,7 +289,7 @@ class UserController extends Controller
             'willChange' => false,
             'error' => "User is not logged in."
         ];
-        $userId = $this->checkSessionId($request);
+        $userId = $this->getUserId($request->token);
 
         //To start checking the user must be logged in.
         if ($userId != null) { 
@@ -339,7 +347,7 @@ class UserController extends Controller
         $returnUser = (object) [
             'error' => "User is not logged in."
         ];
-        $userId = $this->checkSessionId($request);
+        $userId = $this->getUserId($request->token);
 
         //Check if the user id is not, if not null we continue to check
         if ($userId != null) {

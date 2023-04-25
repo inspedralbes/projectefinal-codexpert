@@ -1,5 +1,6 @@
 import "../styles/normalize.css";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'universal-cookie';
 import routes from "../conn_routes";
 import { useState, useEffect } from "react";
 import Modal from 'react-modal';
@@ -8,6 +9,7 @@ Modal.setAppElement('body');
 
 function Profile() {
     const navigate = useNavigate();
+    const cookies = new Cookies();
     let [userData, setUserData] = useState({});
     let [editUser, setEditUser] = useState({});
     let [modals, setModals] = useState({
@@ -17,9 +19,12 @@ function Profile() {
     });
 
     const getUserData = () => {
+        const token = new FormData();
+        token.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null);
         fetch(routes.fetchLaravel + "getUserData", {
-            method: "GET",
+            method: "POST",
             mode: "cors",
+            body: token,
             credentials: "include",
         })
             .then((response) => response.json())
@@ -44,8 +49,8 @@ function Profile() {
         } else {
             user.append(type, editUser.email);
         }
-
         user.append("password", editUser.password);
+        user.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null);
         fetch(routes.fetchLaravel + (type === "newName" ? "changeUsername" : "changeEmail"), {
             method: "POST",
             mode: "cors",
@@ -65,6 +70,7 @@ function Profile() {
         password.append("currentPassword", editUser.password);
         password.append("newPassword", editUser.newPassword);
         password.append("newPassword_confirmation", editUser.rNewPassword);
+        password.append("token", cookies.get('token') !== undefined ? cookies.get("token") : null);
         fetch(routes.fetchLaravel + "changePassword", {
             method: "POST",
             mode: "cors",

@@ -6,10 +6,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Session;
-use Laravel\Sanctum\HasApiTokens;
-use Laravel\Sanctum\NewAccessToken;
-use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
@@ -98,13 +94,13 @@ class AuthController extends Controller
                 $user -> password = Hash::make($request -> password);
                 $user -> save();
 
-                //Save the userId in the laravel session
-                $request -> session()->put('userId', $user->id);
+                //Save the user and the oken from the user to send it to frontend
+                $userId = $user->id;
                 $token = $user->createToken('token')->plainTextToken;
                 
                 $sendUser = (object) [
                     'valid' => true,
-                    'message' => $request->session()->get("userId"),
+                    'message' => $userId,
                     'token' => $token
                 ];
             } else {
@@ -149,7 +145,6 @@ class AuthController extends Controller
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
-                $request -> session()->put('userId', $user->id);
                 $token = $user->createToken('token')->plainTextToken;
                 $sendUser = (object) [
                     'valid' => true,
@@ -172,7 +167,7 @@ class AuthController extends Controller
     /**
      * This function checks if an existing user is already created in the Database, it will check for email and name duplicates.
      * @param string $token is the session token for the logged in user. 
-     * If no session is present or the session has expired it will flush the laravel session and delete the token from the database.
+     * If no session is present or the session has expired it will delete the token from the database.
      * @return object $returnResponse is an object containing 'logout' on true.
      */    
     public function logout(Request $request)
@@ -185,9 +180,7 @@ class AuthController extends Controller
             
             PersonalAccessToken::find($id)->delete();
         }        
-
-        Session::flush();
-        
+     
         $returnResponse = (object)['logout' => true];
          
         return response() -> json($returnResponse);
@@ -214,8 +207,6 @@ class AuthController extends Controller
 
             if (hash_equals($accessToken->token, hash('sha256', $token))) {
                 $returnUserId = $accessToken -> tokenable_id;
-                $request -> session()->put('userId', $returnUserId);
-
                 $userFound = User::where('id', $returnUserId)->first();
             }
         }

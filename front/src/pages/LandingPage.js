@@ -35,7 +35,7 @@ function LandingPage() {
     <div>
       <IconUser />
       <div className="landingPage">
-      <Loader />
+        <Loader />
         <img src={logo} alt="codeXpert" className="landingPage__codexpert"></img>
         <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
         <br />
