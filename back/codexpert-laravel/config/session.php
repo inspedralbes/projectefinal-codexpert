@@ -19,7 +19,6 @@ return [
     */
 
     'driver' => env('SESSION_DRIVER', 'cookie'),
-
     /*
     |--------------------------------------------------------------------------
     | Session Lifetime
@@ -196,6 +195,6 @@ return [
     |
     */
 
-    'same_site' => 'lax',
+    'same_site' => null,
 
 ];
