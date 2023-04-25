@@ -94,7 +94,7 @@ socketIO.on("connection", (socket) => {
         token: token,
       })
       .then(function (response) {
-        if (!response.data.error) {
+        if (!Boolean(response.data.error)) {
           var user = {
             token: token,
             userId: response.data.id,
@@ -163,7 +163,7 @@ socketIO.on("connection", (socket) => {
       }
     });
 
-    if (!existeix) {
+    if (!Boolean(existeix)) {
       lobbies.push({
         lobby_name: lobby,
         members: [],
@@ -205,7 +205,7 @@ socketIO.on("connection", (socket) => {
             });
             settings = lobby.settings
           } else {
-            if (!hayOwner) {
+            if (!Boolean(hayOwner)) {
               socketIO.to(`${socketId}`).emit("ALREADY_ON_LOBBY", {
                 message: "YOU ARE ALREADY ON LOBBY",
               });
@@ -353,7 +353,7 @@ socketIO.on("connection", (socket) => {
             avatar: socket.data.avatar
           }, socket.data.current_lobby)
 
-          if (!unlimitedHearts) {
+          if (!Boolean(unlimitedHearts)) {
             socket.data.hearts_remaining--
           }
           sendUserList(socket.data.current_lobby)
