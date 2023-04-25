@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('game_id')->unsigned()->index();
             $table->bigInteger('user_id')->unsigned()->index();
 
-            $table->integer('hearts_remaining')->default(3);
+            $table->integer('hearts_remaining')->default(5);
             $table->integer('perks_used')->default(0);
             $table->integer('question_at')->default(0);
             $table->boolean('dead')->default(false);

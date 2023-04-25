@@ -12,6 +12,10 @@ use App\Models\User;
 
 class GameController extends Controller
 {
+    /**
+     * This function creates a new game relationship in the database
+     * @return object $newGame it's the object that has been created in the database
+     */    
     private function createNewGame(Request $request)
     {
         //Create a new empty game and return it.
@@ -21,14 +25,25 @@ class GameController extends Controller
         return ($newGame);
     }
 
+    /**
+     * This function returns questions depending on the number that has been sent
+     * @param int $numQuestions is the number of questions that have been requested
+     * @return object $questions is an object containing the amount of questions requested
+     */    
     private function getQuestions(Request $request)
     {        
+        $questions = null;
         //Return X number of questions, where X is given by the frontend
         $questions = Question::inRandomOrder()->limit($request -> numQuestions)->get();
 
         return ($questions);
     }
 
+    /**
+     * This function creates the relationship between the game that we have created and the questions that we recieved from the database
+     * @param object $newGame is game that has been created
+     * @param object $getQuestions is the questions that be retrieved from the database.
+     */     
     private function addQuestionsToGame($newGame, $getQuestions)
     {
         //Relate the given questions to the created game.
@@ -40,6 +55,11 @@ class GameController extends Controller
         }
     }
     
+    /**
+     * This function triggers the functions that create the game, retrieve the questions and link the retrieved questions to the created game
+     * @param int $numQuestions is the number of questions that we will retrieve from the database.
+     * @return object $game is an object containing "error" if the game wasn't created. Otherwise it contains the gameId, it starts the winner as null, winner being the id from the person that has won, and and array named "allQuestions" with the questions that will be used this game
+     */      
     public function startGame(Request $request)
     {
         $game = (object) [
@@ -81,6 +101,13 @@ class GameController extends Controller
         return response() -> json($game);
     }
 
+    /**
+     * This function creates the relationship between the game and all the users from the lobby
+     * @param array $users is an array made of objects, each object represents a user from the lobby, contains their id.
+     * @param int $idGame is the id from the game that the members of the lobby are playing
+     * @param int $heartAmount is the maximum amount of hearts that a player will have, this has been chosen from the game settings
+     * @return object $gameStatus contains a message 'Assigned users to the game' alognside the status '200' if successful and '500' otherwise. 
+     */     
     public function setUserGame(Request $request)
     {
         //Game members
@@ -92,7 +119,13 @@ class GameController extends Controller
             $newUserGame = new User_game;
             $newUserGame -> game_id = $request -> idGame;
             $newUserGame -> user_id = $members[$i]['idUser'];
-            $newUserGame -> hearts_remaining = $request -> heartAmount;
+
+            if ($request -> heartAmount != null) {
+                $newUserGame -> hearts_remaining = $request -> heartAmount;
+            } else {
+                $newUserGame -> hearts_remaining = 5;
+            }
+
             $newUserGame -> save();
             $checkUserGames [$i] = $newUserGame;
         }
@@ -106,6 +139,17 @@ class GameController extends Controller
         return response('Assigned users to the game', $gameStatus);
     }    
 
+    /**
+     * This function is triggered each time a user responds to a question from the game, it will check whether the user answers the question correctly or not
+     * @param bool $evalPassed determines whether the user has passed all the internal tests for the question correctly or not
+     * @param bool $idQuestion is the id of the question that has been answered
+     * @param array $evalRes contains all the results from the evals (done in front) for each input test
+     * @param int $idGame is the id from the game that the members of the lobby are playing
+     * @param int $idUser is the id from the user that is currently answering the question
+     * @param int $numQuestions is the number of questions that we will retrieve from the database
+     * @param bool $unlimitedHearts if true it means that hearts won't be removed from the user if the question is answered incorrectly
+     * @return object $returnObject contains the boolean 'correct' which determines if the question has indeed been answered correctly, 'testsPassed' is the number of tests that have been passed, if 'correct' is true it will mean that all tests have been passed, 'user_game' contains all the information in the relationship between game and user, therefore here we can see information like 'hearts_remaining' (the amount of hearts remaining) and 'question_at' (which question is the user at now) and 'game' which contains the id from the winner and the game id.
+     */     
     public function checkAnswer(Request $request)
     {
         $returnObject = (object) [
@@ -123,7 +167,6 @@ class GameController extends Controller
             $testOutput2 = unserialize($question -> testOutput2);
             
             $output = [$userExpectedOutput, $testOutput1, $testOutput2];
-
 
             foreach($output as $key => $val) {
                 if ($val == $request -> evalRes[$key]) {
@@ -155,10 +198,12 @@ class GameController extends Controller
                 }
             } else {
                 //If he responded incorrectly we update their number of hearts. If he has 0 hearts it's game over.
-                $user_game -> hearts_remaining -= 1;
-                if ($user_game -> hearts_remaining == 0) {
-                    $user_game -> finished = true;
-                    $user_game -> dead = true;
+                if (!$request -> unlimitedHearts) {
+                    $user_game -> hearts_remaining -= 1;
+                    if ($user_game -> hearts_remaining == 0) {
+                        $user_game -> finished = true;
+                        $user_game -> dead = true;
+                    }
                 }
             }
         }
@@ -172,6 +217,12 @@ class GameController extends Controller
         return response() -> json($returnObject);
     }    
 
+    /**
+     * This function updates elo, coins and level experience of the users, depending on their question_at position and if they're the winner
+     * @param array $users is an array made of objects, each object represents a user from the lobby, contains their id.
+     * @param int $idGame is the id from the game that the members of the lobby are playing
+     * @return array $updatedProfiles contains an object 'updatedStats' for each member of the lobby. This object contains 'idUser', 'xpEarned', coinsEarned and 'eloEarned'
+     */         
     public function updateUserLvl(Request $request)
     {
         //In this function, given if the user has won, and their position, we update their elo, XP and number of coins.
