@@ -6,14 +6,15 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Session;
-use Laravel\Sanctum\HasApiTokens;
-use Laravel\Sanctum\NewAccessToken;
-use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
+    /**
+     * This function checks if an existing user is already created in the Database, it will check for email and name duplicates.
+     * @param object $userData is an object containing the user information (email, name) 
+     * @return bool $canCreate it's a variable that will return true or false, depending on if the user is duplicate dor not.
+     */
     private function checkUserDuplicated($userData)
     {
         //Check if any fields are duplicated
@@ -30,6 +31,11 @@ class AuthController extends Controller
         return $canCreate;
     }
 
+    /**
+     * This function will check what is duplicated, if the name or the email.
+     * @param object $userData is an object containing the user email
+     * @return bool $isDuplicated it's a variable that will return 'name' or 'email', depending on what is duplicated.
+     */
     private function findWhatIsDuplicated($userData)
     {
         //Check whether the user's name or the email is duplicated
@@ -45,6 +51,14 @@ class AuthController extends Controller
         return $isDuplicated;
     }
 
+    /**
+     * This function will create the user if it's not duplicated and all fiels are validated.
+     * @param name is the user name
+     * @param email is the user email
+     * @param password is the user password
+     * @param password_confirmation is the user password confirmed
+     * @return sendUser object contains fields 'valid', 'message' and 'token'. Valid is a boolean that will determine if the user has been created. Message will return the error if valid is false or will return the user Id if the user has been created. Token will only be present if the user has been created and will return the token id.
+     */    
     public function register(Request $request)
     {
         //Validate the fields
@@ -80,13 +94,13 @@ class AuthController extends Controller
                 $user -> password = Hash::make($request -> password);
                 $user -> save();
 
-                //Save the userId in the laravel session
-                $request -> session()->put('userId', $user->id);
+                //Save the user and the oken from the user to send it to frontend
+                $userId = $user->id;
                 $token = $user->createToken('token')->plainTextToken;
                 
                 $sendUser = (object) [
                     'valid' => true,
-                    'message' => $request->session()->get("userId"),
+                    'message' => $userId,
                     'token' => $token
                 ];
             } else {
@@ -110,6 +124,12 @@ class AuthController extends Controller
         return response() -> json($sendUser);
     }
 
+    /**
+     * This function will check if a user exists with the given email and password.
+     * @param string $email is the user email
+     * @param string $password is the user password
+     * @return object $sendUser object contains fields 'valid', 'message' and 'token'. Valid is a boolean that will determine if the user has successfully logged in. Message will return the error if valid is false or will return the user Id if the user has been created. Token will only be present if the user has logged in and will return the token id.
+     */    
     public function login(Request $request)
     {   
         //If the user doesn't exist we warn the user
@@ -125,7 +145,6 @@ class AuthController extends Controller
         if ($userFound != null) {
             if (Hash::check($request -> password, $userFound -> password)) {
                 $user = $userFound;
-                $request -> session()->put('userId', $user->id);
                 $token = $user->createToken('token')->plainTextToken;
                 $sendUser = (object) [
                     'valid' => true,
@@ -145,6 +164,12 @@ class AuthController extends Controller
         return json_encode($sendUser);
     }
 
+    /**
+     * This function checks if an existing user is already created in the Database, it will check for email and name duplicates.
+     * @param string $token is the session token for the logged in user. 
+     * If no session is present or the session has expired it will delete the token from the database.
+     * @return object $returnResponse is an object containing 'logout' on true.
+     */    
     public function logout(Request $request)
     {   
         //Check if we have recieved a token
@@ -155,14 +180,18 @@ class AuthController extends Controller
             
             PersonalAccessToken::find($id)->delete();
         }        
-
-        Session::flush();
-        
+     
         $returnResponse = (object)['logout' => true];
          
         return response() -> json($returnResponse);
     }
 
+    /**
+     * This function checks if an existing user is already created in the Database, it will check for email and name duplicates.
+     * @param string $token is the session token for the logged in user. 
+     * Given the token, it will extract the user id from the database and return the user information. If the token is null or doesn't exist in the database, it will return an error.
+     * @return object $userFound is an object containing all the information from a user (name, email, elo, coins...) if the user has been found, or 'error' => true, if any error has occurred.
+     */      
     public function getUserInfo(Request $request)
     {
         $returnUserId = null;
@@ -177,8 +206,6 @@ class AuthController extends Controller
 
             if (hash_equals($accessToken->token, hash('sha256', $token))) {
                 $returnUserId = $accessToken -> tokenable_id;
-                $request -> session()->put('userId', $returnUserId);
-
                 $userFound = User::where('id', $returnUserId)->first();
             }
         }
@@ -186,6 +213,13 @@ class AuthController extends Controller
         return response() -> json($userFound);
     }    
 
+    /**
+     * This function checks if an existing user is already created in the Database, it will check for email and name duplicates.
+     * @param string $token is the session token for the logged in user. 
+     * Given the token, it will extract the user id from the database and check if the token is valid.
+     * @return object $logged is an object containing 'correct' if the user is logged in it will return true, otherwise it will return false.
+     * 
+     */      
     public function isUserLogged(Request $request)
     {
         $logged = (object) [
