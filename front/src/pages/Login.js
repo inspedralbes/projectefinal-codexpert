@@ -1,147 +1,146 @@
-import "../styles/normalize.css";
-import { useState, useEffect } from "react";
-import routes from "../conn_routes";
-import Cookies from "universal-cookie";
-import { Link, useNavigate } from "react-router-dom"; //Rutas
+import '../styles/normalize.css'
+import React, { useState, useEffect } from 'react'
+import routes from '../conn_routes'
+import Cookies from 'universal-cookie'
+import { Link, useNavigate } from 'react-router-dom' // Rutas
 
-function Login() {
-  const [login, setLogin] = useState(0);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [mantenerSesion, setMantenerSesion] = useState(false);
-  const [errorText, setErrorText] = useState("");
-  const cookies = new Cookies();
-  const navigate = useNavigate();
+function Login () {
+  const [login, setLogin] = useState(0)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [mantenerSesion, setMantenerSesion] = useState(false)
+  const [errorText, setErrorText] = useState('')
+  const cookies = new Cookies()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (login != 0) {
-      const user = new FormData();
-      user.append("email", email);
-      user.append("password", password);
+    if (login !== 0) {
+      const user = new FormData()
+      user.append('email', email)
+      user.append('password', password)
 
-      fetch(routes.fetchLaravel + "login", {
-        method: "POST",
-        mode: "cors",
+      fetch(routes.fetchLaravel + 'login', {
+        method: 'POST',
+        mode: 'cors',
         body: user,
-        credentials: "include",
+        credentials: 'include'
       })
         .then((response) => response.json())
         .then((data) => {
           if (data.valid) {
-            //Si se ha logueado
-            cookies.set("token", data.token, { path: "/" });
+            // Si se ha logueado
+            cookies.set('token', data.token, { path: '/' })
             window.postMessage({
               type: 'send_token-emit',
-              token: cookies.get("token")
+              token: cookies.get('token')
             }, '*')
-            
-            navigate("/lobbies");
+            navigate('/lobbies')
           } else {
             setErrorText(data.message)
           }
-        });
+        })
     }
-  }, [login]);
+  }, [login])
 
   useEffect(() => {
     if (mantenerSesion) {
-      document.getElementById("checkboxText").style.color = "#3d7934";
-      document.getElementById("checkboxText").style.transition = "all 0.3s";
+      document.getElementById('checkboxText').style.color = '#3d7934'
+      document.getElementById('checkboxText').style.transition = 'all 0.3s'
     }
 
     if (!mantenerSesion) {
-      document.getElementById("checkboxText").style.color = "#b9b9b9";
+      document.getElementById('checkboxText').style.color = '#b9b9b9'
     }
-  }, [mantenerSesion]);
+  }, [mantenerSesion])
 
   const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      setLogin(login + 1);
+    if (event.key === 'Enter') {
+      setLogin(login + 1)
     }
-  };
+  }
   return (
-    <div className="form">
+    <div className='form'>
       <h1>LOGIN</h1>
       <br />
-      <div className="form__form">
+      <div className='form__form'>
         <p>{errorText}</p>
 
-        <div className="form__inputGroup">
+        <div className='form__inputGroup'>
           <input
-            id="email"
-            className="form__input"
-            placeholder=" "
-            type="text"
+            id='email'
+            className='form__input'
+            placeholder=' '
+            type='text'
             onChange={(e) => setEmail(e.target.value)}
             required
           ></input>
-          <span className="form__inputBar"></span>
-          <label className="form__inputlabel">E-mail</label>
+          <span className='form__inputBar'></span>
+          <label className='form__inputlabel'>E-mail</label>
         </div>
-        <div className="form__inputGroup">
+        <div className='form__inputGroup'>
           <input
-            id="password"
-            className="form__input"
-            placeholder=" "
-            type="password"
+            id='password'
+            className='form__input'
+            placeholder=' '
+            type='password'
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={handleKeyDown}
             required
           ></input>
-          <span className="form__inputBar"></span>
-          <label className="form__inputlabel">Password</label>
+          <span className='form__inputBar'></span>
+          <label className='form__inputlabel'>Password</label>
           <br />
-          <div className="form__checkboxInput">
-            <label id="switch" className="form__checkboxLabel">
+          <div className='form__checkboxInput'>
+            <label id='switch' className='form__checkboxLabel'>
               <input
-                id="checkbox"
-                className="form__inputCheckbox"
-                type="checkbox"
+                id='checkbox'
+                className='form__inputCheckbox'
+                type='checkbox'
                 onChange={(e) => setMantenerSesion(!mantenerSesion)}
-              ></input>{" "}
-              <div className="slider round"></div>
+              ></input>{' '}
+              <div className='slider round'></div>
             </label>
-            <label className="form__checkboxText" htmlFor="checkbox">
-              <p id="checkboxText">keep signed in</p>
+            <label className='form__checkboxText' htmlFor='checkbox'>
+              <p id='checkboxText'>keep signed in</p>
             </label>
           </div>
         </div>
       </div>
-      <div className="form__buttonsLinks">
-        <div className="form__buttons">
-          <Link to="/">
-            <div className="form__goBack">
-              <div className="form__button--flex">
-                <button id="goBack__button">
-                  <span className="circle" aria-hidden="true">
-                    <span className="icon arrow"></span>
+      <div className='form__buttonsLinks'>
+        <div className='form__buttons'>
+          <Link to='/'>
+            <div className='form__goBack'>
+              <div className='form__button--flex'>
+                <button id='goBack__button'>
+                  <span className='circle' aria-hidden='true'>
+                    <span className='icon arrow'></span>
                   </span>
-                  <span className="button-text">GO BACK</span>
+                  <span className='button-text'>GO BACK</span>
                 </button>
               </div>
             </div>
           </Link>
 
-          <div className="form__submit submit">
-            <button onClick={() => setLogin(login + 1)} id="submit__button">
-              <span className="circle2" aria-hidden="true">
-                <span className="icon2 arrow2"></span>
+          <div className='form__submit submit'>
+            <button onClick={() => setLogin(login + 1)} id='submit__button'>
+              <span className='circle2' aria-hidden='true'>
+                <span className='icon2 arrow2'></span>
               </span>
-              <span className="button-text">SUBMIT</span>
+              <span className='button-text'>SUBMIT</span>
             </button>
           </div>
         </div>
-        <div className="form__links link">
-          <Link className="link__ForgotPass" to="/forgotPassword">
+        <div className='form__links link'>
+          <Link className='link__ForgotPass' to='/forgotPassword'>
             <p>Forgot your password?</p>
           </Link>
-          <Link className="link__CreateAcc" to="/register">
+          <Link className='link__CreateAcc' to='/register'>
             <p>Create account</p>
           </Link>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login
