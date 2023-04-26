@@ -39,7 +39,7 @@ function LandingPage () {
         <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
         <br />
         {buttonOption === '' && (
-          <button className='pixel-button'><Loader /></button>
+          <button className='pixel-button loading'>LOADING<Loader /></button>
         )}
         {buttonOption === 'started' && (
           <Link to='/login'>
