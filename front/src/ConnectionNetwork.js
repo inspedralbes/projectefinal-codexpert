@@ -18,131 +18,131 @@ class ConnectionNetwork {
     unlimitedHearts: false
   }
 
-  setMessage (msg) {
+  setMessage(msg) {
     this.message = msg
   }
 
-  getMessage () {
+  getMessage() {
     return this.message
   }
 
-  setErrorMessage (msg) {
+  setErrorMessage(msg) {
     this.errorMessage = msg
   }
 
-  getErrorMessage () {
+  getErrorMessage() {
     return this.errorMessage
   }
 
-  setWinnerMessage (msg) {
+  setWinnerMessage(msg) {
     this.winnerMessage = msg
   }
 
-  getWinnerMessage () {
+  getWinnerMessage() {
     return this.winnerMessage
   }
 
-  setToken (token) {
+  setToken(token) {
     this.token = token
   }
 
-  getToken () {
+  getToken() {
     return this.token
   }
 
-  setLobbyName (lobbyName) {
+  setLobbyName(lobbyName) {
     this.lobby_name = lobbyName
   }
 
-  getLobbyName () {
+  getLobbyName() {
     return this.lobby_name
   }
 
-  setLobbyList (lobbyList) {
+  setLobbyList(lobbyList) {
     this.lobbyList = lobbyList
   }
 
-  getLobbyList () {
+  getLobbyList() {
     return this.lobbyList
   }
 
-  setLobbyUserList (userList) {
+  setLobbyUserList(userList) {
     this.userList = userList
   }
 
-  getLobbyUserList () {
+  getLobbyUserList() {
     return this.userList
   }
 
-  setLobbyMessages (list) {
+  setLobbyMessages(list) {
     this.lobbyMessages = list
   }
 
-  getLobbyMessages () {
+  getLobbyMessages() {
     return this.lobbyMessages
   }
 
-  setQuestionData (data) {
+  setQuestionData(data) {
     this.questionData = data
   }
 
-  getQuestionData () {
+  getQuestionData() {
     return this.questionData
   }
 
-  setResult (result) {
+  setResult(result) {
     this.result = result
   }
 
-  getResult () {
+  getResult() {
     return this.result
   }
 
-  setRewards (rewards) {
+  setRewards(rewards) {
     this.rewards = rewards
   }
 
-  getRewards () {
+  getRewards() {
     return this.rewards
   }
 
-  setGameDuration (duration) {
+  setGameDuration(duration) {
     this.settings.gameDuration = duration
   }
 
-  setHeartAmount (amt) {
+  setHeartAmount(amt) {
     this.settings.heartAmount = amt
   }
 
-  setQuestionAmount (amt) {
+  setQuestionAmount(amt) {
     this.settings.questionAmount = amt
   }
 
-  setUnlimitedHearts (unlimited) {
+  setUnlimitedHearts(unlimited) {
     this.settings.unlimitedHearts = unlimited
   }
 
-  getGameDuration () {
+  getGameDuration() {
     return this.settings.gameDuration
   }
 
-  getHeartAmount () {
+  getHeartAmount() {
     return this.settings.heartAmount
   }
 
-  getQuestionAmount () {
+  getQuestionAmount() {
     return this.settings.questionAmount
   }
 
-  getUnlimitedHearts () {
+  getUnlimitedHearts() {
     return this.settings.unlimitedHearts
   }
 
-  setShowSettings (show) {
+  setShowSettings(show) {
     this.showSettings = show
   }
 
-  getShowSettings () {
+  getShowSettings() {
     return this.showSettings
   }
 }

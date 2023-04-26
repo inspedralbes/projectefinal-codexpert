@@ -11,7 +11,7 @@ Eyes.propTypes = {
   changes: PropTypes.object
 }
 
-function Eyes ({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function Eyes({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
     <>
       <div className='avatar__colorPicker'>

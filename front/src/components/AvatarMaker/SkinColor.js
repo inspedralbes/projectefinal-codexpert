@@ -11,7 +11,7 @@ SkinColor.propTypes = {
   changes: PropTypes.object
 }
 
-function SkinColor ({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function SkinColor({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
     <>
       <div className='avatar__colorPicker'>

@@ -6,7 +6,7 @@ import { Loader } from '../components/Loading'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function IconUser () {
+function IconUser() {
   const navigate = useNavigate()
   const cookies = new Cookies()
   const [state, setState] = useState(false)

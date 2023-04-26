@@ -8,7 +8,7 @@ import { Loading } from '../components/Loading'
 import LobbyList from '../components/LobbyList'
 import JoinedLobby from '../components/JoinedLobby'
 
-function Lobbies () {
+function Lobbies() {
   const [lobbyList, setLobbyList] = useState([])
   const [lobbyName, setLobbyName] = useState('')
   const [errorMessage, setErrorMessage] = useState('')

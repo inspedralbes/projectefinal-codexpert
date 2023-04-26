@@ -12,7 +12,7 @@ import Accessories from '../components/AvatarMaker/Accessories'
 import Mouth from '../components/AvatarMaker/Mouth'
 import Eyes from '../components/AvatarMaker/Eyes'
 
-function AvatarMaker () {
+function AvatarMaker() {
   const cookies = new Cookies()
   const navigate = useNavigate()
   const [optionCopy, setOptionCopy] = useState('background')
@@ -76,7 +76,7 @@ function AvatarMaker () {
           if (data.url != null) {
             getAvatar(data.url)
           } else {
-            // navigate('/login')
+            navigate('/login')
           }
         })
     }
@@ -124,7 +124,7 @@ function AvatarMaker () {
     }
   }, [changes])
 
-  function changeOption (option) {
+  function changeOption(option) {
     if (option !== optionCopy) {
       setOptionCopy(option)
       const menuCopy = { ...menu }
@@ -135,7 +135,7 @@ function AvatarMaker () {
     }
   }
 
-  function getAvatar (u) {
+  function getAvatar(u) {
     const url = new URL(u)
     setChanges({
       ...changes,
