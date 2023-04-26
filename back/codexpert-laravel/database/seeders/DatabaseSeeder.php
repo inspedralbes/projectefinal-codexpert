@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         //Example 1
         $question = new Question;
         $question -> statement = "Sort Array in ASCENDING order";
+        $question -> save();
         //Input 1
         $input = new Test_input;
         $input -> question_id = 1;
@@ -43,25 +44,25 @@ class DatabaseSeeder extends Seeder
         $input -> save();
         //Output 1
         $output = new Test_output;
-        $input -> question_id = 1;
+        $output -> question_id = 1;
         $output -> output = serialize(array( 3, 5, 7 ));
         $output -> save();
         //Output 2
         $output = new Test_output;
-        $input -> question_id = 1;
+        $output -> question_id = 1;
         $output -> output = serialize(array( 3, 7, 10 ));
         $output -> save();
         //Output 3
         $output = new Test_output;
-        $input -> question_id = 1;
+        $output -> question_id = 1;
         $output -> output = serialize(array( 2, 6, 8 ));
         $output -> save();                
-        $question -> save();
 
         
         //Example 2
         $question = new Question;
         $question -> statement = "Reverse the String";
+        $question -> save();
         //Input 1
         $input = new Test_input;
         $input -> question_id = 2;
@@ -79,25 +80,25 @@ class DatabaseSeeder extends Seeder
         $input -> save();
         //Output 1
         $output = new Test_output;
-        $input -> question_id = 2;
+        $output -> question_id = 2;
         $output -> output = serialize("olleH");
         $output -> save();
         //Output 2
         $output = new Test_output;
-        $input -> question_id = 2;
+        $output -> question_id = 2;
         $output -> output = serialize("ydwoH");
         $output -> save();
         //Output 3
         $output = new Test_output;
-        $input -> question_id = 2;
+        $output -> question_id = 2;
         $output -> output = serialize("htraE morf sgniteerG");
         $output -> save();                
-        $question -> save();
         
         
         //Example 3
         $question = new Question;
         $question -> statement = "Reverse the given Array";
+        $question -> save();
         //Input 1
         $input = new Test_input;
         $input -> question_id = 3;
@@ -115,25 +116,25 @@ class DatabaseSeeder extends Seeder
         $input -> save();
         //Output 1
         $output = new Test_output;
-        $input -> question_id = 3;
+        $output -> question_id = 3;
         $output -> output = serialize(array( 4, 2, 7, 3 ));
         $output -> save();
         //Output 2
         $output = new Test_output;
-        $input -> question_id = 3;
+        $output -> question_id = 3;
         $output -> output = serialize(array( 3, 2, 4, 1, 5 ));
         $output -> save();
         //Output 3
         $output = new Test_output;
-        $input -> question_id = 3;
+        $output -> question_id = 3;
         $output -> output = serialize(array( 3, 12, 7 ));
         $output -> save();                
-        $question -> save();
 
 
         //Example 4
         $question = new Question;
         $question -> statement = "Count number of odd numers in the Array";
+        $question -> save();
         //Input 1
         $input = new Test_input;
         $input -> question_id = 4;
@@ -151,25 +152,25 @@ class DatabaseSeeder extends Seeder
         $input -> save();
         //Output 1
         $output = new Test_output;
-        $input -> question_id = 4;
+        $output -> question_id = 4;
         $output -> output = serialize(3);
         $output -> save();
         //Output 2
         $output = new Test_output;
-        $input -> question_id = 4;
+        $output -> question_id = 4;
         $output -> output = serialize(1);
         $output -> save();
         //Output 3
         $output = new Test_output;
-        $input -> question_id = 4;
+        $output -> question_id = 4;
         $output -> output = serialize(0);
         $output -> save();                
-        $question -> save();
         
 
         //Example 5
         $question = new Question;
         $question -> statement = "Sort Array in ASCENDING order";
+        $question -> save();
         //Input 1
         $input = new Test_input;
         $input -> question_id = 5;
@@ -187,21 +188,19 @@ class DatabaseSeeder extends Seeder
         $input -> save();
         //Output 1
         $output = new Test_output;
-        $input -> question_id = 5;
+        $output -> question_id = 5;
         $output -> output = serialize(array( 3, 5, 7 ));
         $output -> save();
         //Output 2
         $output = new Test_output;
-        $input -> question_id = 5;
+        $output -> question_id = 5;
         $output -> output = serialize(array( 3, 7, 10 ));
         $output -> save();
         //Output 3
         $output = new Test_output;
-        $input -> question_id = 5;
+        $output -> question_id = 5;
         $output -> output = serialize(array( 2, 6, 8 ));
-        $output -> save();                
-        $question -> save();
-        
+        $output -> save();                        
         
         //Example 5
         // $question = new Question;
