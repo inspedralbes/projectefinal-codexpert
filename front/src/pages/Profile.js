@@ -21,7 +21,7 @@ function Profile() {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     fetch(routes.fetchLaravel + 'getUserData', {
-      method: 'GET',
+      method: 'POST',
       mode: 'cors',
       body: token,
       credentials: 'include'
