@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
 Modal.setAppElement('body')
 
-function Profile() {
+function Profile () {
   const navigate = useNavigate()
   const cookies = new Cookies()
   const [userData, setUserData] = useState({})
@@ -71,7 +71,7 @@ function Profile() {
     password.append('newPassword', editUser.newPassword)
     password.append('newPassword_confirmation', editUser.rNewPassword)
     password.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-        fetch(routes.fetchLaravel + 'changePassword', {
+    fetch(routes.fetchLaravel + 'changePassword', {
       method: 'POST',
       mode: 'cors',
       body: password,
