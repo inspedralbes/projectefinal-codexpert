@@ -11,7 +11,7 @@ Hair.propTypes = {
   changes: PropTypes.object
 }
 
-function Hair ({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function Hair({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
     <>
       <div className='avatar__colorPicker'>

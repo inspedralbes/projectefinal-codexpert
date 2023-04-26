@@ -8,9 +8,9 @@ import logo from '../img/logo.gif'
 import { Loader } from '../components/Loading'
 import IconUser from '../components/IconUser'
 
-function LandingPage () {
+function LandingPage() {
   const cookies = new Cookies()
-  const [buttonOption, setButtonOption] = useState('')
+  const [isUserLogged, setisUserLogged] = useState('')
   useEffect(() => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
@@ -23,30 +23,32 @@ function LandingPage () {
       .then((response) => response.json())
       .then((data) => {
         if (data.correct) {
-          setButtonOption('lobbies')
+          setisUserLogged(true)
         } else {
-          setButtonOption('started')
+          setisUserLogged(false)
         }
       })
   }, [])
 
   return (
     <div>
-      <IconUser />
+      {isUserLogged === true && (
+        <IconUser />
+      )}
       <div className='landingPage'>
-      <Loader />
+        <Loader />
         <img src={logo} alt='codeXpert' className='landingPage__codexpert'></img>
         <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
         <br />
-        {buttonOption === '' && (
+        {isUserLogged === '' && (
           <button className='pixel-button loading'>LOADING<Loader /></button>
         )}
-        {buttonOption === 'started' && (
+        {isUserLogged === false && (
           <Link to='/login'>
             <button className='pixel-button'>Get Started</button>
           </Link>
         )}
-        {buttonOption === 'lobbies' && (
+        {isUserLogged === true && (
           <Link to='/lobbies'>
             <button className='pixel-button'>Lobbies</button>
           </Link>

@@ -2,7 +2,7 @@ import React from 'react'
 import '../styles/normalize.css'
 import { Link } from 'react-router-dom'
 
-function ForgotPassword () {
+function ForgotPassword() {
   return (
     <div>
       <h1>Forgot your password?</h1>

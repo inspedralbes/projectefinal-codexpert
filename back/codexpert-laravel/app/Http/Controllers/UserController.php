@@ -26,9 +26,12 @@ class UserController extends Controller
             [$id, $token] = explode('|', $checkToken, 2);
             $accessToken = PersonalAccessToken::find($id);
 
-            if (hash_equals($accessToken->token, hash('sha256', $token))) {
-                $userId = $accessToken->tokenable_id;
+            if ($accessToken != null) {
+                if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                    $userId = $accessToken->tokenable_id;
+                }
             }
+
         }
 
 

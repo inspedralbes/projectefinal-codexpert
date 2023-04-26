@@ -53,6 +53,39 @@ function Profile () {
     } else {
       user.append(type, editUser.email)
     }
+    user.append('password', editUser.password)
+    user.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + (type === 'newName' ? 'changeUsername' : 'changeEmail'), {
+      method: 'POST',
+      mode: 'cors',
+      body: user,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
+      })
+    setModals(prev => ({ ...prev, name: false }))
+    setUserData(prev => ({ ...prev, name: editUser.name, email: editUser.email }))
+  }
+
+  const savePassword = () => {
+    // currentPassword, newPassword, newPassword_confirmation
+    const password = new FormData()
+    password.append('currentPassword', editUser.password)
+    password.append('newPassword', editUser.newPassword)
+    password.append('newPassword_confirmation', editUser.rNewPassword)
+    password.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'changePassword', {
+      method: 'POST',
+      mode: 'cors',
+      body: password,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
+      })
+    setModals(prev => ({ ...prev, password: false }))
+  }
 
     return (
       <div className='profile'>
@@ -67,7 +100,6 @@ function Profile () {
               </button>
               <div></div>
             </div>
-
             <Modal
               style={{ // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
                 content: {
@@ -174,6 +206,5 @@ function Profile () {
       </div >
 
     )
-  }
 }
 export default Profile

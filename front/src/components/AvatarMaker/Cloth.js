@@ -11,7 +11,7 @@ Cloth.propTypes = {
   changes: PropTypes.object
 }
 
-function Cloth ({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
     <>
       <div className='avatar__colorPicker'>
