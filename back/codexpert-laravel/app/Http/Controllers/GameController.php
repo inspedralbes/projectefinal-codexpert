@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Game;
 use App\Models\Question;
+use App\Models\Test_input;
+use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
@@ -78,14 +80,16 @@ class GameController extends Controller
 
             //Unserialize the questions and add them to the array that will be returned
             for ($i = 0; $i < count($getQuestions); $i++) {
-                $getQuestions[$i] -> userExpectedInput = unserialize($getQuestions[$i] -> userExpectedInput);
-                $getQuestions[$i] -> userExpectedOutput = unserialize($getQuestions[$i] -> userExpectedOutput);
-                $getQuestions[$i] -> testInput1 = unserialize($getQuestions[$i] -> testInput1);
-                $getQuestions[$i] -> testOutput1 = unserialize($getQuestions[$i] -> testOutput1);
-                $getQuestions[$i] -> testInput2 = unserialize($getQuestions[$i] -> testInput2);
-                $getQuestions[$i] -> testOutput2 = unserialize($getQuestions[$i] -> testOutput2);
-                $getQuestions[$i] -> inputs = [$getQuestions[$i] -> userExpectedInput, $getQuestions[$i] -> testInput1, $getQuestions[$i] -> testInput2];
-                $getQuestions[$i] -> outputs = [$getQuestions[$i] -> userExpectedOutput, $getQuestions[$i] -> testOutput1, $getQuestions[$i] -> testOutput2];
+                $questionInputs = Test_input::where('question_id', $getQuestions[$i] -> id)->get('input');
+                $questionOutputs = Test_output::where('question_id', $getQuestions[$i] -> id)->get('output');
+                
+                for ($j = 0; $j < count($questionInputs); $j ++) { 
+                    $questionInputs[$j] = unserialize($questionInputs[$j]);
+                    $questionOutputs[$j] = unserialize($questionOutputs[$j]);
+                }
+
+                $getQuestions[$i] -> inputs = $questionInputs;
+                $getQuestions[$i] -> outputs = $questionOutputs;
                 $allQuestions[$i] = $getQuestions[$i];
             }
 
