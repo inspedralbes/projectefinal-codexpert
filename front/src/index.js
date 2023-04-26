@@ -28,25 +28,25 @@ if (cookies.get('token') !== undefined) {
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path='/'>
-          <Route index element={<LandingPage />} />
-          <Route path='login' element={<Login />} />
-          <Route path='register' element={<Register />} />
-          <Route path='game' element={<Game />} />
-          <Route path='forgotPassword' element={<ForgotPassword />} />
-          <Route path='resetPassword' element={<ResetPassword />} />
-          <Route path='avatarMaker' element={<AvatarMaker />} />
-          <Route path='lobbies' element={<Lobbies />}></Route>
-          <Route path='profile' element={<Profile />}></Route>
-          <Route path='404' element={<Error404 />}></Route>
-          <Route path='*' element={<Navigate to='/404' />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <BrowserRouter>
+    <Routes>
+      <Route path='/'>
+        <Route index element={<LandingPage />} />
+        <Route path='login' element={<Login />} />
+        <Route path='register' element={<Register />} />
+        <Route path='game' element={<Game />} />
+        <Route path='forgotPassword' element={<ForgotPassword />} />
+        <Route path='resetPassword' element={<ResetPassword />} />
+        <Route path='avatarMaker' element={<AvatarMaker />} />
+        <Route path='lobbies' element={<Lobbies />}></Route>
+        <Route path='profile' element={<Profile />}></Route>
+        <Route path='404' element={<Error404 />}></Route>
+        <Route path='*' element={<Navigate to='/404' />} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
+  // </React.StrictMode>
 )
 
 // If you want to start measuring performance in your app, pass a function
