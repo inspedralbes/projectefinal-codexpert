@@ -270,12 +270,12 @@ socketIO.on("connection", (socket) => {
     let gameNumQuestions;
     let unlimitedHeartsOption;
 
-    lobbies.forEach(lobby => {
-      if (lobby.lobby_name === socket.data.current_lobby) {
-        gameNumQuestions = lobby.settings.questionAmount;
-        unlimitedHeartsOption = lobby.settings.unlimitedHearts;
-      }
-    });
+    const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
+    if (lobby != null) {
+      console.log(lobby);
+      gameNumQuestions = lobby.settings.questionAmount;
+      unlimitedHeartsOption = lobby.settings.unlimitedHearts;
+    }
 
     const postData = {
       idQuestion: socket.data.idQuestion,
@@ -301,13 +301,9 @@ socketIO.on("connection", (socket) => {
           }, socket.data.current_lobby);
 
           socket.data.question_at = userGame.question_at;
-          lobbies.forEach((lobby) => {
-            if (lobby.lobby_name === socket.data.current_lobby) {
-              if (socket.data.question_at < lobby.settings.questionAmount) {
-                socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
-              }
-            }
-          });
+
+          const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby && socket.data.question_at < lobby.settings.questionAmount)[0];
+          socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
 
           sendUserList(socket.data.current_lobby);
           // Only passes if not dead
@@ -330,15 +326,18 @@ socketIO.on("connection", (socket) => {
                   question_at: socket.data.question_at
                 }
               });
+              setMembersStats(socket.data.current_lobby);
+
+              const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
+
+              socketIO.to(socket.id).emit("ranking", {
+                ranking: lobby.members
+              });
             } else {
               // FUTURO uwu
             }
           } else {
-            sendQuestionDataToUser(
-              socket.id,
-              socket.data.question_at,
-              socket.data.current_lobby
-            );
+            sendQuestionDataToUser(socket.id, socket.data.question_at, socket.data.current_lobby);
           }
         } else {
           addMessage({
@@ -440,6 +439,23 @@ socketIO.on("connection", (socket) => {
     leaveLobby(socket);
   });
 });
+
+async function setMembersStats(room) {
+  const sockets = await socketIO.in(room).fetchSockets();
+  lobbies.forEach(lobby => {
+    if (lobby.lobby_name === room) {
+      lobby.members.forEach(member => {
+        sockets.forEach((socket) => {
+          if (socket.data.userId === member.idUser) {
+            member.hearts_remaining = socket.data.hearts_remaining;
+            member.perks_used = socket.data.perks_used;
+            member.question_at = socket.data.question_at;
+          }
+        });
+      });
+    }
+  });
+}
 
 function addMessage(msgData, room) {
   lobbies.forEach((lobby) => {
