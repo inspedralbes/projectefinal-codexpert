@@ -11,7 +11,7 @@ Glasses.propTypes = {
   changes: PropTypes.object
 }
 
-function Glasses ({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function Glasses({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
     <>
       <div className='avatar__colorPicker'>

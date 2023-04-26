@@ -5,29 +5,29 @@ Settings.propTypes = {
   fetchSettings: PropTypes.bool
 }
 
-function Settings ({ fetchSettings }) {
+function Settings({ fetchSettings }) {
   const [gameDuration, setGameDuration] = useState(301)
   const [heartAmount, setHeartAmount] = useState(0)
   const [questionAmount, setQuestionAmount] = useState(0)
   const [unlimitedHearts, setUnlimitedHearts] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
-  function handleChangeUnlimitedHearts () {
+  function handleChangeUnlimitedHearts() {
     setUnlimitedHearts(!unlimitedHearts)
     window.network.setUnlimitedHearts(!unlimitedHearts)
   }
 
-  function handleChangeGameDuration (e) {
+  function handleChangeGameDuration(e) {
     setGameDuration(e.target.value)
     window.network.setGameDuration(e.target.value)
   }
 
-  function handleChangeHeartAmount (e) {
+  function handleChangeHeartAmount(e) {
     setHeartAmount(e.target.value)
     window.network.setHeartAmount(e.target.value)
   }
 
-  function handleChangeQuestionAmount (e) {
+  function handleChangeQuestionAmount(e) {
     setQuestionAmount(e.target.value)
     window.network.setQuestionAmount(e.target.value)
     console.log(window.network.getQuestionAmount())

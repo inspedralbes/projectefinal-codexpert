@@ -10,7 +10,7 @@ App.propTypes = {
   setCode: PropTypes.func
 }
 
-function App ({ code, setCode }) {
+function App({ code, setCode }) {
   const [theme, setTheme] = useState('dark')
   const onChange = React.useCallback((value, viewUpdate) => {
     setCode(value)

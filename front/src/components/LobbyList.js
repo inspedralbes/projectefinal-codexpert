@@ -15,7 +15,7 @@ LobbyList.propTypes = {
   setErrorMessage: PropTypes.func
 }
 
-function LobbyList ({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage, setErrorMessage }) {
+function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage, setErrorMessage }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     window.postMessage({

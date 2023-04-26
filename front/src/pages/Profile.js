@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
 Modal.setAppElement('body')
 
-function Profile () {
+function Profile() {
   const navigate = useNavigate()
   const cookies = new Cookies()
   const [userData, setUserData] = useState({})

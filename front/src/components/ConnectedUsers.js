@@ -1,7 +1,7 @@
 import '../styles/normalize.css'
 import React, { useState, useEffect } from 'react'
 
-function ConnectedUsers () {
+function ConnectedUsers() {
   const [userList, setUserList] = useState([])
   const [firstTime, setFirstTime] = useState(true)
 

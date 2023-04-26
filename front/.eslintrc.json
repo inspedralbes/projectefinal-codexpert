@@ -17,6 +17,7 @@
         "react"
     ],
     "rules": {
-        "no-eval": ["error", {"allowIndirect": true}] // default is false
+        "no-eval": ["error", {"allowIndirect": true}], // default is false
+        "space-before-function-paren": ["error", {"anonymous": "always", "named": "never", "asyncArrow": "always"}]
     }
 }

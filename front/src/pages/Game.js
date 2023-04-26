@@ -9,7 +9,7 @@ import ChatGame from '../components/ChatGame'
 import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
 import CodeMirror from '../components/CodeMirror'
 
-function Game () {
+function Game() {
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
   const [error, setError] = useState('')
@@ -87,11 +87,11 @@ function Game () {
     }
   }
 
-  function goBackToLobby () {
+  function goBackToLobby() {
     navigate('/lobbies')
   }
 
-  function leaveLobby () {
+  function leaveLobby() {
     window.postMessage({
       type: 'leave_lobby-emit',
       lobbyName: window.network.getLobbyName()

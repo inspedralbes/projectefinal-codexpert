@@ -3,7 +3,7 @@ import '../styles/normalize.css'
 import '../styles/Loading.css'
 import { Blocks } from 'react-loader-spinner'
 
-function Loading () {
+function Loading() {
   return (
     <div className='Loading__container'>
       <h1>Loading...</h1>
@@ -19,7 +19,7 @@ function Loading () {
   )
 }
 
-function Loader () {
+function Loader() {
   return (
     <>
       <span className='loader'></span>
