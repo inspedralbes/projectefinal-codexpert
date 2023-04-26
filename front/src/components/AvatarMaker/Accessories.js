@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
 import { CirclePicker } from 'react-color'
 
-function Accessories ({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function Accessories({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
     <>
       <div className='avatar__colorPicker'>

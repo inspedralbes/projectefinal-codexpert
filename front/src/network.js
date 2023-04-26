@@ -1,12 +1,14 @@
 import socketIO from 'socket.io-client'
 import ConnectionNetwork from './ConnectionNetwork.js'
+import routes from './conn_routes'
 
-const socket = socketIO('ws://localhost:7500', {
+const socket = socketIO(routes.wssNode, {
   withCredentials: true,
   cors: {
     origin: '*',
     credentials: true
   },
+  path: '/node/',
   transports: ['websocket']
 })
 

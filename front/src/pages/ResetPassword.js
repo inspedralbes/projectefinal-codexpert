@@ -2,7 +2,7 @@ import React from 'react'
 import '../styles/normalize.css'
 import { Link } from 'react-router-dom'
 
-function ResetPassword () {
+function ResetPassword() {
   return (
     <div>
       <h1>Reset your password</h1>

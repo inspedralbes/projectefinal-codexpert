@@ -2,7 +2,7 @@ import '../styles/normalize.css'
 import '../styles/chat.css'
 import React, { useState, useEffect } from 'react'
 
-function ChatGame () {
+function ChatGame() {
   const [messages, setMessages] = useState([])
   const [msg, setMsg] = useState('')
 

@@ -11,7 +11,7 @@ Background.propTypes = {
   changes: PropTypes.object
 }
 
-function Background ({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function Background({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
     <>
       <div className='avatar__colorPicker'>
