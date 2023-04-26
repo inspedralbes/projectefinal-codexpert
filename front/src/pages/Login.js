@@ -49,7 +49,7 @@ function Login() {
     }
 
     if (!mantenerSesion) {
-      document.getElementById('checkboxText').style.color = '#b9b9b9'
+      document.getElementById('checkboxText').style.color = '#747474'
     }
   }, [mantenerSesion])
 
@@ -75,7 +75,7 @@ function Login() {
             required
           ></input>
           <span className='form__inputBar'></span>
-          <label className='form__inputlabel'>E-mail</label>
+          <label htmlFor='email' className='form__inputlabel'>E-mail</label>
         </div>
         <div className='form__inputGroup'>
           <input
@@ -88,10 +88,11 @@ function Login() {
             required
           ></input>
           <span className='form__inputBar'></span>
-          <label className='form__inputlabel'>Password</label>
+          <label htmlFor='password' className='form__inputlabel'>Password</label>
           <br />
           <div className='form__checkboxInput'>
-            <label id='switch' className='form__checkboxLabel'>
+            <label htmlFor='checkbox' className='form__checboxLabel--flex'>
+              <div id='switch'className='form__checkboxLabel' >
               <input
                 id='checkbox'
                 className='form__inputCheckbox'
@@ -99,10 +100,12 @@ function Login() {
                 onChange={(e) => setMantenerSesion(!mantenerSesion)}
               ></input>{' '}
               <div className='slider round'></div>
-            </label>
-            <label className='form__checkboxText' htmlFor='checkbox'>
+            </div>
+            <div className='form__checkboxText' htmlFor='checkbox'>
               <p id='checkboxText'>keep signed in</p>
-            </label>
+            </div>
+          </label>
+
           </div>
         </div>
       </div>
