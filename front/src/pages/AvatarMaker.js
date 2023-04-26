@@ -76,7 +76,7 @@ function AvatarMaker () {
           if (data.url != null) {
             getAvatar(data.url)
           } else {
-            // navigate('/login')
+            navigate('/login')
           }
         })
     }
