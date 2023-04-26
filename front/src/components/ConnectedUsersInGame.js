@@ -1,7 +1,7 @@
 import '../styles/normalize.css'
 import React, { useState, useEffect } from 'react'
 
-function ConnectedUsersInGame () {
+function ConnectedUsersInGame() {
   const [userList, setUserList] = useState([])
 
   const handleMessage = (event) => {

@@ -233,9 +233,12 @@ class AuthController extends Controller
             [$id, $token] = explode('|', $request -> token, 2);
             $accessToken = PersonalAccessToken::find($id);
 
-            if (hash_equals($accessToken->token, hash('sha256', $token))) {
-                $logged -> correct = true;
+            if ($accessToken != null) {
+                if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                    $logged -> correct = true;
+                }
             }
+
         }
 
         return response() -> json($logged);

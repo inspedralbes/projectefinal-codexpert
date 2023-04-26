@@ -15,7 +15,7 @@ JoinedLobby.propTypes = {
   errorMessage: PropTypes.string
 }
 
-function JoinedLobby ({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
+function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)

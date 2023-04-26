@@ -8,7 +8,7 @@ import 'tippy.js/themes/light-border.css' // Tooltip theme
 import 'tippy.js/animations/shift-away-extreme.css' // Tooltip animation
 import informationIcon from '../img/information_icon.gif'
 
-function Register () {
+function Register() {
   const [registro, setRegistro] = useState(0)
 
   const [userData, setUserData] = useState({

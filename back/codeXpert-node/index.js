@@ -21,7 +21,8 @@ const socketIO = require("socket.io")(server, {
   cors: {
     origin: true,
     credentials: true
-  }
+  },
+  path: "/node/"
 });
 
 // ============= SAVE TOKEN AS COOKIE ===========
@@ -440,7 +441,7 @@ socketIO.on("connection", (socket) => {
   });
 });
 
-function addMessage (msgData, room) {
+function addMessage(msgData, room) {
   lobbies.forEach((lobby) => {
     if (lobby.lobby_name === room) {
       lobby.messages.push(msgData);
@@ -449,7 +450,7 @@ function addMessage (msgData, room) {
   sendMessagesToLobby(room);
 }
 
-async function startGame (room, amount) {
+async function startGame(room, amount) {
   await axios
     .post(laravelRoute + "startGame", {
       numQuestions: amount
@@ -483,7 +484,7 @@ async function startGame (room, amount) {
     });
 }
 
-async function enviarDadesGame (room) {
+async function enviarDadesGame(room) {
   let members;
   let idGameDB;
   let gameHeartAmount;
@@ -506,7 +507,7 @@ async function enviarDadesGame (room) {
     });
 }
 
-async function updateUserLvl (room) {
+async function updateUserLvl(room) {
   let members;
   let idGameDB;
 
@@ -530,7 +531,7 @@ async function updateUserLvl (room) {
     });
 }
 
-async function sendUserStats (room) {
+async function sendUserStats(room) {
   const sockets = await socketIO.in(room).fetchSockets();
 
   lobbies.forEach(lobby => {
@@ -546,7 +547,7 @@ async function sendUserStats (room) {
   });
 }
 
-function setUserLvl (data, room) {
+function setUserLvl(data, room) {
   lobbies.forEach((lobby) => {
     if (lobby.lobby_name === room) {
       data.forEach(statUser => {
@@ -562,7 +563,7 @@ function setUserLvl (data, room) {
   });
 }
 
-async function setGameData (gameData, room) {
+async function setGameData(gameData, room) {
   const sockets = await socketIO.in(room).fetchSockets();
   let hearts;
 
@@ -583,7 +584,7 @@ async function setGameData (gameData, room) {
   });
 }
 
-function sendQuestionDataToUser (socketId, questionIndex, currentLobby) {
+function sendQuestionDataToUser(socketId, questionIndex, currentLobby) {
   lobbies.forEach((lobby) => {
     if (lobby.lobby_name === currentLobby) {
       socketIO.to(socketId).emit("question_data", {
@@ -595,7 +596,7 @@ function sendQuestionDataToUser (socketId, questionIndex, currentLobby) {
   });
 }
 
-function setWinnerId (winnerId, currentLobby) {
+function setWinnerId(winnerId, currentLobby) {
   lobbies.forEach((lobby) => {
     if (lobby.lobby_name === currentLobby) {
       lobby.game_data.winner = winnerId;
@@ -603,7 +604,7 @@ function setWinnerId (winnerId, currentLobby) {
   });
 }
 
-async function leaveLobby (socket) {
+async function leaveLobby(socket) {
   lobbies.forEach((lobby, indLobby) => {
     if (lobby.lobby_name === socket.data.current_lobby) {
       lobby.members.forEach((member, index) => {
@@ -628,7 +629,7 @@ async function leaveLobby (socket) {
   sendLobbyList();
 }
 
-function sendMessagesToLobby (lobby) {
+function sendMessagesToLobby(lobby) {
   lobbies.forEach((element) => {
     if (element.lobby_name === lobby) {
       socketIO.sockets.in(lobby).emit("lobby_message", {
@@ -638,11 +639,11 @@ function sendMessagesToLobby (lobby) {
   });
 }
 
-async function sendLobbyList () {
+async function sendLobbyList() {
   await socketIO.emit("lobbies_list", lobbies);
 }
 
-async function sendUserList (room) {
+async function sendUserList(room) {
   const userList = [];
   let unlimitedHeartsOption;
 

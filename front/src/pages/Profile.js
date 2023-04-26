@@ -71,7 +71,7 @@ function Profile() {
     password.append('newPassword', editUser.newPassword)
     password.append('newPassword_confirmation', editUser.rNewPassword)
     password.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-        fetch(routes.fetchLaravel + 'changePassword', {
+    fetch(routes.fetchLaravel + 'changePassword', {
       method: 'POST',
       mode: 'cors',
       body: password,

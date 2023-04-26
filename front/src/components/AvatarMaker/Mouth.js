@@ -11,7 +11,7 @@ Mouth.propTypes = {
   changes: PropTypes.object
 }
 
-function Mouth ({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function Mouth({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
     <>
       <div className='avatar__colorPicker'>

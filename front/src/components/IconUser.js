@@ -6,14 +6,12 @@ import { Loader } from '../components/Loading'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function IconUser () {
+function IconUser() {
   const navigate = useNavigate()
   const cookies = new Cookies()
   const [state, setState] = useState(false)
   const [avatarURL, setAvatarURL] = useState(null)
   const [logOut, setLogOut] = useState(false)
-  const [isUserLogged, setisUserLogged] = useState(false)
-
   const handleButtonClick = () => {
     setState(!state)
   }
@@ -30,20 +28,6 @@ function IconUser () {
       .then((response) => response.json())
       .then((data) => {
         setAvatarURL(data.url)
-      })
-
-    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-    fetch(routes.fetchLaravel + 'isUserLogged', {
-      method: 'POST',
-      mode: 'cors',
-      body: token,
-      credentials: 'include'
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.correct) {
-          setisUserLogged(true)
-        }
       })
   }, [])
 
@@ -68,13 +52,13 @@ function IconUser () {
             document.cookie = name + '=expires=Thu, 01 Jan 1970 00:00:00 GMT'
           }
         })
-      navigate('/login')
+      navigate('/')
     }
   }, [logOut])
 
   return (
     <>
-      {isUserLogged && (
+      {avatarURL !== "" && (
         <div className='container'>
           {avatarURL !== null
             ? (<button
