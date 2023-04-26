@@ -1,7 +1,10 @@
 import React from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { CirclePicker } from 'react-color'
+import { SliderPicker } from 'react-color'
+import ShadeSlider from '@uiw/react-color-shade-slider';
+
 
 SkinColor.propTypes = {
   currentColor: PropTypes.string,
@@ -12,16 +15,24 @@ SkinColor.propTypes = {
 }
 
 function SkinColor({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+  const [hsva, setHsva] = useState({ h: 0, s: 0, v: 68, a: 1 });
+  
   return (
     <>
       <div className='avatar__colorPicker'>
-        <CirclePicker
+        <SliderPicker
           color={currentColor}
           onChangeComplete={handleChangeComplete}
           onChange={(color) =>
             setChanges({ ...changes, sC: color.hex.replace('#', '') })
           }
           colors={ArrayColors}
+        />
+        <ShadeSlider
+           hsva={hsva}
+           onChange={(newShade) => {
+             setHsva({ ...hsva, ...newShade });
+           }}
         />
       </div>
       <div className='avatar__options'><h1>This element has no type uwu</h1></div>

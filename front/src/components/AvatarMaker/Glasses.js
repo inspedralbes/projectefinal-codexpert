@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { CirclePicker } from 'react-color'
+import { SliderPicker } from 'react-color'
 
 Glasses.propTypes = {
   currentColor: PropTypes.string,
@@ -15,7 +15,7 @@ function Glasses({ currentColor, handleChangeComplete, setChanges, ArrayColors, 
   return (
     <>
       <div className='avatar__colorPicker'>
-        <CirclePicker
+        <SliderPicker
           color={currentColor}
           onChangeComplete={handleChangeComplete}
           onChange={(color) =>

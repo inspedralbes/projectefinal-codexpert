@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { CirclePicker } from 'react-color'
+import { SliderPicker } from 'react-color'
 
 Mouth.propTypes = {
   currentColor: PropTypes.string,
@@ -15,7 +15,7 @@ function Mouth({ currentColor, handleChangeComplete, setChanges, ArrayColors, ch
   return (
     <>
       <div className='avatar__colorPicker'>
-        <CirclePicker
+        <SliderPicker
           color={currentColor}
           onChangeComplete={handleChangeComplete}
           onChange={(color) => setChanges({ ...changes, mC: color.hex.replace('#', '') })

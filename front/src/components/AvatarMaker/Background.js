@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { CirclePicker } from 'react-color'
+import { SliderPicker } from 'react-color'
 
 Background.propTypes = {
   currentColor: PropTypes.string,
@@ -15,14 +15,12 @@ function Background({ currentColor, handleChangeComplete, setChanges, ArrayColor
   return (
     <>
       <div className='avatar__colorPicker'>
-
-        <CirclePicker
+        <SliderPicker
           color={currentColor}
           onChangeComplete={handleChangeComplete}
           onChange={(color) =>
             setChanges({ ...changes, bg: color.hex.replace('#', '') })
           }
-          colors={ArrayColors}
         />
       </div>
       <div className='avatar__options'><h1>This element has no type.</h1></div>

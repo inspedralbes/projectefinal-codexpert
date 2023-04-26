@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { CirclePicker } from 'react-color'
+import { SliderPicker } from 'react-color'
 
 Hair.propTypes = {
   currentColor: PropTypes.string,
@@ -16,7 +16,7 @@ function Hair({ currentColor, handleChangeComplete, setChanges, ArrayColors, cha
     <>
       <div className='avatar__colorPicker'>
 
-        <CirclePicker
+        <SliderPicker
           color={currentColor}
           onChangeComplete={handleChangeComplete}
           onChange={(color) =>

@@ -13,6 +13,7 @@
     "@tippyjs/react": "^4.2.6",
     "@uiw/codemirror-themes": "^4.19.16",
     "@uiw/react-codemirror": "^4.19.16",
+    "@uiw/react-color-shade-slider": "^1.2.1",
     "@uiw/react-color-sketch": "^1.1.1",
     "codemirror": "^5.65.12",
     "codemirror-readonly-ranges": "^0.1.0-alpha.1",

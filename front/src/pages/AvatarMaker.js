@@ -12,7 +12,7 @@ import Accessories from '../components/AvatarMaker/Accessories'
 import Mouth from '../components/AvatarMaker/Mouth'
 import Eyes from '../components/AvatarMaker/Eyes'
 
-function AvatarMaker() {
+function AvatarMaker () {
   const cookies = new Cookies()
   const navigate = useNavigate()
   const [optionCopy, setOptionCopy] = useState('background')
@@ -51,10 +51,11 @@ function AvatarMaker() {
   })
 
   // COLOR PICKER
-  const [currentColor, setCurrentColor] = useState('#fff')
+  const [currentColor, setCurrentColor] = useState('{ h: 0, s: 0, v: 68, a: 1 }')
 
   const handleChangeComplete = (color) => {
-    setCurrentColor(color)
+    console.log(color);
+    setCurrentColor(color.hsv)
   }
 
   const ArrayColors = ['#000000', '#2D2D2D', '#595858', '#969696', '#C1C1C1', '#F1F1F1', '#41240B', '#6C3F18', '#8B5B30', '#AE7A4C', '#CC9D74', '#E9C2A0', '#eb8d02', '#FFC107', '#FFEB3B', '#FFF06F', '#FFF176', '#FFF8B7', '#E65100', '#FB6310', '#F57C00', '#FF9800', '#FFB74D', '#FFE0B2', '#FF0000', '#FC3030', '#FF5959', '#FD7B7B', '#FE9C9C', '#FEBDBD', '#FD0082', '#FE339C', '#FE52AB', '#FB89C4', '#FCA3D1', '#FFBEDF', '#C700ff', '#D235FE', '#D957FE', '#E27CFF', '#E797FD', '#EEB1FF', '#8500FF', '#9D32FF', '#A747FF', '#B466FC', '#C98DFF', '#DEBAFF', '#0200FF', '#2B29FE', '#4D4BFC', '#6362FE', '#7978FD', '#9897FE', '#00ABFF', '#30BBFF', '#53C7FF', '#71D0FF', '#96DBFD', '#BDE8FD', '#00FFA6', '#31FEB6', '#56FDC3', '#8CFFD7', '#A5FEDF', '#C7FEEB', '#00FF28', '#2CFD4D', '#4FFB6A', '#74FB89', '#93FBA3', '#B0FBBC', '#33691E', '#689F38', '#77B541', '#8BC34A', '#AED581', '#DCEDC8', '#827717', '#968A1C', '#AFB42B', '#C5CA38', '#CDDC39', '#DCE775', '#5B4202', '#846205', '#AF8003', '#C89A1D', '#DAAD34', '#EAC050']
@@ -124,7 +125,7 @@ function AvatarMaker() {
     }
   }, [changes])
 
-  function changeOption(option) {
+  function changeOption (option) {
     if (option !== optionCopy) {
       setOptionCopy(option)
       const menuCopy = { ...menu }
@@ -135,7 +136,7 @@ function AvatarMaker() {
     }
   }
 
-  function getAvatar(u) {
+  function getAvatar (u) {
     const url = new URL(u)
     setChanges({
       ...changes,
