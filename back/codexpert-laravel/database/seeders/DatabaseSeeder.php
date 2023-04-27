@@ -7,9 +7,12 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Game;
 use App\Models\Question;
+use App\Models\Test_input;
+use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
+use PhpParser\Node\Stmt\For_;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,46 +26,181 @@ class DatabaseSeeder extends Seeder
         //Example 1
         $question = new Question;
         $question -> statement = "Sort Array in ASCENDING order";
-        $question -> userExpectedInput = serialize(array( 3, 7, 5 ));
-        $question -> userExpectedOutput = serialize(array( 3, 5, 7 ));
-        $question -> testInput1 = serialize(array( 10, 3, 7 ));
-        $question -> testOutput1 = serialize(array( 3, 7, 10 ));
-        $question -> testInput2 = serialize(array( 6, 2, 8 ));
-        $question -> testOutput2 = serialize(array( 2, 6, 8 ));
         $question -> save();
+        //Input 1
+        $input = new Test_input;
+        $input -> question_id = 1;
+        $input -> input = serialize(array( 3, 7, 5 ));
+        $input -> save();
+        //Input 2
+        $input = new Test_input;
+        $input -> question_id = 1;
+        $input -> input = serialize(array( 10, 3, 7 ));
+        $input -> save();
+        //Input 3
+        $input = new Test_input;
+        $input -> question_id = 1;
+        $input -> input = serialize(array( 6, 2, 8 ));
+        $input -> save();
+        //Output 1
+        $output = new Test_output;
+        $output -> question_id = 1;
+        $output -> output = serialize(array( 3, 5, 7 ));
+        $output -> save();
+        //Output 2
+        $output = new Test_output;
+        $output -> question_id = 1;
+        $output -> output = serialize(array( 3, 7, 10 ));
+        $output -> save();
+        //Output 3
+        $output = new Test_output;
+        $output -> question_id = 1;
+        $output -> output = serialize(array( 2, 6, 8 ));
+        $output -> save();                
 
+        
         //Example 2
         $question = new Question;
         $question -> statement = "Reverse the String";
-        $question -> userExpectedInput = serialize("Hello");
-        $question -> userExpectedOutput = serialize("olleH");
-        $question -> testInput1 = serialize("Howdy");
-        $question -> testOutput1 = serialize("ydwoH");
-        $question -> testInput2 = serialize("Greetings from Earth");
-        $question -> testOutput2 = serialize("htraE morf sgniteerG");
         $question -> save();
-
+        //Input 1
+        $input = new Test_input;
+        $input -> question_id = 2;
+        $input -> input = serialize("Hello");
+        $input -> save();
+        //Input 2
+        $input = new Test_input;
+        $input -> question_id = 2;
+        $input -> input = serialize("Howdy");
+        $input -> save();
+        //Input 3
+        $input = new Test_input;
+        $input -> question_id = 2;
+        $input -> input = serialize("Greetings from Earth");
+        $input -> save();
+        //Output 1
+        $output = new Test_output;
+        $output -> question_id = 2;
+        $output -> output = serialize("olleH");
+        $output -> save();
+        //Output 2
+        $output = new Test_output;
+        $output -> question_id = 2;
+        $output -> output = serialize("ydwoH");
+        $output -> save();
+        //Output 3
+        $output = new Test_output;
+        $output -> question_id = 2;
+        $output -> output = serialize("htraE morf sgniteerG");
+        $output -> save();                
+        
+        
         //Example 3
         $question = new Question;
         $question -> statement = "Reverse the given Array";
-        $question -> userExpectedInput = serialize(array( 3, 7, 2, 4 ));
-        $question -> userExpectedOutput = serialize(array( 4, 2, 7, 3 ));
-        $question -> testInput1 = serialize(array( 5, 1, 4, 2, 3 ));
-        $question -> testOutput1 = serialize(array( 3, 2, 4, 1, 5 ));
-        $question -> testInput2 = serialize(array( 7, 12, 3 ));
-        $question -> testOutput2 = serialize(array( 3, 12, 7 ));
         $question -> save();
-        
+        //Input 1
+        $input = new Test_input;
+        $input -> question_id = 3;
+        $input -> input = serialize(array( 3, 7, 2, 4 ));
+        $input -> save();
+        //Input 2
+        $input = new Test_input;
+        $input -> question_id = 3;
+        $input -> input = serialize(array( 5, 1, 4, 2, 3 ));
+        $input -> save();
+        //Input 3
+        $input = new Test_input;
+        $input -> question_id = 3;
+        $input -> input = serialize(array( 7, 12, 3 ));
+        $input -> save();
+        //Output 1
+        $output = new Test_output;
+        $output -> question_id = 3;
+        $output -> output = serialize(array( 4, 2, 7, 3 ));
+        $output -> save();
+        //Output 2
+        $output = new Test_output;
+        $output -> question_id = 3;
+        $output -> output = serialize(array( 3, 2, 4, 1, 5 ));
+        $output -> save();
+        //Output 3
+        $output = new Test_output;
+        $output -> question_id = 3;
+        $output -> output = serialize(array( 3, 12, 7 ));
+        $output -> save();                
+
+
         //Example 4
         $question = new Question;
         $question -> statement = "Count number of odd numers in the Array";
-        $question -> userExpectedInput = serialize(array( 21, 32, 47, 52, 63 ));
-        $question -> userExpectedOutput = serialize(3);
-        $question -> testInput1 = serialize(array( -3, 80, 2 ));
-        $question -> testOutput1 = serialize(1);
-        $question -> testInput2 = serialize(array( 42, 8, 58, 8 ));
-        $question -> testOutput2 = serialize(0);
         $question -> save();
+        //Input 1
+        $input = new Test_input;
+        $input -> question_id = 4;
+        $input -> input = serialize(array( 21, 32, 47, 52, 63 ));
+        $input -> save();
+        //Input 2
+        $input = new Test_input;
+        $input -> question_id = 4;
+        $input -> input = serialize(array( -3, 80, 2 ));
+        $input -> save();
+        //Input 3
+        $input = new Test_input;
+        $input -> question_id = 4;
+        $input -> input = serialize(array( 42, 8, 58, 8 ));
+        $input -> save();
+        //Output 1
+        $output = new Test_output;
+        $output -> question_id = 4;
+        $output -> output = serialize(3);
+        $output -> save();
+        //Output 2
+        $output = new Test_output;
+        $output -> question_id = 4;
+        $output -> output = serialize(1);
+        $output -> save();
+        //Output 3
+        $output = new Test_output;
+        $output -> question_id = 4;
+        $output -> output = serialize(0);
+        $output -> save();                
+        
+
+        //Example 5
+        $question = new Question;
+        $question -> statement = "Sort Array in ASCENDING order";
+        $question -> save();
+        //Input 1
+        $input = new Test_input;
+        $input -> question_id = 5;
+        $input -> input = serialize(array( 3, 7, 5 ));
+        $input -> save();
+        //Input 2
+        $input = new Test_input;
+        $input -> question_id = 5;
+        $input -> input = serialize(array( 10, 3, 7 ));
+        $input -> save();
+        //Input 3
+        $input = new Test_input;
+        $input -> question_id = 5;
+        $input -> input = serialize(array( 6, 2, 8 ));
+        $input -> save();
+        //Output 1
+        $output = new Test_output;
+        $output -> question_id = 5;
+        $output -> output = serialize(array( 3, 5, 7 ));
+        $output -> save();
+        //Output 2
+        $output = new Test_output;
+        $output -> question_id = 5;
+        $output -> output = serialize(array( 3, 7, 10 ));
+        $output -> save();
+        //Output 3
+        $output = new Test_output;
+        $output -> question_id = 5;
+        $output -> output = serialize(array( 2, 6, 8 ));
+        $output -> save();                        
         
         //Example 5
         // $question = new Question;
@@ -75,17 +213,6 @@ class DatabaseSeeder extends Seeder
         // $question -> testOutput2 = serialize(0);
         // $question -> save();      
         
-        //Example 5 is not working as expected so we repeat question 1.
-        $question = new Question;
-        $question -> statement = "Sort Array in ASCENDING order";
-        $question -> userExpectedInput = serialize(array( 3, 7, 5 ));
-        $question -> userExpectedOutput = serialize(array( 3, 5, 7 ));
-        $question -> testInput1 = serialize(array( 10, 3, 7 ));
-        $question -> testOutput1 = serialize(array( 3, 7, 10 ));
-        $question -> testInput2 = serialize(array( 6, 2, 8 ));
-        $question -> testOutput2 = serialize(array( 2, 6, 8 ));
-        $question -> save();
-
         //When migrating it will always create this test user
         $user = new User;
         $user -> name = strtolower("codexpert_test");

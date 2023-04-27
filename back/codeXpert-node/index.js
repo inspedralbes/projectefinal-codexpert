@@ -473,6 +473,7 @@ async function startGame(room, amount) {
       numQuestions: amount
     })
     .then(function (response) {
+      console.log(response.data);
       lobbies.forEach((lobby) => {
         if (lobby.lobby_name === room) {
           lobby.game_data = response.data;
