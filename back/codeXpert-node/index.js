@@ -292,6 +292,7 @@ socketIO.on("connection", (socket) => {
       .then(function (response) {
         const userGame = response.data.user_game;
         const game = response.data.game;
+        console.log(userGame);
 
         if (response.data.correct) {
           addMessage({
