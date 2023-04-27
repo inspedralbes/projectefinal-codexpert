@@ -80,16 +80,18 @@ class GameController extends Controller
 
             //Unserialize the questions and add them to the array that will be returned
             for ($i = 0; $i < count($getQuestions); $i++) {
-                $questionInputs = Test_input::where('question_id', $getQuestions[$i] -> id)->get('input');
-                $questionOutputs = Test_output::where('question_id', $getQuestions[$i] -> id)->get('output');
-                
-                for ($j = 0; $j < count($questionInputs); $j ++) { 
-                    $questionInputs[$j] = unserialize($questionInputs[$j]);
-                    $questionOutputs[$j] = unserialize($questionOutputs[$j]);
+                $inputs = [];
+                $outputs = [];
+                $getInputs = Test_input::where('question_id', $getQuestions[$i] -> id)->get();
+                $getOutputs = Test_output::where('question_id', $getQuestions[$i] -> id)->get();
+
+                for ($j = 0; $j < count($getInputs); $j++) { 
+                    $inputs[$j] = unserialize($getInputs[$j] -> input);
+                    $outputs[$j] = unserialize($getOutputs[$j] -> output);
                 }
 
-                $getQuestions[$i] -> inputs = $questionInputs;
-                $getQuestions[$i] -> outputs = $questionOutputs;
+                $getQuestions[$i] -> inputs = $inputs;
+                $getQuestions[$i] -> outputs = $outputs;
                 $allQuestions[$i] = $getQuestions[$i];
             }
 
@@ -164,14 +166,13 @@ class GameController extends Controller
 
         //If any of the tests doesn't pass we return that it's not a correct answer.
         if ($request -> evalPassed) {
-            $question = Question::where('id', $request -> idQuestion) -> first();
-            $userExpectedOutput = unserialize($question -> userExpectedOutput);
-            $testOutput1 = unserialize($question -> testOutput1);
-            $testOutput2 = unserialize($question -> testOutput2);
-            
-            $output = [$userExpectedOutput, $testOutput1, $testOutput2];
+            $outputs = [];
+            $getOutputs = Test_output::where('question_id', $request -> idQuestion)->get();
+            for ($i = 0; $i < count($getOutputs); $i++) { 
+                $outputs[$i] = unserialize($getOutputs[$i] -> output);
+            }
 
-            foreach($output as $key => $val) {
+            foreach($outputs as $key => $val) {
                 if ($val == $request -> evalRes[$key]) {
                     $returnObject -> testsPassed++;
                 } else {
