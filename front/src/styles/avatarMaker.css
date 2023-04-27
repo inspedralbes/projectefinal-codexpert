@@ -85,7 +85,6 @@
 
 .avatar__colorPicker {
     position: absolute;
-    background-color: #ffffff;
     overflow: auto;
     padding: 15px;
     width: 20%;

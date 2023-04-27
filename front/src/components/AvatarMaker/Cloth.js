@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
 import { SliderPicker } from 'react-color'
+import ShadeSlider from '@uiw/react-color-shade-slider';
+import { hsvaToHex } from '@uiw/color-convert'
+
 
 Cloth.propTypes = {
   currentColor: PropTypes.string,
@@ -12,6 +15,7 @@ Cloth.propTypes = {
 }
 
 function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+
   return (
     <>
       <div className='avatar__colorPicker'>
@@ -21,7 +25,15 @@ function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, ch
           onChange={(color) =>
             setChanges({ ...changes, cC: color.hex.replace('#', '') })
           }
-          colors={ArrayColors}
+        />
+        <br />
+        <ShadeSlider
+          hsva={{ h: 0, s: 0, v: 100, a: 1 }}
+          onChange={(hsva) => {
+            hsva = hsvaToHex(hsva)
+            console.log(hsva);
+            setChanges({ ...changes, cC: hsva.replace('#', '') });
+          }}
         />
       </div>
       <div className='avatar__options'>
