@@ -10,6 +10,7 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
+use PhpParser\Node\Stmt\For_;
 
 class GameController extends Controller
 {
@@ -275,5 +276,47 @@ class GameController extends Controller
 
         return response() -> json($updatedProfiles);
     }   
+
+    /**
+     * This function given a game id, returns the ranking from that game
+     * @param int $id is the game id from the database.
+     * @return array $ranking contains an ordered list of players that have played the game.
+     */      
+    public function getRanking($id)
+    {
+        //avatar, name, elo, xp,, 
+        $ranking = [];
+        $player = (object) [
+            'avatar' => '',
+            'name' => '',
+            'elo' => 0,
+            'xp' => 0
+        ];
+        $game = Game::where('id', $id) -> first();
+
+        if ($game -> winner_id != null) {
+            $winner = User_game::where('game_id', $id) 
+            -> where ('user_id', $game -> winner_id)
+            -> first();
+            
+            $allPlayers = User_game::where('game_id', $id) 
+            -> where ('user_id', '!=', $game -> winner_id)
+            -> orderBy ('question_at', 'DESC')
+            -> get();
+
+            array_push($ranking, $winner);
+        } else {
+            $allPlayers = User_game::where('game_id', $id) 
+            -> orderBy ('question_at', 'DESC')
+            -> get();
+        }
+        
+        for ($i = 0; $i < count($allPlayers); $i++) { 
+            $player = $allPlayers[$i];
+            array_push($ranking, $player);
+        }
+        
+        return response() -> json($ranking);
+    }     
      
 }
