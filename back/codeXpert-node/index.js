@@ -303,9 +303,6 @@ socketIO.on("connection", (socket) => {
 
           socket.data.question_at = userGame.question_at;
 
-          const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby && socket.data.question_at < lobby.settings.questionAmount)[0];
-          socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
-
           sendUserList(socket.data.current_lobby);
           // Only passes if not dead
           if (userGame.finished) {
@@ -338,6 +335,8 @@ socketIO.on("connection", (socket) => {
               // FUTURO uwu
             }
           } else {
+            const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
+            socket.data.idQuestion = lobby.game_data.questions[socket.data.question_at].id;
             sendQuestionDataToUser(socket.id, socket.data.question_at, socket.data.current_lobby);
           }
         } else {
