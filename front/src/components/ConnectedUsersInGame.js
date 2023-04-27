@@ -10,6 +10,7 @@ function ConnectedUsersInGame() {
     switch (eventData.type) {
       case 'lobby_user_list-event':
         setUserList(window.network.getLobbyUserList())
+        console.log(window.network.getLobbyUserList())
         break
 
       default:
@@ -84,9 +85,8 @@ function ConnectedUsersInGame() {
               </div>
 
               <div className='user__level'>
-                Level: {user.question_at + 1}
+                Level: {user.question_at < window.network.getQuestionAmount() ? user.question_at + 1 : user.question_at}
               </div>
-
             </div>
           )
         })}

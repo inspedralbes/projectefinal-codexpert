@@ -169,6 +169,14 @@ socket.on('starting_errors', (data) => {
   window.postMessage({ type: 'starting_errors-event', valid: data.valid }, '*')
 })
 
+socket.on('overtime_starts', (data) => {
+  window.postMessage({ type: 'overtime_starts-event', time: data.time }, '*')
+})
+
+socket.on('overtime_ends', () => {
+  window.postMessage({ type: 'overtime_ends-event' }, '*')
+})
+
 // ERROR EVENTS
 socket.on('LOBBY_FULL_ERROR', (data) => {
   window.network.setMessage(data.message)

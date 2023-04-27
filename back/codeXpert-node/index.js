@@ -62,6 +62,8 @@ app.use(
   })
 );
 
+const overtimeSeconds = 5;
+
 const defaultSettings = {
   gameDuration: 600,
   heartAmount: 5,
@@ -327,6 +329,7 @@ socketIO.on("connection", (socket) => {
               setMembersStats(socket.data.current_lobby);
 
               const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
+              startOverTime(socket.data.current_lobby, overtimeSeconds);
 
               socketIO.to(socket.id).emit("ranking", {
                 ranking: lobby.members
@@ -427,6 +430,7 @@ socketIO.on("connection", (socket) => {
         if (validSettings) {
           lobby.settings = data;
         }
+
         socketIO.to(socket.id).emit("starting_errors", {
           valid: validSettings
         });
@@ -435,10 +439,17 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log(socket.data.name + " disconnected");
     leaveLobby(socket);
   });
 });
+
+function startOverTime(room, time) {
+  socketIO.to(room).emit("overtime_starts", { time });
+
+  setTimeout(() => {
+    socketIO.to(room).emit("overtime_ends");
+  }, time * 1000);
+}
 
 async function setMembersStats(room) {
   const sockets = await socketIO.in(room).fetchSockets();

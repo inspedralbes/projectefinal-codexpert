@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import ChatGame from '../components/ChatGame'
 import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
 import CodeMirror from '../components/CodeMirror'
+import Timer from '../components/Timer'
 
 function Game() {
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
@@ -49,6 +50,14 @@ function Game() {
         break
 
       case 'stats-event':
+        setRewards(window.network.getRewards())
+        break
+
+      case 'overtime_starts-event':
+        setTime(eventData.time)
+        break
+
+      case 'overtime_ends-event':
         setRewards(window.network.getRewards())
         break
 
