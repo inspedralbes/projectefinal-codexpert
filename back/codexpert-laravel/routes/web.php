@@ -50,4 +50,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/updateUserLvl', [GameController::class, 'updateUserLvl']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/ranking/{id}', [GameController::class, 'getRanking']);
+
 });
