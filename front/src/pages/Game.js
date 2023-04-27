@@ -54,11 +54,11 @@ function Game() {
         break
 
       case 'overtime_starts-event':
-        setTime(eventData.time)
+        //
         break
 
       case 'overtime_ends-event':
-        setRewards(window.network.getRewards())
+        //
         break
 
       case 'YOU_LEFT_LOBBY-event':
