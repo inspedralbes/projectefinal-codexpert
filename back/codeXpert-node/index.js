@@ -62,7 +62,7 @@ app.use(
   })
 );
 
-const overtimeSeconds = 5;
+const overtimeSeconds = 5000;
 
 const defaultSettings = {
   gameDuration: 600,
@@ -442,12 +442,13 @@ socketIO.on("connection", (socket) => {
 
 function startOverTime(room, time, winner) {
   socketIO.to(room).emit("overtime_starts", { time });
+  console.log(time);
 
   setTimeout(() => {
     socketIO.to(room).emit("game_over", {
       message: `${winner} won the game`
     });
-  }, time * 1000);
+  }, time);
 }
 
 async function setMembersStats(room) {

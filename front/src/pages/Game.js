@@ -27,8 +27,7 @@ function Game() {
     inputs: [''],
     output: ''
   })
-  const [startOvertime, setStartOvertime] = useState(false)
-  const [overtimeTimer, setOvertimeTimer] = useState(0)
+  const [overtimeDuration, setOvertimeDuration] = useState(0)
 
   const navigate = useNavigate()
 
@@ -43,7 +42,7 @@ function Game() {
 
       case 'game_over-event':
         setWinnerMessage(window.network.getWinnerMessage())
-        setStartOvertime(false)
+        setOvertimeDuration(0)
         setPlayable(false)
         break
 
@@ -57,8 +56,7 @@ function Game() {
         break
 
       case 'overtime_starts-event':
-        setOvertimeTimer(eventData.time)
-        setStartOvertime(true)
+        setOvertimeDuration(eventData.time)
         break
 
       case 'YOU_LEFT_LOBBY-event':
@@ -120,7 +118,7 @@ function Game() {
       <div className='game__container '>
 
         <div className='container__left'>
-          {startOvertime ? <Timer></Timer> : <></>}
+          {overtimeDuration != 0 ? <h1>Time remaining: <Timer time={overtimeDuration}></Timer></h1> : <></>}
           <ConnectedUsersInGame></ConnectedUsersInGame>
           <ChatGame className='chatGame__chatbox'></ChatGame>
         </div>
