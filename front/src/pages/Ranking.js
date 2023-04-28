@@ -36,43 +36,6 @@ function Ranking() {
           }
         </tbody>
       </table>
-
-      <div className='table__body'>
-        {Array.isArray(usersList)
-          ? usersList.map((element, index) => {
-            return (
-              <li
-                className='table__row row'
-                //onClick={handleJoin}
-                key={index}
-                id={element.lobby_name}
-              >
-                <div
-                  id={element.lobby_name}
-                  className='col col-1'
-                  data-label='Lobby Id'
-                >
-                  {index + 1}
-                </div>
-                <div
-                  id={element.lobby_name}
-                  className='col col-2'
-                  data-label='Lobby Name'
-                >
-                  {element.lobby_name}
-                </div>
-                <div
-                  id={element.lobby_name}
-                  className='col col-3'
-                  data-label='Owner'
-                >
-                  {element.owner_name}
-                </div>
-              </li>
-            )
-          })
-          : null}
-      </div>
     </div>
   )
 }
