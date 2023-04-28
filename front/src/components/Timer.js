@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 Timer.propTypes = {
-  time: PropTypes.intkñg
+  time: PropTypes.int
 }
 
 function Timer({ time }) {
@@ -11,10 +11,11 @@ function Timer({ time }) {
 
   useEffect(() => {
     if (time > 0) {
+      console.log('Empieza timer')
       const timer = setInterval(() => {
         setCounter(counter + 1)
 
-        if (counter === time) {
+        if (counter >= time) {
           clearInterval(timer)
         }
       }, 1000)
