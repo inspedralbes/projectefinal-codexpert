@@ -62,6 +62,8 @@ app.use(
   })
 );
 
+const overtimeSeconds = 5;
+
 const defaultSettings = {
   gameDuration: 600,
   heartAmount: 5,
@@ -311,9 +313,6 @@ socketIO.on("connection", (socket) => {
               setWinnerId(socket.data.userId);
 
               updateUserLvl(socket.data.current_lobby);
-              socketIO.to(socket.data.current_lobby).emit("game_over", {
-                message: `${socket.data.name} won the game`
-              });
 
               // AXIOS to updateUserLvl LO MISMO QUE EN SETUSERGAME
               socketIO.to(socket.id).emit("user_finished", {
@@ -327,6 +326,7 @@ socketIO.on("connection", (socket) => {
               setMembersStats(socket.data.current_lobby);
 
               const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
+              startOverTime(socket.data.current_lobby, overtimeSeconds, socket.data.name);
 
               socketIO.to(socket.id).emit("ranking", {
                 ranking: lobby.members
@@ -427,6 +427,7 @@ socketIO.on("connection", (socket) => {
         if (validSettings) {
           lobby.settings = data;
         }
+
         socketIO.to(socket.id).emit("starting_errors", {
           valid: validSettings
         });
@@ -435,10 +436,19 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log(socket.data.name + " disconnected");
     leaveLobby(socket);
   });
 });
+
+function startOverTime(room, time, winner) {
+  socketIO.to(room).emit("overtime_starts", { time });
+
+  setTimeout(() => {
+    socketIO.to(room).emit("game_over", {
+      message: `${winner} won the game`
+    });
+  }, time * 1000);
+}
 
 async function setMembersStats(room) {
   const sockets = await socketIO.in(room).fetchSockets();
