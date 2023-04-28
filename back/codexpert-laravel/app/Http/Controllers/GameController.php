@@ -284,9 +284,9 @@ class GameController extends Controller
      */      
     public function getRanking($id)
     {
-        //avatar, name, elo, xp,, 
         $ranking = [];
         $player = (object) [
+            'id' => 0,
             'avatar' => '',
             'name' => '',
             'elo' => 0,
@@ -295,16 +295,20 @@ class GameController extends Controller
         $game = Game::where('id', $id) -> first();
 
         if ($game -> winner_id != null) {
-            $winner = User_game::where('game_id', $id) 
-            -> where ('user_id', $game -> winner_id)
-            -> first();
-            
+            $winner = User::where('id', $game -> winner_id) -> first();
+            $player -> id = $winner -> id;
+            $player -> avatar = $winner -> avatar;
+            $player -> name = $winner -> name;
+            $player -> elo = $winner -> elo;
+            $player -> xp = $winner -> xp;
+
+            array_push($ranking, $player);
+
             $allPlayers = User_game::where('game_id', $id) 
             -> where ('user_id', '!=', $game -> winner_id)
             -> orderBy ('question_at', 'DESC')
             -> get();
 
-            array_push($ranking, $winner);
         } else {
             $allPlayers = User_game::where('game_id', $id) 
             -> orderBy ('question_at', 'DESC')
@@ -312,7 +316,20 @@ class GameController extends Controller
         }
         
         for ($i = 0; $i < count($allPlayers); $i++) { 
-            $player = $allPlayers[$i];
+            $playerData = User::where('id', $allPlayers[$i] -> user_id) -> first();
+            $player = (object) [
+                'id' => 0,
+                'avatar' => '',
+                'name' => '',
+                'elo' => 0,
+                'xp' => 0
+            ];
+            $player -> id = $playerData -> id;
+            $player -> avatar = $playerData -> avatar;
+            $player -> name = $playerData -> name;
+            $player -> elo = $playerData -> elo;
+            $player -> xp = $playerData -> xp;
+
             array_push($ranking, $player);
         }
         
