@@ -268,13 +268,12 @@ socketIO.on("connection", (socket) => {
     });
   });
 
-  socket.on("check_answer", (data) => {
+  socket.on("check_answer", async (data) => {
     let gameNumQuestions;
     let unlimitedHeartsOption;
 
     const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
     if (lobby != null) {
-      console.log(lobby);
       gameNumQuestions = lobby.settings.questionAmount;
       unlimitedHeartsOption = lobby.settings.unlimitedHearts;
     }
@@ -294,7 +293,6 @@ socketIO.on("connection", (socket) => {
       .then(function (response) {
         const userGame = response.data.user_game;
         const game = response.data.game;
-        console.log(userGame);
 
         if (response.data.correct) {
           addMessage({
@@ -309,28 +307,15 @@ socketIO.on("connection", (socket) => {
           // Only passes if not dead
           if (userGame.finished) {
             // Finish but still don't know if they won
-            if (game.winner_id !== undefined) {
+            if (game.winner_id !== undefined && game.winner_id === socket.data.userId) {
               setWinnerId(socket.data.userId);
-
-              updateUserLvl(socket.data.current_lobby);
 
               // AXIOS to updateUserLvl LO MISMO QUE EN SETUSERGAME
               socketIO.to(socket.id).emit("user_finished", {
-                message: "YOU WON",
-                stats: {
-                  hearts_remaining: userGame.hearts_remaining,
-                  perks_used: userGame.perks_used,
-                  question_at: socket.data.question_at
-                }
+                message: "YOU WON"
               });
-              setMembersStats(socket.data.current_lobby);
 
-              const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
-              startOverTime(socket.data.current_lobby, overtimeSeconds, socket.data.name);
-
-              socketIO.to(socket.id).emit("ranking", {
-                ranking: lobby.members
-              });
+              startOverTime(socket, overtimeSeconds);
             } else {
               // FUTURO uwu
             }
@@ -440,15 +425,35 @@ socketIO.on("connection", (socket) => {
   });
 });
 
-function startOverTime(room, time, winner) {
-  socketIO.to(room).emit("overtime_starts", { time });
-  console.log(time);
+async function startOverTime(socket, time) {
+  socketIO.to(socket.data.current_lobby).emit("overtime_starts", { time });
 
   setTimeout(() => {
-    socketIO.to(room).emit("game_over", {
-      message: `${winner} won the game`
-    });
+    endGame(socket);
   }, time);
+}
+
+async function endGame(socket) {
+  const room = socket.data.current_lobby;
+  // const lobby = lobbies.filter(lobby => lobby.lobby_name === room)[0];
+
+  socketIO.to(room).emit("game_over", {
+    message: `${socket.data.name} won the game`
+  });
+
+  updateUserLvl(room);
+  setMembersStats(room);
+
+  await axios
+    .get(laravelRoute + `ranking/${socket.data.game_data.idGame}`)
+    .then(function (response) {
+      const rankingData = response.data;
+      console.log(rankingData);
+
+      socketIO.to(room).emit("ranking", {
+        ranking: rankingData
+      });
+    });
 }
 
 async function setMembersStats(room) {
@@ -483,7 +488,6 @@ async function startGame(room, amount) {
       numQuestions: amount
     })
     .then(function (response) {
-      console.log(response.data);
       lobbies.forEach((lobby) => {
         if (lobby.lobby_name === room) {
           lobby.game_data = response.data;
