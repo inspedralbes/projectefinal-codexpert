@@ -44,6 +44,7 @@ function Game() {
         setWinnerMessage(window.network.getWinnerMessage())
         setOvertimeDuration(0)
         setPlayable(false)
+        navigate('/ranking')
         break
 
       case 'user_finished-event':

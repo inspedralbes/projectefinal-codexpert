@@ -450,9 +450,7 @@ async function endGame(socket) {
       const rankingData = response.data;
       console.log(rankingData);
 
-      socketIO.to(room).emit("ranking", {
-        ranking: rankingData
-      });
+      socketIO.to(room).emit("ranking", { rankingData });
     });
 }
 

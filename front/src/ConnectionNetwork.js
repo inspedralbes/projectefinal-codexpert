@@ -7,6 +7,7 @@ class ConnectionNetwork {
   lobbyList = []
   userList = []
   lobbyMessages = []
+  rankingData = []
   questionData = {}
   result = ''
   rewards = {}
@@ -144,6 +145,14 @@ class ConnectionNetwork {
 
   getShowSettings() {
     return this.showSettings
+  }
+
+  setRankingData(data) {
+    this.rankingData = data
+  }
+
+  getRankingData() {
+    return this.rankingData
   }
 }
 

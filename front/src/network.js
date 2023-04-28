@@ -173,6 +173,11 @@ socket.on('overtime_starts', (data) => {
   window.postMessage({ type: 'overtime_starts-event', time: data.time }, '*')
 })
 
+socket.on('ranking', (data) => {
+  window.network.setRankingData(data.rankingData)
+  window.postMessage({ type: 'ranking-event' }, '*')
+})
+
 // ERROR EVENTS
 socket.on('LOBBY_FULL_ERROR', (data) => {
   window.network.setMessage(data.message)

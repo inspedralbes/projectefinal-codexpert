@@ -1,45 +1,36 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import '../styles/normalize.css'
+import Ranking from '../components/Ranking'
 
-function Ranking() {
-  let usersList = []
+function RankingPage() {
+  const [rankingData, setRankingData] = useState([])
+
+  const handleMessage = (event) => {
+    const eventData = event.data
+
+    switch (eventData.type) {
+      case 'ranking-event':
+        setRankingData(window.network.getRankingData())
+        break
+
+      default:
+        break
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('message', handleMessage)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+    }
+  }, [])
+
   return (
-    <div>
-      <h1>RANKING</h1>
-      <table>
-        <thead>
-          <th>
-            Username
-          </th>
-          <th>
-            ELO
-          </th>
-          <th>
-            LVL
-          </th>
-        </thead>
-        <tbody>
-          {Array.isArray(usersList) && usersList.map((element, index) => {
-            return (
-              <tr key={index}>
-                <td>
-                  {element.avatar}
-                  {element.name}
-                </td>
-                <td>
-                  {element.elo}
-                </td>
-                <td>
-                  {element.xp}
-                </td>
-              </tr>
-            )
-          })
-          }
-        </tbody>
-      </table>
-    </div>
+    <>
+      <Ranking rankingData={rankingData}></Ranking>
+    </>
   )
 }
 
-export default Ranking
+export default RankingPage
