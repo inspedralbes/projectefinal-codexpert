@@ -20,18 +20,20 @@ function Ranking() {
         </thead>
         <tbody>
           {Array.isArray(usersList) && usersList.map((element, index) => {
-            <tr>
-              <td>
-                {element.avatar}
-                {element.name}
-              </td>
-              <td>
-                {element.elo}
-              </td>
-              <td>
-                {element.xp}
-              </td>
-            </tr>
+            return (
+              <tr key={index}>
+                <td>
+                  {element.avatar}
+                  {element.name}
+                </td>
+                <td>
+                  {element.elo}
+                </td>
+                <td>
+                  {element.xp}
+                </td>
+              </tr>
+            )
           })
           }
         </tbody>
