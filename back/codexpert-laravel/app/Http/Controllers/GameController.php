@@ -284,7 +284,6 @@ class GameController extends Controller
      */      
     public function getRanking($id)
     {
-        //avatar, name, elo, xp,, 
         $ranking = [];
         $player = (object) [
             'id' => 0,
@@ -330,7 +329,7 @@ class GameController extends Controller
             $player -> name = $playerData -> name;
             $player -> elo = $playerData -> elo;
             $player -> xp = $playerData -> xp;
-            
+
             array_push($ranking, $player);
         }
         
