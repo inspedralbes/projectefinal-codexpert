@@ -2,9 +2,9 @@
     background-color: #ffffff;
     padding: 30px;
     margin: 5vh auto;
-    width: 90%;
+    width: 85%;
     max-height: max-content;
-    min-height: 85vh;
+    min-height: 90vh;
     font-size: 15px;
     border-color: #000000;
     border-style: solid;
@@ -42,9 +42,43 @@
     align-items: center;
     text-align: center;
     justify-content: center;
-    background-color: #8db392;
     float: left;
     padding: 30px;
+    width: 70%;
+}
+
+
+.avatar__img {
+    background-color: burlywood;
+    height: 300px;
+    width: 300px;
+    margin-bottom: 30px;
+}
+
+.avatar__colorPicker {
+    overflow: auto;
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    height: 50vh;
+    justify-content: flex-end;
+
+}
+
+.avatar__colorPicker div {
+    background-color: #ebf8ed;
+    width: 100%;
+    float: right;
+    align-self: end;
+}
+
+.avatar__right {
+    background-color: rgb(255, 255, 255);
+    float: right;
+    padding: 30px;
+    width: 29%;
+    height: 90%;
+    background-color: #8db392;
     border-color: #000000;
     border-style: solid;
     border-width: 6px 0;
@@ -52,7 +86,8 @@
     position: relative;
 }
 
-.avatar__left::after {
+
+.avatar__right::after {
     background-color: inherit;
     box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -64,7 +99,7 @@
     width: 6px;
 }
 
-.avatar__left::before {
+.avatar__right::before {
     background-color: inherit;
     box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -74,29 +109,6 @@
     left: -6px;
     top: 6px;
     width: 6px;
-}
-
-.avatar__img {
-    background-color: burlywood;
-    height: 300px;
-    width: 300px;
-    margin-bottom: 30px;
-}
-
-.avatar__colorPicker {
-    position: absolute;
-    overflow: auto;
-    padding: 15px;
-    width: 20%;
-    height: 50vh;
-}
-
-.avatar__right {
-    background-color: rgb(255, 255, 255);
-    float: right;
-    padding: 30px;
-    width: 70%;
-    height: 90%;
 }
 
 .avatar__menu {
@@ -201,4 +213,30 @@
 
 option {
     padding: 20px;
+}
+
+.avatar__options--grid {
+    display: grid;
+    grid-template-columns: 0.5fr 1.5fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "avatar__colorPicker avatar__options";
+}
+
+.avatar__options {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    grid-area: avatar__options;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: space-between;
+    justify-content: center;
+}
+
+.avatar__colorPicker {
+
+    grid-area: avatar__colorPicker;
 }
