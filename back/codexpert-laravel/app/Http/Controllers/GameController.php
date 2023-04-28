@@ -290,18 +290,31 @@ class GameController extends Controller
             'avatar' => '',
             'name' => '',
             'elo' => 0,
-            'xp' => 0
+            'xp' => 0,
+            'heartsRemaining' => 0,
+            'perksUsed' => 0,
+            'questionAt' => 0,
+            'winner' => false,
+            'dead' => false
         ];
         $game = Game::where('id', $id) -> first();
 
         if ($game -> winner_id != null) {
             $winner = User::where('id', $game -> winner_id) -> first();
+            $winnerGameData = User_game::where('game_id', $id) 
+            -> where ('user_id', $game -> winner_id)
+            -> first();
             $player -> id = $winner -> id;
             $player -> avatar = $winner -> avatar;
             $player -> name = $winner -> name;
             $player -> elo = $winner -> elo;
             $player -> xp = $winner -> xp;
-
+            $player -> heartsRemaining = $winnerGameData -> hearts_remaining;
+            $player -> perksUsed = $winnerGameData -> perks_used;
+            $player -> questionAt = $winnerGameData -> question_at;
+            $player -> winner = true;
+            $player -> dead = ($winnerGameData -> dead == 0) ? false : true;
+            
             array_push($ranking, $player);
 
             $allPlayers = User_game::where('game_id', $id) 
@@ -322,13 +335,24 @@ class GameController extends Controller
                 'avatar' => '',
                 'name' => '',
                 'elo' => 0,
-                'xp' => 0
+                'xp' => 0,
+                'heartsRemaining' => 0,
+                'perksUsed' => 0,
+                'questionAt' => 0,
+                'winner' => false,
+                'dead' => false
+
             ];
             $player -> id = $playerData -> id;
             $player -> avatar = $playerData -> avatar;
             $player -> name = $playerData -> name;
             $player -> elo = $playerData -> elo;
             $player -> xp = $playerData -> xp;
+            $player -> heartsRemaining = $allPlayers[$i] -> hearts_remaining;
+            $player -> perksUsed = $winnerGameData -> perks_used;
+            $player -> questionAt = $allPlayers[$i] -> question_at;
+            $player -> winner = false;
+            $player -> dead = ($allPlayers[$i] -> dead == 0) ? false : true;
 
             array_push($ranking, $player);
         }
