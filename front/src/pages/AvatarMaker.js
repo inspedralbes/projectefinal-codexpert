@@ -277,10 +277,14 @@ function AvatarMaker() {
           }
         </div >
         <div className='avatar__right'>
+          <h1>YOUR AVATAR:</h1>
+          <br />
           <img className='avatar__img' src={avatar} alt='avatar' />
           <br />
-          <button className='avatar__menu-btn' onClick={() => setSave(save + 1)}>Save</button>
-
+          <div className='avatar__Buttons--flex'>
+            <button className='avatar__Button close' onClick={() => setSave(save + 1)}>Cancel</button>
+            <button className='avatar__Button' onClick={() => setSave(save + 1)}>Save</button>
+          </div>
         </div>
 
       </div >

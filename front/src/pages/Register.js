@@ -114,18 +114,18 @@ function Register() {
           <label htmlFor='email' className='form__inputlabel'>E-mail</label>
         </div>
         <div className='form__inputGroup'>
-          <Tippy theme={'light-border'}
-            content={<div>Password must</div>}
-            placement={'right'}
-            animation={'shift-away-extreme'}
-
-          >
-            <img src={informationIcon} alt='' height='20px' />
-          </Tippy>
-
           <input id='passwd1' className='form__input' style={{ color: color.password }} placeholder=' ' type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
           <span className='form__inputBar'></span>
           <label htmlFor='passwd1' className='form__inputlabel'>Password
+            <Tippy theme={'light-border'}
+              content={'Password must'}
+              placement={'right'}
+              animation={'shift-away-extreme'}
+
+            >
+              <img src={informationIcon} alt='' height='20px' />
+            </Tippy>
+
           </label>
         </div>
         <div className='form__inputGroup'>

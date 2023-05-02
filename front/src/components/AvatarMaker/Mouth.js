@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { SliderPicker } from 'react-color'
+import { TwitterPicker } from 'react-color'
 
 Mouth.propTypes = {
   currentColor: PropTypes.string,
@@ -13,17 +13,9 @@ Mouth.propTypes = {
 
 function Mouth({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
-    <>
-      <div className='avatar__colorPicker'>
-        <SliderPicker
-          color={currentColor}
-          onChangeComplete={handleChangeComplete}
-          onChange={(color) => setChanges({ ...changes, mC: color.hex.replace('#', '') })
-          }
-          colors={ArrayColors}
-        />
-      </div>
-      <div className='avatar__options'>
+    <div className='avatar__options--grid'>
+
+      <div className='avatar__options' id="scroll">
 
         <button className='avatar__optionsButton' onClick={() => setChanges({ ...changes, m: 'happy01' })}>
           <img src={require('../../img/avatar/mouth/happy01.png')} alt='Mouth' width='100px' height='100px'></img>
@@ -95,7 +87,16 @@ function Mouth({ currentColor, handleChangeComplete, setChanges, ArrayColors, ch
           <img src={require('../../img/avatar/mouth/sad10.png')} alt='Mouth' width='100px' height='100px'></img>
         </button>
       </div>
-    </>
+      <div className='avatar__colorPicker'>
+        <TwitterPicker
+          color={currentColor}
+          onChangeComplete={handleChangeComplete}
+          onChange={(color) => setChanges({ ...changes, mC: color.hex.replace('#', '') })
+          }
+          colors={ArrayColors}
+        />
+      </div>
+    </div>
   )
 }
 

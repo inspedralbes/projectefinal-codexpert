@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { SliderPicker } from 'react-color'
+import { TwitterPicker } from 'react-color'
 
 Eyes.propTypes = {
   currentColor: PropTypes.string,
@@ -13,19 +13,8 @@ Eyes.propTypes = {
 
 function Eyes({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
-    <>
-      <div className='avatar__colorPicker'>
-
-        <SliderPicker
-          color={currentColor}
-          onChangeComplete={handleChangeComplete}
-          onChange={(color) =>
-            setChanges({ ...changes, eC: color.hex.replace('#', '') })
-          }
-          colors={ArrayColors}
-        />
-      </div>
-      <div className='avatar__options'>
+    <div className='avatar__options--grid'>
+      <div className='avatar__options' id="scroll">
         <button className='avatar__optionsButton' onClick={() => setChanges({ ...changes, e: 'variant01' })}>
           <img src={require('../../img/avatar/eyes/variant01.png')} alt='Eyes' width='100px' height='100px'></img>
         </button>
@@ -65,7 +54,22 @@ function Eyes({ currentColor, handleChangeComplete, setChanges, ArrayColors, cha
           <img src={require('../../img/avatar/eyes/variant12.png')} alt='Eyes' width='100px' height='100px'></img>
         </button>
       </div>
-    </>
+      <div className='avatar__colorPicker'>
+
+        <TwitterPicker
+          triangle={
+            'hide'
+          }
+          color={currentColor}
+          colors={ArrayColors}
+          onChangeComplete={handleChangeComplete}
+          onChange={(color) =>
+            setChanges({ ...changes, cC: color.hex.replace('#', '') })
+          }>
+        </TwitterPicker>
+      </div>
+
+    </div>
   )
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { SliderPicker } from 'react-color'
+import { TwitterPicker } from 'react-color'
 
 Glasses.propTypes = {
   currentColor: PropTypes.string,
@@ -13,18 +13,8 @@ Glasses.propTypes = {
 
 function Glasses({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
-    <>
-      <div className='avatar__colorPicker'>
-        <SliderPicker
-          color={currentColor}
-          onChangeComplete={handleChangeComplete}
-          onChange={(color) =>
-            setChanges({ ...changes, gC: color.hex.replace('#', '') })
-          }
-          colors={ArrayColors}
-        />
-      </div>
-      <div className='avatar__options'>
+    <div className='avatar__options--grid'>
+      <div className='avatar__options' id="scroll">
 
         <button className='avatar__optionsButton' onClick={() => setChanges({ ...changes, gP: '0' })}>
           <img src={require('../../img/x.png')} alt='No Glasses' width='100px' height='100px'></img>
@@ -72,7 +62,17 @@ function Glasses({ currentColor, handleChangeComplete, setChanges, ArrayColors, 
           <img src={require('../../img/avatar/glasses/light07.png')} alt='Glasses' width='100px' height='100px'></img>
         </button>
       </div>
-    </>
+      <div className='avatar__colorPicker'>
+        <TwitterPicker
+          color={currentColor}
+          onChangeComplete={handleChangeComplete}
+          onChange={(color) =>
+            setChanges({ ...changes, gC: color.hex.replace('#', '') })
+          }
+          colors={ArrayColors}
+        />
+      </div>
+    </div >
   )
 }
 

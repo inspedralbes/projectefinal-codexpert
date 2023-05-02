@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { SliderPicker } from 'react-color'
+import { SliderPicker, TwitterPicker } from 'react-color'
 
 Hair.propTypes = {
   currentColor: PropTypes.string,
@@ -13,19 +13,9 @@ Hair.propTypes = {
 
 function Hair({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
-    <>
-      <div className='avatar__colorPicker'>
+    <div className='avatar__options--grid'>
 
-        <SliderPicker
-          color={currentColor}
-          onChangeComplete={handleChangeComplete}
-          onChange={(color) =>
-            setChanges({ ...changes, hC: color.hex.replace('#', '') })
-          }
-          colors={ArrayColors}
-        />
-      </div>
-      <div className='avatar__options'>
+      <div className='avatar__options' id="scroll">
         <button className='avatar__optionsButton' onClick={() => setChanges({ ...changes, h: 'long01' })}>
           <img src={require('../../img/avatar/hair/long01.png')} alt='Hair' width='100px' height='100px'></img>
         </button>
@@ -162,7 +152,18 @@ function Hair({ currentColor, handleChangeComplete, setChanges, ArrayColors, cha
           <img src={require('../../img/avatar/hair/short24.png')} alt='Hair' width='100px' height='100px'></img>
         </button>
       </div>
-    </>
+      <div className='avatar__colorPicker'>
+
+        <TwitterPicker
+          color={currentColor}
+          onChangeComplete={handleChangeComplete}
+          onChange={(color) =>
+            setChanges({ ...changes, hC: color.hex.replace('#', '') })
+          }
+          colors={ArrayColors}
+        />
+      </div>
+    </div>
   )
 }
 

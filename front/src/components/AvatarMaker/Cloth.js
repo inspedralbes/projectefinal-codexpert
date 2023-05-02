@@ -18,7 +18,7 @@ function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, ch
 
   return (
     <div className='avatar__options--grid'>
-      <div className='avatar__options'>
+      <div className='avatar__options' id="scroll">
         <button className='avatar__optionsButton' onClick={() => setChanges({ ...changes, c: 'variant01' })}>
           <img src={require('../../img/avatar/cloth/variant01.png')} alt='Cloth' width='100px' height='100px'></img>
         </button>
@@ -100,9 +100,8 @@ function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, ch
           onChangeComplete={handleChangeComplete}
           onChange={(color) =>
             setChanges({ ...changes, cC: color.hex.replace('#', '') })
-          }
-        />
-        <br />
+          }>
+        </TwitterPicker>
       </div >
     </div>
   )
