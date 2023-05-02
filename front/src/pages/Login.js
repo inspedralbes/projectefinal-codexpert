@@ -8,10 +8,18 @@ function Login() {
   const [login, setLogin] = useState(0)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [mantenerSesion, setMantenerSesion] = useState(false)
   const [errorText, setErrorText] = useState('')
   const cookies = new Cookies()
   const navigate = useNavigate()
+
+  const handleEye = () => {
+    const pwd = document.getElementById("password")
+    if (pwd.type === "password") {
+      pwd.type = "text"
+    } else {
+      pwd.type = "password"
+    }
+  }
 
   useEffect(() => {
     if (login !== 0) {
@@ -42,17 +50,6 @@ function Login() {
     }
   }, [login])
 
-  useEffect(() => {
-    if (mantenerSesion) {
-      document.getElementById('checkboxText').style.color = '#3d7934'
-      document.getElementById('checkboxText').style.transition = 'all 0.3s'
-    }
-
-    if (!mantenerSesion) {
-      document.getElementById('checkboxText').style.color = '#b9b9b9'
-    }
-  }, [mantenerSesion])
-
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       setLogin(login + 1)
@@ -70,7 +67,7 @@ function Login() {
             id='email'
             className='form__input'
             placeholder=' '
-            type='text'
+            type='email'
             onChange={(e) => setEmail(e.target.value)}
             required
           ></input>
@@ -87,23 +84,12 @@ function Login() {
             onKeyDown={handleKeyDown}
             required
           ></input>
+
           <span className='form__inputBar'></span>
+          <button onClick={() => handleEye()}>Eie</button>
           <label className='form__inputlabel'>Password</label>
           <br />
-          <div className='form__checkboxInput'>
-            <label id='switch' className='form__checkboxLabel'>
-              <input
-                id='checkbox'
-                className='form__inputCheckbox'
-                type='checkbox'
-                onChange={(e) => setMantenerSesion(!mantenerSesion)}
-              ></input>{' '}
-              <div className='slider round'></div>
-            </label>
-            <label className='form__checkboxText' htmlFor='checkbox'>
-              <p id='checkboxText'>keep signed in</p>
-            </label>
-          </div>
+
         </div>
       </div>
       <div className='form__buttonsLinks'>
