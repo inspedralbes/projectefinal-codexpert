@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import '../styles/normalize.css'
 import routes from '../conn_routes'
 import Ranking from '../components/Ranking'
+import { LoadingRanking } from '../components/Loading'
+import '../styles/normalize.css'
+import '../styles/rankingStyles.css'
 
 function SharedRanking() {
-  const [rankingData, setRankingData] = useState([])
+  const [rankingData, setRankingData] = useState(null)
 
   function getCurrentURL() {
     return window.location.href
@@ -26,9 +28,11 @@ function SharedRanking() {
   }, [])
 
   return (
-    <>
-      <Ranking rankingData={rankingData}></Ranking>
-    </>
+    <div className='ranking'>
+      {rankingData != null
+        ? <Ranking rankingData={rankingData}></Ranking>
+        : <LoadingRanking></LoadingRanking>}
+    </div>
   )
 }
 

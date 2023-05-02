@@ -175,7 +175,7 @@ socket.on('overtime_starts', (data) => {
 
 socket.on('ranking', (data) => {
   window.network.setRankingData(data.rankingData)
-  window.postMessage({ type: 'ranking-event' }, '*')
+  window.postMessage({ type: 'ranking-event', idGame: data.idGame }, '*')
 })
 
 // ERROR EVENTS

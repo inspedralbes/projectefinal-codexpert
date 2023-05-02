@@ -8,11 +8,7 @@ Ranking.propTypes = {
 
 function Ranking({ rankingData }) {
   return (
-    <div style={{ color: 'white' }}>
-      <h1>RANKING</h1>
-      <div>
-
-      </div>
+    <div className='ranking__content'>
       <table>
         <thead>
           <tr>
@@ -28,10 +24,23 @@ function Ranking({ rankingData }) {
               <tr key={index}>
                 <td>
                   {index === 0 &&
-                    <img src={require('../img/Trofeo.png')}
+                    <img src={require('../img/ranking/Trofeo.png')}
                       height='50px'
                       className='user__position'
-                      alt='Winner' />}</td>
+                      alt='Winner' />}
+                  {index === 1 &&
+                    <img src={require('../img/ranking/segundo.png')}
+                      height='50px'
+                      className='user__position'
+                      alt='Second' />}
+                  {
+                    index === 2 &&
+                    <img src={require('../img/ranking/tercero.png')}
+                      height='50px'
+                      className='user__position'
+                      alt='Third' />
+                  }
+                </td>
                 <td>
                   <img
                     src={element.avatar}
@@ -52,8 +61,8 @@ function Ranking({ rankingData }) {
           })
           }
         </tbody>
-      </table>
-    </div>
+      </table >
+    </div >
   )
 }
 
