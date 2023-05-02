@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Game;
 use App\Models\Question;
+use App\Models\Test_input;
+use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
@@ -79,14 +80,18 @@ class GameController extends Controller
 
             //Unserialize the questions and add them to the array that will be returned
             for ($i = 0; $i < count($getQuestions); $i++) {
-                $getQuestions[$i] -> userExpectedInput = unserialize($getQuestions[$i] -> userExpectedInput);
-                $getQuestions[$i] -> userExpectedOutput = unserialize($getQuestions[$i] -> userExpectedOutput);
-                $getQuestions[$i] -> testInput1 = unserialize($getQuestions[$i] -> testInput1);
-                $getQuestions[$i] -> testOutput1 = unserialize($getQuestions[$i] -> testOutput1);
-                $getQuestions[$i] -> testInput2 = unserialize($getQuestions[$i] -> testInput2);
-                $getQuestions[$i] -> testOutput2 = unserialize($getQuestions[$i] -> testOutput2);
-                $getQuestions[$i] -> inputs = [$getQuestions[$i] -> userExpectedInput, $getQuestions[$i] -> testInput1, $getQuestions[$i] -> testInput2];
-                $getQuestions[$i] -> outputs = [$getQuestions[$i] -> userExpectedOutput, $getQuestions[$i] -> testOutput1, $getQuestions[$i] -> testOutput2];
+                $inputs = [];
+                $outputs = [];
+                $getInputs = Test_input::where('question_id', $getQuestions[$i] -> id)->get();
+                $getOutputs = Test_output::where('question_id', $getQuestions[$i] -> id)->get();
+
+                for ($j = 0; $j < count($getInputs); $j++) { 
+                    $inputs[$j] = unserialize($getInputs[$j] -> input);
+                    $outputs[$j] = unserialize($getOutputs[$j] -> output);
+                }
+
+                $getQuestions[$i] -> inputs = $inputs;
+                $getQuestions[$i] -> outputs = $outputs;
                 $allQuestions[$i] = $getQuestions[$i];
             }
 
@@ -161,14 +166,13 @@ class GameController extends Controller
 
         //If any of the tests doesn't pass we return that it's not a correct answer.
         if ($request -> evalPassed) {
-            $question = Question::where('id', $request -> idQuestion) -> first();
-            $userExpectedOutput = unserialize($question -> userExpectedOutput);
-            $testOutput1 = unserialize($question -> testOutput1);
-            $testOutput2 = unserialize($question -> testOutput2);
-            
-            $output = [$userExpectedOutput, $testOutput1, $testOutput2];
+            $outputs = [];
+            $getOutputs = Test_output::where('question_id', $request -> idQuestion)->get();
+            for ($i = 0; $i < count($getOutputs); $i++) { 
+                $outputs[$i] = unserialize($getOutputs[$i] -> output);
+            }
 
-            foreach($output as $key => $val) {
+            foreach($outputs as $key => $val) {
                 if ($val == $request -> evalRes[$key]) {
                     $returnObject -> testsPassed++;
                 } else {
