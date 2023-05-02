@@ -170,6 +170,18 @@
     background-color: #027202;
 }
 
+.avatar__menu-btn:hover {
+    box-shadow: none;
+    background-color: #027202;
+    transform: translate(0, 5px);
+    cursor: pointer;
+}
+
+.pavatar__menu-btn:hover::after,
+.pavatar__menu-btn:hover::before {
+    background-color: #027202;
+}
+
 .avatar__options {
     background-color: rgb(255, 255, 255);
     padding: 30px;
@@ -272,4 +284,15 @@ option {
 #scroll::-webkit-scrollbar-thumb {
     border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
     background-color: #104400;
+}
+
+.Avatar__arrow {
+    float: right;
+    margin: 0 35% 0 10%;
+}
+
+.noElement {
+    font-family: karmatic;
+    font-size: 2rem;
+    margin: 0;
 }

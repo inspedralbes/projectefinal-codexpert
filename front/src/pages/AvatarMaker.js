@@ -277,7 +277,7 @@ function AvatarMaker() {
           }
         </div >
         <div className='avatar__right'>
-          <h1>YOUR AVATAR:</h1>
+          <h1 className='noElement'>YOUR AVATAR:</h1>
           <br />
           <img className='avatar__img' src={avatar} alt='avatar' />
           <br />

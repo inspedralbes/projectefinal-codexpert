@@ -64,7 +64,7 @@ function Eyes({ currentColor, handleChangeComplete, setChanges, ArrayColors, cha
           colors={ArrayColors}
           onChangeComplete={handleChangeComplete}
           onChange={(color) =>
-            setChanges({ ...changes, cC: color.hex.replace('#', '') })
+            setChanges({ ...changes, eC: color.hex.replace('#', '') })
           }>
         </TwitterPicker>
       </div>
