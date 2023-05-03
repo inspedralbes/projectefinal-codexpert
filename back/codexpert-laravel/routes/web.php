@@ -55,5 +55,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/getTutorials', [TutorialController::class, 'getTutorials']);
 
     Route::post('/getTutorialFromId', [TutorialController::class, 'getTutorialFromId']);
-    
+
+    Route::post('/checkAnswer', [TutorialController::class, 'checkAnswer']);
+
 });
