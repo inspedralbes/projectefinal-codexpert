@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('campaign_questions', function (Blueprint $table) {
             $table->id();
-            $table->string('statement');
+            $table->longText('statement');
+            $table->longText('hint') -> nullable();
             $table->timestamps();
         });
     }
