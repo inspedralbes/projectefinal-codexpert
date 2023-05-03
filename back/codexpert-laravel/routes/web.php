@@ -2,6 +2,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\TutorialController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,4 +51,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/updateUserLvl', [GameController::class, 'updateUserLvl']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::post('/getTutorials', [TutorialController::class, 'getTutorials']);
 });
