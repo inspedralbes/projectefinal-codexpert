@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
 import { TwitterPicker } from 'react-color'
-import ShadeSlider from '@uiw/react-color-shade-slider';
-import { hsvaToHex } from '@uiw/color-convert'
-
 
 Cloth.propTypes = {
   currentColor: PropTypes.string,
@@ -15,7 +12,6 @@ Cloth.propTypes = {
 }
 
 function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
-
   return (
     <div className='avatar__options--grid'>
       <div className='avatar__options' id="scroll">

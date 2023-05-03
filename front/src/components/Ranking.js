@@ -9,59 +9,73 @@ Ranking.propTypes = {
 function Ranking({ rankingData }) {
   return (
     <div className='ranking__content'>
-      <table>
-        <thead>
-          <tr>
-            <th>Pos</th>
-            <th>Username</th>
-            <th>ELO</th>
-            <th>LVL</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.isArray(rankingData) && rankingData.map((element, index) => {
-            return (
-              <tr key={index}>
-                <td>
-                  {index === 0 &&
-                    <img src={require('../img/ranking/Trofeo.png')}
-                      height='50px'
-                      className='user__position'
-                      alt='Winner' />}
-                  {index === 1 &&
-                    <img src={require('../img/ranking/segundo.png')}
-                      height='50px'
-                      className='user__position'
-                      alt='Second' />}
-                  {
-                    index === 2 &&
-                    <img src={require('../img/ranking/tercero.png')}
-                      height='50px'
-                      className='user__position'
-                      alt='Third' />
-                  }
-                </td>
-                <td>
-                  <img
-                    src={element.avatar}
-                    width='50px'
-                    className='user__image'
-                    alt={element.name + '\'s avatar'}
-                  ></img>
-                  {element.name}
-                </td>
-                <td>
-                  {element.elo}
-                </td>
-                <td>
-                  {element.xp}
-                </td>
-              </tr>
-            )
-          })
-          }
-        </tbody>
-      </table >
+      {Array.isArray(rankingData) && rankingData.map((element, index) => {
+        if (index <= 2) {
+          return (
+            <div className='ranking__podium' key={index}>
+                {index === 0 &&
+                  <div className='ranking__winner winner'>
+                    <div className='winner__pic'>
+                      <img
+                        src={element.avatar}
+                        width='50px'
+                        className='user__image'
+                        alt={element.name + '\'s avatar'}
+                      />
+                    </div>
+                    <div className='winner__profile'>
+                      <img src={require('../img/ranking/Trofeo.png')}
+                        height='50px'
+                        className='user__position'
+                        alt='Winner' />
+                      <h1>{element.name}</h1>
+                    </div>
+                  </div>
+                }
+                {index === 1 &&
+                  <div className='ranking__second second'>
+                    <div className='second__profile'>
+                      <img
+                        src={element.avatar}
+                        width='50px'
+                        className='user__image'
+                        alt={element.name + '\'s avatar'} />
+                      <h1>{element.name}</h1>
+                    </div>
+                    <div className='second__pic'>
+                      <img src={require('../img/ranking/segundo.png')}
+                        height='50px'
+                        className='user__position'
+                        alt='Second' />
+                    </div>
+                  </div>
+                }
+                {index === 2 &&
+                  <div className='ranking__third third'>
+                    <div className='third__profile'>
+                      <img
+                        src={element.avatar}
+                        width='50px'
+                        className='user__image'
+                        alt={element.name + '\'s avatar'} />
+                      <h1>{element.name}</h1>
+                    </div>
+                    <div className='third__pic'>
+                      <img src={require('../img/ranking/tercero.png')}
+                        height='50px'
+                        className='user__position'
+                        alt='Third' />
+                    </div>
+                  </div>
+                }
+
+            </div>
+          )
+        } else {
+          return (<></>)
+        }
+      })
+      }
     </div >
   )
 }
