@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('campaign_questions', function (Blueprint $table) {
+        Schema::create('tutorial_questions', function (Blueprint $table) {
             $table->id();
-            $table->longText('title');
+            $table->longText('title') -> nullable();
             $table->longText('statement');
             $table->longText('hint') -> nullable();
             $table->timestamps();
