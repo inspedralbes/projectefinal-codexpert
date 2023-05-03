@@ -7,6 +7,7 @@ import 'tippy.js/dist/tippy.css' // Tooltip styles
 import 'tippy.js/themes/light-border.css' // Tooltip theme
 import 'tippy.js/animations/shift-away-extreme.css' // Tooltip animation
 import informationIcon from '../img/information_icon.gif'
+import Eye from '../components/Eye'
 
 function Register() {
   const [registro, setRegistro] = useState(0)
@@ -26,24 +27,6 @@ function Register() {
 
   const cookies = new Cookies()
   const navigate = useNavigate()
-
-  const handleEye = () => {
-    const pwd = document.getElementById("password")
-    if (pwd.type === "password") {
-      pwd.type = "text"
-    } else {
-      pwd.type = "password"
-    }
-  }
-
-  const handleRepeatEye = () => {
-    const pwd = document.getElementById("repeat_password")
-    if (pwd.type === "password") {
-      pwd.type = "text"
-    } else {
-      pwd.type = "password"
-    }
-  }
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -143,14 +126,14 @@ function Register() {
 
           <input className='form__input' style={{ color: color.password }} placeholder=' ' id="password" type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
           <span className='form__inputBar'></span>
-          <button onClick={() => handleEye()}>Eie</button>
+          <Eye id={"password"}></Eye>
           <label className='form__inputlabel'>Password
           </label>
         </div>
         <div className='form__inputGroup'>
           <input className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' id="repeat_password" type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
           <span className='form__inputBar'></span>
-          <button onClick={() => handleRepeatEye()}>Eie</button>
+          <Eye id={"repeat_password"}></Eye>
           <label className='form__inputlabel'>Repeat password </label>
         </div>
       </div>
