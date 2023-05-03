@@ -22,6 +22,10 @@ class TutorialController extends Controller
      */     
     public function getTutorials()
     {   
+        //MARTI TIENES QUE PASARME EL TOKEN O NULL SI NO HAY TOKEN, TIENE QUE SER POST
+        //Primero comprobar si el usuario está logueado
+        //Si no está logueado hacer todo lo de abajo
+        //Si está logueado habrá que utilizar user_tutorial y devolver locked y passed, poner la primera pregunta en locked = false
         $allTutorials = [];
 
         //Get all the tutorial questions
@@ -74,14 +78,13 @@ class TutorialController extends Controller
      * @param bool $evalPassed determines whether the user has passed all the internal tests for the question correctly or not
      * @param int $idQuestion is the id of the question that has been answered
      * @param array $evalRes contains all the results from the evals (done in front) for each input test
-     * @param int $idGame is the id from the game that the members of the lobby are playing
      * @param int $idUser is the id from the user that is currently answering the question
-     * @param int $numQuestions is the number of questions that we will retrieve from the database
-     * @param bool $unlimitedHearts if true it means that hearts won't be removed from the user if the question is answered incorrectly
      * @return object $returnObject contains the boolean 'correct' which determines if the question has indeed been answered correctly, 'testsPassed' is the number of tests that have been passed, if 'correct' is true it will mean that all tests have been passed, 'user_game' contains all the information in the relationship between game and user, therefore here we can see information like 'hearts_remaining' (the amount of hearts remaining) and 'question_at' (which question is the user at now) and 'game' which contains the id from the winner and the game id.
      */     
     public function checkAnswer(Request $request)
     {
+        //MARTI TIENES QUE PASARME EL TOKEN O NULL SI NO HAY TOKEN, TIENE QUE SER POST
+        //Todo esto es si el usuario no está logueado habrá que modificar user_tutorial si el usuario está logueado
         $returnObject = (object) [
             'correct'=> true,
             'testsPassed' => 0,
