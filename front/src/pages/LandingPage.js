@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
-import logo from '../img/logo.gif'
+import logo from '../img/Logo.gif'
 import { Loader } from '../components/Loading'
 import IconUser from '../components/IconUser'
 
