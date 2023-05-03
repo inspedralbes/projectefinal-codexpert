@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import { Link, useNavigate } from 'react-router-dom' // Rutas
+import Eye from "../components/Eye"
 
 function Login() {
   const [login, setLogin] = useState(0)
@@ -11,15 +12,6 @@ function Login() {
   const [errorText, setErrorText] = useState('')
   const cookies = new Cookies()
   const navigate = useNavigate()
-
-  const handleEye = () => {
-    const pwd = document.getElementById("password")
-    if (pwd.type === "password") {
-      pwd.type = "text"
-    } else {
-      pwd.type = "password"
-    }
-  }
 
   useEffect(() => {
     if (login !== 0) {
@@ -87,7 +79,7 @@ function Login() {
           ></input>
 
           <span className='form__inputBar'></span>
-          <button onClick={() => handleEye()}>Eie</button>
+          <Eye id={"password"}></Eye>
           <label htmlFor='password' className='form__inputlabel'>Password</label>
           <br />
         </div>
