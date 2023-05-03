@@ -16,10 +16,8 @@ return new class extends Migration
         Schema::create('test_inputs', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('question_id')->unsigned()->index();
-            
-            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
+            $table->string('input') -> nullable();
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
-            
             $table->timestamps();
         });
     }

@@ -27,6 +27,24 @@ function Register() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  const handleEye = () => {
+    const pwd = document.getElementById("password")
+    if (pwd.type === "password") {
+      pwd.type = "text"
+    } else {
+      pwd.type = "password"
+    }
+  }
+
+  const handleRepeatEye = () => {
+    const pwd = document.getElementById("repeat_password")
+    if (pwd.type === "password") {
+      pwd.type = "text"
+    } else {
+      pwd.type = "password"
+    }
+  }
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       setRegistro(registro + 1)
@@ -114,8 +132,9 @@ function Register() {
           <label htmlFor='email' className='form__inputlabel'>E-mail</label>
         </div>
         <div className='form__inputGroup'>
-          <input id='passwd1' className='form__input' style={{ color: color.password }} placeholder=' ' type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
+          <input id="password" className='form__input' style={{ color: color.password }} placeholder=' ' type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
           <span className='form__inputBar'></span>
+          <button onClick={() => handleEye()}>Eie</button>
           <label htmlFor='passwd1' className='form__inputlabel'>Password
             <Tippy theme={'light-border'}
               content={'Password must'}
@@ -126,14 +145,15 @@ function Register() {
               <img src={informationIcon} alt='' height='20px' />
             </Tippy>
 
-          </label>
-        </div>
+          </label >
+        </div >
         <div className='form__inputGroup'>
-          <input id='psswd2' className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
+          <input id="repeat_password" className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
           <span className='form__inputBar'></span>
-          <label htmlFor='psswd2' className='form__inputlabel'>Repeat password </label>
+          <button onClick={() => handleRepeatEye()}>Eie</button>
+          <label htmlFor='repeat_password' className='form__inputlabel'>Repeat password </label>
         </div>
-      </div>
+      </div >
 
       <div className='form__buttonsLinks'>
         <div className='form__buttons'>
@@ -160,7 +180,7 @@ function Register() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
 
   )
 }

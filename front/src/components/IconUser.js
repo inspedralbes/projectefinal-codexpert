@@ -58,7 +58,7 @@ function IconUser() {
 
   return (
     <>
-      {avatarURL !== "" && (
+      {avatarURL !== '' && (
         <div className='container'>
           {avatarURL !== null
             ? (<button

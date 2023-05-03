@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('campaign_questions', function (Blueprint $table) {
             $table->id();
+            $table->longText('title');
             $table->longText('statement');
             $table->longText('hint') -> nullable();
             $table->timestamps();
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('tutorial_questions');
     }
 };
