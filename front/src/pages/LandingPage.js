@@ -11,6 +11,7 @@ import IconUser from '../components/IconUser'
 function LandingPage() {
   const cookies = new Cookies()
   const [isUserLogged, setisUserLogged] = useState('')
+  localStorage.setItem("lastPage", "")
   useEffect(() => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
