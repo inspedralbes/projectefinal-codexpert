@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('tutorial_test_outputs', function (Blueprint $table) {
             $table->id();
-            $table->longText('statement');
-            $table->longText('hint') -> nullable();
+            $table->bigInteger('question_id')->unsigned()->index();
+            $table->string('output') -> nullable();
+            $table->foreign('question_id')->references('id')->on('tutorial_questions')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('tutorial_test_outputs');
     }
 };

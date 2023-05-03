@@ -4,6 +4,8 @@ import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-modal'
+import Eye from '../components/Eye'
+
 Modal.setAppElement('body')
 
 function Profile() {
@@ -85,7 +87,7 @@ function Profile() {
 
   return (
     <div>
-      <button className='pixel-button' onClick={() => navigate('/')}>Main Menu</button>
+      <button className='pixel-button' onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/lobbies')}>Back</button>
       <table>
         <tbody>
           <tr>
@@ -108,7 +110,9 @@ function Profile() {
             >
               <h1>Change your username</h1>
               <input placeholder='username' onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
-              <input placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+              <input placeholder='password' id="passwordUsername" type='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
+              <Eye id={"passwordUsername"}></Eye>
+              <br></br>
               <button onClick={() => setModals(prev => ({ ...prev, name: false }))}>Close</button>
               <button onClick={() => saveChanges('newName')}>Save</button>
 
@@ -133,8 +137,10 @@ function Profile() {
               isOpen={modals.email}
             >
               <h1>Change your email</h1>
-              <input placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
-              <input placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+              <input placeholder='email' type='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+              <input placeholder='password' id="passwordEmail" type='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
+              <Eye id={"passwordEmail"}></Eye>
+              <br></br>
               <button onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
               <button onClick={() => saveChanges('newEmail')}>Save</button>
 
@@ -158,9 +164,9 @@ function Profile() {
               isOpen={modals.password}
             >
               <h1>Update password</h1>
-              <input placeholder='Current password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
-              <input placeholder='New password' onChange={(e) => setEditUser(prev => ({ ...prev, newPassword: e.target.value }))}></input><br></br>
-              <input placeholder='Repeat new password' onChange={(e) => setEditUser(prev => ({ ...prev, rNewPassword: e.target.value }))}></input><br></br>
+              <input placeholder='Current password' type='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+              <input placeholder='New password' type='password' onChange={(e) => setEditUser(prev => ({ ...prev, newPassword: e.target.value }))}></input><br></br>
+              <input placeholder='Repeat new password' type='password' onChange={(e) => setEditUser(prev => ({ ...prev, rNewPassword: e.target.value }))}></input><br></br>
               <button onClick={() => setModals(prev => ({ ...prev, password: false }))}>Close</button>
               <button onClick={() => savePassword('newPassword')}>Save</button>
 
