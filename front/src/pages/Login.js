@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import { Link, useNavigate } from 'react-router-dom' // Rutas
-import Eye from "../components/Eye"
+import Eye from '../components/Eye'
 
 function Login() {
   const [login, setLogin] = useState(0)
@@ -42,7 +42,6 @@ function Login() {
     }
   }, [login])
 
-
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       setLogin(login + 1)
@@ -79,7 +78,7 @@ function Login() {
           ></input>
 
           <span className='form__inputBar'></span>
-          <Eye id={"password"}></Eye>
+          <Eye id={'password'}></Eye>
           <label htmlFor='password' className='form__inputlabel'>Password</label>
           <br />
         </div>
@@ -120,6 +119,5 @@ function Login() {
     </div>
   )
 }
-
 
 export default Login

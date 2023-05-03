@@ -218,12 +218,11 @@ function AvatarMaker() {
           })
       }
       fetchData()
-      if (localStorage.getItem("lastPage") !== undefined) {
-        navigate("/" + localStorage.getItem("lastPage"))
+      if (localStorage.getItem('lastPage') !== undefined) {
+        navigate('/' + localStorage.getItem('lastPage'))
       } else {
         navigate('/lobbies')
       }
-
     }
   }, [save])
 
