@@ -27,6 +27,24 @@ function Register() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  const handleEye = () => {
+    const pwd = document.getElementById("password")
+    if (pwd.type === "password") {
+      pwd.type = "text"
+    } else {
+      pwd.type = "password"
+    }
+  }
+
+  const handleRepeatEye = () => {
+    const pwd = document.getElementById("repeat_password")
+    if (pwd.type === "password") {
+      pwd.type = "text"
+    } else {
+      pwd.type = "password"
+    }
+  }
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       setRegistro(registro + 1)
@@ -123,14 +141,16 @@ function Register() {
             <img src={informationIcon} alt='' height='20px' />
           </Tippy>
 
-          <input className='form__input' style={{ color: color.password }} placeholder=' ' type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
+          <input className='form__input' style={{ color: color.password }} placeholder=' ' id="password" type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
           <span className='form__inputBar'></span>
+          <button onClick={() => handleEye()}>Eie</button>
           <label className='form__inputlabel'>Password
           </label>
         </div>
         <div className='form__inputGroup'>
-          <input className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
+          <input className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' id="repeat_password" type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
           <span className='form__inputBar'></span>
+          <button onClick={() => handleRepeatEye()}>Eie</button>
           <label className='form__inputlabel'>Repeat password </label>
         </div>
       </div>
