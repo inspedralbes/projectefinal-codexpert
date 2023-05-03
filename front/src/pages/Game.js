@@ -145,8 +145,6 @@ function Game() {
 
             <form className='editor' onSubmit={handleSubmit}>
               <CodeMirror code={code} setCode={setCode}></CodeMirror>
-              {/* {Array.isArray(qst.inputs[0]) && `let input = [${qst.inputs[0].toString()}]`}
-              {!Array.isArray(qst.inputs[0]) && `let input = '${qst.inputs[0].toString()}'`}<br /> */}
               <button className='game__submit' disabled={code === ''}>
                 Submit
               </button>
@@ -158,7 +156,7 @@ function Game() {
           {!playable && <div className='game__results'>
             <h1 className='game__yourResult'>{result}</h1>
             <h2>{winnerMessage}</h2>
-            <ul className='game__rewards'>
+            <ul className='rewards__list'>
               <li>XP: {rewards.xpEarned}</li>
               <li>Coins: {rewards.coinsEarned}</li>
               <li>Elo: {rewards.eloEarned}</li>

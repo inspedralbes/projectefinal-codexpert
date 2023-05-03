@@ -1,7 +1,7 @@
 .ranking {
     background-color: var(--white);
     color: #2e5e22;
-    margin: 13% auto;
+    margin: 2% auto;
     width: 60%;
     text-align: center;
     padding: 60px;
@@ -67,3 +67,64 @@
 .ShareResults__copyurl-icon:hover {
     cursor: pointer;
 }
+
+.game__rewards {
+    background-color: var(--white);
+    color: #2e5e22;
+    /* margin: 1% auto; */
+    margin: 2% auto;
+    width: fit-content;
+    font-size: 0.75em;
+    text-align: left;
+    padding: 5px 5px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
+    min-height: fit-content;
+}
+
+.game__rewards::after {
+    background-color: var(--white);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__rewards::before {
+    background-color: var(--white);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__yourResult {
+    /* width: 40%; */
+    clear: left;
+    text-align: left;
+    margin: 1% auto;
+    width: fit-content;
+    padding: 30px;
+    color: #fff;
+    position: relative;
+}
+
+.game__rewards {}
+
+.rewards__list {}
+
+.rewards__element {
+    margin: 1vw
+}
+
