@@ -52,5 +52,8 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::post('/getTutorials', [TutorialController::class, 'getTutorials']);
+    Route::get('/getTutorials', [TutorialController::class, 'getTutorials']);
+
+    Route::post('/getTutorialFromId', [TutorialController::class, 'getTutorialFromId']);
+    
 });

@@ -18,23 +18,49 @@ class TutorialController extends Controller
 {
     /**
      * This function creates the relationship between the game and all the users from the lobby
-     * @param bool $expert determines if the user chooses if he is an expert or not, if exepert it will only show the last question
-     * @return array $tutorial contains an object representing each tutorial question, if expert it will return only the last tutorial
+     * @return array $allTutorials contains id and title from each level of the tutorial 
      */     
-    public function getTutorials(Request $request)
-    {
-        $tutorial = [];
+    public function getTutorials()
+    {   
+        $allTutorials = [];
 
-        //If the user is an expert we return the last tutorial found in the database. If not we return all tutorials without the questions
-        if ($request -> expert) {
-            $tutorial = (object)[];
-            $tutorial = Tutorial_question::orderBy('id', 'DESC')->first();
-        } else {
-            $tutorial = Tutorial_question::get();
+        //Get all the tutorial questions
+        $getTutorial = Tutorial_question::get();
+        
+        //Get only id and title from each question
+        for ($i=0; $i < count($getTutorial); $i++) { 
+            $tutorial = (object)[
+                'id' => $getTutorial[$i] -> id,
+                'title' => $getTutorial[$i] -> title
+            ];
+        
+            array_push($allTutorials, $tutorial);
         }
 
+        return response() -> json($allTutorials);
+    } 
+    
+    public function getTutorialFromId(Request $request)
+    {
+        $tutorialQuestion = Tutorial_question::where("id", $request -> id) -> first();
+        $inputs = [];
+        $outputs = [];
+        $getInputs = Tutorial_test_input::where('question_id', $tutorialQuestion -> id)->get();
+        $getOutputs = Tutorial_test_output::where('question_id', $tutorialQuestion -> id)->get();
+
+        for ($j = 0; $j < count($getInputs); $j++) { 
+            $inputs[$j] = unserialize($getInputs[$j] -> input);
+            $outputs[$j] = unserialize($getOutputs[$j] -> output);
+        }
+
+        $tutorial = (object)[
+            'id' => $tutorialQuestion -> id,
+            'statement' => $tutorialQuestion -> statement,
+            'hint' => $tutorialQuestion -> hint,
+            'inputs' => $inputs,
+            'outputs' => $outputs
+        ];
+
         return response() -> json($tutorial);
-
-
     }  
 }
