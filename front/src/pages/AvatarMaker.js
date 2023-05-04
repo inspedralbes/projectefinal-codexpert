@@ -218,8 +218,8 @@ function AvatarMaker() {
           })
       }
       fetchData()
-      if (localStorage.getItem('lastPage') !== undefined) {
-        navigate('/' + localStorage.getItem('lastPage'))
+      if (localStorage.getItem('lastPage') !== null) {
+        navigate('/profile')
       } else {
         navigate('/lobbies')
       }

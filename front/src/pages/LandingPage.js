@@ -33,8 +33,16 @@ function LandingPage() {
 
   return (
     <div>
-      {isUserLogged === true && (
+      {isUserLogged === '' && (
         <IconUser />
+      )}
+      {isUserLogged && (
+        <IconUser />
+      )}
+      {isUserLogged === false && (
+        <Link to='/login'>
+          <button>Login/Register</button>
+        </Link>
       )}
       <div className='landingPage'>
         <Loader />
@@ -45,11 +53,11 @@ function LandingPage() {
           <button className='pixel-button loading'>LOADING<Loader /></button>
         )}
         {isUserLogged === false && (
-          <Link to='/login'>
+          <Link to='/campaign'>
             <button className='pixel-button'>Get Started</button>
           </Link>
         )}
-        {isUserLogged === true && (
+        {isUserLogged && (
           <Link to='/lobbies'>
             <button className='pixel-button'>Lobbies</button>
           </Link>
