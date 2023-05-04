@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { SliderPicker, TwitterPicker } from 'react-color'
+import { TwitterPicker } from 'react-color'
 
 Hair.propTypes = {
   currentColor: PropTypes.string,

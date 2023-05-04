@@ -117,7 +117,7 @@ function Register() {
         <div className='form__inputGroup'>
           <input id="password" className='form__input' style={{ color: color.password }} placeholder=' ' type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
           <span className='form__inputBar'></span>
-          <Eye id={"password"}></Eye>
+          <Eye id={'password'}></Eye>
           <label htmlFor='passwd1' className='form__inputlabel'>Password
             <Tippy theme={'light-border'}
               content={'Password must'}
@@ -133,7 +133,7 @@ function Register() {
         <div className='form__inputGroup'>
           <input id="repeat_password" className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
           <span className='form__inputBar'></span>
-          <Eye id={"repeat_password"}></Eye>
+          <Eye id={'repeat_password'}></Eye>
           <label htmlFor='repeat_password' className='form__inputlabel'>Repeat password </label>
         </div>
       </div >
