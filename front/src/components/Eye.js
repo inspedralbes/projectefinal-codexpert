@@ -1,4 +1,5 @@
 import '../styles/normalize.css'
+import openEye from '../img/openEye.png'
 
 function Eye({ id }) {
     const handleEye = () => {
@@ -12,7 +13,7 @@ function Eye({ id }) {
 
     return (
         <>
-            <button onClick={() => handleEye()}>Eie</button>
+            <button onClick={() => handleEye()}><img src={openEye} alt=""></img></button>
         </>
     )
 }
