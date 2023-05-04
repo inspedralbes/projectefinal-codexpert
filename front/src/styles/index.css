@@ -624,3 +624,8 @@ body {
 .form__inputCheckbox:checked::before {
     transform: scale(1);
 }
+
+.invisible {
+    border: none;
+    background: none;
+}
