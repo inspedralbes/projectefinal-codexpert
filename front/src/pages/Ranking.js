@@ -45,14 +45,16 @@ function RankingPage() {
     <>
       {dataLoaded
         ? <main>
-          <h1 className='game__yourResult'>{result}</h1>
+          <div className='game__yourResults yourResults'>
+            <h1 className='yourResults__result'>{result}</h1>
 
-          <div className='game__rewards'>
-            <p className='rewards__list'>
-              <a className='rewards__element'>+{rewards.coinsEarned} <img src={require('../img/monea.png')} height='20px' className='user__xp' alt='Experience points' /></a>
-              <a className='rewards__element'>{'+' + rewards.xpEarned} <img src={require('../img/Experiencia.png')} height='20px' className='user__xp' alt='Experience points' /></a>
-              <a className='rewards__element'>{'+' + rewards.eloEarned} Elo</a>
-            </p>
+            <div className='game__rewards'>
+              <p className='rewards__list'>
+                <a className='rewards__element'>+{rewards.coinsEarned} <img src={require('../img/monea.png')} height='20px' className='user__xp' alt='Experience points' /></a>
+                <a className='rewards__element'>{'+' + rewards.xpEarned} <img src={require('../img/Experiencia.png')} height='20px' className='user__xp' alt='Experience points' /></a>
+                <a className='rewards__element'>{'+' + rewards.eloEarned} Elo</a>
+              </p>
+            </div>
           </div>
 
           <div className='ranking'>
