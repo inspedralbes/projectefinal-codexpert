@@ -54,10 +54,10 @@ function AvatarMaker() {
   const [currentColor, setCurrentColor] = useState('#fff')
 
   const handleChangeComplete = (color) => {
-    setCurrentColor(color)
+    setCurrentColor(color.hex)
   }
 
-  const ArrayColors = ['#000000', '#2D2D2D', '#595858', '#969696', '#C1C1C1', '#F1F1F1', '#41240B', '#6C3F18', '#8B5B30', '#AE7A4C', '#CC9D74', '#E9C2A0', '#eb8d02', '#FFC107', '#FFEB3B', '#FFF06F', '#FFF176', '#FFF8B7', '#E65100', '#FB6310', '#F57C00', '#FF9800', '#FFB74D', '#FFE0B2', '#FF0000', '#FC3030', '#FF5959', '#FD7B7B', '#FE9C9C', '#FEBDBD', '#FD0082', '#FE339C', '#FE52AB', '#FB89C4', '#FCA3D1', '#FFBEDF', '#C700ff', '#D235FE', '#D957FE', '#E27CFF', '#E797FD', '#EEB1FF', '#8500FF', '#9D32FF', '#A747FF', '#B466FC', '#C98DFF', '#DEBAFF', '#0200FF', '#2B29FE', '#4D4BFC', '#6362FE', '#7978FD', '#9897FE', '#00ABFF', '#30BBFF', '#53C7FF', '#71D0FF', '#96DBFD', '#BDE8FD', '#00FFA6', '#31FEB6', '#56FDC3', '#8CFFD7', '#A5FEDF', '#C7FEEB', '#00FF28', '#2CFD4D', '#4FFB6A', '#74FB89', '#93FBA3', '#B0FBBC', '#33691E', '#689F38', '#77B541', '#8BC34A', '#AED581', '#DCEDC8', '#827717', '#968A1C', '#AFB42B', '#C5CA38', '#CDDC39', '#DCE775', '#5B4202', '#846205', '#AF8003', '#C89A1D', '#DAAD34', '#EAC050']
+  const ArrayColors = ['#da010c', '#d00958', '#bc09d0', '#8d09d0', '#5509d0', '#090cd0', '#093ad0', '#0977d0', '#09a1d0', '#09d0bd', '#09d044', '#0b8d17', '#064f0d', '#457907', '#f7f904', '#d8bd0d', '#d3ae05', '#f89700', '#f86e00', '#9f6130', '#6c4e28', '#000', '#474747', '#7c7c7c', '#b3b3b3', '#d1d1d1']
 
   useEffect(() => {
     const fetchData = async () => {
@@ -218,20 +218,19 @@ function AvatarMaker() {
           })
       }
       fetchData()
-      navigate('/lobbies')
+      if (localStorage.getItem('lastPage') !== undefined) {
+        navigate('/' + localStorage.getItem('lastPage'))
+      } else {
+        navigate('/lobbies')
+      }
     }
   }, [save])
 
   if (avatar !== '') {
     return (
       <div className='Avatar'>
-        <div className='avatar__left'>
-          <img className='avatar__img' src={avatar} alt='avatar' />
-          <br />
-          <button className='avatar__menu-btn' onClick={() => setSave(save + 1)}>Save</button>
 
-        </div>
-        <div className='avatar__right'>
+        <div className='avatar__left'>
 
           <div className='avatar__menu'>
             <button className='avatar__menu-btn' onClick={() => changeOption('background')}>Background</button>
@@ -281,6 +280,16 @@ function AvatarMaker() {
             )
           }
         </div >
+        <div className='avatar__right'>
+          <h1 className='noElement'>YOUR AVATAR:</h1>
+          <br />
+          <img className='avatar__img' src={avatar} alt='avatar' />
+          <br />
+          <div className='avatar__Buttons--flex'>
+            <button className='avatar__Button close' onClick={() => setSave(save + 1)}>Cancel</button>
+            <button className='avatar__Button' onClick={() => setSave(save + 1)}>Save</button>
+          </div>
+        </div>
 
       </div >
     )

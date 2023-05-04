@@ -52,3 +52,13 @@
 .landingPage__codexpert {
     width: 70%;
 }
+
+.loading{
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: center;
+}

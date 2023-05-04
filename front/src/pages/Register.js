@@ -7,6 +7,7 @@ import 'tippy.js/dist/tippy.css' // Tooltip styles
 import 'tippy.js/themes/light-border.css' // Tooltip theme
 import 'tippy.js/animations/shift-away-extreme.css' // Tooltip animation
 import informationIcon from '../img/information_icon.gif'
+import Eye from '../components/Eye'
 
 function Register() {
   const [registro, setRegistro] = useState(0)
@@ -26,24 +27,6 @@ function Register() {
 
   const cookies = new Cookies()
   const navigate = useNavigate()
-
-  const handleEye = () => {
-    const pwd = document.getElementById("password")
-    if (pwd.type === "password") {
-      pwd.type = "text"
-    } else {
-      pwd.type = "password"
-    }
-  }
-
-  const handleRepeatEye = () => {
-    const pwd = document.getElementById("repeat_password")
-    if (pwd.type === "password") {
-      pwd.type = "text"
-    } else {
-      pwd.type = "password"
-    }
-  }
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -122,38 +105,38 @@ function Register() {
       <br />
       <div className='form__form'>
         <div className='form__inputGroup'>
-          <input className='form__input' style={{ color: color.username }} placeholder=' ' type='text' onChange={(e) => setUserData({ ...userData, username: e.target.value })} required></input>
+          <input id='username' className='form__input' style={{ color: color.username }} placeholder=' ' type='text' onChange={(e) => setUserData({ ...userData, username: e.target.value })} required></input>
           <span className='form__inputBar'></span>
-          <label className='form__inputlabel'>Username</label>
+          <label htmlFor='username' className='form__inputlabel'>Username</label>
         </div>
         <div className='form__inputGroup'>
-          <input className='form__input' style={{ color: color.email }} placeholder=' ' type='text' onChange={(e) => setUserData({ ...userData, email: e.target.value })} required></input>
+          <input id='email' className='form__input' style={{ color: color.email }} placeholder=' ' type='text' onChange={(e) => setUserData({ ...userData, email: e.target.value })} required></input>
           <span className='form__inputBar'></span>
-          <label className='form__inputlabel'>E-mail</label>
+          <label htmlFor='email' className='form__inputlabel'>E-mail</label>
         </div>
         <div className='form__inputGroup'>
-          <Tippy theme={'light-border'}
-            content={<div>Password must</div>}
-            placement={'right'}
-            animation={'shift-away-extreme'}
+          <input id="password" className='form__input' style={{ color: color.password }} placeholder=' ' type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
+          <span className='form__inputBar'></span>
+          <Eye id={'password'}></Eye>
+          <label htmlFor='passwd1' className='form__inputlabel'>Password
+            <Tippy theme={'light-border'}
+              content={'Password must'}
+              placement={'right'}
+              animation={'shift-away-extreme'}
 
-          >
-            <img src={informationIcon} alt='' height='20px' />
-          </Tippy>
+            >
+              <img src={informationIcon} alt='' height='20px' />
+            </Tippy>
 
-          <input className='form__input' style={{ color: color.password }} placeholder=' ' id="password" type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
-          <span className='form__inputBar'></span>
-          <button onClick={() => handleEye()}>Eie</button>
-          <label className='form__inputlabel'>Password
-          </label>
-        </div>
+          </label >
+        </div >
         <div className='form__inputGroup'>
-          <input className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' id="repeat_password" type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
+          <input id="repeat_password" className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
           <span className='form__inputBar'></span>
-          <button onClick={() => handleRepeatEye()}>Eie</button>
-          <label className='form__inputlabel'>Repeat password </label>
+          <Eye id={'repeat_password'}></Eye>
+          <label htmlFor='repeat_password' className='form__inputlabel'>Repeat password </label>
         </div>
-      </div>
+      </div >
 
       <div className='form__buttonsLinks'>
         <div className='form__buttons'>
@@ -180,7 +163,7 @@ function Register() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
 
   )
 }

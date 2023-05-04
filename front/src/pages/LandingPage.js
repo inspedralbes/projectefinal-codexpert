@@ -11,6 +11,7 @@ import IconUser from '../components/IconUser'
 function LandingPage() {
   const cookies = new Cookies()
   const [isUserLogged, setisUserLogged] = useState('')
+  localStorage.setItem('lastPage', '')
   useEffect(() => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
@@ -41,7 +42,7 @@ function LandingPage() {
         <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
         <br />
         {isUserLogged === '' && (
-          <button className='pixel-button'><Loader /></button>
+          <button className='pixel-button loading'>LOADING<Loader /></button>
         )}
         {isUserLogged === false && (
           <Link to='/login'>

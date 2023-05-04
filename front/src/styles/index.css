@@ -1,5 +1,5 @@
 :root {
-    --primary-color: hwb(110 9% 59%);
+    --primary-color: #256917;
     --h1-color: #2e5e22;
     --shadow-color: #019215;
     --labelPlaceholder-color: #218d00;
@@ -11,16 +11,29 @@
     src: url(../fonts/pixel_operator/PixelOperator8.ttf);
 }
 
+@font-face {
+    font-family: karmatic;
+    src: url(../fonts/karmatic-arcade.regular.ttf);
+}
+
 * {
     box-sizing: border-box;
 }
 
 body {
     background: url('../img/background_image.jpg');
-    background-size: 200vh 100vh;
     font-family: pixel_operator;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    z-index: -1;
     font-size: 30px;
+    background-position: absolute;
+    background-size: 100%;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .pixel-button {
@@ -31,7 +44,6 @@ body {
     border-width: 6px 0;
     color: #ffffff;
     display: inline-block;
-    margin-left: 12px;
     padding: 20px;
     position: relative;
     font-size: 80%;
@@ -39,6 +51,7 @@ body {
     text-transform: uppercase;
     color: #ffffff;
     transition: all 0.5s;
+    height: 90px;
     box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.37);
 }
 
@@ -298,7 +311,7 @@ body {
 
 /*============================================================================== LABEL ============================================================================== */
 .form__inputlabel {
-    color: #94c08d;
+    color: #2e5e22;
     font-size: 18px;
     font-weight: normal;
     position: absolute;
@@ -321,7 +334,7 @@ body {
 .form__input:valid~.form__inputlabel {
     top: -20px;
     font-size: 14px;
-    color: var(--primary-color);
+    color: #769e70;
 }
 
 
@@ -481,8 +494,19 @@ body {
     display: flex;
     font-size: 10px;
     color: #999;
+    width: 100%;
     font-weight: 700;
     text-transform: uppercase;
+    align-items: center;
+}
+
+.form__checboxLabel--flex {
+    display: flex;
+    width: 90%;
+    align-content: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    flex-direction: row;
     align-items: center;
 }
 
@@ -521,7 +545,7 @@ body {
 .link__CreateAcc p {
     font-size: 12px;
     text-decoration: none;
-    color: #999;
+    color: #747474;
     letter-spacing: 0.2px;
     font-weight: 500;
 }
@@ -546,7 +570,7 @@ body {
 }
 
 .slider {
-    background-color: #e4e3e3;
+    background-color: #747474;
     bottom: 0;
     cursor: pointer;
     left: 0;
@@ -560,7 +584,7 @@ body {
     text-align: left;
     display: flex;
     font-size: 11px;
-    color: #b9b9b9;
+    color: #555555;
     font-weight: 700;
     text-transform: uppercase;
     align-items: center;

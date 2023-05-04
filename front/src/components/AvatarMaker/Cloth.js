@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { CirclePicker } from 'react-color'
+import { TwitterPicker } from 'react-color'
+import ShadeSlider from '@uiw/react-color-shade-slider';
+import { hsvaToHex } from '@uiw/color-convert'
+
 
 Cloth.propTypes = {
   currentColor: PropTypes.string,
@@ -12,19 +15,10 @@ Cloth.propTypes = {
 }
 
 function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+
   return (
-    <>
-      <div className='avatar__colorPicker'>
-        <CirclePicker
-          color={currentColor}
-          onChangeComplete={handleChangeComplete}
-          onChange={(color) =>
-            setChanges({ ...changes, cC: color.hex.replace('#', '') })
-          }
-          colors={ArrayColors}
-        />
-      </div>
-      <div className='avatar__options'>
+    <div className='avatar__options--grid'>
+      <div className='avatar__options' id="scroll">
         <button className='avatar__optionsButton' onClick={() => setChanges({ ...changes, c: 'variant01' })}>
           <img src={require('../../img/avatar/cloth/variant01.png')} alt='Cloth' width='100px' height='100px'></img>
         </button>
@@ -95,7 +89,21 @@ function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, ch
           <img src={require('../../img/avatar/cloth/variant23.png')} alt='Cloth' width='100px' height='100px'></img>
         </button>
       </div>
-    </>
+      <br />
+      <div className='avatar__colorPicker'>
+        <TwitterPicker
+          triangle={
+            'hide'
+          }
+          color={currentColor}
+          colors={ArrayColors}
+          onChangeComplete={handleChangeComplete}
+          onChange={(color) =>
+            setChanges({ ...changes, cC: color.hex.replace('#', '') })
+          }>
+        </TwitterPicker>
+      </div >
+    </div>
   )
 }
 
