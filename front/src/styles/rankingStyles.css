@@ -37,17 +37,6 @@
     width: 6px;
 }
 
-.ranking__content {
-    max-height: 70vh;
-    overflow: auto;
-    margin: 0 auto;
-    min-width: 80%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr;
-    gap: 0px 0px;
-}
-
 .ShareResults__element {
     position: absolute;
     right: 3%;
@@ -128,6 +117,19 @@
     margin: 1vw
 }
 
+.ranking__content {
+    max-height: 60vh;
+    /* overflow: auto; */
+    margin: 0 auto;
+    min-width: 80%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "col1 col2 col3";
+    align-items: end;
+}
 
 .ranking__winner {
     display: grid;
@@ -137,7 +139,7 @@
     grid-template-areas:
         "."
         ".";
-    grid-area: ranking__winner;
+    grid-area: col2;
 }
 
 .ranking__second {
@@ -148,7 +150,7 @@
     grid-template-areas:
         "."
         ".";
-    grid-area: ranking__second;
+    grid-area: col1;
 }
 
 .ranking__third {
@@ -159,5 +161,27 @@
     grid-template-areas:
         "."
         ".";
-    grid-area: ranking__third;
+    grid-area: col3;
+}
+
+.winner__trophy {
+    background-color: gold;
+    padding: 5%;
+}
+
+.second__medal {
+    background-color: silver;
+    padding: 5%;
+}
+
+.third__medal {
+    background-color: #cd7f32;
+    padding: 5%;
+}
+
+.ranking__table {
+    padding: 2.5vh 0;
+    max-height: 50%;
+    height: fit-content;
+    overflow: auto;
 }

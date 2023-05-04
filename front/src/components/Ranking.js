@@ -12,67 +12,176 @@ function Ranking({ rankingData }) {
       {Array.isArray(rankingData) && rankingData.map((element, index) => {
         if (index <= 2) {
           return (
-            <div className='ranking__podium' key={index}>
-                {index === 0 &&
-                  <div className='ranking__winner winner'>
-                    <div className='winner__pic'>
-                      <img
-                        src={element.avatar}
-                        width='50px'
-                        className='user__image'
-                        alt={element.name + '\'s avatar'}
-                      />
-                    </div>
-                    <div className='winner__profile'>
-                      <img src={require('../img/ranking/Trofeo.png')}
-                        height='50px'
-                        className='user__position'
-                        alt='Winner' />
-                      <h1>{element.name}</h1>
-                    </div>
+            <div className={index === 0 ? 'ranking__winner' : index === 1 ? 'ranking__second' : 'ranking__third'} key={index}>
+              {index === 0 &&
+                <>
+                  <div className='winner__pic'>
+                    <img
+                      src={element.avatar}
+                      width='50px'
+                      className='user__image'
+                      alt={element.name + '\'s avatar'}
+                    />
+                    <h1>{element.name}</h1>
                   </div>
-                }
-                {index === 1 &&
-                  <div className='ranking__second second'>
-                    <div className='second__profile'>
-                      <img
-                        src={element.avatar}
-                        width='50px'
-                        className='user__image'
-                        alt={element.name + '\'s avatar'} />
-                      <h1>{element.name}</h1>
-                    </div>
-                    <div className='second__pic'>
-                      <img src={require('../img/ranking/segundo.png')}
-                        height='50px'
-                        className='user__position'
-                        alt='Second' />
-                    </div>
+                  <div className='winner__trophy'>
+                    <img src={require('../img/ranking/Trofeo.png')}
+                      height='50px'
+                      className='user__position'
+                      alt='Winner' />
                   </div>
-                }
-                {index === 2 &&
-                  <div className='ranking__third third'>
-                    <div className='third__profile'>
-                      <img
-                        src={element.avatar}
-                        width='50px'
-                        className='user__image'
-                        alt={element.name + '\'s avatar'} />
-                      <h1>{element.name}</h1>
-                    </div>
-                    <div className='third__pic'>
-                      <img src={require('../img/ranking/tercero.png')}
-                        height='50px'
-                        className='user__position'
-                        alt='Third' />
-                    </div>
+                </>
+              }
+              {index === 1 &&
+                <>
+                  <div className='second__profile'>
+                    <img
+                      src={element.avatar}
+                      width='50px'
+                      className='user__image'
+                      alt={element.name + '\'s avatar'} />
+                    <h1>{element.name}</h1>
                   </div>
-                }
+                  <div className='second__medal'>
+                    <img src={require('../img/ranking/segundo.png')}
+                      height='50px'
+                      className='user__position'
+                      alt='Second' />
+                  </div>
+                </>
+              }
+              {index === 2 &&
+                <>
+                  <div className='third__profile'>
+                    <img
+                      src={element.avatar}
+                      width='50px'
+                      className='user__image'
+                      alt={element.name + '\'s avatar'} />
+                    <h1>{element.name}</h1>
+                  </div>
+                  <div className='third__medal'>
+                    <img src={require('../img/ranking/tercero.png')}
+                      height='50px'
+                      className='user__position'
+                      alt='Third' />
+                  </div>
+                </>
+              }
 
             </div>
           )
         } else {
-          return (<></>)
+          return (
+            <>
+              <table className='ranking__table'>
+                <thead>
+                  <tr>
+                    <th className='ranking__position'>Posición</th>
+                    <th className='ranking__profile'>Perfil</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {Array.isArray(rankingData) && rankingData.map((element, index) => {
+                    if (index > 2) {
+                      return (
+                        <tr key={index}>
+                          <td className='ranking__position'>{index + 1}</td>
+                          <td className='ranking__profile'>
+                            <img
+                              src={element.avatar}
+                              width='50px'
+                              className='user__image'
+                              alt={element.name + '\'s avatar'} />
+                            <h1>{element.name}</h1>
+                          </td>
+                        </tr>
+                      )
+                    } else {
+                      return null
+                    }
+                  })}
+                  {Array.isArray(rankingData) && rankingData.map((element, index) => {
+                    if (index > 2) {
+                      return (
+                        <tr key={index}>
+                          <td className='ranking__position'>{index + 1}</td>
+                          <td className='ranking__profile'>
+                            <img
+                              src={element.avatar}
+                              width='50px'
+                              className='user__image'
+                              alt={element.name + '\'s avatar'} />
+                            <h1>{element.name}</h1>
+                          </td>
+                        </tr>
+                      )
+                    } else {
+                      return null
+                    }
+                  })}
+                  {Array.isArray(rankingData) && rankingData.map((element, index) => {
+                    if (index > 2) {
+                      return (
+                        <tr key={index}>
+                          <td className='ranking__position'>{index + 1}</td>
+                          <td className='ranking__profile'>
+                            <img
+                              src={element.avatar}
+                              width='50px'
+                              className='user__image'
+                              alt={element.name + '\'s avatar'} />
+                            <h1>{element.name}</h1>
+                          </td>
+                        </tr>
+                      )
+                    } else {
+                      return null
+                    }
+                  })}
+                  {Array.isArray(rankingData) && rankingData.map((element, index) => {
+                    if (index > 2) {
+                      return (
+                        <tr key={index}>
+                          <td className='ranking__position'>{index + 1}</td>
+                          <td className='ranking__profile'>
+                            <img
+                              src={element.avatar}
+                              width='50px'
+                              className='user__image'
+                              alt={element.name + '\'s avatar'} />
+                            <h1>{element.name}</h1>
+                          </td>
+                        </tr>
+                      )
+                    } else {
+                      return null
+                    }
+                  })}
+                  {Array.isArray(rankingData) && rankingData.map((element, index) => {
+                    if (index > 2) {
+                      return (
+                        <tr key={index}>
+                          <td className='ranking__position'>{index + 1}</td>
+                          <td className='ranking__profile'>
+                            <img
+                              src={element.avatar}
+                              width='50px'
+                              className='user__image'
+                              alt={element.name + '\'s avatar'} />
+                            <h1>{element.name}</h1>
+                          </td>
+                        </tr>
+                      )
+                    } else {
+                      return null
+                    }
+                  })}
+                </tbody>
+              </table>
+            </>
+          )
         }
       })
       }

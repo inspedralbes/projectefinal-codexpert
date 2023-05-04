@@ -44,7 +44,7 @@ function RankingPage() {
   return (
     <>
       {dataLoaded
-        ? <>
+        ? <main>
           <h1 className='game__yourResult'>{result}</h1>
 
           <div className='game__rewards'>
@@ -60,7 +60,7 @@ function RankingPage() {
           </div>
 
           {idGame !== 0 && <ShareRanking idGame={idGame}></ShareRanking>}
-        </>
+        </main>
         : <Loading></Loading>
       }
     </>
