@@ -142,6 +142,10 @@ socket.on('stats', (data) => {
   })
 })
 
+socket.on('YOU_JOINED_LOBBY', () => {
+  window.postMessage({ type: 'YOU_JOINED_LOBBY-event' }, '*')
+})
+
 socket.on('YOU_LEFT_LOBBY', () => {
   window.postMessage({ type: 'YOU_LEFT_LOBBY-event' }, '*')
 })
@@ -178,6 +182,11 @@ socket.on('ranking', (data) => {
 })
 
 // ERROR EVENTS
+socket.on('LOBBY_NAME_LENGTH_ERROR', (data) => {
+  window.network.setMessage(data.message)
+  window.postMessage({ type: 'LOBBY_NAME_LENGTH_ERROR-event' }, '*')
+})
+
 socket.on('LOBBY_FULL_ERROR', (data) => {
   window.network.setMessage(data.message)
   window.postMessage({ type: 'LOBBY_FULL_ERROR-event' }, '*')
@@ -186,6 +195,11 @@ socket.on('LOBBY_FULL_ERROR', (data) => {
 socket.on('LOBBY_ALREADY_EXISTS', (data) => {
   window.network.setMessage(data.message)
   window.postMessage({ type: 'LOBBY_ALREADY_EXISTS-event' }, '*')
+})
+
+socket.on('ALREADY_STARTED', (data) => {
+  window.network.setMessage(data.message)
+  window.postMessage({ type: 'ALREADY_STARTED-event' }, '*')
 })
 
 socket.on('GAME_TIME_UNDER_MIN', (data) => {

@@ -10,7 +10,8 @@ require("dotenv").config();
 const server = http.createServer(app);
 const axios = require("axios");
 
-const maxMembersOnLobby = 4;
+const maxMembersOnLobby = 10;
+const maxLobbyNameLength = 16;
 const laravelRoute = process.env.LARAVEL_ROUTE;
 
 const lobbies = [];
@@ -81,7 +82,6 @@ const maxSettings = {
 };
 
 socketIO.on("connection", (socket) => {
-  const socketId = socket.id;
   socket.data.current_lobby = null;
 
   socket.join("chat-general");
@@ -105,6 +105,7 @@ socketIO.on("connection", (socket) => {
           socket.data.userId = response.data.id;
           socket.data.name = response.data.name;
           socket.data.avatar = response.data.avatar;
+          socket.data.elo = response.data.elo;
           socket.data.hearts_remaining = -1;
           socket.data.question_at = -1;
         }
@@ -154,62 +155,84 @@ socketIO.on("connection", (socket) => {
 
   socket.on("new_lobby", (lobby) => {
     let existeix = false;
+    let disponible = true;
+
+    if (lobby.length > maxLobbyNameLength) {
+      disponible = false;
+      socketIO.to(socket.id).emit("LOBBY_NAME_LENGTH_ERROR", {
+        message: "The lobby name is too long"
+      });
+    }
+
     lobbies.forEach((element) => {
       if (element.lobby_name === lobby) {
         existeix = true;
       }
     });
 
-    if (!existeix) {
+    if (!existeix && disponible) {
       lobbies.push({
         lobby_name: lobby,
         members: [],
         messages: [],
         settings: defaultSettings,
-        owner_name: socket.data.name
+        owner_name: socket.data.name,
+        total_elo: 0
       });
     }
   });
 
   socket.on("join_room", (data) => {
     let settings;
-    let disponible = true;
+    let disponible = false;
     let hayOwner = false;
 
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name === data.lobby_name) {
-        if (lobby.members.length === maxMembersOnLobby) {
-          socketIO.to(`${socketId}`).emit("LOBBY_FULL_ERROR", {
-            message: "The selected lobby is full"
+        disponible = true;
+
+        if (lobby.started) {
+          socketIO.to(socket.id).emit("ALREADY_STARTED", {
+            message: "The selected lobby has already started"
           });
+
+          disponible = false;
         } else {
-          lobby.members.forEach(member => {
-            if (member.nom === socket.data.name) {
-              disponible = false;
-            }
-
-            if (member.rank === "Owner" && data.rank === "Owner") {
-              hayOwner = true;
-              disponible = false;
-            }
-          });
-
-          if (disponible) {
-            lobby.members.push({
-              nom: socket.data.name,
-              rank: data.rank,
-              idUser: socket.data.userId
+          if (lobby.members.length === maxMembersOnLobby) {
+            socketIO.to(socket.id).emit("LOBBY_FULL_ERROR", {
+              message: "The selected lobby is full"
             });
-            settings = lobby.settings;
           } else {
-            if (!hayOwner) {
-              socketIO.to(`${socketId}`).emit("ALREADY_ON_LOBBY", {
-                message: "YOU ARE ALREADY ON LOBBY"
+            lobby.members.forEach(member => {
+              if (member.nom === socket.data.name || socket.data.name === undefined) {
+                disponible = false;
+              }
+
+              if (member.rank === "Owner" && data.rank === "Owner") {
+                hayOwner = true;
+                disponible = false;
+              }
+            });
+
+            if (disponible) {
+              lobby.members.push({
+                nom: socket.data.name,
+                rank: data.rank,
+                idUser: socket.data.userId
               });
+              settings = lobby.settings;
+
+              lobby.total_elo += socket.data.elo;
             } else {
-              socketIO.to(`${socketId}`).emit("LOBBY_ALREADY_EXISTS", {
-                message: "THE LOBBY YOU TRIED TO CREATE ALREADY EXISTS"
-              });
+              if (!hayOwner) {
+                socketIO.to(socket.id).emit("ALREADY_ON_LOBBY", {
+                  message: "YOU ARE ALREADY ON LOBBY"
+                });
+              } else {
+                socketIO.to(socket.id).emit("LOBBY_ALREADY_EXISTS", {
+                  message: "THE LOBBY YOU TRIED TO CREATE ALREADY EXISTS"
+                });
+              }
             }
           }
         }
@@ -219,7 +242,8 @@ socketIO.on("connection", (socket) => {
     if (disponible) {
       socket.join(data.lobby_name);
       socket.data.current_lobby = data.lobby_name;
-      console.log(socket.data.name + " joined the lobby -> " + data.lobby_name);
+      socketIO.to(socket.id).emit("YOU_JOINED_LOBBY");
+
       addMessage({
         nickname: "ingame_events",
         message: `${socket.data.name} joined the lobby.`,
@@ -229,6 +253,7 @@ socketIO.on("connection", (socket) => {
       sendUserList(data.lobby_name);
       sendMessagesToLobby(data.lobby_name);
       sendLobbyList();
+
       if (data.rank === "Owner") {
         if (settings != null) {
           socketIO.to(socket.id).emit("show_settings", {
@@ -238,6 +263,7 @@ socketIO.on("connection", (socket) => {
           socketIO.to(socket.id).emit("lobby_settings", settings);
         }
       }
+
       socketIO.to(socket.id).emit("lobby_name", {
         lobby_name: data.lobby_name
       });
@@ -263,6 +289,8 @@ socketIO.on("connection", (socket) => {
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name === socket.data.current_lobby) {
         socketIO.to(lobby.lobby_name).emit("game_started");
+        lobby.started = true;
+        sendLobbyList();
         startGame(lobby.lobby_name, lobby.settings.questionAmount);
       }
     });
@@ -447,7 +475,6 @@ async function endGame(socket) {
     .get(laravelRoute + `ranking/${socket.data.game_data.idGame}`)
     .then(function (response) {
       const rankingData = response.data;
-      console.log(rankingData);
 
       socketIO.to(room).emit("ranking", { rankingData, idGame: socket.data.game_data.idGame });
     });
@@ -639,6 +666,7 @@ async function leaveLobby(socket) {
       lobby.members.forEach((member, index) => {
         if (member.nom === socket.data.name) {
           lobby.members.splice(index, 1);
+          lobby.total_elo -= socket.data.elo;
           addMessage({
             nickname: "ingame_events",
             message: `${socket.data.name} left the lobby.`,
