@@ -2,11 +2,11 @@ import React from 'react'
 import '../styles/normalize.css'
 import PropTypes from 'prop-types'
 
-Ranking.propTypes = {
+RankingPodium.propTypes = {
   rankingData: PropTypes.array
 }
 
-function Ranking({ rankingData }) {
+function RankingPodium({ rankingData }) {
   return (
     <div className='ranking__content'>
       {Array.isArray(rankingData) && rankingData.map((element, index) => {
@@ -113,4 +113,4 @@ function Ranking({ rankingData }) {
   )
 }
 
-export default Ranking
+export default RankingPodium

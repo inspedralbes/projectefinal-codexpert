@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import Ranking from '../components/Ranking'
+import RankingPodium from '../components/RankingPodium'
+import RankingTable from '../components/RankingTable'
 import ShareRanking from '../components/ShareRanking'
 import { Loading } from '../components/Loading'
 import '../styles/normalize.css'
@@ -47,6 +48,10 @@ function RankingPage() {
         ? <main>
           <div className='game__yourResults yourResults'>
             <h1 className='yourResults__result'>{result}</h1>
+          </div>
+
+          <div className='ranking'>
+            <RankingPodium rankingData={rankingData}></RankingPodium>
 
             <div className='game__rewards'>
               <p className='rewards__list'>
@@ -55,10 +60,8 @@ function RankingPage() {
                 <a className='rewards__element'>{'+' + rewards.eloEarned} Elo</a>
               </p>
             </div>
-          </div>
 
-          <div className='ranking'>
-            <Ranking rankingData={rankingData}></Ranking>
+            {rankingData.length > 3 && <RankingTable rankingData={rankingData}></RankingTable>}
           </div>
 
           {idGame !== 0 && <ShareRanking idGame={idGame}></ShareRanking>}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import routes from '../conn_routes'
-import Ranking from '../components/Ranking'
+import RankingPodium from '../components/RankingPodium'
+import RankingTable from '../components/RankingTable'
 import { LoadingRanking } from '../components/Loading'
 import '../styles/normalize.css'
 import '../styles/rankingStyles.css'
@@ -30,7 +31,11 @@ function SharedRanking() {
   return (
     <div className='ranking'>
       {rankingData != null
-        ? <Ranking rankingData={rankingData}></Ranking>
+        ? <>
+          <RankingPodium rankingData={rankingData}></RankingPodium>
+
+          {rankingData.length > 3 && <RankingTable rankingData={rankingData}></RankingTable>}
+        </>
         : <LoadingRanking></LoadingRanking>}
     </div>
   )

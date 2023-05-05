@@ -75,6 +75,7 @@ function Game() {
     if (code !== '') {
       const resultsEvalRecieved = []
       let evalPassedBoolean = true
+      console.log(qst)
       qst.inputs.forEach((inp) => {
         let input = inp
         try {
@@ -86,6 +87,7 @@ function Game() {
           evalPassedBoolean = false
         }
       })
+      console.log(resultsEvalRecieved)
 
       window.postMessage({
         type: 'check_answer-emit',
