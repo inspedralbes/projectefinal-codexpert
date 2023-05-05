@@ -41,7 +41,7 @@
 .game__playing {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 0.45fr 1.5fr;
+    grid-template-rows: 0.7fr 1.5fr;
     gap: 0px 0px;
     grid-template-areas:
         "."
