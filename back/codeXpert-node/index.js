@@ -292,7 +292,6 @@ socketIO.on("connection", (socket) => {
       .then(function (response) {
         const userGame = response.data.user_game;
         const game = response.data.game;
-
         if (response.data.correct) {
           addMessage({
             nickname: "ingame_events",
