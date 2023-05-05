@@ -33,9 +33,6 @@ function LandingPage() {
 
   return (
     <div>
-      {isUserLogged === '' && (
-        <IconUser />
-      )}
       {isUserLogged && (
         <IconUser />
       )}

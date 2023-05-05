@@ -11,7 +11,6 @@ function IconUser() {
   const cookies = new Cookies()
   const [state, setState] = useState(false)
   const [avatarURL, setAvatarURL] = useState(null)
-  const [logOut, setLogOut] = useState(false)
   const handleButtonClick = () => {
     setState(!state)
   }
@@ -31,30 +30,32 @@ function IconUser() {
       })
   }, [])
 
-  useEffect(() => {
-    if (logOut) {
-      const token = new FormData()
-      token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-      fetch(routes.fetchLaravel + 'logout', {
-        method: 'POST',
-        mode: 'cors',
-        body: token,
-        credentials: 'include'
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const nCookies = document.cookie.split('')
+  const handleLogOut = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'logout', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
+        const nCookies = document.cookie.split('')
 
-          for (let i = 0; i < nCookies.length; i++) {
-            const cookie = nCookies[i]
-            const eqPos = cookie.indexOf('=')
-            const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
-            document.cookie = name + '=expires=Thu, 01 Jan 1970 00:00:00 GMT'
-          }
-        })
+        for (let i = 0; i < nCookies.length; i++) {
+          const cookie = nCookies[i]
+          const eqPos = cookie.indexOf('=')
+          const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
+          document.cookie = name + '=expires=Thu, 01 Jan 1970 00:00:00 GMT'
+        }
+      })
+    if (window.location.pathname === '/') {
+      location.reload()
+    } else {
       navigate('/')
     }
-  }, [logOut])
+  }
 
   return (
     <>
@@ -71,7 +72,7 @@ function IconUser() {
             <div className='dropdown'>
               <ul className='dropdown__list list'>
                 <li className='list__item'><button className='button' onClick={() => navigate('/profile')}>Profile</button></li>
-                <li className='list__item'> <button className='button' onClick={() => setLogOut(!logOut)}>Log Out</button></li>
+                <li className='list__item'> <button className='button' onClick={() => handleLogOut()}>Log Out</button></li>
               </ul>
             </div>
           )}
