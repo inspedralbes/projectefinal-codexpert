@@ -84,9 +84,8 @@ function ConnectedUsersInGame() {
               </div>
 
               <div className='user__level'>
-                Level: {user.question_at + 1}
+                Level: {user.question_at < window.network.getQuestionAmount() ? user.question_at + 1 : user.question_at}
               </div>
-
             </div>
           )
         })}

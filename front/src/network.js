@@ -67,7 +67,6 @@ const handleMessage = (event) => {
       break
 
     case 'save_settings-emit':
-      console.log('EMIT Qamt', window.network.getQuestionAmount())
       socket.emit('save_settings', {
         gameDuration: window.network.getGameDuration(),
         heartAmount: window.network.getHeartAmount(),
@@ -167,6 +166,15 @@ socket.on('ALREADY_ON_LOBBY', (data) => {
 
 socket.on('starting_errors', (data) => {
   window.postMessage({ type: 'starting_errors-event', valid: data.valid }, '*')
+})
+
+socket.on('overtime_starts', (data) => {
+  window.postMessage({ type: 'overtime_starts-event', time: data.time }, '*')
+})
+
+socket.on('ranking', (data) => {
+  window.network.setRankingData(data.rankingData)
+  window.postMessage({ type: 'ranking-event', idGame: data.idGame }, '*')
 })
 
 // ERROR EVENTS

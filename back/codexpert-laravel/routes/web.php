@@ -52,10 +52,12 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    Route::get('/ranking/{id}', [GameController::class, 'getRanking']);
+
     Route::get('/getTutorials', [TutorialController::class, 'getTutorials']);
 
     Route::post('/getTutorialFromId', [TutorialController::class, 'getTutorialFromId']);
 
-    Route::post('/checkAnswer', [TutorialController::class, 'checkAnswer']);
+    Route::post('/checkTutorialAnswer', [TutorialController::class, 'checkAnswer']);
 
 });
