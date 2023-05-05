@@ -1,7 +1,7 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
 import { TwitterPicker } from 'react-color'
+import React from 'react'
 
 Cloth.propTypes = {
   currentColor: PropTypes.string,
