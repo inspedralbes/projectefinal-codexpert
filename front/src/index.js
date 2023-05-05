@@ -14,6 +14,7 @@ import reportWebVitals from './reportWebVitals'
 import AvatarMaker from './pages/AvatarMaker'
 import Profile from './pages/Profile'
 import Ranking from './pages/Ranking'
+import Campaign from './pages/Campaign'
 import './network.js'
 import Error404 from './pages/404'
 import Cookies from 'universal-cookie'
@@ -45,6 +46,7 @@ root.render(
         <Route path='profile' element={<Profile />}></Route>
         <Route path='ranking' element={<Ranking />}></Route>
         <Route path='sharedranking' element={<SharedRanking />}></Route>
+        <Route path='campaign' element={<Campaign />}></Route>
         <Route path='404' element={<Error404 />}></Route>
         <Route path='*' element={<Navigate to='/404' />} />
       </Route>
