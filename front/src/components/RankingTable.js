@@ -8,7 +8,7 @@ RankingTable.propTypes = {
 
 function RankingTable({ rankingData }) {
   return (
-    <div className='ranking__content'>
+    <div className='rankingTable__content'>
       <table className='ranking__table' >
         <thead>
           <tr>
@@ -18,6 +18,66 @@ function RankingTable({ rankingData }) {
         </thead>
 
         <tbody>
+          {Array.isArray(rankingData) && rankingData.map((element, index) => {
+            if (index > 2) {
+              return (
+                <tr key={index}>
+                  <td className='ranking__position'>{index + 1}</td>
+                  <td className='ranking__profile'>
+                    <img
+                      src={element.avatar}
+                      width='50px'
+                      className='user__image'
+                      alt={element.name + '\'s avatar'} />
+                    <h1>{element.name}</h1>
+                  </td>
+                </tr>
+              )
+            } else {
+              return null
+            }
+          })
+          }
+          {Array.isArray(rankingData) && rankingData.map((element, index) => {
+            if (index > 2) {
+              return (
+                <tr key={index}>
+                  <td className='ranking__position'>{index + 1}</td>
+                  <td className='ranking__profile'>
+                    <img
+                      src={element.avatar}
+                      width='50px'
+                      className='user__image'
+                      alt={element.name + '\'s avatar'} />
+                    <h1>{element.name}</h1>
+                  </td>
+                </tr>
+              )
+            } else {
+              return null
+            }
+          })
+          }
+          {Array.isArray(rankingData) && rankingData.map((element, index) => {
+            if (index > 2) {
+              return (
+                <tr key={index}>
+                  <td className='ranking__position'>{index + 1}</td>
+                  <td className='ranking__profile'>
+                    <img
+                      src={element.avatar}
+                      width='50px'
+                      className='user__image'
+                      alt={element.name + '\'s avatar'} />
+                    <h1>{element.name}</h1>
+                  </td>
+                </tr>
+              )
+            } else {
+              return null
+            }
+          })
+          }
           {Array.isArray(rankingData) && rankingData.map((element, index) => {
             if (index > 2) {
               return (
