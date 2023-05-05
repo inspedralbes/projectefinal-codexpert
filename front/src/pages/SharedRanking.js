@@ -29,13 +29,13 @@ function SharedRanking() {
   }, [])
 
   return (
-    <div className='ranking'>
+    <div className='ranking sharedRanking'>
       {rankingData != null
-        ? <>
+        ? <div className='ranking__content sharedRanking__content' id='scroll'>
           <RankingPodium rankingData={rankingData}></RankingPodium>
 
           {rankingData.length > 3 && <RankingTable rankingData={rankingData}></RankingTable>}
-        </>
+        </div>
         : <LoadingRanking></LoadingRanking>}
     </div>
   )
