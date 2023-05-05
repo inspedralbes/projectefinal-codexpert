@@ -33,7 +33,7 @@ function ConnectedUsersInGame() {
           return (
             <div className='userList__user user' key={index}>
               <div className='user__name'>{user.name}</div>
-              <div> {user.hearts_remaining > 0 &&
+              <div className='user__imageIngame'> {user.hearts_remaining > 0 &&
                 <img
                   src={user.avatar}
                   width='50px'
@@ -50,8 +50,8 @@ function ConnectedUsersInGame() {
 
               <div>
                 {user.hearts_remaining > 3 &&
-                  <div>
-                    <h1>
+                  <div className='hearts__remaining'>
+                    <h1 className='hearts__remaining'>
                       <img src={require('../img/hearts/one_heart_normal.png')}
                         width='50px'
                         className='user__health'

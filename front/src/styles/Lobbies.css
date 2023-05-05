@@ -329,6 +329,7 @@
 
 
 .lobby__connectedUsers {
+    height: 50%;
     color: white
 }
 
@@ -577,11 +578,17 @@
 /* ===================================================================== */
 
 .connectedUsers__userList {
+    width: 100%;
     display: flex;
     margin: 0 auto;
     clear: both;
     color: #000000;
     padding: 10px;
+    flex-direction: row;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .item__imgDiv {
@@ -849,4 +856,27 @@
 
 #input_message:focus {
     outline: none;
+}
+
+.user__imageIngame {
+    margin: 20px auto 0 auto;
+    width: fit-content;
+}
+
+.game__chatBody {
+    height: 48%;
+}
+
+#userList::-webkit-scrollbar-track {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    border: 2px solid #000000;
+}
+
+#userList::-webkit-scrollbar {
+    width: 15px;
+}
+
+#userList::-webkit-scrollbar-thumb {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    background-color: #104400;
 }
