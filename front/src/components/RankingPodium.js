@@ -8,7 +8,7 @@ RankingPodium.propTypes = {
 
 function RankingPodium({ rankingData }) {
   return (
-    <div className='ranking__content'>
+    <div className='rankingPodium__content'>
       {Array.isArray(rankingData) && rankingData.map((element, index) => {
         if (index <= 2) {
           return (
