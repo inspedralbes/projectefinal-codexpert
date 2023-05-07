@@ -11,7 +11,7 @@ App.propTypes = {
 }
 
 function App({ code, setCode }) {
-  const [theme, setTheme] = useState('dark')
+  const [theme] = useState('dark')
   const onChange = React.useCallback((value, viewUpdate) => {
     setCode(value)
   }, [])
@@ -68,7 +68,7 @@ function App({ code, setCode }) {
         extensions={[javascript({ jsx: true })]}
         onChange={onChange}
       />
-      <select id='select' value={theme} onChange={e => setTheme(e.target.value)}>
+      {/* <select id='select' value={theme} onChange={e => setTheme(e.target.value)}>
         <option value='dark'>dark</option>
         <option value='cobalt'>cobalt</option>
         <option value='amy'>amy</option>
@@ -81,7 +81,7 @@ function App({ code, setCode }) {
         <option value='dracula'>dracula</option>
         <option value='barf'>barf</option>
         <option value='birdsOfParadise'>birdsOfParadise</option>
-      </select>
+      </select> */}
     </div >
   )
 }

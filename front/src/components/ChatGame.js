@@ -11,7 +11,6 @@ function ChatGame() {
 
     switch (eventData.type) {
       case 'lobby_message-event':
-        console.log('Recibo msg')
         setMessages(window.network.getLobbyMessages())
         break
 

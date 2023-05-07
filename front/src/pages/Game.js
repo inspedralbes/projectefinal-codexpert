@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import ChatGame from '../components/ChatGame'
 import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
 import CodeMirror from '../components/CodeMirror'
+import Timer from '../components/Timer'
 
 function Game() {
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
@@ -26,6 +27,7 @@ function Game() {
     inputs: [''],
     output: ''
   })
+  const [overtimeDuration, setOvertimeDuration] = useState(0)
 
   const navigate = useNavigate()
 
@@ -40,7 +42,9 @@ function Game() {
 
       case 'game_over-event':
         setWinnerMessage(window.network.getWinnerMessage())
+        setOvertimeDuration(0)
         setPlayable(false)
+        navigate('/ranking')
         break
 
       case 'user_finished-event':
@@ -50,6 +54,10 @@ function Game() {
 
       case 'stats-event':
         setRewards(window.network.getRewards())
+        break
+
+      case 'overtime_starts-event':
+        setOvertimeDuration(eventData.time)
         break
 
       case 'YOU_LEFT_LOBBY-event':
@@ -67,6 +75,7 @@ function Game() {
     if (code !== '') {
       const resultsEvalRecieved = []
       let evalPassedBoolean = true
+      console.log(qst)
       qst.inputs.forEach((inp) => {
         let input = inp
         try {
@@ -78,6 +87,7 @@ function Game() {
           evalPassedBoolean = false
         }
       })
+      console.log(resultsEvalRecieved)
 
       window.postMessage({
         type: 'check_answer-emit',
@@ -111,6 +121,7 @@ function Game() {
       <div className='game__container '>
 
         <div className='container__left'>
+          {overtimeDuration != 0 ? <h1>Time remaining: <Timer time={overtimeDuration}></Timer></h1> : <></>}
           <ConnectedUsersInGame></ConnectedUsersInGame>
           <ChatGame className='chatGame__chatbox'></ChatGame>
         </div>
@@ -122,26 +133,32 @@ function Game() {
               <h1 className='game__statementTitle'>{qst.statement}</h1>
             </div>
             <div className='game--grid'>
+              <div className='editor--div'>
+                <div className='editor__expected'>
+                  <div className='game__expectedInput'>
+                    <h2>Example input:</h2>
+                    <h1>{qst.inputs[0].toString()}</h1>
+                  </div>
 
-              <div className='game__expectedInput'>
-                <h2>Example input:</h2>
-                <h1>{qst.inputs[0].toString()}</h1>
+                  <div className='game__expectedOutput'>
+                    <h2>Example output:</h2>
+                    <h1>{qst.output.toString()}</h1>
+                  </div>
+                  <div className='game__expectedOutput game__result'>
+                    <h2>Result:</h2>
+                    <h1>{qst.output.toString()}</h1>
+                  </div>
+                </div>
+                <form className='editor' onSubmit={handleSubmit}>
+                  <CodeMirror code={code} setCode={setCode}></CodeMirror>
+                  <button className='pixel-button game__submit' disabled={code === ''}>
+                    Submit
+                  </button>
+                </form>
               </div>
 
-              <div className='game__expectedOutput'>
-                <h2>Example output:</h2>
-                <h1>{qst.output.toString()}</h1>
-              </div>
             </div>
 
-            <form className='editor' onSubmit={handleSubmit}>
-              <CodeMirror code={code} setCode={setCode}></CodeMirror>
-              {/* {Array.isArray(qst.inputs[0]) && `let input = [${qst.inputs[0].toString()}]`}
-              {!Array.isArray(qst.inputs[0]) && `let input = '${qst.inputs[0].toString()}'`}<br /> */}
-              <button className='game__submit' disabled={code === ''}>
-                Submit
-              </button>
-            </form>
 
             {error !== '' && <div>{error}</div>}
 
@@ -149,7 +166,7 @@ function Game() {
           {!playable && <div className='game__results'>
             <h1 className='game__yourResult'>{result}</h1>
             <h2>{winnerMessage}</h2>
-            <ul className='game__rewards'>
+            <ul className='rewards__list'>
               <li>XP: {rewards.xpEarned}</li>
               <li>Coins: {rewards.coinsEarned}</li>
               <li>Elo: {rewards.eloEarned}</li>

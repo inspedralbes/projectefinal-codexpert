@@ -51,7 +51,7 @@ function AvatarMaker() {
   })
 
   // COLOR PICKER
-  const [currentColor, setCurrentColor] = useState('#fff')
+  const [currentColor, setCurrentColor] = useState('#ffffff')
 
   const handleChangeComplete = (color) => {
     setCurrentColor(color.hex)
@@ -62,7 +62,6 @@ function AvatarMaker() {
   useEffect(() => {
     const fetchData = async () => {
       const token = new FormData()
-      console.log(cookies.get('token'))
       token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
       await fetch(routes.fetchLaravel + 'getAvatar', {
         method: 'POST',
@@ -72,7 +71,6 @@ function AvatarMaker() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
           if (data.url != null) {
             getAvatar(data.url)
           } else {

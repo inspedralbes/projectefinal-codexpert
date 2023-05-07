@@ -33,24 +33,25 @@
 .chatBody {
     display: block;
     max-height: 20vh;
-    position: relative;
+    position: absolute;
     overflow-y: auto;
     overflow-x: hidden;
     bottom: 50px;
     max-width: 30%;
+    width: 30%;
     transition: all 2s;
     margin: 0;
 }
 
 .game__chatBody {
-    width: 100%;
-    left: -5%;
+    width: 28%;
     display: block;
-    max-height: 20vh;
-    position: relative;
+    max-height: 30%;
+    position: absolute;
     overflow-y: auto;
+    bottom: 13vh;
+    left: 20px;
     overflow-x: hidden;
-    bottom: -35vh;
     transition: all 2s;
     margin: 0;
 }
@@ -200,7 +201,16 @@
     width: 6px;
 }
 
-#input_message:focus,
-#game__inputMessage:focus {
-    outline: none;
+#game__chatBody::-webkit-scrollbar-track {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    border: 2px solid #000000;
+}
+
+#game__chatBody::-webkit-scrollbar {
+    width: 15px;
+}
+
+#game__chatBody::-webkit-scrollbar-thumb {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    background-color: #104400;
 }

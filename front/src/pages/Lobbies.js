@@ -29,6 +29,11 @@ function Lobbies() {
         setJoined(true)
         break
 
+      case 'YOU_JOINED_LOBBY-event':
+        setErrorMessage('')
+        setJoined(true)
+        break
+
       case 'lobby_name-event':
         setLobbyName(window.network.getLobbyName())
         break
@@ -43,18 +48,23 @@ function Lobbies() {
 
       case 'LOBBY_FULL_ERROR-event':
         setLobbyName('')
-        setJoined(false)
         setErrorMessage(window.network.getMessage())
         break
 
       case 'ALREADY_ON_LOBBY-event':
         setErrorMessage(window.network.getMessage())
-        setJoined(false)
         break
 
       case 'LOBBY_ALREADY_EXISTS-event':
         setErrorMessage(window.network.getMessage())
-        setJoined(false)
+        break
+
+      case 'ALREADY_STARTED-event':
+        setErrorMessage(window.network.getMessage())
+        break
+
+      case 'LOBBY_NAME_LENGTH_ERROR-event':
+        setErrorMessage(window.network.getMessage())
         break
 
       default:

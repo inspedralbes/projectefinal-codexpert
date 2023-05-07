@@ -15,7 +15,7 @@ LobbyList.propTypes = {
   setErrorMessage: PropTypes.func
 }
 
-function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage, setErrorMessage }) {
+function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorMessage }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     window.postMessage({
@@ -27,11 +27,12 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
       lobby_name: lobbyName,
       rank: 'Owner'
     }, '*')
-    setJoined(true)
+    // setJoined(true)
   }
 
   const handleJoin = (e) => {
     e.preventDefault()
+    console.log(e.target)
     setLobbyName(e.target.id)
     window.postMessage({
       type: 'join_room-emit',
@@ -40,11 +41,11 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
     }, '*')
 
     setErrorMessage('')
-    setJoined(true)
+    // setJoined(true)
   }
 
   return (
-    <>
+    <main>
       <IconUser></IconUser>
       <div id='lobbyList' className='lobbies__lobbylist lobbylist'>
         <div className='lobbylist__container'>
@@ -54,8 +55,8 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
           />
           <ul className='lobbies__table table'>
             <li className='table__header'>
-              <div className='col col-1'>ID</div>
-              <div className='col col-2'>Lobby Name</div>
+              <div className='col col-1'>Lobby Name</div>
+              <div className='col col-2'>Avg. Elo</div>
               <div className='col col-3'>Owner</div>
               <div className='col col-4'>Players</div>
             </li>
@@ -74,6 +75,7 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
                   return (
                     <li
                       className='table__row row'
+                      style={{ cursor: 'pointer' } | element.started ? { opacity: '0.75' } : { opacity: '1' }}
                       onClick={handleJoin}
                       key={index}
                       id={element.lobby_name}
@@ -81,16 +83,16 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
                       <div
                         id={element.lobby_name}
                         className='col col-1'
-                        data-label='Lobby Id'
+                        data-label='Lobby Name'
                       >
-                        {index + 1}
+                      {element.lobby_name}
                       </div>
                       <div
                         id={element.lobby_name}
                         className='col col-2'
-                        data-label='Lobby Name'
+                        data-label='Avg elo'
                       >
-                        {element.lobby_name}
+                        {(element.total_elo / element.members.length).toFixed(0)}
                       </div>
                       <div
                         id={element.lobby_name}
@@ -104,7 +106,10 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
                         className='col col-4'
                         data-label='Players'
                       >
-                        {element.members.length} / 4
+                        {element.members.length} / 10
+                      </div>
+                      <div className='lobbylist__message' id={element.lobby_name}>
+                        {element.started && <h1 id={element.lobby_name}>GAME STARTED</h1>}
                       </div>
                     </li>
                   )
@@ -138,7 +143,7 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, setJoined, errorMessage
           {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
         </div>
       </div>
-    </>
+    </main>
 
   )
 }
