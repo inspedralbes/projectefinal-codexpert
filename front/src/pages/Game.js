@@ -156,7 +156,6 @@ function Game() {
                   </button>
                 </form>
               </div>
-
             </div>
 
 

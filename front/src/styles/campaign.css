@@ -9,3 +9,102 @@
     justify-content: flex-start;
     align-items: center;
 }
+
+.pixel-button {
+    width: 200px;
+}
+
+.pixel__container {
+    background-color: var(--white);
+    margin: 2vh auto;
+    width: 90%;
+    text-align: center;
+    padding: 60px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
+    min-height: 100px;
+}
+
+.pixel__container::after {
+    background-color: var(--white);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.pixel__container::before {
+    background-color: var(--white);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.pixel__container h1 {
+    font-size: 40px;
+    text-transform: uppercase;
+}
+
+.levels__list {
+    display: flex;
+    padding: 0;
+    list-style: none;
+}
+
+.levels__list li {
+    display: flex;
+    gap: 5%;
+    flex-direction: column;
+    right: 50%;
+    font-size: 12px;
+    margin: 25px;
+    width: 100%;
+}
+
+.levels__list h3 {
+    text-align: center;
+    width: 100%;
+}
+
+.levels__list button {
+    margin: 0;
+    padding: 0;
+    height: 40px;
+    width: 80%;
+}
+
+.locked,
+.locked::after,
+.locked::before,
+.locked:hover,
+.locked:hover::after,
+.locked:hover::before {
+    background-color: red;
+}
+
+.level__container {
+    padding: 30px;
+}
+
+.level__container,
+.level__container::after,
+.level__container::before {
+    background-color: green;
+}
+
+.level__container img {
+    width: 50px;
+    margin-bottom: 20px;
+}
