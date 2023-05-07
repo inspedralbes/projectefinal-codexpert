@@ -133,24 +133,32 @@ function Game() {
               <h1 className='game__statementTitle'>{qst.statement}</h1>
             </div>
             <div className='game--grid'>
+              <div className='editor--div'>
+                <div className='editor__expected'>
+                  <div className='game__expectedInput'>
+                    <h2>Example input:</h2>
+                    <h1>{qst.inputs[0].toString()}</h1>
+                  </div>
 
-              <div className='game__expectedInput'>
-                <h2>Example input:</h2>
-                <h1>{qst.inputs[0].toString()}</h1>
+                  <div className='game__expectedOutput'>
+                    <h2>Example output:</h2>
+                    <h1>{qst.output.toString()}</h1>
+                  </div>
+                  <div className='game__expectedOutput game__result'>
+                    <h2>Result:</h2>
+                    <h1>{qst.output.toString()}</h1>
+                  </div>
+                </div>
+                <form className='editor' onSubmit={handleSubmit}>
+                  <CodeMirror code={code} setCode={setCode}></CodeMirror>
+                  <button className='pixel-button game__submit' disabled={code === ''}>
+                    Submit
+                  </button>
+                </form>
               </div>
 
-              <div className='game__expectedOutput'>
-                <h2>Example output:</h2>
-                <h1>{qst.output.toString()}</h1>
-              </div>
             </div>
 
-            <form className='editor' onSubmit={handleSubmit}>
-              <CodeMirror code={code} setCode={setCode}></CodeMirror>
-              <button className='game__submit' disabled={code === ''}>
-                Submit
-              </button>
-            </form>
 
             {error !== '' && <div>{error}</div>}
 

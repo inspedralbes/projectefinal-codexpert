@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import RankingPodium from '../components/RankingPodium'
 import RankingTable from '../components/RankingTable'
 import ShareRanking from '../components/ShareRanking'
+import Rewards from '../components/Rewards'
 import { Loading } from '../components/Loading'
 import '../styles/normalize.css'
 import '../styles/rankingStyles.css'
@@ -51,17 +52,15 @@ function RankingPage() {
           </div>
 
           <div className='ranking'>
-            <RankingPodium rankingData={rankingData}></RankingPodium>
+            <div className='ranking__content' id='scroll'>
+              <RankingPodium rankingData={rankingData}></RankingPodium>
 
-            <div className='game__rewards'>
-              <p className='rewards__list'>
-                <a className='rewards__element'>+{rewards.coinsEarned} <img src={require('../img/monea.png')} height='20px' className='user__xp' alt='Experience points' /></a>
-                <a className='rewards__element'>{'+' + rewards.xpEarned} <img src={require('../img/Experiencia.png')} height='20px' className='user__xp' alt='Experience points' /></a>
-                <a className='rewards__element'>{'+' + rewards.eloEarned} Elo</a>
-              </p>
+              <div className='ranking__rewards'>
+                <Rewards rewards={rewards}></Rewards>
+              </div>
+
+              {rankingData.length > 3 && <RankingTable rankingData={rankingData}></RankingTable>}
             </div>
-
-            {rankingData.length > 3 && <RankingTable rankingData={rankingData}></RankingTable>}
           </div>
 
           {idGame !== 0 && <ShareRanking idGame={idGame}></ShareRanking>}

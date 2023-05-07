@@ -36,7 +36,7 @@ function ConnectedUsersInGame() {
               <div className='user__imageIngame'> {user.hearts_remaining > 0 &&
                 <img
                   src={user.avatar}
-                  width='50px'
+                  width='70px'
                   className='user__image'
                   alt={user.name + '\'s avatar'}
                 ></img>}
