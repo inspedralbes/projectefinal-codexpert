@@ -46,6 +46,7 @@ class TutorialController extends Controller
         
     /**
      * This function creates the relationship between the game and all the users from the lobby
+     * @param string $token is the session token
      * @return array $allTutorials contains id and title from each level of the tutorial 
      */     
     public function getTutorials(Request $request)
@@ -54,7 +55,7 @@ class TutorialController extends Controller
 
         //Check if the user is logged.
         $userId = $this->getUserId($request->token);
-
+        $userExperience = $request->token;
         //If not logged we get all the tutorial questions.
         if ($userId == null) { 
             //Get all the tutorial questions
@@ -80,6 +81,11 @@ class TutorialController extends Controller
                     $userTutorial = new User_tutorial;
                     $userTutorial -> tutorial_question = $getTutorial[$i] -> id;
                     $userTutorial -> user_id = $userId;
+                    if ($i == 0) {
+                        $userTutorial -> locked = false;                
+                    } else {
+                        $userTutorial -> locked = (strcmp($userExperience, "beginner") == 0) ? true : false;                   
+                    }
                     $userTutorial -> save();
                 }
             }
@@ -103,7 +109,6 @@ class TutorialController extends Controller
         return response() -> json($allTutorials);
     } 
     
-
     /**
      * This function creates the relationship between the game and all the users from the lobby
      * @param int $id is question id
