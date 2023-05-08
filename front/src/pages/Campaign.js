@@ -13,6 +13,7 @@ Modal.setAppElement('body')
 function Campaign() {
   const [modal, setModal] = useState(false)
   const [tutorialList, setTutorialList] = useState([])
+  const [userExperience, setUserExperience] = useState('')
   const [lvlUnlocked, setLvlUnlocked] = useState(
     localStorage.getItem('lvlUnlocked') === null
       ? 0
@@ -23,7 +24,22 @@ function Campaign() {
 
   const handleChoiseOption = (option) => {
     setModal(false)
-    localStorage.setItem('campaign', option)
+    localStorage.setItem('userExperience', option)
+
+    const data = new FormData()
+    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    data.append('userExperience', option)
+    fetch(routes.fetchLaravel + 'getTutorials', {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTutorialList(data)
+        setUserExperience(option)
+      })
     if (option === 'beginner') {
       localStorage.setItem('lvlUnlocked', 0)
     } else if (option === 'expert') {
@@ -33,21 +49,24 @@ function Campaign() {
   }
 
   useEffect(() => {
-    if (localStorage.getItem('campaign') === null) {
+    if (localStorage.getItem('userExperience') === null) {
       setModal(true)
-    }
-    const token = new FormData()
-    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-    fetch(routes.fetchLaravel + 'getTutorials', {
-      method: 'POST',
-      mode: 'cors',
-      body: token,
-      credentials: 'include'
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setTutorialList(data)
+    } else {
+      const data = new FormData()
+      data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+      data.append('userExperience', localStorage.getItem('lvlUnlocked'))
+      fetch(routes.fetchLaravel + 'getTutorials', {
+        method: 'POST',
+        mode: 'cors',
+        body: data,
+        credentials: 'include'
       })
+        .then((response) => response.json())
+        .then((data) => {
+          setTutorialList(data)
+          setUserExperience(localStorage.getItem('lvlUnlocked'))
+        })
+    }
   }, [])
 
   return (
@@ -88,7 +107,7 @@ function Campaign() {
       </div>
       <h2></h2>
       <ul className="levels__list">
-        {Array.isArray(tutorialList)
+        {userExperience !== ''
           ? tutorialList.map((element, index) => {
             return (
               <li key={element.id}>
