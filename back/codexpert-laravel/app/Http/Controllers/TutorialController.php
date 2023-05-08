@@ -95,21 +95,22 @@ class TutorialController extends Controller
     {
         $tutorialQuestion = Tutorial_question::where("id", $request -> id) -> first();
         $inputs = [];
-        $outputs = [];
+        $output = '';
         $getInputs = Tutorial_test_input::where('question_id', $tutorialQuestion -> id)->get();
         $getOutputs = Tutorial_test_output::where('question_id', $tutorialQuestion -> id)->get();
 
         for ($j = 0; $j < count($getInputs); $j++) { 
             $inputs[$j] = unserialize($getInputs[$j] -> input);
-            $outputs[$j] = unserialize($getOutputs[$j] -> output);
         }
+
+        $output = unserialize($getOutputs[0] -> output);
 
         $tutorial = (object)[
             'id' => $tutorialQuestion -> id,
             'statement' => $tutorialQuestion -> statement,
             'hint' => $tutorialQuestion -> hint,
             'inputs' => $inputs,
-            'outputs' => $outputs
+            'output' => $output
         ];
 
         return response() -> json($tutorial);
