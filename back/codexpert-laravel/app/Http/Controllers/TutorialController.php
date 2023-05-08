@@ -116,28 +116,62 @@ class TutorialController extends Controller
      */       
     public function getTutorialFromId(Request $request)
     {
-        $tutorialQuestion = Tutorial_question::where("id", $request -> id) -> first();
-        $inputs = [];
-        $output = '';
-        $getInputs = Tutorial_test_input::where('question_id', $tutorialQuestion -> id)->get();
-        $getOutputs = Tutorial_test_output::where('question_id', $tutorialQuestion -> id)->get();
+        $userId = $this->getUserId($request->token);
+        $enter = true;
+        $tutorial = (object)[];
 
-        for ($j = 0; $j < count($getInputs); $j++) { 
-            $inputs[$j] = unserialize($getInputs[$j] -> input);
+        //Check if the user is logged in.
+        //If logged in we check if the question is locked or not.
+        if ($userId != null) {
+            $getUserTutorial = User_tutorial::where("user_id", $userId)
+            ->where("tutorial_question", $request -> id)
+            ->first();
+            if ($getUserTutorial -> locked) {
+                $enter = false;
+            }
+        } 
+
+        if ($enter) {
+            $tutorialQuestion = Tutorial_question::where("id", $request -> id) -> first();
+            $inputs = [];
+            $output = '';
+            $getInputs = Tutorial_test_input::where('question_id', $tutorialQuestion -> id)->get();
+            $getOutputs = Tutorial_test_output::where('question_id', $tutorialQuestion -> id)->get();
+
+            for ($j = 0; $j < count($getInputs); $j++) { 
+                $inputs[$j] = unserialize($getInputs[$j] -> input);
+            }
+
+            $output = unserialize($getOutputs[0] -> output);
+
+            $tutorial = (object)[
+                'id' => $tutorialQuestion -> id,
+                'statement' => $tutorialQuestion -> statement,
+                'hint' => $tutorialQuestion -> hint,
+                'inputs' => $inputs,
+                'output' => $output
+            ];
         }
-
-        $output = unserialize($getOutputs[0] -> output);
-
-        $tutorial = (object)[
-            'id' => $tutorialQuestion -> id,
-            'statement' => $tutorialQuestion -> statement,
-            'hint' => $tutorialQuestion -> hint,
-            'inputs' => $inputs,
-            'output' => $output
-        ];
 
         return response() -> json($tutorial);
     }  
+
+    /**
+     * This function is triggered each time a user responds to a question from the game, it will check whether the user answers the question correctly or not
+     * @param bool $evalPassed determines whether the user has passed all the internal tests for the question correctly or not
+     * @param int $idQuestion is the id of the question that has been answered
+     * @param array $evalRes contains all the results from the evals (done in front) for each input test
+     * @param int $idUser is the id from the user that is currently answering the question
+     * @return boolean $returnObject contains the boolean 'correct' which determines if the question has indeed been answered correctly, 'testsPassed' is the number of tests that have been passed, if 'correct' is true it will mean that all tests have been passed, 'user_game' contains all the information in the relationship between game and user, therefore here we can see information like 'hearts_remaining' (the amount of hearts remaining) and 'question_at' (which question is the user at now) and 'game' which contains the id from the winner and the game id.
+     */     
+    private function updateTutorial($userId, $questionId)
+    {
+        $getUserTutorial = User_tutorial::where("user_id", $userId)
+        ->where("tutorial_question", $questionId)
+        ->first();
+
+        return ;
+    }
 
     /**
      * This function is triggered each time a user responds to a question from the game, it will check whether the user answers the question correctly or not
@@ -149,13 +183,11 @@ class TutorialController extends Controller
      */     
     public function checkAnswer(Request $request)
     {
-        //MARTI TIENES QUE PASARME EL TOKEN O NULL SI NO HAY TOKEN, TIENE QUE SER POST
-        //Todo esto es si el usuario no está logueado habrá que modificar user_tutorial si el usuario está logueado
         $returnObject = (object) [
             'correct'=> true,
             'testsPassed' => 0,
         ];
-
+        
         //If any of the tests doesn't pass we return that it's not a correct answer.
         if ($request -> evalPassed) {
             $outputs = [];
@@ -176,6 +208,15 @@ class TutorialController extends Controller
             $returnObject -> correct = false;
         }
 
+        //If the user is correct and logged in we update their tutorial status and check if he has finished the tutorial
+        $userId = $this->getUserId($request->token);
+
+        if (($userId != null) && ($returnObject -> correct)) {
+            $tutorialPassed = $this->updateTutorial($userId, $request -> idQuestion);
+        }
+        
+
+        //$userId = $this->updateUser($returnObject);
         return response() -> json($returnObject);
     }       
 }
