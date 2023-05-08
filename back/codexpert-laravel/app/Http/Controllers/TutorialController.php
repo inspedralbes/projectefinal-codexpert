@@ -60,32 +60,54 @@ class TutorialController extends Controller
         $userId = $this->getUserId($request->token);
 
         //If not logged we get all the tutorial questions.
-        if ($userId == null) {
+        if ($userId == null) { 
             //Get all the tutorial questions
             $getTutorial = Tutorial_question::get();
-            
+
             //Get only id and title from each question
             for ($i=0; $i < count($getTutorial); $i++) { 
                 $tutorial = (object)[
                     'id' => $getTutorial[$i] -> id,
                     'title' => $getTutorial[$i] -> title
                 ];
-            
-            array_push($allTutorials, $tutorial);
+            }
+            array_push($allTutorials, $tutorial);            
         } else {
-            //If logged in, we need to get the rows from the user_tutorial table, to check which has been answered correctly.
-            //If there are no rows with this user id we create the relationship
-            $userTutorialQuestions = User_tutorial::where()
-            ->where()
-            ->get();
-        }       
+            //Check if user has already started the tutorial
+            $userTutorialQuestionsFound = User_tutorial::where("user_id", $userId) -> count();
+            if ($userTutorialQuestionsFound == 0) { 
+                //Check how many relationships need to be created
+                $getTutorial = Tutorial_question::get();
+                //Relate each question to the user.
+                for ($i = 0; $i < count($getTutorial); $i++) {
+                    $userTutorial = new User_tutorial;
+                    $userTutorial -> tutorial_question = $getTutorial[$i] -> id;
+                    $userTutorial -> user_id = $userId;
+                    $userTutorial -> save();
+                }
+            }
 
+            $getUserTutorial = User_tutorial::where("user_id", $userId)->get();
+
+            for ($i=0; $i < count($getUserTutorial); $i++) { 
+                $getTutorial = Tutorial_question::where('id', $getUserTutorial[$i] -> tutorial_question) -> first();
+                
+                $tutorial = (object)[
+                    'id' => $getTutorial -> id,
+                    'title' => $getTutorial -> title,
+                    'locked' => $getUserTutorial[$i] -> locked,
+                    'passed' => $getUserTutorial[$i] -> passed,
+                ];
+
+                array_push($allTutorials, $tutorial);  
+            }
 
         }
 
         return response() -> json($allTutorials);
     } 
     
+
     /**
      * This function creates the relationship between the game and all the users from the lobby
      * @param int $id is question id
