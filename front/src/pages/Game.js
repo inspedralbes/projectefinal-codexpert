@@ -17,11 +17,7 @@ function Game() {
   const [result, setResult] = useState('')
   const [winnerMessage, setWinnerMessage] = useState('')
   const [playable, setPlayable] = useState(true)
-  const [rewards, setRewards] = useState({
-    xpEarned: 0,
-    coinsEarned: 0,
-    eloEarned: 0
-  })
+  const [counter, setCounter] = useState(0)
   const [qst, setQst] = useState({
     statement: '',
     inputs: [''],
@@ -50,10 +46,6 @@ function Game() {
       case 'user_finished-event':
         setResult(window.network.getResult())
         setPlayable(false)
-        break
-
-      case 'stats-event':
-        setRewards(window.network.getRewards())
         break
 
       case 'overtime_starts-event':
@@ -121,7 +113,7 @@ function Game() {
       <div className='game__container '>
 
         <div className='container__left'>
-          {overtimeDuration != 0 && playable ? <h1>Time remaining: <Timer time={overtimeDuration}></Timer></h1> : <></>}
+          {overtimeDuration != 0 && playable ? <h1>Overtime duration left: <Timer time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
           <ConnectedUsersInGame></ConnectedUsersInGame>
           <ChatGame className='chatGame__chatbox'></ChatGame>
         </div>
@@ -164,7 +156,7 @@ function Game() {
           {!playable && <div className='game__results'>
             <h1 className='game__yourResult'>{result}</h1>
             <h2>{winnerMessage}</h2>
-            {overtimeDuration != 0 ? <h1>Overtime started: <Timer time={overtimeDuration}></Timer></h1> : <></>}
+            {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
             <p className='game__buttons'>
               <button className='pixel-button game__button' onClick={goBackToLobby}>GO BACK TO LOBBY</button>
 
