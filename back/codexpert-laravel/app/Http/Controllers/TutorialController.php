@@ -10,35 +10,77 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
+use App\Models\User_tutorial;
 use App\Models\Tutorial_question;
 use App\Models\Tutorial_test_input;
 use App\Models\Tutorial_test_output;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class TutorialController extends Controller
 {
     /**
+     * This function checks with the token recieved if the token is valid on the database, if it is it will return the user id
+     * @param string $checkToken is the session token
+     * @return int $userId is the user id found linked to the token in the database
+     */     
+    private function getUserId($checkToken)
+    {
+        $userId = null;
+        //Check if we have recieved a token
+        if ( !($checkToken == null || $checkToken == "" || $checkToken == "null") ) {
+            
+            //Return if the user is logged in or not from the token
+            [$id, $token] = explode('|', $checkToken, 2);
+            $accessToken = PersonalAccessToken::find($id);
+
+            if ($accessToken != null) {
+                if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                    $userId = $accessToken->tokenable_id;
+                }
+            }
+
+        }
+
+        return $userId;
+    }  
+        
+    /**
      * This function creates the relationship between the game and all the users from the lobby
      * @return array $allTutorials contains id and title from each level of the tutorial 
      */     
-    public function getTutorials()
+    public function getTutorials(Request $request)
     {   
-        //MARTI TIENES QUE PASARME EL TOKEN O NULL SI NO HAY TOKEN, TIENE QUE SER POST
+        $allTutorials = [];
+
         //Primero comprobar si el usuario está logueado
         //Si no está logueado hacer todo lo de abajo
         //Si está logueado habrá que utilizar user_tutorial y devolver locked y passed, poner la primera pregunta en locked = false
-        $allTutorials = [];
 
-        //Get all the tutorial questions
-        $getTutorial = Tutorial_question::get();
-        
-        //Get only id and title from each question
-        for ($i=0; $i < count($getTutorial); $i++) { 
-            $tutorial = (object)[
-                'id' => $getTutorial[$i] -> id,
-                'title' => $getTutorial[$i] -> title
-            ];
-        
+        //Check if the user is logged.
+        $userId = $this->getUserId($request->token);
+
+        //If not logged we get all the tutorial questions.
+        if ($userId == null) {
+            //Get all the tutorial questions
+            $getTutorial = Tutorial_question::get();
+            
+            //Get only id and title from each question
+            for ($i=0; $i < count($getTutorial); $i++) { 
+                $tutorial = (object)[
+                    'id' => $getTutorial[$i] -> id,
+                    'title' => $getTutorial[$i] -> title
+                ];
+            
             array_push($allTutorials, $tutorial);
+        } else {
+            //If logged in, we need to get the rows from the user_tutorial table, to check which has been answered correctly.
+            //If there are no rows with this user id we create the relationship
+            $userTutorialQuestions = User_tutorial::where()
+            ->where()
+            ->get();
+        }       
+
+
         }
 
         return response() -> json($allTutorials);

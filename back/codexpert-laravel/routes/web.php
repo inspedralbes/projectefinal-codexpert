@@ -54,7 +54,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('/ranking/{id}', [GameController::class, 'getRanking']);
 
-    Route::get('/getTutorials', [TutorialController::class, 'getTutorials']);
+    Route::post('/getTutorials', [TutorialController::class, 'getTutorials']);
 
     Route::post('/getTutorialFromId', [TutorialController::class, 'getTutorialFromId']);
 
