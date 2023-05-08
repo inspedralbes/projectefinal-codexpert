@@ -14,7 +14,7 @@ class ConnectionNetwork {
   showSettings = false
   settings = {
     heartAmount: 0,
-    gameDuration: 0,
+    overtimeDuration: 0,
     questionAmount: 0,
     unlimitedHearts: false
   }
@@ -107,8 +107,8 @@ class ConnectionNetwork {
     return this.rewards
   }
 
-  setGameDuration(duration) {
-    this.settings.gameDuration = duration
+  setOvertimeDuration(duration) {
+    this.settings.overtimeDuration = duration
   }
 
   setHeartAmount(amt) {
@@ -123,8 +123,8 @@ class ConnectionNetwork {
     this.settings.unlimitedHearts = unlimited
   }
 
-  getGameDuration() {
-    return this.settings.gameDuration
+  getOvertimeDuration() {
+    return this.settings.overtimeDuration
   }
 
   getHeartAmount() {

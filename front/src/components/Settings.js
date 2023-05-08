@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 Settings.propTypes = {
-  fetchSettings: PropTypes.bool
+  fetchSettings: PropTypes.bool,
+  errorMessage: PropTypes.string
 }
 
-function Settings({ fetchSettings }) {
-  const [gameDuration, setGameDuration] = useState(301)
+function Settings({ fetchSettings, errorMessage }) {
+  const [overtimeDuration, setOvertimeDuration] = useState(30)
   const [heartAmount, setHeartAmount] = useState(0)
   const [questionAmount, setQuestionAmount] = useState(0)
   const [unlimitedHearts, setUnlimitedHearts] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
 
   function handleChangeUnlimitedHearts() {
     setUnlimitedHearts(!unlimitedHearts)
     window.network.setUnlimitedHearts(!unlimitedHearts)
   }
 
-  function handleChangeGameDuration(e) {
-    setGameDuration(e.target.value)
-    window.network.setGameDuration(e.target.value)
+  function handleChangeOvertimeDuration(e) {
+    setOvertimeDuration(e.target.value)
+    window.network.setOvertimeDuration(e.target.value)
   }
 
   function handleChangeHeartAmount(e) {
@@ -35,56 +35,10 @@ function Settings({ fetchSettings }) {
 
   const getSettings = () => {
     setHeartAmount(window.network.getHeartAmount())
-    setGameDuration(window.network.getGameDuration())
+    setOvertimeDuration(window.network.getOvertimeDuration())
     setUnlimitedHearts(window.network.getUnlimitedHearts())
     setQuestionAmount(window.network.getQuestionAmount())
   }
-
-  const handleMessage = (event) => {
-    const eventData = event.data
-
-    switch (eventData.type) {
-      case 'GAME_TIME_UNDER_MIN-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'GAME_TIME_ABOVE_MAX-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'HEARTS_AMT_UNDER_MIN-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'HEARTS_AMT_ABOVE_MAX-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'QUESTION_AMT_UNDER_MIN-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'QUESTION_AMT_ABOVE_MAX-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'INVALID_SETTINGS-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      default:
-        // UNKNOWN EVENT TO THAT COMPONENT
-        break
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('message', handleMessage)
-
-    return () => {
-      window.removeEventListener('message', handleMessage)
-    }
-  }, [])
 
   useEffect(() => {
     if (fetchSettings) {
@@ -95,11 +49,11 @@ function Settings({ fetchSettings }) {
   return (
     <>
       <div className='settings__zone'>
-        {errorMessage !== '' && <h1 className='error'>{errorMessage}</h1>}
+        {errorMessage !== '' && <h1 className='lobbies__error'>{errorMessage}</h1>}
         <form className='AddCategory' autoComplete='off'>
           <span className='addCategory__formSpanTA'>
-            <p className='settings__zone__title'>Game duration (seconds)</p>
-            <input type='number' value={gameDuration} onChange={handleChangeGameDuration} />
+            <p className='settings__zone__title'>Overtime duration (seconds)</p>
+            <input type='number' value={overtimeDuration} onChange={handleChangeOvertimeDuration} />
           </span>
 
           <span className='addCategory__formSpanTA'>

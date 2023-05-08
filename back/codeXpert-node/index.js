@@ -63,18 +63,16 @@ app.use(
   })
 );
 
-const overtimeSeconds = 5000;
-
 const defaultSettings = {
-  gameDuration: 600,
+  overtimeDuration: 30,
   heartAmount: 5,
   unlimitedHearts: false,
   questionAmount: 5
 };
 
 const maxSettings = {
-  minTime: 300,
-  maxTime: 3600,
+  minOvertimeDuration: 10,
+  maxOvertimeDuration: 60,
   minHeartAmount: 1,
   maxHeartAmount: 99,
   minQuestionAmount: 1,
@@ -299,11 +297,13 @@ socketIO.on("connection", (socket) => {
   socket.on("check_answer", async (data) => {
     let gameNumQuestions;
     let unlimitedHeartsOption;
+    let overtimeDuration;
 
     const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
     if (lobby != null) {
       gameNumQuestions = lobby.settings.questionAmount;
       unlimitedHeartsOption = lobby.settings.unlimitedHearts;
+      overtimeDuration = lobby.settings.overtimeDuration;
     }
 
     const postData = {
@@ -341,10 +341,14 @@ socketIO.on("connection", (socket) => {
               socketIO.to(socket.id).emit("user_finished", {
                 message: "YOU WON"
               });
+              socket.data.resultMessage = "YOU WON";
 
-              startOverTime(socket, overtimeSeconds);
+              startOverTime(socket, overtimeDuration);
             } else {
-              // FUTURO uwu
+              socket.data.resultMessage = "YOU FINISHED";
+              socketIO.to(socket.id).emit("user_finished", {
+                message: "YOU FINISHED"
+              });
             }
           } else {
             const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
@@ -390,15 +394,15 @@ socketIO.on("connection", (socket) => {
     let validSettings = true;
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name === socket.data.current_lobby) {
-        if (data.gameDuration < maxSettings.minTime) {
-          socketIO.to(socket.id).emit("GAME_TIME_UNDER_MIN", {
-            min: maxSettings.minTime
+        if (data.overtimeDuration < maxSettings.minOvertimeDuration) {
+          socketIO.to(socket.id).emit("OVERTIME_UNDER_MIN", {
+            min: maxSettings.minOvertimeDuration
           });
 
           validSettings = false;
-        } else if (data.gameDuration > maxSettings.maxTime) {
-          socketIO.to(socket.id).emit("GAME_TIME_ABOVE_MAX", {
-            max: maxSettings.maxTime
+        } else if (data.overtimeDuration > maxSettings.maxOvertimeDuration) {
+          socketIO.to(socket.id).emit("OVERTIME_ABOVE_MAX", {
+            max: maxSettings.maxOvertimeDuration
           });
 
           validSettings = false;
@@ -421,7 +425,7 @@ socketIO.on("connection", (socket) => {
         }
 
         if (validSettings) {
-          if (data.heartAmount < maxSettings.minQuestionAmount) {
+          if (data.questionAmount < maxSettings.minQuestionAmount) {
             socketIO.to(socket.id).emit("QUESTION_AMT_UNDER_MIN", {
               min: maxSettings.minQuestionAmount
             });
@@ -453,6 +457,8 @@ socketIO.on("connection", (socket) => {
 });
 
 async function startOverTime(socket, time) {
+  time *= 1000;
+
   socketIO.to(socket.data.current_lobby).emit("overtime_starts", { time });
 
   setTimeout(() => {
@@ -487,6 +493,9 @@ async function setMembersStats(room) {
       lobby.members.forEach(member => {
         sockets.forEach((socket) => {
           if (socket.data.userId === member.idUser) {
+            const resultMessage = socket.data.resultMessage;
+
+            member.resultMessage = resultMessage === undefined ? "YOU LOST" : resultMessage;
             member.hearts_remaining = socket.data.hearts_remaining;
             member.perks_used = socket.data.perks_used;
             member.question_at = socket.data.question_at;
@@ -609,6 +618,7 @@ function setUserLvl(data, room) {
       data.forEach(statUser => {
         lobby.members.forEach(member => {
           if (statUser.idUser === member.idUser) {
+            member.result = "";
             member.xpEarned = statUser.xpEarned;
             member.coinsEarned = statUser.coinsEarned;
             member.eloEarned = statUser.eloEarned;
