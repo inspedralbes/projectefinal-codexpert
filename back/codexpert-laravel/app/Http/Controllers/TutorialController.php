@@ -84,7 +84,7 @@ class TutorialController extends Controller
                     if ($i == 0) {
                         $userTutorial -> locked = false;                
                     } else {
-                        $userTutorial -> locked = (strcmp($userExperience, "beginner") == 0) ? true : false;                   
+                        $userTutorial -> locked = (strcmp($userExperience, "beginner") == 0) ? false : true;                   
                     }
                     $userTutorial -> save();
                 }
