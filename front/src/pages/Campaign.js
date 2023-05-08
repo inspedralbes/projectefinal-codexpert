@@ -6,6 +6,7 @@ import unlocked from '../img/campaign/unlocked.png'
 import locked from '../img/campaign/locked.png'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
+import Cookies from 'universal-cookie'
 
 Modal.setAppElement('body')
 
@@ -17,6 +18,7 @@ function Campaign() {
       ? 0
       : localStorage.getItem('lvlUnlocked')
   )
+  const cookies = new Cookies()
   const navigate = useNavigate()
 
   const handleChoiseOption = (option) => {
@@ -34,10 +36,12 @@ function Campaign() {
     if (localStorage.getItem('campaign') === null) {
       setModal(true)
     }
-
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     fetch(routes.fetchLaravel + 'getTutorials', {
-      method: 'GET',
+      method: 'POST',
       mode: 'cors',
+      body: token,
       credentials: 'include'
     })
       .then((response) => response.json())
