@@ -1,33 +1,33 @@
-import "../styles/Tutorial.css";
-import routes from "../conn_routes";
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import '../styles/Tutorial.css'
+import routes from '../conn_routes'
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import CodeMirror from '../components/CodeMirror'
 
 function Tutorial() {
-  const location = useLocation();
+  const location = useLocation()
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
   const [qst, setQst] = useState({
-    statement: "",
-    inputs: [""],
-    outputs: [""],
-  });
+    statement: '',
+    inputs: [''],
+    outputs: ['']
+  })
   useEffect(() => {
-    const tutorialId = new FormData();
-    tutorialId.append("id", location.state.id);
-    fetch(routes.fetchLaravel + "getTutorialFromId", {
-      method: "POST",
-      mode: "cors",
+    const tutorialId = new FormData()
+    tutorialId.append('id', location.state.id)
+    fetch(routes.fetchLaravel + 'getTutorialFromId', {
+      method: 'POST',
+      mode: 'cors',
       body: tutorialId,
-      credentials: "include",
+      credentials: 'include'
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        setQst(data);
-      });
-  }, []);
+        console.log(data)
+        setQst(data)
+      })
+  }, [])
 
   return (
     <div className="tutorial__container">
@@ -69,7 +69,7 @@ function Tutorial() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Tutorial;
+export default Tutorial

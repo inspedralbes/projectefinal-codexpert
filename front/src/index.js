@@ -46,6 +46,7 @@ root.render(
         <Route path='profile' element={<Profile />}></Route>
         <Route path='tutorial' element={<Tutorial />}></Route>
         <Route path='campaign' element={<Campaign />}></Route>
+        <Route path='sharedRanking' element={<SharedRanking />}></Route>
         <Route path='404' element={<Error404 />}></Route>
         <Route path='*' element={<Navigate to='/404' />} />
       </Route>
