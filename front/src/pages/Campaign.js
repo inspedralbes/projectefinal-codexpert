@@ -1,5 +1,5 @@
 import '../styles/normalize.css'
-import '../styles/Campaign.css'
+import '../styles/campaign.css'
 import routes from '../conn_routes'
 import Modal from 'react-modal'
 import unlocked from '../img/campaign/unlocked.png'
