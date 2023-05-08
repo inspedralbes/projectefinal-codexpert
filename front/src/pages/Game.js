@@ -118,8 +118,8 @@ function Game() {
 
   return (
     <div>
+      <div className='pixelart-to-css'></div>
       <div className='game__container '>
-
         <div className='container__left'>
           {overtimeDuration != 0 ? <h1>Time remaining: <Timer time={overtimeDuration}></Timer></h1> : <></>}
           <ConnectedUsersInGame></ConnectedUsersInGame>

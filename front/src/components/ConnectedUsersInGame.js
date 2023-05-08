@@ -1,4 +1,6 @@
 import '../styles/normalize.css'
+import logo from '../img/logo.gif'
+
 import React, { useState, useEffect } from 'react'
 
 function ConnectedUsersInGame() {
@@ -27,7 +29,9 @@ function ConnectedUsersInGame() {
 
   return (
     <div className='lobby__connectedUsers'>
-      <h1 className='connectedUsers_title'>Connected users</h1>
+      <div className='game__logo'>
+        <img src={logo} alt='CONNECTED USERS' height={'100px'}></img>
+      </div>
       <div id='userList' className='connectedUsers__userList userList'>
         {userList.map((user, index) => {
           return (
@@ -90,7 +94,7 @@ function ConnectedUsersInGame() {
           )
         })}
       </div>
-    </div>
+    </div >
 
   )
 }
