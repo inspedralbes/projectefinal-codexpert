@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_tutorial', function (Blueprint $table) {
+        Schema::create('user_tutorials', function (Blueprint $table) {
             $table->id();
 
             $table->bigInteger('tutorial_question')->unsigned()->index();
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_tutorial');
+        Schema::dropIfExists('user_tutorials');
     }
 };

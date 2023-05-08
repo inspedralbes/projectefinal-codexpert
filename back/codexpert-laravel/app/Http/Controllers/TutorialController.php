@@ -66,8 +66,9 @@ class TutorialController extends Controller
                     'id' => $getTutorial[$i] -> id,
                     'title' => $getTutorial[$i] -> title
                 ];
+                 array_push($allTutorials, $tutorial);  
             }
-            array_push($allTutorials, $tutorial);            
+                     
         } else {
             //Check if user has already started the tutorial
             $userTutorialQuestionsFound = User_tutorial::where("user_id", $userId) -> count();
