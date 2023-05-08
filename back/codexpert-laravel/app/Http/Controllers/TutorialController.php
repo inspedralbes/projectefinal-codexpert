@@ -52,10 +52,6 @@ class TutorialController extends Controller
     {   
         $allTutorials = [];
 
-        //Primero comprobar si el usuario está logueado
-        //Si no está logueado hacer todo lo de abajo
-        //Si está logueado habrá que utilizar user_tutorial y devolver locked y passed, poner la primera pregunta en locked = false
-
         //Check if the user is logged.
         $userId = $this->getUserId($request->token);
 
@@ -88,7 +84,6 @@ class TutorialController extends Controller
             }
 
             $getUserTutorial = User_tutorial::where("user_id", $userId)->get();
-
             for ($i=0; $i < count($getUserTutorial); $i++) { 
                 $getTutorial = Tutorial_question::where('id', $getUserTutorial[$i] -> tutorial_question) -> first();
                 
