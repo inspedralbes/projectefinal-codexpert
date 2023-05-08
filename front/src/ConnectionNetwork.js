@@ -16,7 +16,8 @@ class ConnectionNetwork {
     heartAmount: 0,
     overtimeDuration: 0,
     questionAmount: 0,
-    unlimitedHearts: false
+    unlimitedHearts: false,
+    willHaveOvertime: true
   }
 
   setMessage(msg) {
@@ -111,6 +112,10 @@ class ConnectionNetwork {
     this.settings.overtimeDuration = duration
   }
 
+  setWillHaveOvertime(willHave) {
+    this.settings.willHaveOvertime = willHave
+  }
+
   setHeartAmount(amt) {
     this.settings.heartAmount = amt
   }
@@ -121,6 +126,10 @@ class ConnectionNetwork {
 
   setUnlimitedHearts(unlimited) {
     this.settings.unlimitedHearts = unlimited
+  }
+
+  getWillHaveOvertime() {
+    return this.settings.willHaveOvertime
   }
 
   getOvertimeDuration() {

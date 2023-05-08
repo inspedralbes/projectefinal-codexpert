@@ -11,10 +11,16 @@ function Settings({ fetchSettings, errorMessage }) {
   const [heartAmount, setHeartAmount] = useState(0)
   const [questionAmount, setQuestionAmount] = useState(0)
   const [unlimitedHearts, setUnlimitedHearts] = useState(false)
+  const [willHaveOvertime, setWillHaveOvertime] = useState(false)
 
   function handleChangeUnlimitedHearts() {
     setUnlimitedHearts(!unlimitedHearts)
     window.network.setUnlimitedHearts(!unlimitedHearts)
+  }
+
+  function handleChangeWillHaveOvertime() {
+    setWillHaveOvertime(!willHaveOvertime)
+    window.network.setWillHaveOvertime(!willHaveOvertime)
   }
 
   function handleChangeOvertimeDuration(e) {
@@ -38,6 +44,7 @@ function Settings({ fetchSettings, errorMessage }) {
     setOvertimeDuration(window.network.getOvertimeDuration())
     setUnlimitedHearts(window.network.getUnlimitedHearts())
     setQuestionAmount(window.network.getQuestionAmount())
+    setWillHaveOvertime(window.network.getWillHaveOvertime())
   }
 
   useEffect(() => {
@@ -49,11 +56,31 @@ function Settings({ fetchSettings, errorMessage }) {
   return (
     <>
       <div className='settings__zone'>
-        {errorMessage !== '' && <h1 className='lobbies__error'>{errorMessage}</h1>}
+        {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
         <form className='AddCategory' autoComplete='off'>
+          <div className='list__container__text settingCreator__checkbox'>
+            <input
+              id='overtime-check'
+              className='check'
+              type='checkbox'
+              value={willHaveOvertime}
+              onChange={handleChangeWillHaveOvertime}
+              checked={willHaveOvertime}
+            />
+            <label
+              htmlFor='overtime-check'
+              className='list__container__text__label settingCreator__label'
+            >
+              <span
+                htmlFor='overtime-check'
+                className='settings__zone__title'
+              >You want to have an overtime?</span>
+            </label>
+          </div>
+
           <span className='addCategory__formSpanTA'>
             <p className='settings__zone__title'>Overtime duration (seconds)</p>
-            <input type='number' value={overtimeDuration} onChange={handleChangeOvertimeDuration} />
+            <input type='number' value={overtimeDuration} onChange={handleChangeOvertimeDuration} disabled={!willHaveOvertime}/>
           </span>
 
           <span className='addCategory__formSpanTA'>

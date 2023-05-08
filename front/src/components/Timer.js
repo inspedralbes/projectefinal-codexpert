@@ -24,9 +24,9 @@ function Timer({ time }) {
   }, [time])
 
   return (
-    <div>
-      {time > 0 ? <h1>{counter}</h1> : <></>}
-    </div>
+    <>
+      {time > 0 ? <>{counter}</> : <></>}
+    </>
   )
 }
 

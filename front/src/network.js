@@ -71,7 +71,8 @@ const handleMessage = (event) => {
         overtimeDuration: window.network.getOvertimeDuration(),
         heartAmount: window.network.getHeartAmount(),
         unlimitedHearts: window.network.getUnlimitedHearts(),
-        questionAmount: window.network.getQuestionAmount()
+        questionAmount: window.network.getQuestionAmount(),
+        willHaveOvertime: window.network.getWillHaveOvertime()
       })
       break
 

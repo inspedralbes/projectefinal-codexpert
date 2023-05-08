@@ -75,7 +75,7 @@ function Game() {
     if (code !== '') {
       const resultsEvalRecieved = []
       let evalPassedBoolean = true
-      console.log(qst)
+      // console.log(qst)
       qst.inputs.forEach((inp) => {
         let input = inp
         try {
@@ -87,7 +87,7 @@ function Game() {
           evalPassedBoolean = false
         }
       })
-      console.log(resultsEvalRecieved)
+      // console.log(resultsEvalRecieved)
 
       window.postMessage({
         type: 'check_answer-emit',
@@ -121,7 +121,7 @@ function Game() {
       <div className='game__container '>
 
         <div className='container__left'>
-          {overtimeDuration != 0 ? <h1>Time remaining: <Timer time={overtimeDuration}></Timer></h1> : <></>}
+          {overtimeDuration != 0 && playable ? <h1>Time remaining: <Timer time={overtimeDuration}></Timer></h1> : <></>}
           <ConnectedUsersInGame></ConnectedUsersInGame>
           <ChatGame className='chatGame__chatbox'></ChatGame>
         </div>
@@ -158,18 +158,13 @@ function Game() {
               </div>
             </div>
 
-
             {error !== '' && <div>{error}</div>}
 
           </div>}
           {!playable && <div className='game__results'>
             <h1 className='game__yourResult'>{result}</h1>
             <h2>{winnerMessage}</h2>
-            <ul className='rewards__list'>
-              <li>XP: {rewards.xpEarned}</li>
-              <li>Coins: {rewards.coinsEarned}</li>
-              <li>Elo: {rewards.eloEarned}</li>
-            </ul>
+            {overtimeDuration != 0 ? <h1>Overtime started: <Timer time={overtimeDuration}></Timer></h1> : <></>}
             <p className='game__buttons'>
               <button className='pixel-button game__button' onClick={goBackToLobby}>GO BACK TO LOBBY</button>
 

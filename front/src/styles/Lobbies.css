@@ -660,7 +660,7 @@
     color: red;
     text-align: center;
     font-family: pixel_operator;
-    font-size: large;
+    font-size: 0.75em;
     src: url(../fonts/pixel_operator/PixelOperator8.ttf);
 }
 

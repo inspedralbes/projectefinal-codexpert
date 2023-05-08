@@ -67,12 +67,13 @@ const defaultSettings = {
   overtimeDuration: 30,
   heartAmount: 5,
   unlimitedHearts: false,
+  willHaveOvertime: true,
   questionAmount: 5
 };
 
 const maxSettings = {
   minOvertimeDuration: 10,
-  maxOvertimeDuration: 60,
+  maxOvertimeDuration: 999,
   minHeartAmount: 1,
   maxHeartAmount: 99,
   minQuestionAmount: 1,
@@ -298,12 +299,21 @@ socketIO.on("connection", (socket) => {
     let gameNumQuestions;
     let unlimitedHeartsOption;
     let overtimeDuration;
+    let willHaveOvertime;
+    let memberLength;
 
     const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
     if (lobby != null) {
       gameNumQuestions = lobby.settings.questionAmount;
       unlimitedHeartsOption = lobby.settings.unlimitedHearts;
-      overtimeDuration = lobby.settings.overtimeDuration;
+      willHaveOvertime = lobby.settings.willHaveOvertime;
+      memberLength = lobby.members.length;
+
+      if (memberLength <= 1) willHaveOvertime = false;
+
+      if (willHaveOvertime) {
+        overtimeDuration = lobby.settings.overtimeDuration;
+      }
     }
 
     const postData = {
@@ -343,7 +353,11 @@ socketIO.on("connection", (socket) => {
               });
               socket.data.resultMessage = "YOU WON";
 
-              startOverTime(socket, overtimeDuration);
+              if (willHaveOvertime) {
+                startOverTime(socket, overtimeDuration);
+              } else {
+                endGame(socket);
+              }
             } else {
               socket.data.resultMessage = "YOU FINISHED";
               socketIO.to(socket.id).emit("user_finished", {
@@ -394,18 +408,20 @@ socketIO.on("connection", (socket) => {
     let validSettings = true;
     lobbies.forEach((lobby) => {
       if (lobby.lobby_name === socket.data.current_lobby) {
-        if (data.overtimeDuration < maxSettings.minOvertimeDuration) {
-          socketIO.to(socket.id).emit("OVERTIME_UNDER_MIN", {
-            min: maxSettings.minOvertimeDuration
-          });
+        if (!data.willHaveOvertime) {
+          if (data.overtimeDuration < maxSettings.minOvertimeDuration) {
+            socketIO.to(socket.id).emit("OVERTIME_UNDER_MIN", {
+              min: maxSettings.minOvertimeDuration
+            });
 
-          validSettings = false;
-        } else if (data.overtimeDuration > maxSettings.maxOvertimeDuration) {
-          socketIO.to(socket.id).emit("OVERTIME_ABOVE_MAX", {
-            max: maxSettings.maxOvertimeDuration
-          });
+            validSettings = false;
+          } else if (data.overtimeDuration > maxSettings.maxOvertimeDuration) {
+            socketIO.to(socket.id).emit("OVERTIME_ABOVE_MAX", {
+              max: maxSettings.maxOvertimeDuration
+            });
 
-          validSettings = false;
+            validSettings = false;
+          }
         }
 
         if (validSettings) {
