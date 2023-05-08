@@ -11,7 +11,7 @@ function Tutorial() {
   const [qst, setQst] = useState({
     statement: '',
     inputs: [''],
-    outputs: ['']
+    output: ''
   })
   useEffect(() => {
     const tutorialId = new FormData()
@@ -50,11 +50,11 @@ function Tutorial() {
 
               <div className="tutorial__expectedOutput">
                 <h2>Example output:</h2>
-                <h1>{qst.outputs[0]}</h1>
+                <h1>{qst.output}</h1>
               </div>
               <div className="tutorial__expectedOutput tutorial__result">
                 <h2>Result:</h2>
-                <h1>{qst.outputs[0]}</h1>
+                <h1>{qst.output}</h1>
               </div>
             </div>
             <form className="editor">
