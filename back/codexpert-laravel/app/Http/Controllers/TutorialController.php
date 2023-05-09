@@ -329,7 +329,7 @@ class TutorialController extends Controller
 
     /**
      * This function will relate a user that has logged in/registered to their tutorial data, this will be triggered if the user has completed some questions of the tutorial or the whole tutorial
-     * @param string $checkToken is the session token
+     * @param string $token is the session token
      * @param array $tutorialsAnswered is an array of tutorial ids, showing which of the tutorials the user has answered correctly.
      * @param bool $tutorialPassed is a boolean that shows if the user has passed the tutorial
      * @param string $userExperience to set if the user is a beginner or an expert  
