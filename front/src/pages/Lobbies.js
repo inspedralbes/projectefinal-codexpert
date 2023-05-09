@@ -67,10 +67,44 @@ function Lobbies() {
         setErrorMessage(window.network.getMessage())
         break
 
+      case 'OVERTIME_UNDER_MIN-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'OVERTIME_ABOVE_MAX-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'HEARTS_AMT_UNDER_MIN-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'HEARTS_AMT_ABOVE_MAX-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'QUESTION_AMT_UNDER_MIN-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'QUESTION_AMT_ABOVE_MAX-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'INVALID_SETTINGS-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
       default:
         break
     }
   }
+
+  useEffect(() => {
+    if (!joinedLobby) {
+      setErrorMessage('')
+    }
+  }, [joinedLobby])
 
   useEffect(() => {
     if (document.cookie.indexOf('token' + '=') !== -1) {
@@ -111,7 +145,6 @@ function Lobbies() {
   if (fetchUser) {
     return (
       <div className='lobbies'>
-
         {!joinedLobby && (
           <LobbyList lobbyName={lobbyName} setLobbyName={setLobbyName} lobbyList={lobbyList} setJoined={setJoined} errorMessage={errorMessage} setErrorMessage={setErrorMessage}></LobbyList>
         )}

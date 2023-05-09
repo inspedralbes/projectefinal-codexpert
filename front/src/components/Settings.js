@@ -1,25 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import '../styles/index.css'
 
 Settings.propTypes = {
-  fetchSettings: PropTypes.bool
+  fetchSettings: PropTypes.bool,
+  errorMessage: PropTypes.string
 }
 
-function Settings({ fetchSettings }) {
-  const [gameDuration, setGameDuration] = useState(301)
+function Settings({ fetchSettings, errorMessage }) {
+  const [overtimeDuration, setOvertimeDuration] = useState(30)
   const [heartAmount, setHeartAmount] = useState(0)
   const [questionAmount, setQuestionAmount] = useState(0)
   const [unlimitedHearts, setUnlimitedHearts] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [willHaveOvertime, setWillHaveOvertime] = useState(false)
 
   function handleChangeUnlimitedHearts() {
     setUnlimitedHearts(!unlimitedHearts)
     window.network.setUnlimitedHearts(!unlimitedHearts)
   }
 
-  function handleChangeGameDuration(e) {
-    setGameDuration(e.target.value)
-    window.network.setGameDuration(e.target.value)
+  function handleChangeWillHaveOvertime() {
+    setWillHaveOvertime(!willHaveOvertime)
+    window.network.setWillHaveOvertime(!willHaveOvertime)
+  }
+
+  function handleChangeOvertimeDuration(e) {
+    setOvertimeDuration(e.target.value)
+    window.network.setOvertimeDuration(e.target.value)
   }
 
   function handleChangeHeartAmount(e) {
@@ -35,56 +42,11 @@ function Settings({ fetchSettings }) {
 
   const getSettings = () => {
     setHeartAmount(window.network.getHeartAmount())
-    setGameDuration(window.network.getGameDuration())
+    setOvertimeDuration(window.network.getOvertimeDuration())
     setUnlimitedHearts(window.network.getUnlimitedHearts())
     setQuestionAmount(window.network.getQuestionAmount())
+    setWillHaveOvertime(window.network.getWillHaveOvertime())
   }
-
-  const handleMessage = (event) => {
-    const eventData = event.data
-
-    switch (eventData.type) {
-      case 'GAME_TIME_UNDER_MIN-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'GAME_TIME_ABOVE_MAX-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'HEARTS_AMT_UNDER_MIN-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'HEARTS_AMT_ABOVE_MAX-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'QUESTION_AMT_UNDER_MIN-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'QUESTION_AMT_ABOVE_MAX-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      case 'INVALID_SETTINGS-event':
-        setErrorMessage(window.network.getErrorMessage())
-        break
-
-      default:
-        // UNKNOWN EVENT TO THAT COMPONENT
-        break
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('message', handleMessage)
-
-    return () => {
-      window.removeEventListener('message', handleMessage)
-    }
-  }, [])
 
   useEffect(() => {
     if (fetchSettings) {
@@ -95,36 +57,44 @@ function Settings({ fetchSettings }) {
   return (
     <>
       <div className='settings__zone'>
-        {errorMessage !== '' && <h1 className='error'>{errorMessage}</h1>}
+        {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
         <form className='AddCategory' autoComplete='off'>
+          <div className='list__container__text settingCreator__checkbox'>
+            <label htmlFor='check' className="form-control">
+              <input id='check' type="checkbox" name="checkbox" value={willHaveOvertime}
+                onChange={handleChangeWillHaveOvertime}
+                checked={willHaveOvertime} />
+              <span
+                htmlFor='overtime-check'
+                className='settings__zone__title'
+              >You want to have an overtime?</span>
+            </label>
+
+          </div>
+
           <span className='addCategory__formSpanTA'>
-            <p className='settings__zone__title'>Game duration (seconds)</p>
-            <input type='number' value={gameDuration} onChange={handleChangeGameDuration} />
+            <p className='settings__zone__title'>Overtime duration (seconds)</p>
+            <input className='profile__input' type='number' value={overtimeDuration} onChange={handleChangeOvertimeDuration} disabled={!willHaveOvertime} />
           </span>
 
           <span className='addCategory__formSpanTA'>
             <p className='settings__zone__title'>Amount of questions:</p>
-            <input type='number' value={questionAmount} onChange={handleChangeQuestionAmount} />
+            <input className='profile__input' type='number' value={questionAmount} onChange={handleChangeQuestionAmount} />
           </span>
 
           <span className='addCategory__formSpanTA'>
             <p className='settings__zone__title'>Amount of hearts per player:</p>
-            <input type='number' value={heartAmount} onChange={handleChangeHeartAmount} />
+            <input className='profile__input' type='number' value={heartAmount} onChange={handleChangeHeartAmount} />
           </span>
 
           <div className='list__container__text settingCreator__checkbox'>
-            <input
-              id='unl_hearts-check'
-              className='check'
-              type='checkbox'
-              value={unlimitedHearts}
-              onChange={handleChangeUnlimitedHearts}
-              checked={unlimitedHearts}
-            />
-            <label
-              htmlFor='unl_hearts-check'
-              className='list__container__text__label settingCreator__label'
-            >
+            <label htmlFor="unl_hearts-check" className="form-control">
+              <input id='unl_hearts-check'
+                className='check'
+                type='checkbox'
+                value={unlimitedHearts}
+                onChange={handleChangeUnlimitedHearts}
+                checked={unlimitedHearts} />
               <span
                 htmlFor='unl_hearts-check'
                 className='settings__zone__title'
