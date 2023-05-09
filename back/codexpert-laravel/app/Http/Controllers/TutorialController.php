@@ -111,7 +111,8 @@ class TutorialController extends Controller
     
     /**
      * This function creates the relationship between the game and all the users from the lobby
-     * @param int $id is question id
+     * @param int $id is tutorial id
+     * @param string $token is the session token
      * @return object $tutorial contains id, statement, hint, inputs and outputs from the tutorial question. 
      */       
     public function getTutorialFromId(Request $request)
@@ -158,19 +159,59 @@ class TutorialController extends Controller
 
     /**
      * This function is triggered each time a user responds to a question from the game, it will check whether the user answers the question correctly or not
-     * @param bool $evalPassed determines whether the user has passed all the internal tests for the question correctly or not
-     * @param int $idQuestion is the id of the question that has been answered
-     * @param array $evalRes contains all the results from the evals (done in front) for each input test
+     * @param int $questionId is the id of the question that has been answered
      * @param int $idUser is the id from the user that is currently answering the question
-     * @return boolean $returnObject contains the boolean 'correct' which determines if the question has indeed been answered correctly, 'testsPassed' is the number of tests that have been passed, if 'correct' is true it will mean that all tests have been passed, 'user_game' contains all the information in the relationship between game and user, therefore here we can see information like 'hearts_remaining' (the amount of hearts remaining) and 'question_at' (which question is the user at now) and 'game' which contains the id from the winner and the game id.
+     * @return boolean $finishedTutorial determines if the user was on the last question therefore finished the tutorial
      */     
     private function updateTutorial($userId, $questionId)
     {
+        $finishedTutorial = false;
+
+        //Get the tutorial-user relationship
         $getUserTutorial = User_tutorial::where("user_id", $userId)
         ->where("tutorial_question", $questionId)
         ->first();
 
-        return ;
+        //Update to passed the current tutorial question
+        $getUserTutorial -> passed = true;
+        $getUserTutorial -> save();
+        
+        //Update to locked false the following question from the tutorial
+        $getAllTutorials = Tutorial_question::get();
+        $tutorialFound = false;
+        $i = 0; 
+        while ( (!$tutorialFound) && ($i < count($getAllTutorials)) ) {
+            if ( ($getAllTutorials[$i] -> id) == ($questionId) ) {
+                $tutorialFound = true;
+                $indexFromNextTutorial = $i++;
+            } else {
+                $i++;
+            }
+        }
+
+        if ($indexFromNextTutorial < count($getAllTutorials)) {
+            $nextTutorial = $getAllTutorials[$indexFromNextTutorial];
+            $getUserTutorial = User_tutorial::where("user_id", $userId)
+            ->where("tutorial_question", $nextTutorial -> id)
+            ->first();
+            $getUserTutorial -> locked = false;
+            $getUserTutorial -> save();
+        } else {
+            $finishedTutorial = true;
+        }
+
+        return $finishedTutorial;
+    }
+
+    /**
+     * This function is triggered each time a user responds to a question from the game, it will check whether the user answers the question correctly or not
+     * @param int $idUser is the id from the user that is currently answering the question
+     */     
+    private function updateUser($userId)
+    {
+        $user = User::where("user_id", $userId);
+        $user -> tutorialPassed = true;
+        $user -> save();
     }
 
     /**
@@ -186,6 +227,7 @@ class TutorialController extends Controller
         $returnObject = (object) [
             'correct'=> true,
             'testsPassed' => 0,
+            'finishedTutorial' => false,
         ];
         
         //If any of the tests doesn't pass we return that it's not a correct answer.
@@ -212,11 +254,15 @@ class TutorialController extends Controller
         $userId = $this->getUserId($request->token);
 
         if (($userId != null) && ($returnObject -> correct)) {
-            $tutorialPassed = $this->updateTutorial($userId, $request -> idQuestion);
+            $tutorialFinished = $this->updateTutorial($userId, $request -> idQuestion);
         }
         
-
-        //$userId = $this->updateUser($returnObject);
+        //If the tutorial has been finished we need to update the user
+        if ($tutorialFinished) {
+            $this->updateUser($userId);
+            $returnObject -> finishedTutorial = true;
+        }
+       
         return response() -> json($returnObject);
     }       
 }
