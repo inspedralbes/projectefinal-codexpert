@@ -1,17 +1,21 @@
 import '../styles/normalize.css'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 Timer.propTypes = {
-  time: PropTypes.number
+  time: PropTypes.number,
+  counter: PropTypes.number,
+  setCounter: PropTypes.func
 }
 
-function Timer({ time }) {
-  const [counter, setCounter] = useState(0)
-
+function Timer({ time, counter, setCounter }) {
   useEffect(() => {
     if (time > 0) {
-      let cont = time / 1000
+      let cont
+
+      cont = time / 1000
+      console.log(cont)
+
       const timer = setInterval(() => {
         setCounter(cont)
         cont--
@@ -24,9 +28,9 @@ function Timer({ time }) {
   }, [time])
 
   return (
-    <div>
-      {time > 0 ? <h1>{counter}</h1> : <></>}
-    </div>
+    <>
+      {time > 0 && counter > 0 ? <>{counter}</> : <></>}
+    </>
   )
 }
 
