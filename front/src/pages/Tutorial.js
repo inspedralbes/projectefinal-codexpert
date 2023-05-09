@@ -1,25 +1,59 @@
+/* eslint-disable */
+
 import '../styles/Tutorial.css'
 import routes from '../conn_routes'
 import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import CodeMirror from '../components/CodeMirror'
+import Cookies from 'universal-cookie'
 
 function Tutorial() {
   const location = useLocation()
+  const cookies = new Cookies()
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
+  const [error, setError] = useState('')
   const [qst, setQst] = useState({
     statement: '',
     inputs: [''],
     output: ''
   })
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (code !== '') {
+      const resultsEvalRecieved = []
+      let evalPassedBoolean = true
+      console.log(qst)
+      qst.inputs.forEach((inp) => {
+        let input = inp
+        try {
+          const res = eval(code)
+          resultsEvalRecieved.push(res)
+          setError('')
+        } catch (e) {
+          setError(e.message)
+          evalPassedBoolean = false
+        }
+      })
+      console.log(resultsEvalRecieved)
+
+      window.postMessage({
+        type: 'check_answer-emit',
+        resultsEval: resultsEvalRecieved,
+        evalPassed: evalPassedBoolean
+      }, '*')
+    }
+  }
+
   useEffect(() => {
-    const tutorialId = new FormData()
-    tutorialId.append('id', location.state.id)
+    const tutorialData = new FormData()
+    tutorialData.append('id', location.state.id)
+    tutorialData.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     fetch(routes.fetchLaravel + 'getTutorialFromId', {
       method: 'POST',
       mode: 'cors',
-      body: tutorialId,
+      body: tutorialData,
       credentials: 'include'
     })
       .then((response) => response.json())
@@ -57,10 +91,10 @@ function Tutorial() {
                 <h1>{qst.output}</h1>
               </div>
             </div>
-            <form className="editor">
+            <form className="editor" onSubmit={handleSubmit}>
               <CodeMirror code={code} setCode={setCode}></CodeMirror>
               <button
-                className="pixel-button tutorial__submit"
+                className="pixel-button tutorial__submit" disabled={code === ''}
               >
                 Submit
               </button>
