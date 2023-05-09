@@ -7,6 +7,10 @@
     --pixel-bg: #75b152;
 }
 
+.game {
+    overflow: hidden;
+}
+
 .game__container {
     border: 3px solid #fff;
     background-color: #fff;
@@ -14,6 +18,7 @@
     width: 100%;
     margin: 0 auto;
     height: 100vh;
+    overflow: hidden;
     display: grid;
     grid-template-columns: 0.7fr 1.6fr;
     grid-template-rows: 1fr;

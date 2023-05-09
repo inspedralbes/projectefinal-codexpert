@@ -118,7 +118,7 @@ function Game() {
   }, [])
 
   return (
-    <div>
+    <div className='game'>
       <img src={persiana} className='persiana' alt=""></img>
       <div className='game__container '>
         <div className='container__left'>
