@@ -224,6 +224,8 @@ class TutorialController extends Controller
      */     
     public function checkAnswer(Request $request)
     {
+        $tutorialFinished = false;
+        
         $returnObject = (object) [
             'correct'=> true,
             'testsPassed' => 0,
