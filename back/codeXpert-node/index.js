@@ -81,6 +81,9 @@ const maxSettings = {
 };
 
 socketIO.on("connection", (socket) => {
+  socket.on("prueba_phaser", (data) => {
+    console.log(data.message);
+  });
   socket.data.current_lobby = null;
 
   socket.join("chat-general");
@@ -484,7 +487,7 @@ function startOverTime(socket, time) {
     const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
     cont++;
 
-    if (cont === time || lobby?.members.length === lobby.users_finished) {
+    if (cont === time || lobby?.members.length === lobby?.users_finished) {
       endGame(socket);
       clearInterval(interval);
     };

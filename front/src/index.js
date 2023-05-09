@@ -23,7 +23,7 @@ import Ranking from './pages/Ranking'
 
 const cookies = new Cookies()
 
-if (cookies.get('token') !== undefined) {
+if (cookies.get('token') !== undefined && cookies.get('token') !== null) {
   window.postMessage({
     type: 'send_token-emit',
     token: cookies.get('token')

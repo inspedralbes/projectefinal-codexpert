@@ -112,7 +112,12 @@ function Game() {
 
   return (
     <div className='game'>
-      <img src={persiana} className='persiana' alt=""></img>
+      {overtimeDuration > 0
+        && <img src={persiana}
+          id='persiana'
+          className='persiana'
+          style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
+          alt=""></img>}
       <div className='game__container '>
         <div className='container__left'>
           <div className={playable ? 'started__game' : 'ended__game'}>

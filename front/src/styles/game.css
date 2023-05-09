@@ -311,7 +311,6 @@ h2 {
     width: 100%;
     z-index: 1;
     position: absolute;
-    animation: persianaAnim 20s linear 1;
 }
 
 @keyframes persianaAnim {
