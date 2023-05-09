@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import '../styles/normalize.css'
 import '../styles/game.css'
 import '../styles/Lobbies.css'
+import persiana from '../img/persiana.png'
 import { useNavigate } from 'react-router-dom'
 import ChatGame from '../components/ChatGame'
 import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
@@ -118,7 +119,7 @@ function Game() {
 
   return (
     <div>
-      <div className='pixelart-to-css'></div>
+      <img src={persiana} className='persiana' alt=""></img>
       <div className='game__container '>
         <div className='container__left'>
           {overtimeDuration != 0 ? <h1>Time remaining: <Timer time={overtimeDuration}></Timer></h1> : <></>}
@@ -134,6 +135,8 @@ function Game() {
             </div>
             <div className='game--grid'>
               <div className='editor--div'>
+                <div className='pixelart-to-css'></div>
+
                 <div className='editor__expected'>
                   <div className='game__expectedInput'>
                     <h2>Example input:</h2>

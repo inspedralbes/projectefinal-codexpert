@@ -66,13 +66,13 @@ function Campaign() {
         <br></br>
         <div className="profile__buttons">
           <button
-            className="pixel-button modalBtn"
+            className="pixel-button Camp modalBtn"
             onClick={() => handleChoiseOption('beginner')}
           >
             Beginner
           </button>
           <button
-            className="pixel-button modalBtn"
+            className="pixel-button Camp modalBtn"
             onClick={() => handleChoiseOption('expert')}
           >
             Expert
@@ -98,7 +98,7 @@ function Campaign() {
                         <img src={unlocked}></img>
                         <br></br>
                         <button
-                          className="pixel-button"
+                          className="pixel-button Camp"
                           onClick={() =>
                             navigate('/tutorial', { state: { id: element.id } })
                           }
@@ -110,7 +110,7 @@ function Campaign() {
                       <>
                         <img src={locked}></img>
                         <br></br>
-                        <button className="pixel-button locked">locked</button>
+                        <button className="pixel-button Camp locked">locked</button>
                       </>)}
                 </div>
               </li>

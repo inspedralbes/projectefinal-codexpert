@@ -37,14 +37,14 @@ function LandingPage() {
         <IconUser />
       )}
       {isUserLogged === false && (
-        <Link to='/login'>
-          <button>Login/Register</button>
+        <Link className='landingLogin' to='/login'>
+          Login/Register
         </Link>
       )}
       <div className='landingPage'>
         <Loader />
         <img src={logo} alt='codeXpert' className='landingPage__codexpert'></img>
-        <p>Welcome to <b>code<mark>X</mark>pert</b>, where your dreams come true.</p>
+        <p className='codexpert__intro'>Welcome to <b>code<mark>X</mark>pert</b>, where you can learn <b>JavaScript</b> while competing and having fun with your friends.</p>
         <br />
         {isUserLogged === '' && (
           <button className='pixel-button loading'>LOADING<Loader /></button>
