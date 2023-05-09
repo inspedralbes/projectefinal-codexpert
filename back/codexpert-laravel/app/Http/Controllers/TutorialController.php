@@ -55,7 +55,7 @@ class TutorialController extends Controller
 
         //Check if the user is logged.
         $userId = $this->getUserId($request->token);
-        $userExperience = $request->token;
+        $userExperience = $request->userExperience;
         //If not logged we get all the tutorial questions.
         if ($userId == null) { 
             //Get all the tutorial questions
@@ -84,7 +84,15 @@ class TutorialController extends Controller
                     if ($i == 0) {
                         $userTutorial -> locked = false;                
                     } else {
-                        $userTutorial -> locked = (strcmp($userExperience, "beginner") == 0) ? false : true;                   
+                        if ((strcmp($userExperience, "beginner") == 0) || (strcmp($userExperience, "expert") == 0) ) {
+                            $user = User::where('id', $userId) -> first();
+                            $user -> expertiseJS = $userExperience;
+                            $user -> save();
+                            $userTutorial -> locked = (strcmp($userExperience, "beginner") == 0) ? true : false;    
+                        } else {
+                            $userTutorial -> locked = true;
+                        }
+                                       
                     }
                     $userTutorial -> save();
                 }
@@ -183,7 +191,8 @@ class TutorialController extends Controller
         while ( (!$tutorialFound) && ($i < count($getAllTutorials)) ) {
             if ( ($getAllTutorials[$i] -> id) == ($questionId) ) {
                 $tutorialFound = true;
-                $indexFromNextTutorial = $i++;
+                $i++;
+                $indexFromNextTutorial = $i;
             } else {
                 $i++;
             }
@@ -209,7 +218,7 @@ class TutorialController extends Controller
      */     
     private function updateUser($userId)
     {
-        $user = User::where("user_id", $userId);
+        $user = User::where("id", $userId) -> first();
         $user -> tutorialPassed = true;
         $user -> save();
     }
@@ -231,7 +240,10 @@ class TutorialController extends Controller
             'testsPassed' => 0,
             'finishedTutorial' => false,
         ];
+        $results = [];
         
+        $results = json_decode($request -> evalRes);
+
         //If any of the tests doesn't pass we return that it's not a correct answer.
         if ($request -> evalPassed) {
             $outputs = [];
@@ -240,8 +252,8 @@ class TutorialController extends Controller
                 $outputs[$i] = unserialize($getOutputs[$i] -> output);
             }
 
-            foreach($outputs as $key => $val) {
-                if ($val == $request -> evalRes[$key]) {
+            for ($i=0; $i < count($outputs) ; $i++) { 
+                if ($outputs[$i] == $results[$i]) {
                     $returnObject -> testsPassed++;
                 } else {
                     $returnObject -> correct = false;

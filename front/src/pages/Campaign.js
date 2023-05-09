@@ -24,6 +24,7 @@ function Campaign() {
 
   const handleChoiseOption = (option) => {
     setModal(false)
+    console.log(option)
     localStorage.setItem('userExperience', option)
 
     const data = new FormData()
@@ -54,7 +55,7 @@ function Campaign() {
     } else {
       const data = new FormData()
       data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-      data.append('userExperience', localStorage.getItem('lvlUnlocked'))
+      data.append('userExperience', localStorage.getItem('userExperience'))
       fetch(routes.fetchLaravel + 'getTutorials', {
         method: 'POST',
         mode: 'cors',
@@ -86,6 +87,7 @@ function Campaign() {
         isOpen={modal}
       >
         <h1>What are you?</h1>
+        <p>Para adaptarnos a tus conocimientos primero de todo queremos saber si tienes los conocimientos minimos para poder competir con otras personas sin ir totalmente perdido. Si eliges principiante se te desbloqueará el primer nivel e iras desbloquenado mediante vayas completando más. Si eliges experto se te desbloquearan todos los niveles pero tendras que hacer la prueba final y así desbloquear el modo competitivo. (Si quieres que se guarden los niveles desbloquedos, te recomendamos que primero te crees una cuenta)</p>
         <br></br>
         <div className="profile__buttons">
           <button
