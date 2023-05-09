@@ -7,7 +7,13 @@
     flex-wrap: wrap;
     align-content: center;
     justify-content: flex-start;
-    align-items: center;
+}
+
+.campaign h2 {
+    font-size: 20px;
+    text-align: left;
+    margin-bottom: 0;
+    margin-left: 1%;
 }
 
 .pixel-button {
@@ -26,6 +32,7 @@
     color: #000000;
     position: relative;
     min-height: 100px;
+    background-color: #baffb1;
 }
 
 .pixel__container::after {
@@ -38,6 +45,7 @@
     right: -6px;
     top: 6px;
     width: 6px;
+    background-color: #baffb1;
 }
 
 .pixel__container::before {
@@ -50,6 +58,7 @@
     left: -6px;
     top: 6px;
     width: 6px;
+    background-color: #baffb1;
 }
 
 .pixel__container h1 {
@@ -61,6 +70,8 @@
     display: flex;
     padding: 0;
     list-style: none;
+    width: 94%;
+    margin: 0;
 }
 
 .levels__list li {
@@ -96,12 +107,13 @@
 
 .level__container {
     padding: 30px;
+    margin-top: 10px;
 }
 
 .level__container,
 .level__container::after,
 .level__container::before {
-    background-color: green;
+    background-color: #baffb1;
 }
 
 .level__container img {

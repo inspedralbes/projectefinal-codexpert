@@ -2,7 +2,8 @@ import '../styles/normalize.css'
 import React, { useState, useEffect } from 'react'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
-import { Link, useNavigate } from 'react-router-dom' // Rutas
+// import { Link, useNavigate } from 'react-router-dom' // Rutas
+import { Link } from 'react-router-dom' // Rutas
 import Eye from '../components/Eye'
 
 function Login() {
@@ -11,7 +12,7 @@ function Login() {
   const [password, setPassword] = useState('')
   const [errorText, setErrorText] = useState('')
   const cookies = new Cookies()
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   useEffect(() => {
     if (login !== 0) {
@@ -34,7 +35,8 @@ function Login() {
               type: 'send_token-emit',
               token: cookies.get('token')
             }, '*')
-            navigate('/lobbies')
+
+            // navigate('/lobbies')
           } else {
             setErrorText(data.message)
           }

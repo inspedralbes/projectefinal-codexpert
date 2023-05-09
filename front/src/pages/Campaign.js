@@ -4,6 +4,7 @@ import routes from '../conn_routes'
 import Modal from 'react-modal'
 import unlocked from '../img/campaign/unlocked.png'
 import locked from '../img/campaign/locked.png'
+import success from '../img/campaign/success.png'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import Cookies from 'universal-cookie'
@@ -30,16 +31,16 @@ function Campaign() {
     const data = new FormData()
     data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     data.append('userExperience', option)
-    fetch(routes.fetchLaravel + 'getTutorials', {
+    fetch(routes.fetchLaravel + 'setExpertise', {
       method: 'POST',
       mode: 'cors',
       body: data,
       credentials: 'include'
     })
       .then((response) => response.json())
-      .then((data) => {
-        setTutorialList(data)
+      .then(() => {
         setUserExperience(option)
+        getTutorials()
       })
     if (option === 'beginner') {
       localStorage.setItem('lvlUnlocked', 0)
@@ -49,24 +50,29 @@ function Campaign() {
     }
   }
 
+  const getTutorials = () => {
+    const data = new FormData()
+    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    data.append('userExperience', localStorage.getItem('userExperience'))
+    fetch(routes.fetchLaravel + 'getTutorials', {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTutorialList(data)
+        console.log(data)
+        setUserExperience(localStorage.getItem('lvlUnlocked'))
+      })
+  }
+
   useEffect(() => {
     if (localStorage.getItem('userExperience') === null) {
       setModal(true)
     } else {
-      const data = new FormData()
-      data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-      data.append('userExperience', localStorage.getItem('userExperience'))
-      fetch(routes.fetchLaravel + 'getTutorials', {
-        method: 'POST',
-        mode: 'cors',
-        body: data,
-        credentials: 'include'
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setTutorialList(data)
-          setUserExperience(localStorage.getItem('lvlUnlocked'))
-        })
+      getTutorials()
     }
   }, [])
 
@@ -107,7 +113,7 @@ function Campaign() {
       <div className="pixel__container">
         <h1>Campaign</h1>
       </div>
-      <h2></h2>
+      <h2>Tutorial:</h2>
       <ul className="levels__list">
         {userExperience !== ''
           ? tutorialList.map((element, index) => {
@@ -117,10 +123,19 @@ function Campaign() {
                   <h3>{element.title}</h3>
                 </div>
                 <div className="pixel__container level__container">
-                  {lvlUnlocked >= index
+                  {lvlUnlocked >= index || element.locked === 0
                     ? (
                       <>
-                        <img src={unlocked}></img>
+                        {element.passed
+                          ? (
+                            <>
+                              <img src={success}></img>
+                            </>)
+                          : (
+                            <>
+                              <img src={unlocked}></img>
+                            </>)
+                        }
                         <br></br>
                         <button
                           className="pixel-button"

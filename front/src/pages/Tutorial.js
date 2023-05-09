@@ -37,11 +37,11 @@ function Tutorial() {
         }
       })
 
-      console.log(resultsEvalRecieved);
+      console.log(resultsEvalRecieved)
 
       const checkAnswer = new FormData()
       checkAnswer.append('idQuestion', location.state.id)
-      checkAnswer.append('evalRes', JSON.stringify(resultsEvalRecieved));
+      checkAnswer.append('evalRes', JSON.stringify(resultsEvalRecieved))
       checkAnswer.append('evalPassed', evalPassedBoolean)
       checkAnswer.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
       fetch(routes.fetchLaravel + 'checkTutorialAnswer', {
