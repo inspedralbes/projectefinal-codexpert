@@ -326,4 +326,63 @@ class TutorialController extends Controller
        
         return response() -> json($returnObject);
     }       
+
+    /**
+     * This function will relate a user that has logged in/registered to their tutorial data, this will be triggered if the user has completed some questions of the tutorial or the whole tutorial
+     * @param string $checkToken is the session token
+     * @param array $tutorialsAnswered is an array of tutorial ids, showing which of the tutorials the user has answered correctly.
+     * @param bool $tutorialPassed is a boolean that shows if the user has passed the tutorial
+     * @param string $userExperience to set if the user is a beginner or an expert  
+     * @return object $returnObject contains the boolean valid that shows if everything was ok to relate the user to the tutorial or not. If not it will mean there has been an issue with the token
+     */  
+    public function setUserTutorial(Request $request)
+    {
+        $returnObject = (object)[
+            "valid" => false,
+        ];
+
+        //Check if given token is valid and corresponds to the user id
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            //Check if user had already started the tutorial or if we need to create it
+            $userTutorialQuestionsFound = User_tutorial::where("user_id", $userId) -> count();
+            if ($userTutorialQuestionsFound == 0) { 
+                $this->createTutorial($userId, $request -> userExperience);
+            }
+
+            //Update each tutorial that the user has completed. Set to unlocked the following question.
+            $getUserTutorial = User_tutorial::where("user_id", $userId)->get();
+            for ($i=0; $i < count($getUserTutorial); $i++) { 
+                for ($j=0; $j < count($request -> tutorialsAnswered); $j++) { 
+                    if ($getUserTutorial[$i] -> tutorial_question == $request -> tutorialsAnswered[$j]) {
+                        $getUserTutorial = User_tutorial::where("id", $getUserTutorial[$i] -> id)->first();
+                        $getUserTutorial->passed = true;
+                        $getUserTutorial->locked = false;
+                        $getUserTutorial->save();
+
+                        if (($i + 1) < (count($getUserTutorial))) {
+                            $getFollowingUserTutorial = User_tutorial::where("id", $getUserTutorial[$i + 1] -> id)->first();
+                            $getFollowingUserTutorial->locked = false;
+                            $getFollowingUserTutorial->save();
+                        }
+
+                    }
+                }
+
+            }
+                      
+            //If the tutorial has been finished we need to update the user
+            if ($request -> tutorialPassed) {
+                $this->updateUser($userId);
+                $returnObject -> finishedTutorial = true;
+            }
+
+            $returnObject -> valid = true;
+        }
+
+        return response() -> json($returnObject);
+    }       
+
+    
 }
