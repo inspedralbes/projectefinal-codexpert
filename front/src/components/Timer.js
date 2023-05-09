@@ -11,7 +11,11 @@ Timer.propTypes = {
 function Timer({ time, counter, setCounter }) {
   useEffect(() => {
     if (time > 0) {
-      let cont = time / 1000
+      let cont
+
+      cont = time / 1000
+      console.log(cont)
+
       const timer = setInterval(() => {
         setCounter(cont)
         cont--
@@ -25,7 +29,7 @@ function Timer({ time, counter, setCounter }) {
 
   return (
     <>
-      {time > 0 ? <>{counter}</> : <></>}
+      {time > 0 && counter > 0 ? <>{counter}</> : <></>}
     </>
   )
 }

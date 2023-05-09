@@ -10,6 +10,8 @@ import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
 import CodeMirror from '../components/CodeMirror'
 import Timer from '../components/Timer'
 
+const Timer2 = Timer;
+
 function Game() {
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
@@ -67,7 +69,7 @@ function Game() {
     if (code !== '') {
       const resultsEvalRecieved = []
       let evalPassedBoolean = true
-      // console.log(qst)
+
       qst.inputs.forEach((inp) => {
         let input = inp
         try {
@@ -79,7 +81,6 @@ function Game() {
           evalPassedBoolean = false
         }
       })
-      // console.log(resultsEvalRecieved)
 
       window.postMessage({
         type: 'check_answer-emit',
@@ -113,7 +114,9 @@ function Game() {
       <div className='game__container '>
 
         <div className='container__left'>
-          {overtimeDuration != 0 && playable ? <h1>Overtime duration left: <Timer time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
+          <div className={playable ? 'started__game' : 'ended__game'}>
+            {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
+          </div>
           <ConnectedUsersInGame></ConnectedUsersInGame>
           <ChatGame className='chatGame__chatbox'></ChatGame>
         </div>
@@ -156,7 +159,6 @@ function Game() {
           {!playable && <div className='game__results'>
             <h1 className='game__yourResult'>{result}</h1>
             <h2>{winnerMessage}</h2>
-            {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
             <p className='game__buttons'>
               <button className='pixel-button game__button' onClick={goBackToLobby}>GO BACK TO LOBBY</button>
 

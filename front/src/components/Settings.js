@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import '../styles/index.css'
 
 Settings.propTypes = {
   fetchSettings: PropTypes.bool,
@@ -59,53 +60,41 @@ function Settings({ fetchSettings, errorMessage }) {
         {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
         <form className='AddCategory' autoComplete='off'>
           <div className='list__container__text settingCreator__checkbox'>
-            <input
-              id='overtime-check'
-              className='check'
-              type='checkbox'
-              value={willHaveOvertime}
-              onChange={handleChangeWillHaveOvertime}
-              checked={willHaveOvertime}
-            />
-            <label
-              htmlFor='overtime-check'
-              className='list__container__text__label settingCreator__label'
-            >
+            <label htmlFor='check' className="form-control">
+              <input id='check' type="checkbox" name="checkbox" value={willHaveOvertime}
+                onChange={handleChangeWillHaveOvertime}
+                checked={willHaveOvertime} />
               <span
                 htmlFor='overtime-check'
                 className='settings__zone__title'
               >You want to have an overtime?</span>
             </label>
+
           </div>
 
           <span className='addCategory__formSpanTA'>
             <p className='settings__zone__title'>Overtime duration (seconds)</p>
-            <input type='number' value={overtimeDuration} onChange={handleChangeOvertimeDuration} disabled={!willHaveOvertime}/>
+            <input className='profile__input' type='number' value={overtimeDuration} onChange={handleChangeOvertimeDuration} disabled={!willHaveOvertime} />
           </span>
 
           <span className='addCategory__formSpanTA'>
             <p className='settings__zone__title'>Amount of questions:</p>
-            <input type='number' value={questionAmount} onChange={handleChangeQuestionAmount} />
+            <input className='profile__input' type='number' value={questionAmount} onChange={handleChangeQuestionAmount} />
           </span>
 
           <span className='addCategory__formSpanTA'>
             <p className='settings__zone__title'>Amount of hearts per player:</p>
-            <input type='number' value={heartAmount} onChange={handleChangeHeartAmount} />
+            <input className='profile__input' type='number' value={heartAmount} onChange={handleChangeHeartAmount} />
           </span>
 
           <div className='list__container__text settingCreator__checkbox'>
-            <input
-              id='unl_hearts-check'
-              className='check'
-              type='checkbox'
-              value={unlimitedHearts}
-              onChange={handleChangeUnlimitedHearts}
-              checked={unlimitedHearts}
-            />
-            <label
-              htmlFor='unl_hearts-check'
-              className='list__container__text__label settingCreator__label'
-            >
+            <label htmlFor="unl_hearts-check" className="form-control">
+              <input id='unl_hearts-check'
+                className='check'
+                type='checkbox'
+                value={unlimitedHearts}
+                onChange={handleChangeUnlimitedHearts}
+                checked={unlimitedHearts} />
               <span
                 htmlFor='unl_hearts-check'
                 className='settings__zone__title'

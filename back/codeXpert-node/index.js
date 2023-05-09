@@ -343,6 +343,9 @@ socketIO.on("connection", (socket) => {
           sendUserList(socket.data.current_lobby);
           // Only passes if not dead
           if (userGame.finished) {
+            lobbies.forEach(lobby => {
+              lobby.users_finished++;
+            });
             // Finish but still don't know if they won
             if (game.winner_id !== undefined && game.winner_id === socket.data.userId) {
               setWinnerId(socket.data.userId);
@@ -472,14 +475,20 @@ socketIO.on("connection", (socket) => {
   });
 });
 
-async function startOverTime(socket, time) {
-  time *= 1000;
+function startOverTime(socket, time) {
+  socketIO.to(socket.data.current_lobby).emit("overtime_starts", { time: (time * 1000) });
 
-  socketIO.to(socket.data.current_lobby).emit("overtime_starts", { time });
+  let cont = -1;
 
-  setTimeout(() => {
-    endGame(socket);
-  }, time);
+  const interval = setInterval(() => {
+    const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
+    cont++;
+
+    if (cont === time || lobby?.members.length === lobby.users_finished) {
+      endGame(socket);
+      clearInterval(interval);
+    };
+  }, 1000);
 }
 
 async function endGame(socket) {
