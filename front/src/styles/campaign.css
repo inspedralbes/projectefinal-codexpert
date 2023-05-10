@@ -120,3 +120,8 @@
     width: 50px;
     margin-bottom: 20px;
 }
+
+.lobbies-button {
+    display: flex;
+    justify-content: center;
+}
