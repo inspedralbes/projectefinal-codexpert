@@ -10,8 +10,8 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
-use PhpParser\Node\Stmt\For_;
-
+use Illuminate\Support\Facades\Validator;
+use Laravel\Sanctum\PersonalAccessToken;
 class GameController extends Controller
 {
     /**
@@ -160,33 +160,21 @@ class GameController extends Controller
     {
         $returnObject = (object) [
             'correct'=> true,
-            'testsPassed' => 0,
             'user_game'=> null,
             'game' => null
         ];
 
-        //If any of the tests doesn't pass we return that it's not a correct answer.
-        if ($request -> evalPassed) {
-            $outputs = [];
-            $getOutputs = Test_output::where('question_id', $request -> idQuestion)->get();
-            for ($i = 0; $i < count($getOutputs); $i++) { 
-                $outputs[$i] = unserialize($getOutputs[$i] -> output);
-            }
-
-            foreach($outputs as $key => $val) {
-                if ($val == $request -> evalRes[$key]) {
-                    $returnObject -> testsPassed++;
-                } else {
-                    $returnObject -> correct = false;
-                }
-            }
-
-        } else {
-            $returnObject -> correct = false;
+        //Get the outputs and check if the tests are correct
+        $outputs = [];
+        $getOutputs = Test_output::where('question_id', $request -> idQuestion)->get();
+        for ($i = 0; $i < count($getOutputs); $i++) { 
+            $outputs[$i] = unserialize($getOutputs[$i] -> output);
         }
+        $correct = $this->checkEval($request -> evalPassed, $outputs, $request -> evalRes);
+        $returnObject -> correct = $correct;
 
+        //Get the game being played and update accordingly
         $game = Game::where('id', $request -> idGame) -> first();
-
         $user_game = User_game::where('game_id', $request -> idGame) 
         -> where ('user_id', $request -> idUser)
         -> first();
@@ -358,6 +346,106 @@ class GameController extends Controller
         }
         
         return response() -> json($ranking);
+    }     
+
+    /**
+     * This function checks with the token recieved if the token is valid on the database, if it is it will return the user id
+     * @param string $checkToken is the session token
+     * @return int $userId is the user id found linked to the token in the database
+     */     
+    private function getUserId($checkToken)
+    {
+        $userId = null;
+        //Check if we have recieved a token
+        if ( !($checkToken == null || $checkToken == "" || $checkToken == "null") ) {
+            
+            //Return if the user is logged in or not from the token
+            [$id, $token] = explode('|', $checkToken, 2);
+            $accessToken = PersonalAccessToken::find($id);
+
+            if ($accessToken != null) {
+                if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                    $userId = $accessToken->tokenable_id;
+                }
+            }
+
+        }
+
+        return $userId;
+    }  
+
+    /**
+     * This function recievs the statement for the next question and validates that it's correct
+     * @param string $statement is the statement that will be validated
+     * @return bool $canCreate is the boolean after the statement validation, true means it's valid
+     */     
+    public function checkStatement($statement)
+    {
+        $canCreate = false;
+        if ($statement != null) {
+            if ( (strlen($statement) > 3) && (strlen($statement) <= 500) ) {
+                $canCreate = true;
+
+            }
+        }
+
+        return $canCreate;
+    }  
+
+    /**
+     * This function recievs the inputs and if the eval has been passed, outputs, inputs and the result from the evals. It will check if there are enough tests, if the tests are valid and if the tests are repeated it will return which.
+     * @param bool $evalPassed returns if the eval has been passed on frontend
+     * @return array $outputs is the array of the outputs that the user wrote
+     * @return array $evalRes is the array containing the results of each eval
+     */     
+    private function checkEval($evalPassed, $outputs, $evalRes)
+    {
+        $correct = false;
+        $testsPassed = 0;
+
+        //If any of the tests doesn't pass we return that it's not a correct answer.
+        if ($evalPassed) {
+            foreach($outputs as $index => $outputValue) {
+                if ($outputValue == $evalRes[$index]) {
+                    $testsPassed++;
+                }
+            }
+        }
+
+        if ($testsPassed >= count($outputs)) {
+            $correct = true;
+        }
+
+        return $correct;
+    }     
+
+    /**
+     * This function will validate and create the given question and relate it to the logged in user.
+     * @param int $id is the game id from the database.
+     * @return array $ranking contains an ordered list of players that have played the game.
+     */      
+    public function addNewQuestion(Request $request)
+    {
+        $returnObject = (object) [
+            'created' => false,
+            'loggedIn' => false
+        ];
+
+        //Check if the user is logged in, if not we don't create and notify front end that the user is not logged in
+        $userId = $this->getUserId($request -> token);
+        
+        //Decode the given arrays
+        $outputs = json_decode($request -> outputs);
+        $evalRes = json_decode($request -> evalRes);
+
+        if ($userId != null) {
+            //If logged in we run all the validations
+            $validStatement = $this->checkStatement($request -> statement);
+            $validInputsOutputs = $this->checkEval($request -> evalPassed, $request -> inputs, $request -> outputs);
+        }
+        
+
+        return response() -> json($returnObject);
     }     
      
 }

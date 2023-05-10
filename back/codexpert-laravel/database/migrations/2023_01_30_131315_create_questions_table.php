@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->longText('statement');
             $table->longText('hint') -> nullable();
+            $table->integer('creatorId')->nullable();
+            $table->integer('likes')->default(0);
             $table->timestamps();
         });
     }
