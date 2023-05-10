@@ -894,3 +894,12 @@
     width: 100%;
     transform: translate(0, -40px);
 }
+
+.lobbyModal__buttons {
+    display: flex;
+}
+
+.lobby-modalBtn {
+    margin: 0 auto;
+    width: fit-content;
+}

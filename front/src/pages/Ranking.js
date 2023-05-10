@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import RankingPodium from '../components/RankingPodium'
 import RankingTable from '../components/RankingTable'
 import ShareRanking from '../components/ShareRanking'
@@ -17,6 +18,7 @@ function RankingPage() {
     resultMessage: ''
   })
   const [dataLoaded, setDataLoaded] = useState(false)
+  const navigate = useNavigate()
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -34,6 +36,10 @@ function RankingPage() {
     }
   }
 
+  function goBackToLobby() {
+    navigate('/lobbies')
+  }
+
   useEffect(() => {
     window.addEventListener('message', handleMessage)
 
@@ -44,6 +50,13 @@ function RankingPage() {
 
   return (
     <>
+      <button id='goBackToLobby__button' onClick={goBackToLobby}>
+        <span className='circle' aria-hidden='true'>
+          <span className='icon arrow'></span>
+        </span>
+        <span className='button-text'>GO BACK TO LOBBY
+        </span>
+      </button>
       {dataLoaded
         ? <main>
           <div className='game__yourResults yourResults'>
