@@ -10,7 +10,6 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
-use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\PersonalAccessToken;
 class GameController extends Controller
 {
@@ -379,7 +378,7 @@ class GameController extends Controller
      * @param string $statement is the statement that will be validated
      * @return bool $canCreate is the boolean after the statement validation, true means it's valid
      */     
-    public function checkStatement($statement)
+    private function checkStatement($statement)
     {
         $canCreate = false;
         if ($statement != null) {
@@ -395,8 +394,9 @@ class GameController extends Controller
     /**
      * This function recievs the inputs and if the eval has been passed, outputs, inputs and the result from the evals. It will check if there are enough tests, if the tests are valid and if the tests are repeated it will return which.
      * @param bool $evalPassed returns if the eval has been passed on frontend
-     * @return array $outputs is the array of the outputs that the user wrote
-     * @return array $evalRes is the array containing the results of each eval
+     * @param array $outputs is the array of the outputs that the user wrote
+     * @param array $evalRes is the array containing the results of each eval
+     * @return bool $correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
      */     
     private function checkEval($evalPassed, $outputs, $evalRes)
     {
@@ -437,6 +437,7 @@ class GameController extends Controller
         //Decode the given arrays
         $outputs = json_decode($request -> outputs);
         $evalRes = json_decode($request -> evalRes);
+        $inputs = json_decode($request -> evalRes);
 
         if ($userId != null) {
             //If logged in we run all the validations
