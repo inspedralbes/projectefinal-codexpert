@@ -123,6 +123,7 @@ function Register() {
               '*'
             )
             sendTutorialLocalStorageData(data.token)
+            localStorage.clear()
             navigate('/avatarMaker')
           } else {
             console.log(data)

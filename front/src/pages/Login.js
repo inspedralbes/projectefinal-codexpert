@@ -58,7 +58,7 @@ function Login() {
             )
 
             sendTutorialLocalStorageData(data.token)
-
+            localStorage.clear()
             navigate('/lobbies')
           } else {
             setErrorText(data.message)

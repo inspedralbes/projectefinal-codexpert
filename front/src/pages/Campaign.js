@@ -123,10 +123,14 @@ function Campaign() {
                   <h3>{element.title}</h3>
                 </div>
                 <div className="pixel__container level__container">
-                  {lvlUnlocked >= index || element.locked === 0
+                  {lvlUnlocked >= index || element.locked === 0 || JSON.parse(
+                    localStorage.getItem('tutorialsAnswered')
+                  ).includes(element.id - 1)
                     ? (
                       <>
-                        {element.passed
+                        {element.passed || JSON.parse(
+                          localStorage.getItem('tutorialsAnswered')
+                        ).includes(element.id)
                           ? (
                             <>
                               <img src={success}></img>
