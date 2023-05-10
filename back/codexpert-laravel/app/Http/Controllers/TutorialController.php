@@ -355,8 +355,7 @@ class TutorialController extends Controller
 
             //Update each tutorial that the user has completed. Set to unlocked the following question.
             $getUserTutorial = User_tutorial::where("user_id", $userId)->get();
-            $getUserTutorialLength = User_tutorial::where("user_id", $userId)->count();
-            for ($i=0; $i < $getUserTutorialLength; $i++) { 
+            for ($i=0; $i < count($getUserTutorial); $i++) { 
                 for ($j=0; $j < count($tutorialsAnswered); $j++) { 
                     if ($getUserTutorial[$i] -> tutorial_question == $tutorialsAnswered[$j]) {
                         $currentTutorial = User_tutorial::where("id", $getUserTutorial[$i] -> id)->first();
@@ -364,7 +363,7 @@ class TutorialController extends Controller
                         $currentTutorial->locked = false;
                         $currentTutorial->save();
 
-                        if (($i + 1) < ($getUserTutorialLength)) {
+                        if (($i + 1) < (count($getUserTutorial))) {
                             $getFollowingUserTutorial = User_tutorial::where("id", $getUserTutorial[$i + 1] -> id)->first();
                             $getFollowingUserTutorial->locked = false;
                             $getFollowingUserTutorial->save();
