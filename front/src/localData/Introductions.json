@@ -1,0 +1,13 @@
+{
+    "introductions": [
+       { "introduction": [
+            "Variables are used to store values, to declare variables we use the word let followed by the variable name and the value we want to store. For example: let example = 3, this would mean that example is worth 3."
+        ]},
+      { "introduction": [
+            "We use Arithmetic Operators to perform operations such as addition, subtraction, multiplication… Now you will learn the ones that are used the most!\n Addition, Subtraction, Increment and Decrement\n  - The addition operator is (+). For example: x + y;\n  - The subtraction operator is (-). For example: x - y;
+To increment a number by one we use the operator (++). For example: x++ is the same as x = x + 1;
+To decrement a number by one be user the operator (--). For example: x--  is the same as x = x - 1;",
+            "awa"
+        ]}
+    ]
+}

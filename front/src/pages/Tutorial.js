@@ -95,23 +95,27 @@ function Tutorial() {
   }
 
   useEffect(() => {
-    const tutorialData = new FormData()
-    tutorialData.append('id', location.state.id)
-    tutorialData.append(
-      'token',
-      cookies.get('token') !== undefined ? cookies.get('token') : null
-    )
-    fetch(routes.fetchLaravel + 'getTutorialFromId', {
-      method: 'POST',
-      mode: 'cors',
-      body: tutorialData,
-      credentials: 'include'
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        setQst(data)
+    if (location.state === null) {
+      navigate('/campaign')
+    } else {
+      const tutorialData = new FormData()
+      tutorialData.append('id', location.state.id)
+      tutorialData.append(
+        'token',
+        cookies.get('token') !== undefined ? cookies.get('token') : null
+      )
+      fetch(routes.fetchLaravel + 'getTutorialFromId', {
+        method: 'POST',
+        mode: 'cors',
+        body: tutorialData,
+        credentials: 'include'
       })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data)
+          setQst(data)
+        })
+    }
   }, [])
 
   return (

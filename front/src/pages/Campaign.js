@@ -15,6 +15,7 @@ function Campaign() {
   const [modal, setModal] = useState(false)
   const [tutorialList, setTutorialList] = useState([])
   const [userExperience, setUserExperience] = useState('')
+  const [tutorialsAnswered, setTutorialsAnswered] = useState([])
   const [lvlUnlocked, setLvlUnlocked] = useState(
     localStorage.getItem('lvlUnlocked') === null
       ? 0
@@ -25,7 +26,6 @@ function Campaign() {
 
   const handleChoiseOption = (option) => {
     setModal(false)
-    console.log(option)
     localStorage.setItem('userExperience', option)
 
     const data = new FormData()
@@ -41,6 +41,7 @@ function Campaign() {
       .then(() => {
         setUserExperience(option)
         getTutorials()
+        setTutorialsAnswered(JSON.parse(localStorage.getItem('tutorialsAnswered')))
       })
     if (option === 'beginner') {
       localStorage.setItem('lvlUnlocked', 0)
@@ -97,13 +98,13 @@ function Campaign() {
         <br></br>
         <div className="profile__buttons">
           <button
-            className="pixel-button Camp modalBtn"
+            className="pixel-button modalBtn"
             onClick={() => handleChoiseOption('beginner')}
           >
             Beginner
           </button>
           <button
-            className="pixel-button Camp modalBtn"
+            className="pixel-button modalBtn"
             onClick={() => handleChoiseOption('expert')}
           >
             Expert
@@ -123,14 +124,10 @@ function Campaign() {
                   <h3>{element.title}</h3>
                 </div>
                 <div className="pixel__container level__container">
-                  {lvlUnlocked >= index || element.locked === 0 || JSON.parse(
-                    localStorage.getItem('tutorialsAnswered')
-                  ).includes(element.id - 1)
+                  {lvlUnlocked >= index || element.locked === 0 || tutorialsAnswered.includes(element.id - 1)
                     ? (
                       <>
-                        {element.passed || JSON.parse(
-                          localStorage.getItem('tutorialsAnswered')
-                        ).includes(element.id)
+                        {element.passed || tutorialsAnswered.includes(element.id - 1)
                           ? (
                             <>
                               <img src={success}></img>
@@ -142,7 +139,7 @@ function Campaign() {
                         }
                         <br></br>
                         <button
-                          className="pixel-button Camp"
+                          className="pixel-button"
                           onClick={() =>
                             navigate('/tutorial', { state: { id: element.id } })
                           }
@@ -154,7 +151,7 @@ function Campaign() {
                       <>
                         <img src={locked}></img>
                         <br></br>
-                        <button className="pixel-button Camp locked">locked</button>
+                        <button className="pixel-button locked">locked</button>
                       </>)}
                 </div>
               </li>
