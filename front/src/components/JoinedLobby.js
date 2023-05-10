@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 import Settings from './Settings'
 import Modal from 'react-modal'
 import PropTypes from 'prop-types'
+import cross from '../img/cross.png'
 
 Modal.setAppElement('body')
 
@@ -19,6 +20,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
+  const [saveSettings, setSaveSettings] = useState(0)
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -27,6 +29,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
       case 'starting_errors-event':
         if (eventData.valid) {
           if (!sent) {
+            setFetchSettings(false)
             window.postMessage({
               type: 'start_game-emit'
             }, '*')
@@ -37,9 +40,6 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
 
       case 'lobby_settings-event':
         setFetchSettings(true)
-        break
-
-      default:
         break
     }
   }
@@ -60,6 +60,20 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
     setLobbyName('')
     setLobbyList([])
   }
+
+  const saveChangedSettings = () => {
+    setSaveSettings(saveSettings + 1)
+    setShowModal(false)
+  }
+
+  const closeModalWithoutSaving = () => {
+    setSaveSettings(0)
+    setShowModal(false)
+  }
+
+  useEffect(() => {
+    if (!showModal) setSaveSettings(0)
+  }, [showModal])
 
   useEffect(() => {
     window.addEventListener('message', handleMessage)
@@ -90,14 +104,22 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
                 bottom: 'auto',
                 marginRight: '-50%',
                 transform: 'translate(-50%, -50%)',
-                padding: '5%'
+                padding: '1%',
+                width: '60%',
+                height: '90%'
               }
             }}
-            onRequestClose={() => setShowModal(false)}
+            onRequestClose={() => closeModalWithoutSaving()}
             shouldCloseOnOverlayClick={true}
             isOpen={showModal}
           >
-            <Settings fetchSettings={fetchSettings} errorMessage={errorMessage}></Settings>
+            <button className='cross' onClick={() => closeModalWithoutSaving()}><img src={cross} alt='X' height={'30px'}></img></button>
+
+            <Settings fetchSettings={fetchSettings} errorMessage={errorMessage} saveSettings={saveSettings}></Settings>
+            <br></br>
+            <div className='lobbyModal__buttons'>
+              <button className='pixel-button lobby-modalBtn' onClick={() => saveChangedSettings()}>Save</button>
+            </div>
           </Modal>
         </>
         : <></>}
