@@ -6,11 +6,14 @@ import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import CodeMirror from '../components/CodeMirror'
 import Cookies from 'universal-cookie'
+import { useNavigate } from 'react-router-dom' // Rutas
 
 function Tutorial() {
   const location = useLocation()
   const cookies = new Cookies()
-  const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
+  const navigate = useNavigate()
+  const defaultCode =
+    'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
   const [error, setError] = useState('')
   const [qst, setQst] = useState({
@@ -20,6 +23,7 @@ function Tutorial() {
   })
 
   const handleSubmit = (e) => {
+    let tutorialsId = []
     e.preventDefault()
     if (code !== '') {
       const resultsEvalRecieved = []
@@ -37,13 +41,14 @@ function Tutorial() {
         }
       })
 
-      console.log(resultsEvalRecieved)
-
       const checkAnswer = new FormData()
       checkAnswer.append('idQuestion', location.state.id)
       checkAnswer.append('evalRes', JSON.stringify(resultsEvalRecieved))
       checkAnswer.append('evalPassed', evalPassedBoolean)
-      checkAnswer.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+      checkAnswer.append(
+        'token',
+        cookies.get('token') !== undefined ? cookies.get('token') : null
+      )
       fetch(routes.fetchLaravel + 'checkTutorialAnswer', {
         method: 'POST',
         mode: 'cors',
@@ -52,7 +57,39 @@ function Tutorial() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
+          if (data.correct) {
+            let answered = false
+            if (localStorage.getItem('tutorialsAnswered') !== null) {
+              let tutorials = JSON.parse(
+                localStorage.getItem('tutorialsAnswered')
+              )
+              for (let i = 0; i < tutorials.length; i++) {
+                if (tutorials[i] === location.state.id) {
+                  answered = true
+                }
+              }
+              if (!answered) {
+                tutorialsId = JSON.parse(
+                  localStorage.getItem('tutorialsAnswered')
+                )
+              }
+            }
+            tutorialsId.push(location.state.id)
+            tutorialsId.sort()
+            localStorage.setItem(
+              'tutorialsAnswered',
+              JSON.stringify(tutorialsId)
+            )
+
+            if (location.state.id === 6) {
+              localStorage.setItem(
+                'tutorialPassed',
+                JSON.stringify(true)
+              )
+            }
+
+            navigate('/campaign')
+          }
         })
     }
   }
@@ -60,7 +97,10 @@ function Tutorial() {
   useEffect(() => {
     const tutorialData = new FormData()
     tutorialData.append('id', location.state.id)
-    tutorialData.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    tutorialData.append(
+      'token',
+      cookies.get('token') !== undefined ? cookies.get('token') : null
+    )
     fetch(routes.fetchLaravel + 'getTutorialFromId', {
       method: 'POST',
       mode: 'cors',
@@ -78,7 +118,10 @@ function Tutorial() {
     <div className="tutorial__container">
       <div>
         <h1>Introduction</h1>
-        <p>Lorem Ipsum et sit lorem apsum miau asdsa dsadsa dsad sad sa dsadsa dsa dsad asdsa dsa</p>
+        <p>
+          Lorem Ipsum et sit lorem apsum miau asdsa dsadsa dsad sad sa dsadsa
+          dsa dsad asdsa dsa
+        </p>
       </div>
       <div>
         <div className="tutorial__statement">
@@ -105,7 +148,8 @@ function Tutorial() {
             <form className="editor" onSubmit={handleSubmit}>
               <CodeMirror code={code} setCode={setCode}></CodeMirror>
               <button
-                className="pixel-button tutorial__submit" disabled={code === ''}
+                className="pixel-button tutorial__submit"
+                disabled={code === ''}
               >
                 Submit
               </button>

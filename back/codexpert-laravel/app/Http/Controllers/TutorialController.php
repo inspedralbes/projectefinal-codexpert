@@ -337,6 +337,8 @@ class TutorialController extends Controller
      */  
     public function setUserTutorial(Request $request)
     {
+        $tutorialsAnswered = json_decode($request -> tutorialsAnswered);
+
         $returnObject = (object)[
             "valid" => false,
         ];
@@ -353,15 +355,16 @@ class TutorialController extends Controller
 
             //Update each tutorial that the user has completed. Set to unlocked the following question.
             $getUserTutorial = User_tutorial::where("user_id", $userId)->get();
-            for ($i=0; $i < count($getUserTutorial); $i++) { 
-                for ($j=0; $j < count($request -> tutorialsAnswered); $j++) { 
-                    if ($getUserTutorial[$i] -> tutorial_question == $request -> tutorialsAnswered[$j]) {
-                        $getUserTutorial = User_tutorial::where("id", $getUserTutorial[$i] -> id)->first();
-                        $getUserTutorial->passed = true;
-                        $getUserTutorial->locked = false;
-                        $getUserTutorial->save();
+            $getUserTutorialLength = User_tutorial::where("user_id", $userId)->count();
+            for ($i=0; $i < $getUserTutorialLength; $i++) { 
+                for ($j=0; $j < count($tutorialsAnswered); $j++) { 
+                    if ($getUserTutorial[$i] -> tutorial_question == $tutorialsAnswered[$j]) {
+                        $currentTutorial = User_tutorial::where("id", $getUserTutorial[$i] -> id)->first();
+                        $currentTutorial->passed = true;
+                        $currentTutorial->locked = false;
+                        $currentTutorial->save();
 
-                        if (($i + 1) < (count($getUserTutorial))) {
+                        if (($i + 1) < ($getUserTutorialLength)) {
                             $getFollowingUserTutorial = User_tutorial::where("id", $getUserTutorial[$i + 1] -> id)->first();
                             $getFollowingUserTutorial->locked = false;
                             $getFollowingUserTutorial->save();
@@ -373,7 +376,7 @@ class TutorialController extends Controller
             }
                       
             //If the tutorial has been finished we need to update the user
-            if ($request -> tutorialPassed) {
+            if (json_decode($request -> tutorialPassed)) {
                 $this->updateUser($userId);
                 $returnObject -> finishedTutorial = true;
             }
