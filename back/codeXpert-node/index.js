@@ -127,15 +127,13 @@ socketIO.on("connection", (socket) => {
       lobbies.forEach(lobby => {
         if (lobby.lobby_name === socket.data.current_lobby) {
           if (lobby.owner_name === socket.data.name) {
-            const settings = lobby.settings;
+            lobby.started = false;
+            lobby.settings = defaultSettings;
+            socketIO.to(socket.id).emit("show_settings", {
+              show: true
+            });
 
-            if (settings != null) {
-              socketIO.to(socket.id).emit("show_settings", {
-                show: true
-              });
-
-              socketIO.to(socket.id).emit("lobby_settings", settings);
-            }
+            socketIO.to(socket.id).emit("lobby_settings", lobby.settings);
           }
 
           socketIO.to(socket.id).emit("lobby_name", {
@@ -179,7 +177,8 @@ socketIO.on("connection", (socket) => {
         messages: [],
         settings: defaultSettings,
         owner_name: socket.data.name,
-        total_elo: 0
+        total_elo: 0,
+        users_finished: 0
       });
     }
   });

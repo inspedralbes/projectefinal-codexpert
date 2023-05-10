@@ -132,7 +132,7 @@ function Lobbies() {
       window.postMessage({
         type: 'hello_firstTime-emit'
       }, '*')
-      setFirstTime(true)
+      setFirstTime(false)
     }
 
     window.addEventListener('message', handleMessage)
