@@ -13,9 +13,9 @@ function RankingPage() {
   const [rewards, setRewards] = useState({
     xpEarned: 0,
     coinsEarned: 0,
-    eloEarned: 0
+    eloEarned: 0,
+    resultMessage: ''
   })
-  const [result, setResult] = useState('')
   const [dataLoaded, setDataLoaded] = useState(false)
 
   const handleMessage = (event) => {
@@ -26,7 +26,6 @@ function RankingPage() {
         setRankingData(window.network.getRankingData())
         setIdGame(eventData.idGame)
         setRewards(window.network.getRewards())
-        setResult(window.network.getResult())
         setDataLoaded(true)
         break
 
@@ -48,7 +47,7 @@ function RankingPage() {
       {dataLoaded
         ? <main>
           <div className='game__yourResults yourResults'>
-            <h1 className='yourResults__result'>{result}</h1>
+            <h1 className='yourResults__result'>{rewards.resultMessage}</h1>
           </div>
 
           <div className='ranking'>

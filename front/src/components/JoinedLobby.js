@@ -97,16 +97,16 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
             shouldCloseOnOverlayClick={true}
             isOpen={showModal}
           >
-            <Settings fetchSettings={fetchSettings}></Settings>
+            <Settings fetchSettings={fetchSettings} errorMessage={errorMessage}></Settings>
           </Modal>
         </>
         : <></>}
-      {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
       <ConnectedUsers></ConnectedUsers>
       {window.network.getShowSettings() &&
         <div className='button-startGame'>
           <button className='startGame' id='startGame' onClick={handleStartGame}>Start game</button>
         </div>}
+      {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
       <div className='lobby__chat'>
         <ChatLobby className='chat__chatbox'></ChatLobby>
       </div>

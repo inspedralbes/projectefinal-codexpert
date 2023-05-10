@@ -4,11 +4,14 @@ import React, { useEffect, useState } from 'react'
 import '../styles/normalize.css'
 import '../styles/game.css'
 import '../styles/Lobbies.css'
+import persiana from '../img/persiana.png'
 import { useNavigate } from 'react-router-dom'
 import ChatGame from '../components/ChatGame'
 import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
 import CodeMirror from '../components/CodeMirror'
 import Timer from '../components/Timer'
+
+const Timer2 = Timer;
 
 function Game() {
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
@@ -17,11 +20,7 @@ function Game() {
   const [result, setResult] = useState('')
   const [winnerMessage, setWinnerMessage] = useState('')
   const [playable, setPlayable] = useState(true)
-  const [rewards, setRewards] = useState({
-    xpEarned: 0,
-    coinsEarned: 0,
-    eloEarned: 0
-  })
+  const [counter, setCounter] = useState(0)
   const [qst, setQst] = useState({
     statement: '',
     inputs: [''],
@@ -52,10 +51,6 @@ function Game() {
         setPlayable(false)
         break
 
-      case 'stats-event':
-        setRewards(window.network.getRewards())
-        break
-
       case 'overtime_starts-event':
         setOvertimeDuration(eventData.time)
         break
@@ -75,7 +70,7 @@ function Game() {
     if (code !== '') {
       const resultsEvalRecieved = []
       let evalPassedBoolean = true
-      console.log(qst)
+
       qst.inputs.forEach((inp) => {
         let input = inp
         try {
@@ -87,7 +82,6 @@ function Game() {
           evalPassedBoolean = false
         }
       })
-      console.log(resultsEvalRecieved)
 
       window.postMessage({
         type: 'check_answer-emit',
@@ -117,11 +111,18 @@ function Game() {
   }, [])
 
   return (
-    <div>
+    <div className='game'>
+      {overtimeDuration > 0
+        && <img src={persiana}
+          id='persiana'
+          className='persiana'
+          style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
+          alt=""></img>}
       <div className='game__container '>
-
         <div className='container__left'>
-          {overtimeDuration != 0 ? <h1>Time remaining: <Timer time={overtimeDuration}></Timer></h1> : <></>}
+          <div className={playable ? 'started__game' : 'ended__game'}>
+            {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
+          </div>
           <ConnectedUsersInGame></ConnectedUsersInGame>
           <ChatGame className='chatGame__chatbox'></ChatGame>
         </div>
@@ -134,6 +135,8 @@ function Game() {
             </div>
             <div className='game--grid'>
               <div className='editor--div'>
+                <div className='pixelart-to-css'></div>
+
                 <div className='editor__expected'>
                   <div className='game__expectedInput'>
                     <h2>Example input:</h2>
@@ -158,18 +161,12 @@ function Game() {
               </div>
             </div>
 
-
             {error !== '' && <div>{error}</div>}
 
           </div>}
           {!playable && <div className='game__results'>
             <h1 className='game__yourResult'>{result}</h1>
             <h2>{winnerMessage}</h2>
-            <ul className='rewards__list'>
-              <li>XP: {rewards.xpEarned}</li>
-              <li>Coins: {rewards.coinsEarned}</li>
-              <li>Elo: {rewards.eloEarned}</li>
-            </ul>
             <p className='game__buttons'>
               <button className='pixel-button game__button' onClick={goBackToLobby}>GO BACK TO LOBBY</button>
 
