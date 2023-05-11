@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 
-import { Game, Preloader } from './Phaser/scenes'
+import Preloader from './Phaser/scenes/Preloader'
+import Game from './Phaser/scenes/Game'
 
 const PhaserGame = new Phaser.Game({
   type: Phaser.AUTO,

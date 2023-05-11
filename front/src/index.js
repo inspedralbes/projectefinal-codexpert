@@ -20,6 +20,7 @@ import Error404 from './pages/404'
 import Cookies from 'universal-cookie'
 import SharedRanking from './pages/SharedRanking'
 import Ranking from './pages/Ranking'
+import Phaser from './pages/Phaser'
 
 const cookies = new Cookies()
 
@@ -49,6 +50,7 @@ root.render(
         <Route path='campaign' element={<Campaign />}></Route>
         <Route path='ranking' element={<Ranking />}></Route>
         <Route path='sharedRanking' element={<SharedRanking />}></Route>
+        <Route path='phaser' element={<Phaser />}></Route>
         <Route path='404' element={<Error404 />}></Route>
         <Route path='*' element={<Navigate to='/404' />} />
       </Route>
