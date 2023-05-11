@@ -158,7 +158,8 @@
     transition: all 0.5s;
 }
 
-.avatar__menu-btn:hover {
+.avatar__menu-btn:hover,
+.avatar__Button:hover {
     box-shadow: none;
     background-color: #027202;
     transform: translate(0, 5px);
@@ -166,19 +167,9 @@
 }
 
 .avatar__menu-btn:hover::after,
-.avatar__menu-btn:hover::before {
-    background-color: #027202;
-}
-
-.avatar__menu-btn:hover {
-    box-shadow: none;
-    background-color: #027202;
-    transform: translate(0, 5px);
-    cursor: pointer;
-}
-
-.pavatar__menu-btn:hover::after,
-.pavatar__menu-btn:hover::before {
+.avatar__menu-btn:hover::before,
+.avatar__Button:hover::after,
+.avatar__Button:hover::before {
     background-color: #027202;
 }
 

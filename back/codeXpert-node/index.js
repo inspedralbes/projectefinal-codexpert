@@ -334,6 +334,10 @@ socketIO.on("connection", (socket) => {
         const userGame = response.data.user_game;
         const game = response.data.game;
         if (response.data.correct) {
+          socketIO.to(socket.id).emit("answer_correct", {
+            correct: true
+          })
+
           addMessage({
             nickname: "ingame_events",
             message: `${socket.data.name} answered question ${userGame.question_at} correctly.`,
@@ -375,6 +379,10 @@ socketIO.on("connection", (socket) => {
             sendQuestionDataToUser(socket.id, socket.data.question_at, socket.data.current_lobby);
           }
         } else {
+          socketIO.to(socket.id).emit("answer_correct", {
+            correct: false
+          })
+
           addMessage({
             nickname: "ingame_events",
             message: `${socket.data.name} answered question ${userGame.question_at + 1} wrong.`,
