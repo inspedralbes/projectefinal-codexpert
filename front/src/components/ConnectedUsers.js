@@ -20,9 +20,12 @@ function ConnectedUsers() {
 
   useEffect(() => {
     if (firstTime) {
-      window.postMessage({
-        type: 'lobby_data_pls-emit'
-      }, '*')
+      window.postMessage(
+        {
+          type: 'lobby_data_pls-emit'
+        },
+        '*'
+      )
       setFirstTime(false)
     }
 
@@ -34,22 +37,22 @@ function ConnectedUsers() {
   }, [])
 
   return (
-    <div className='game__connectedUsers'>
-      <h1 className='connectedUsers_title'>Connected users</h1>
-      <ul id='userList' className='connectedUsers__userList userList'>
+    <div className="game__connectedUsers">
+      <h1 className="connectedUsers_title">Connected users</h1>
+      <ul id="userList" className="connectedUsers__userList userList">
         {userList.map((user, index) => {
           return (
-            <li id='bgColor' className='userList__item item' key={index}>
-              <div className='item__imgDiv'>
+            <li id="bgColor" className="userList__item item" key={index}>
+              <div className="item__imgDiv">
                 <img
                   src={user.avatar}
-                  width='150px'
-                  className='item__image'
-                  alt={user.name + '\'s avatar'}
+                  width="150px"
+                  className="item__image"
+                  alt={user.name + "'s avatar"}
                 ></img>
               </div>
 
-              <div className='item__name'>
+              <div className="item__name">
                 <p>{user.name}</p>
               </div>
             </li>
@@ -57,7 +60,6 @@ function ConnectedUsers() {
         })}
       </ul>
     </div>
-
   )
 }
 

@@ -39,6 +39,24 @@
     font-size: 0.6em;
 }
 
+.introduction__container h1 {
+    text-align: center;
+}
+.introduction__container p {
+    font-size: 20px;
+    margin-right: 3px;
+}
+
+.word__pink {
+    color: rgb(228, 127, 143)
+}
+.word__green {
+    color: rgb(15, 160, 15);
+}
+.word__blue {
+    color: rgb(79, 79, 243);
+}
+
 
 .tutorial__statement,
 .tutorial__expectedOutput,
@@ -60,7 +78,7 @@
 
 .tutorial__expectedInput,
 .tutorial__expectedOutput {
-    width: 47.7%;
+    width: 47.4%;
     margin: 2px 14px;
 }
 
@@ -100,4 +118,19 @@
     width: fit-content;
     text-align: left;
     height: 100vh;
+}
+
+.tutorial__result {
+    align-self: center;
+    margin: 10px 4px 10px 2px;
+    width: 98%;
+}
+
+.tutorial__submit {
+    margin: 10px auto;
+    padding: 20px;
+    float: right;
+    width: 20%;
+    height: fit-content;
+    box-shadow: none;
 }

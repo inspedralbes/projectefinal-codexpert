@@ -334,6 +334,10 @@ socketIO.on("connection", (socket) => {
         const userGame = response.data.user_game;
         const game = response.data.game;
         if (response.data.correct) {
+          socketIO.to(socket.id).emit("answer_correct", {
+            correct: true
+          });
+
           addMessage({
             nickname: "ingame_events",
             message: `${socket.data.name} answered question ${userGame.question_at} correctly.`,
@@ -375,6 +379,10 @@ socketIO.on("connection", (socket) => {
             sendQuestionDataToUser(socket.id, socket.data.question_at, socket.data.current_lobby);
           }
         } else {
+          socketIO.to(socket.id).emit("answer_correct", {
+            correct: false
+          });
+
           addMessage({
             nickname: "ingame_events",
             message: `${socket.data.name} answered question ${userGame.question_at + 1} wrong.`,
@@ -478,38 +486,44 @@ socketIO.on("connection", (socket) => {
 });
 
 function startOverTime(socket, time) {
-  socketIO.to(socket.data.current_lobby).emit("overtime_starts", { time: (time * 1000) });
+  const room = socket.data.current_lobby;
+  const winnerName = socket.data.name;
+  const idGame = socket.data.game_data.idGame;
+
+  socketIO.to(room).emit("overtime_starts", { time: (time * 1000) });
 
   let cont = -1;
 
   const interval = setInterval(() => {
-    const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
+    const lobby = lobbies.filter(lobby => lobby.lobby_name === room)[0];
     cont++;
 
-    if (cont === time || lobby?.members.length === lobby?.users_finished) {
-      endGame(socket);
+    if (lobby != null) {
+      if (cont === time || lobby.members.length <= lobby.users_finished) {
+        endGame(winnerName, room, idGame);
+        clearInterval(interval);
+      };
+    } else {
+      endGame(winnerName, room, idGame);
       clearInterval(interval);
-    };
+    }
   }, 1000);
 }
 
-async function endGame(socket) {
-  const room = socket.data.current_lobby;
-  // const lobby = lobbies.filter(lobby => lobby.lobby_name === room)[0];
-
+async function endGame(winnerName, room, idGame) {
   socketIO.to(room).emit("game_over", {
-    message: `${socket.data.name} won the game`
+    message: `${winnerName} won the game`
   });
 
   updateUserLvl(room);
   setMembersStats(room);
 
   await axios
-    .get(laravelRoute + `ranking/${socket.data.game_data.idGame}`)
+    .get(laravelRoute + `ranking/${idGame}`)
     .then(function (response) {
       const rankingData = response.data;
 
-      socketIO.to(room).emit("ranking", { rankingData, idGame: socket.data.game_data.idGame });
+      socketIO.to(room).emit("ranking", { rankingData, idGame });
     });
 }
 

@@ -14,7 +14,7 @@ import { Loading } from '../components/Loading'
 
 Modal.setAppElement('body')
 
-function Profile() {
+function Profile () {
   const navigate = useNavigate()
   const cookies = new Cookies()
   const [userData, setUserData] = useState()
