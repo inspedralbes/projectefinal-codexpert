@@ -1,64 +1,77 @@
-import "../styles/normalize.css";
-import { useState, useEffect } from "react";
-import routes from "../index";
-import Cookies from "universal-cookie";
-import { Link, useNavigate } from "react-router-dom"; //Rutas
+import '../styles/normalize.css'
+import React, { useState, useEffect } from 'react'
+import routes from '../conn_routes'
+import Cookies from 'universal-cookie'
+import { Link, useNavigate } from 'react-router-dom' // Rutas
+import Eye from '../components/Eye'
 
 function Login() {
-  const [login, setLogin] = useState(0);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [mantenerSesion, setMantenerSesion] = useState(false);
-  const [errorText, setErrorText] = useState("");
-  const cookies = new Cookies();
-  const navigate = useNavigate();
+  const [login, setLogin] = useState(0)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errorText, setErrorText] = useState('')
+  const cookies = new Cookies()
+  const navigate = useNavigate()
+
+  const sendTutorialLocalStorageData = (token) => {
+    const data = new FormData()
+    data.append('token', token)
+    data.append('tutorialsAnswered', localStorage.getItem('tutorialsAnswered'))
+    data.append('tutorialPassed', localStorage.getItem('tutorialPassed'))
+    data.append('userExperience', localStorage.getItem('userExperience'))
+
+    fetch(routes.fetchLaravel + 'setUserTutorial', {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+      })
+  }
 
   useEffect(() => {
-    if (login != 0) {
-      const user = new FormData();
-      user.append("email", email);
-      user.append("password", password);
+    if (login !== 0) {
+      const user = new FormData()
+      user.append('email', email)
+      user.append('password', password)
 
-      fetch(routes.fetchLaravel + "login", {
-        method: "POST",
-        mode: "cors",
+      fetch(routes.fetchLaravel + 'login', {
+        method: 'POST',
+        mode: 'cors',
         body: user,
-        credentials: "include",
+        credentials: 'include'
       })
         .then((response) => response.json())
         .then((data) => {
           if (data.valid) {
-            //Si se ha logueado
-            cookies.set("token", data.token, { path: "/" });
-            window.postMessage({
-              type: 'send_token-emit',
-              token: cookies.get("token")
-            }, '*')
-            
-            navigate("/lobbies");
+            // Si se ha logueado
+            cookies.set('token', data.token, { path: '/' })
+            window.postMessage(
+              {
+                type: 'send_token-emit',
+                token: cookies.get('token')
+              },
+              '*'
+            )
+
+            sendTutorialLocalStorageData(data.token)
+            localStorage.clear()
+            navigate('/lobbies')
           } else {
             setErrorText(data.message)
           }
-        });
+        })
     }
-  }, [login]);
-
-  useEffect(() => {
-    if (mantenerSesion) {
-      document.getElementById("checkboxText").style.color = "#3d7934";
-      document.getElementById("checkboxText").style.transition = "all 0.3s";
-    }
-
-    if (!mantenerSesion) {
-      document.getElementById("checkboxText").style.color = "#b9b9b9";
-    }
-  }, [mantenerSesion]);
+  }, [login])
 
   const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      setLogin(login + 1);
+    if (event.key === 'Enter') {
+      setLogin(login + 1)
     }
-  };
+  }
   return (
     <div className="form">
       <h1>LOGIN</h1>
@@ -71,12 +84,14 @@ function Login() {
             id="email"
             className="form__input"
             placeholder=" "
-            type="text"
+            type="email"
             onChange={(e) => setEmail(e.target.value)}
             required
           ></input>
           <span className="form__inputBar"></span>
-          <label className="form__inputlabel">E-mail</label>
+          <label htmlFor="email" className="form__inputlabel">
+            E-mail
+          </label>
         </div>
         <div className="form__inputGroup">
           <input
@@ -88,23 +103,13 @@ function Login() {
             onKeyDown={handleKeyDown}
             required
           ></input>
+
           <span className="form__inputBar"></span>
-          <label className="form__inputlabel">Password</label>
+          <Eye id={'password'}></Eye>
+          <label htmlFor="password" className="form__inputlabel">
+            Password
+          </label>
           <br />
-          <div className="form__checkboxInput">
-            <label id="switch" className="form__checkboxLabel">
-              <input
-                id="checkbox"
-                className="form__inputCheckbox"
-                type="checkbox"
-                onChange={(e) => setMantenerSesion(!mantenerSesion)}
-              ></input>{" "}
-              <div className="slider round"></div>
-            </label>
-            <label className="form__checkboxText" htmlFor="checkbox">
-              <p id="checkboxText">keep signed in</p>
-            </label>
-          </div>
         </div>
       </div>
       <div className="form__buttonsLinks">
@@ -141,7 +146,7 @@ function Login() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login

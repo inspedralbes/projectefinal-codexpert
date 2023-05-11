@@ -311,11 +311,11 @@
 }
 
 .lobbies__table .col-1 {
-    flex-basis: 10%;
+    flex-basis: 40%;
 }
 
 .lobbies__table .col-2 {
-    flex-basis: 40%;
+    flex-basis: 10%;
 }
 
 .lobbies__table .col-3 {
@@ -329,6 +329,7 @@
 
 
 .lobby__connectedUsers {
+    height: 50%;
     color: white
 }
 
@@ -577,11 +578,17 @@
 /* ===================================================================== */
 
 .connectedUsers__userList {
+    width: 100%;
     display: flex;
     margin: 0 auto;
     clear: both;
     color: #000000;
     padding: 10px;
+    flex-direction: row;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .item__imgDiv {
@@ -653,6 +660,7 @@
     color: red;
     text-align: center;
     font-family: pixel_operator;
+    font-size: 0.75em;
     src: url(../fonts/pixel_operator/PixelOperator8.ttf);
 }
 
@@ -849,4 +857,49 @@
 
 #input_message:focus {
     outline: none;
+}
+
+.user__imageIngame {
+    margin: 20px auto 0 auto;
+    width: fit-content;
+}
+
+.game__chatBody {
+    height: 48%;
+}
+
+#userList::-webkit-scrollbar-track {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    border: 2px solid #000000;
+}
+
+#userList::-webkit-scrollbar {
+    width: 15px;
+}
+
+#userList::-webkit-scrollbar-thumb {
+    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
+    background-color: #104400;
+}
+
+.lobbylist__message {
+    margin: 0 auto;
+    padding: 0;
+    font-size: 1.5rem;
+    color: #ff0000;
+    text-align: center;
+    margin-top: 20px;
+    opacity: 1 !important;
+    position: absolute;
+    width: 100%;
+    transform: translate(0, -40px);
+}
+
+.lobbyModal__buttons {
+    display: flex;
+}
+
+.lobby-modalBtn {
+    margin: 0 auto;
+    width: fit-content;
 }

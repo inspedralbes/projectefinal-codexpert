@@ -2,6 +2,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\TutorialController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,7 +40,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/setAvatar', [UserController::class, 'setAvatar']);
 
-    Route::get('/getUserData', [UserController::class, 'getUserData']);
+    Route::post('/getUserData', [UserController::class, 'getUserData']);
 
     Route::post('/startGame', [GameController::class, 'startGame']);
 
@@ -50,4 +51,16 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/updateUserLvl', [GameController::class, 'updateUserLvl']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/ranking/{id}', [GameController::class, 'getRanking']);
+
+    Route::post('/setExpertise', [TutorialController::class, 'setExpertise']);
+
+    Route::post('/getTutorials', [TutorialController::class, 'getTutorials']);
+
+    Route::post('/getTutorialFromId', [TutorialController::class, 'getTutorialFromId']);
+
+    Route::post('/checkTutorialAnswer', [TutorialController::class, 'checkAnswer']);
+
+    Route::post('/setUserTutorial', [TutorialController::class, 'setUserTutorial']);
 });

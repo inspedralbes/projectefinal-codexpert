@@ -1,7 +1,7 @@
 .landingPage {
     background-color: var(--white);
     color: #2e5e22;
-    margin: 20vh auto;
+    margin: 15vh auto;
     width: 60%;
     text-align: center;
     padding: 60px;
@@ -39,7 +39,6 @@
 
 .landingPage p {
     font-size: 20px;
-    line-height: 15px;
     margin: 20px;
     margin-bottom: 40px;
 }
@@ -51,4 +50,29 @@
 
 .landingPage__codexpert {
     width: 70%;
+}
+
+.loading {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: center;
+}
+
+.landingLogin {
+    position: absolute;
+    right: 10px;
+    margin: 30px;
+    background-color: rgba(255, 255, 255, 0.438);
+    top: 10px;
+    border: none;
+    width: 20%;
+    color: rgb(101, 187, 30);
+}
+
+.codexpert__intro {
+    line-height: 25px;
 }

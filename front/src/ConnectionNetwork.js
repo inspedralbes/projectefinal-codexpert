@@ -1,150 +1,168 @@
 class ConnectionNetwork {
-    message = "";
-    winnerMessage = "";
-    errorMessage = "";
-    token = "";
-    lobby_name = "";
-    lobbyList = [];
-    userList = [];
-    lobbyMessages = [];
-    questionData = {};
-    result = "";
-    rewards = {};
-    showSettings = false;
-    settings = {
-        heartAmount: 0,
-        gameDuration: 0,
-        questionAmount: 0,
-        unlimitedHearts: false,
-    }
+  message = ''
+  winnerMessage = ''
+  errorMessage = ''
+  token = ''
+  lobby_name = ''
+  lobbyList = []
+  userList = []
+  lobbyMessages = []
+  rankingData = []
+  questionData = {}
+  result = ''
+  rewards = {}
+  showSettings = false
+  settings = {
+    heartAmount: 0,
+    overtimeDuration: 0,
+    questionAmount: 0,
+    unlimitedHearts: false,
+    willHaveOvertime: true
+  }
 
-    setMessage(msg) {
-        this.message = msg;
-    }
+  setMessage(msg) {
+    this.message = msg
+  }
 
-    getMessage() {
-        return this.message;
-    }
+  getMessage() {
+    return this.message
+  }
 
-    setErrorMessage(msg) {
-        this.errorMessage = msg;
-    }
+  setErrorMessage(msg) {
+    this.errorMessage = msg
+  }
 
-    getErrorMessage() {
-        return this.errorMessage;
-    }
+  getErrorMessage() {
+    return this.errorMessage
+  }
 
-    setWinnerMessage(msg) {
-        this.winnerMessage = msg;
-    }
+  setWinnerMessage(msg) {
+    this.winnerMessage = msg
+  }
 
-    getWinnerMessage() {
-        return this.winnerMessage;
-    }
+  getWinnerMessage() {
+    return this.winnerMessage
+  }
 
-    setToken(token) {
-        this.token = token;
-    }
+  setToken(token) {
+    this.token = token
+  }
 
-    getToken() {
-        return this.token;
-    }
+  getToken() {
+    return this.token
+  }
 
-    setLobbyName(lobby_name) {
-        this.lobby_name = lobby_name;
-    }
+  setLobbyName(lobbyName) {
+    this.lobby_name = lobbyName
+  }
 
-    getLobbyName() {
-        return this.lobby_name;
-    }
+  getLobbyName() {
+    return this.lobby_name
+  }
 
-    setLobbyList(lobbyList) {
-        this.lobbyList = lobbyList;
-    }
+  setLobbyList(lobbyList) {
+    this.lobbyList = lobbyList
+  }
 
-    getLobbyList() {
-        return this.lobbyList;
-    }
+  getLobbyList() {
+    return this.lobbyList
+  }
 
-    setLobbyUserList(userList) {
-        this.userList = userList;
-    }
+  setLobbyUserList(userList) {
+    this.userList = userList
+  }
 
-    getLobbyUserList() {
-        return this.userList;
-    }
+  getLobbyUserList() {
+    return this.userList
+  }
 
-    setLobbyMessages(list) {
-        this.lobbyMessages = list;
-    }
+  setLobbyMessages(list) {
+    this.lobbyMessages = list
+  }
 
-    getLobbyMessages() {
-        return this.lobbyMessages;
-    }
+  getLobbyMessages() {
+    return this.lobbyMessages
+  }
 
-    setQuestionData(data) {
-        this.questionData = data;
-    }
+  setQuestionData(data) {
+    this.questionData = data
+  }
 
-    getQuestionData() {
-        return this.questionData;
-    }
+  getQuestionData() {
+    return this.questionData
+  }
 
-    setResult(result) {
-        this.result = result;
-    }
+  setResult(result) {
+    this.result = result
+  }
 
-    getResult() {
-        return this.result;
-    }
+  getResult() {
+    return this.result
+  }
 
-    setRewards(rewards) {
-        this.rewards = rewards;
-    }
+  setRewards(rewards) {
+    this.rewards = rewards
+  }
 
-    getRewards() {
-        return this.rewards;
-    }
+  getRewards() {
+    return this.rewards
+  }
 
-    setGameDuration(duration) {
-        this.settings.gameDuration = duration;
-    }
+  setOvertimeDuration(duration) {
+    this.settings.overtimeDuration = duration
+  }
 
-    setHeartAmount(amt) {
-        this.settings.heartAmount = amt;
-    }
+  setWillHaveOvertime(willHave) {
+    this.settings.willHaveOvertime = willHave
+  }
 
-    setQuestionAmount(amt) {
-        this.settings.questionAmount = amt;
-    }
+  setHeartAmount(amt) {
+    this.settings.heartAmount = amt
+  }
 
-    setUnlimitedHearts(unlimited) {
-        this.settings.unlimitedHearts = unlimited;
-    }
+  setQuestionAmount(amt) {
+    this.settings.questionAmount = amt
+  }
 
-    getGameDuration() {
-        return this.settings.gameDuration;
-    }
+  setUnlimitedHearts(unlimited) {
+    this.settings.unlimitedHearts = unlimited
+  }
 
-    getHeartAmount() {
-        return this.settings.heartAmount;
-    }
+  getWillHaveOvertime() {
+    return this.settings.willHaveOvertime
+  }
 
-    getQuestionAmount() {
-        return this.settings.questionAmount;
-    }
+  getOvertimeDuration() {
+    return this.settings.overtimeDuration
+  }
 
-    getUnlimitedHearts() {
-        return this.settings.unlimitedHearts;
-    }
+  getHeartAmount() {
+    return this.settings.heartAmount
+  }
 
-    setShowSettings(show) {
-        this.showSettings = show;
-    }
+  getQuestionAmount() {
+    return this.settings.questionAmount
+  }
 
-    getShowSettings() {
-        return this.showSettings;
-    }
+  getUnlimitedHearts() {
+    return this.settings.unlimitedHearts
+  }
+
+  setShowSettings(show) {
+    this.showSettings = show
+  }
+
+  getShowSettings() {
+    return this.showSettings
+  }
+
+  setRankingData(data) {
+    this.rankingData = data
+  }
+
+  getRankingData() {
+    return this.rankingData
+  }
 }
 
-export default ConnectionNetwork;
+export default ConnectionNetwork
