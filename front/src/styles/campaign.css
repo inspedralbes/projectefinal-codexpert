@@ -16,6 +16,11 @@
     margin-left: 1%;
 }
 
+.campaign p {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
 .Camp {
     width: 200px;
 }
@@ -59,6 +64,10 @@
     top: 6px;
     width: 6px;
     background-color: #baffb1;
+}
+
+.modalBtn {
+    width: 50%;
 }
 
 .pixel__container h1 {
