@@ -10,6 +10,7 @@ import ChatGame from '../components/ChatGame'
 import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
 import CodeMirror from '../components/CodeMirror'
 import Timer from '../components/Timer'
+import heart from '../img/corazon_roto.gif'
 import Modal from 'react-modal'
 
 const Timer2 = Timer;
@@ -160,8 +161,8 @@ function Game() {
             isOpen={ImodalIsOpen}
             onAfterOpen={afterOpenModal}
           >
-            <img src={heart} alt=''></img>
             TRY AGAIN :(
+            <img src={heart} alt='' height={'300px'}></img>
           </Modal>
           <div className={playable ? 'started__game' : 'ended__game'}>
             {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
