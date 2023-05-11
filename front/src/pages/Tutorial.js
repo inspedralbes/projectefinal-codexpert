@@ -123,19 +123,19 @@ function Tutorial() {
         <h1>Introduction:</h1>
         {introduction.introductions[location.state.id - 1].introduction[0] !==
           '' && (
-          <>
-            <Carousel
-              nextButtonText={'<button>←</button>'}
-              prevButtonText={<button>→</button>}
-            >
-              {introduction.introductions[
-                location.state.id - 1
-              ].introduction.map((element, index) => {
-                return <div key={index}>{parse(element)}</div>
-              })}
-            </Carousel>
-          </>
-        )}
+            <>
+              <Carousel
+                nextButtonText={'<button>←</button>'}
+                prevButtonText={<button>→</button>}
+              >
+                {introduction.introductions[
+                  location.state.id - 1
+                ].introduction.map((element, index) => {
+                  return <div key={index}>{parse(element)}</div>
+                })}
+              </Carousel>
+            </>
+          )}
       </div>
       <div>
         <div className="tutorial__statement">
@@ -156,7 +156,7 @@ function Tutorial() {
               </div>
               <div className="tutorial__expectedOutput tutorial__result">
                 <h2>Result:</h2>
-                <h1></h1>
+                <h1>{error !== '' && <div>{error}</div>}</h1>
               </div>
             </div>
             <form className="editor" onSubmit={handleSubmit}>
