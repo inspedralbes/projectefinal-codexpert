@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import '../styles/normalize.css'
 import '../styles/campaign.css'
 import routes from '../conn_routes'
@@ -15,6 +17,7 @@ function Campaign() {
   const [modal, setModal] = useState(false)
   const [tutorialList, setTutorialList] = useState([])
   const [userExperience, setUserExperience] = useState('')
+  const [tutorialsAnswered, setTutorialsAnswered] = useState([])
   const [lvlUnlocked, setLvlUnlocked] = useState(
     localStorage.getItem('lvlUnlocked') === null
       ? 0
@@ -25,11 +28,13 @@ function Campaign() {
 
   const handleChoiseOption = (option) => {
     setModal(false)
-    console.log(option)
     localStorage.setItem('userExperience', option)
 
     const data = new FormData()
-    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    data.append(
+      'token',
+      cookies.get('token') !== undefined ? cookies.get('token') : null
+    )
     data.append('userExperience', option)
     fetch(routes.fetchLaravel + 'setExpertise', {
       method: 'POST',
@@ -41,6 +46,11 @@ function Campaign() {
       .then(() => {
         setUserExperience(option)
         getTutorials()
+        if (localStorage.getItem('tutorialsAnswered') !== null) {
+          setTutorialsAnswered(
+            JSON.parse(localStorage.getItem('tutorialsAnswered'))
+          )
+        }
       })
     if (option === 'beginner') {
       localStorage.setItem('lvlUnlocked', 0)
@@ -52,7 +62,10 @@ function Campaign() {
 
   const getTutorials = () => {
     const data = new FormData()
-    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    data.append(
+      'token',
+      cookies.get('token') !== undefined ? cookies.get('token') : null
+    )
     data.append('userExperience', localStorage.getItem('userExperience'))
     fetch(routes.fetchLaravel + 'getTutorials', {
       method: 'POST',
@@ -74,6 +87,11 @@ function Campaign() {
     } else {
       getTutorials()
     }
+    if (localStorage.getItem('tutorialsAnswered') !== null) {
+      setTutorialsAnswered(
+        JSON.parse(localStorage.getItem('tutorialsAnswered'))
+      )
+    }
   }, [])
 
   return (
@@ -93,17 +111,19 @@ function Campaign() {
         isOpen={modal}
       >
         <h1>What are you?</h1>
-        <p>Para adaptarnos a tus conocimientos primero de todo queremos saber si tienes los conocimientos minimos para poder competir con otras personas sin ir totalmente perdido. Si eliges principiante se te desbloqueará el primer nivel e iras desbloquenado mediante vayas completando más. Si eliges experto se te desbloquearan todos los niveles pero tendras que hacer la prueba final y así desbloquear el modo competitivo. (Si quieres que se guarden los niveles desbloquedos, te recomendamos que primero te crees una cuenta)</p>
+        <p>
+          If you choose <b>beginner</b>, the first level will be unlocked and you will have to complete all of them to finish the tutorial. If you choose <b>expert</b>, all levels will be unlocked, you can complete them all if you want, but you only need to complete the last one to pass the tutorial. Once you have completed the tutorial, you will have access to the multiplayer mode! To save which levels you have completed remember to create an account, you can do it after completing the tutorial or before :)
+        </p>
         <br></br>
         <div className="profile__buttons">
           <button
-            className="pixel-button Camp modalBtn"
+            className="pixel-button modalBtn"
             onClick={() => handleChoiseOption('beginner')}
           >
             Beginner
           </button>
           <button
-            className="pixel-button Camp modalBtn"
+            className="pixel-button modalBtn"
             onClick={() => handleChoiseOption('expert')}
           >
             Expert
@@ -123,45 +143,62 @@ function Campaign() {
                   <h3>{element.title}</h3>
                 </div>
                 <div className="pixel__container level__container">
-                  {lvlUnlocked >= index || element.locked === 0 || JSON.parse(
-                    localStorage.getItem('tutorialsAnswered')
-                  ).includes(element.id - 1)
-                    ? (
-                      <>
-                        {element.passed || JSON.parse(
-                          localStorage.getItem('tutorialsAnswered')
-                        ).includes(element.id)
-                          ? (
-                            <>
-                              <img src={success}></img>
-                            </>)
-                          : (
-                            <>
-                              <img src={unlocked}></img>
-                            </>)
+                  {lvlUnlocked >= index ||
+                    element.locked === 0 ||
+                    tutorialsAnswered.includes(element.id - 1) ? (
+                    <>
+                      {console.log(tutorialsAnswered)}
+                      {element.passed ||
+                        tutorialsAnswered.includes(element.id) ? (
+                        <>
+                          <img src={success}></img>
+                        </>
+                      ) : (
+                        <>
+                          <img src={unlocked}></img>
+                        </>
+                      )}
+                      <br></br>
+                      <button
+                        className="pixel-button"
+                        onClick={() =>
+                          navigate('/tutorial', { state: { id: element.id } })
                         }
-                        <br></br>
-                        <button
-                          className="pixel-button Camp"
-                          onClick={() =>
-                            navigate('/tutorial', { state: { id: element.id } })
-                          }
-                        >
-                          Play
-                        </button>
-                      </>)
-                    : (
-                      <>
-                        <img src={locked}></img>
-                        <br></br>
-                        <button className="pixel-button Camp locked">locked</button>
-                      </>)}
+                      >
+                        Play
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <img src={locked}></img>
+                      <br></br>
+                      <button className="pixel-button locked">locked</button>
+                    </>
+                  )}
                 </div>
               </li>
             )
           })
           : null}
       </ul>
+      {localStorage.getItem('tutorialPassed') !== null && (
+        <>
+          {cookies.get('token') !== undefined && (
+            <div className="lobbies-button">
+              <button className="pixel-button" onClick={() => navigate('/lobbies')}>
+                GO LOBBIES
+              </button>
+            </div>
+          )}
+          {cookies.get('token') === undefined && (
+            <div className="lobbies-button">
+              <button className="pixel-button" onClick={() => navigate('/login')}>
+                LOGIN/REGISTER
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }

@@ -10,8 +10,8 @@ import ChatGame from '../components/ChatGame'
 import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
 import CodeMirror from '../components/CodeMirror'
 import Timer from '../components/Timer'
-
-const Timer2 = Timer;
+import heart from '../img/corazon_roto.gif'
+import Modal from 'react-modal'
 
 function Game() {
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
@@ -21,6 +21,10 @@ function Game() {
   const [winnerMessage, setWinnerMessage] = useState('')
   const [playable, setPlayable] = useState(true)
   const [counter, setCounter] = useState(0)
+  const [roundResult, setRoundResult] = useState(null)
+  const [CmodalIsOpen, setCIsOpen] = useState(false);
+  const [ImodalIsOpen, setIIsOpen] = useState(false);
+
   const [qst, setQst] = useState({
     statement: '',
     inputs: [''],
@@ -49,6 +53,11 @@ function Game() {
       case 'user_finished-event':
         setResult(window.network.getResult())
         setPlayable(false)
+        break
+
+      case 'answer_correct-event':
+        setRoundResult(eventData.correct)
+
         break
 
       case 'overtime_starts-event':
@@ -102,6 +111,23 @@ function Game() {
     }, '*')
   }
 
+
+  function afterOpenModal() {
+    setTimeout(() => {
+      setCIsOpen(false)
+      setIIsOpen(false)
+    }, 5000)
+  }
+
+  useEffect(() => {
+    if (roundResult) {
+      setCIsOpen(true)
+    } else if (roundResult == false) {
+      setIIsOpen(true)
+    }
+    setRoundResult(null)
+  }, [roundResult])
+
   useEffect(() => {
     window.addEventListener('message', handleMessage)
 
@@ -112,14 +138,30 @@ function Game() {
 
   return (
     <div className='game'>
-      {overtimeDuration > 0
+      {overtimeDuration > 0 && playable
         && <img src={persiana}
           id='persiana'
           className='persiana'
           style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
           alt=""></img>}
       <div className='game__container '>
+
         <div className='container__left'>
+          <Modal
+            className='correctAnsw'
+            isOpen={CmodalIsOpen}
+            onAfterOpen={afterOpenModal}
+          >
+            YOU DID IT!! :)
+          </Modal>
+          <Modal
+            className='incorrectAnsw animate__animated animate__tada'
+            isOpen={ImodalIsOpen}
+            onAfterOpen={afterOpenModal}
+          >
+            TRY AGAIN :(
+            <img src={heart} alt='' height={'300px'}></img>
+          </Modal>
           <div className={playable ? 'started__game' : 'ended__game'}>
             {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
           </div>
@@ -142,14 +184,13 @@ function Game() {
                     <h2>Example input:</h2>
                     <h1>{qst.inputs[0].toString()}</h1>
                   </div>
-
                   <div className='game__expectedOutput'>
                     <h2>Example output:</h2>
                     <h1>{qst.output.toString()}</h1>
                   </div>
                   <div className='game__expectedOutput game__result'>
                     <h2>Result:</h2>
-                    <h1>{qst.output.toString()}</h1>
+                    <h1>  {error !== '' && <div>{error}</div>}</h1>
                   </div>
                 </div>
                 <form className='editor' onSubmit={handleSubmit}>
@@ -160,8 +201,6 @@ function Game() {
                 </form>
               </div>
             </div>
-
-            {error !== '' && <div>{error}</div>}
 
           </div>}
           {!playable && <div className='game__results'>

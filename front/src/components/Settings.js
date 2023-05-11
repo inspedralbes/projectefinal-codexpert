@@ -4,10 +4,11 @@ import '../styles/index.css'
 
 Settings.propTypes = {
   fetchSettings: PropTypes.bool,
-  errorMessage: PropTypes.string
+  errorMessage: PropTypes.string,
+  saveSettings: PropTypes.number
 }
 
-function Settings({ fetchSettings, errorMessage }) {
+function Settings({ fetchSettings, errorMessage, saveSettings }) {
   const [overtimeDuration, setOvertimeDuration] = useState(30)
   const [heartAmount, setHeartAmount] = useState(0)
   const [questionAmount, setQuestionAmount] = useState(0)
@@ -16,28 +17,22 @@ function Settings({ fetchSettings, errorMessage }) {
 
   function handleChangeUnlimitedHearts() {
     setUnlimitedHearts(!unlimitedHearts)
-    window.network.setUnlimitedHearts(!unlimitedHearts)
   }
 
   function handleChangeWillHaveOvertime() {
     setWillHaveOvertime(!willHaveOvertime)
-    window.network.setWillHaveOvertime(!willHaveOvertime)
   }
 
   function handleChangeOvertimeDuration(e) {
     setOvertimeDuration(e.target.value)
-    window.network.setOvertimeDuration(e.target.value)
   }
 
   function handleChangeHeartAmount(e) {
     setHeartAmount(e.target.value)
-    window.network.setHeartAmount(e.target.value)
   }
 
   function handleChangeQuestionAmount(e) {
     setQuestionAmount(e.target.value)
-    window.network.setQuestionAmount(e.target.value)
-    console.log(window.network.getQuestionAmount())
   }
 
   const getSettings = () => {
@@ -53,6 +48,16 @@ function Settings({ fetchSettings, errorMessage }) {
       getSettings()
     }
   }, [fetchSettings])
+
+  useEffect(() => {
+    if (saveSettings > 0) {
+      window.network.setUnlimitedHearts(unlimitedHearts)
+      window.network.setWillHaveOvertime(willHaveOvertime)
+      window.network.setOvertimeDuration(overtimeDuration)
+      window.network.setHeartAmount(heartAmount)
+      window.network.setQuestionAmount(questionAmount)
+    }
+  }, [saveSettings])
 
   return (
     <>

@@ -183,6 +183,10 @@ socket.on('ranking', (data) => {
   window.postMessage({ type: 'ranking-event', idGame: data.idGame }, '*')
 })
 
+socket.on('answer_correct', (data) => {
+  window.postMessage({ type: 'answer_correct-event', correct: data.correct }, '*')
+})
+
 // ERROR EVENTS
 socket.on('LOBBY_NAME_LENGTH_ERROR', (data) => {
   window.network.setMessage(data.message)

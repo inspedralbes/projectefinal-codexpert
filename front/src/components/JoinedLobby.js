@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 import Settings from './Settings'
 import Modal from 'react-modal'
 import PropTypes from 'prop-types'
+import cross from '../img/cross.png'
 
 Modal.setAppElement('body')
 
@@ -19,6 +20,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
+  const [saveSettings, setSaveSettings] = useState(0)
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -27,9 +29,13 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
       case 'starting_errors-event':
         if (eventData.valid) {
           if (!sent) {
-            window.postMessage({
-              type: 'start_game-emit'
-            }, '*')
+            setFetchSettings(false)
+            window.postMessage(
+              {
+                type: 'start_game-emit'
+              },
+              '*'
+            )
           }
           setSent(true)
         }
@@ -38,28 +44,45 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
       case 'lobby_settings-event':
         setFetchSettings(true)
         break
-
-      default:
-        break
     }
   }
 
   const handleStartGame = (e) => {
     e.preventDefault()
-    window.postMessage({
-      type: 'save_settings-emit'
-    }, '*')
+    window.postMessage(
+      {
+        type: 'save_settings-emit'
+      },
+      '*'
+    )
   }
 
   const handleLeave = (e) => {
     e.preventDefault()
-    window.postMessage({
-      type: 'leave_lobby-emit'
-    }, '*')
+    window.postMessage(
+      {
+        type: 'leave_lobby-emit'
+      },
+      '*'
+    )
     setJoined(false)
     setLobbyName('')
     setLobbyList([])
   }
+
+  const saveChangedSettings = () => {
+    setSaveSettings(saveSettings + 1)
+    setShowModal(false)
+  }
+
+  const closeModalWithoutSaving = () => {
+    setSaveSettings(0)
+    setShowModal(false)
+  }
+
+  useEffect(() => {
+    if (!showModal) setSaveSettings(0)
+  }, [showModal])
 
   useEffect(() => {
     window.addEventListener('message', handleMessage)
@@ -70,19 +93,20 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   }, [])
 
   return (
-    <div id='lobbyJoined' className='lobbies__lobby lobby'>
-      <button id='goBackToLobby__button' onClick={handleLeave}>
-        <span className='circle' aria-hidden='true'>
-          <span className='icon arrow'></span>
+    <div id="lobbyJoined" className="lobbies__lobby lobby">
+      <button id="goBackToLobby__button" onClick={handleLeave}>
+        <span className="circle" aria-hidden="true">
+          <span className="icon arrow"></span>
         </span>
-        <span className='button-text'>LEAVE CURRENT LOBBY
-        </span>
+        <span className="button-text">LEAVE CURRENT LOBBY</span>
       </button>
       {window.network.getShowSettings()
-        ? <>
+        ? (
+        <>
           <button onClick={() => setShowModal(true)}>Settings</button>
           <Modal
-            style={{ // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+            style={{
+              // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
               content: {
                 top: '50%',
                 left: '50%',
@@ -90,25 +114,55 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
                 bottom: 'auto',
                 marginRight: '-50%',
                 transform: 'translate(-50%, -50%)',
-                padding: '5%'
+                padding: '1%',
+                width: '60%',
+                height: '90%'
               }
             }}
-            onRequestClose={() => setShowModal(false)}
+            onRequestClose={() => closeModalWithoutSaving()}
             shouldCloseOnOverlayClick={true}
             isOpen={showModal}
           >
-            <Settings fetchSettings={fetchSettings} errorMessage={errorMessage}></Settings>
+            <button className="cross" onClick={() => closeModalWithoutSaving()}>
+              <img src={cross} alt="X" height={'30px'}></img>
+            </button>
+
+            <Settings
+              fetchSettings={fetchSettings}
+              errorMessage={errorMessage}
+              saveSettings={saveSettings}
+            ></Settings>
+            <br></br>
+            <div className="lobbyModal__buttons">
+              <button
+                className="pixel-button lobby-modalBtn"
+                onClick={() => saveChangedSettings()}
+              >
+                Save
+              </button>
+            </div>
           </Modal>
-        </>
-        : <></>}
+        </>)
+        : (
+        <></>
+          )}
       <ConnectedUsers></ConnectedUsers>
-      {window.network.getShowSettings() &&
-        <div className='button-startGame'>
-          <button className='startGame' id='startGame' onClick={handleStartGame}>Start game</button>
-        </div>}
-      {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
-      <div className='lobby__chat'>
-        <ChatLobby className='chat__chatbox'></ChatLobby>
+      {window.network.getShowSettings() && (
+        <div className="button-startGame">
+          <button
+            className="startGame"
+            id="startGame"
+            onClick={handleStartGame}
+          >
+            Start game
+          </button>
+        </div>
+      )}
+      {errorMessage !== '' && (
+        <h2 className="lobbies__error">{errorMessage}</h2>
+      )}
+      <div className="lobby__chat">
+        <ChatLobby className="chat__chatbox"></ChatLobby>
       </div>
     </div>
   )
