@@ -34,6 +34,27 @@ function Register() {
     }
   }
 
+  const sendTutorialLocalStorageData = (token) => {
+    if (localStorage.getItem('tutorialsAnswered') !== null && localStorage.getItem('userExperience') !== null) {
+      const data = new FormData()
+      data.append('token', token)
+      data.append('tutorialsAnswered', localStorage.getItem('tutorialsAnswered'))
+      data.append('tutorialPassed', localStorage.getItem('tutorialPassed'))
+      data.append('userExperience', localStorage.getItem('userExperience'))
+
+      fetch(routes.fetchLaravel + 'setUserTutorial', {
+        method: 'POST',
+        mode: 'cors',
+        body: data,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data)
+        })
+    }
+  }
+
   useEffect(() => {
     if (userData.username.length >= 3 && userData.username.length <= 20) {
       setColor({ ...color, username: 'green' })
@@ -44,7 +65,11 @@ function Register() {
 
   useEffect(() => {
     console.log()
-    if (userData.email.length <= 255 && userData.email.includes('@') && userData.email.includes('.')) {
+    if (
+      userData.email.length <= 255 &&
+      userData.email.includes('@') &&
+      userData.email.includes('.')
+    ) {
       setColor({ ...color, email: 'green' })
     } else {
       setColor({ ...color, email: 'red' })
@@ -52,7 +77,8 @@ function Register() {
   }, [userData.email])
 
   useEffect(() => {
-    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/
+    const regex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/
     if (regex.test(userData.password)) {
       setColor({ ...color, password: 'green' })
     } else {
@@ -61,8 +87,12 @@ function Register() {
   }, [userData.password])
 
   useEffect(() => {
-    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/
-    if (userData.passwordValidation === userData.password && regex.test(userData.passwordValidation)) {
+    const regex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/
+    if (
+      userData.passwordValidation === userData.password &&
+      regex.test(userData.passwordValidation)
+    ) {
       setColor({ ...color, passwordValidation: 'green' })
     } else {
       setColor({ ...color, passwordValidation: 'red' })
@@ -82,89 +112,144 @@ function Register() {
         mode: 'cors',
         body: user,
         credentials: 'include'
-      }).then((response) => response.json()).then((data) => {
-        if (data.valid) {
-          cookies.set('token', data.token, { path: '/' })
-          window.postMessage({
-            type: 'send_token-emit',
-            token: cookies.get('token')
-          }, '*')
-
-          navigate('/avatarMaker')
-        } else {
-          console.log(data)
-        }
-      }
-      )
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.valid) {
+            cookies.set('token', data.token, { path: '/' })
+            window.postMessage(
+              {
+                type: 'send_token-emit',
+                token: cookies.get('token')
+              },
+              '*'
+            )
+            sendTutorialLocalStorageData(data.token)
+            localStorage.clear()
+            navigate('/avatarMaker')
+          } else {
+            console.log(data)
+          }
+        })
     }
   }, [registro])
 
   return (
-    <div className='form register'>
+    <div className="form register">
       <h1>REGISTER</h1>
       <br />
-      <div className='form__form'>
-        <div className='form__inputGroup'>
-          <input id='username' className='form__input' style={{ color: color.username }} placeholder=' ' type='text' onChange={(e) => setUserData({ ...userData, username: e.target.value })} required></input>
-          <span className='form__inputBar'></span>
-          <label htmlFor='username' className='form__inputlabel'>Username</label>
+      <div className="form__form">
+        <div className="form__inputGroup">
+          <input
+            id="username"
+            className="form__input"
+            style={{ color: color.username }}
+            placeholder=" "
+            type="text"
+            onChange={(e) =>
+              setUserData({ ...userData, username: e.target.value })
+            }
+            required
+          ></input>
+          <span className="form__inputBar"></span>
+          <label htmlFor="username" className="form__inputlabel">
+            Username
+          </label>
         </div>
-        <div className='form__inputGroup'>
-          <input id='email' className='form__input' style={{ color: color.email }} placeholder=' ' type='text' onChange={(e) => setUserData({ ...userData, email: e.target.value })} required></input>
-          <span className='form__inputBar'></span>
-          <label htmlFor='email' className='form__inputlabel'>E-mail</label>
+        <div className="form__inputGroup">
+          <input
+            id="email"
+            className="form__input"
+            style={{ color: color.email }}
+            placeholder=" "
+            type="text"
+            onChange={(e) =>
+              setUserData({ ...userData, email: e.target.value })
+            }
+            required
+          ></input>
+          <span className="form__inputBar"></span>
+          <label htmlFor="email" className="form__inputlabel">
+            E-mail
+          </label>
         </div>
-        <div className='form__inputGroup'>
-          <input id="password" className='form__input' style={{ color: color.password }} placeholder=' ' type='password' name='password' onChange={(e) => setUserData({ ...userData, password: e.target.value })} required></input>
-          <span className='form__inputBar'></span>
+        <div className="form__inputGroup">
+          <input
+            id="password"
+            className="form__input"
+            style={{ color: color.password }}
+            placeholder=" "
+            type="password"
+            name="password"
+            onChange={(e) =>
+              setUserData({ ...userData, password: e.target.value })
+            }
+            required
+          ></input>
+          <span className="form__inputBar"></span>
           <Eye id={'password'}></Eye>
-          <label htmlFor='passwd1' className='form__inputlabel'>Password
-            <Tippy theme={'light-border'}
+          <label htmlFor="passwd1" className="form__inputlabel">
+            Password
+            <Tippy
+              theme={'light-border'}
               content={'Password must'}
               placement={'right'}
               animation={'shift-away-extreme'}
-
             >
-              <img src={informationIcon} alt='' height='20px' />
+              <img src={informationIcon} alt="" height="20px" />
             </Tippy>
-
-          </label >
-        </div >
-        <div className='form__inputGroup'>
-          <input id="repeat_password" className='form__input' style={{ color: color.passwordValidation }} placeholder=' ' type='password' onChange={(e) => setUserData({ ...userData, passwordValidation: e.target.value })} onKeyDown={handleKeyDown} required></input>
-          <span className='form__inputBar'></span>
-          <Eye id={'repeat_password'}></Eye>
-          <label htmlFor='repeat_password' className='form__inputlabel'>Repeat password </label>
+          </label>
         </div>
-      </div >
+        <div className="form__inputGroup">
+          <input
+            id="repeat_password"
+            className="form__input"
+            style={{ color: color.passwordValidation }}
+            placeholder=" "
+            type="password"
+            onChange={(e) =>
+              setUserData({ ...userData, passwordValidation: e.target.value })
+            }
+            onKeyDown={handleKeyDown}
+            required
+          ></input>
+          <span className="form__inputBar"></span>
+          <Eye id={'repeat_password'}></Eye>
+          <label htmlFor="repeat_password" className="form__inputlabel">
+            Repeat password{' '}
+          </label>
+        </div>
+      </div>
 
-      <div className='form__buttonsLinks'>
-        <div className='form__buttons'>
-          <Link to='/login'>
-            <div className='form__goBack'>
-              <div className='form__button--flex'>
-                <button id='goBack__button'>
-                  <span className='circle' aria-hidden='true'>
-                    <span className='icon arrow'></span>
+      <div className="form__buttonsLinks">
+        <div className="form__buttons">
+          <Link to="/login">
+            <div className="form__goBack">
+              <div className="form__button--flex">
+                <button id="goBack__button">
+                  <span className="circle" aria-hidden="true">
+                    <span className="icon arrow"></span>
                   </span>
-                  <span className='button-text'>GO BACK</span>
+                  <span className="button-text">GO BACK</span>
                 </button>
               </div>
             </div>
           </Link>
 
-          <div className='form__submit submit'>
-            <button onClick={() => setRegistro(registro + 1)} id='submit__button'>
-              <span className='circle2' aria-hidden='true'>
-                <span className='icon2 arrow2'></span>
+          <div className="form__submit submit">
+            <button
+              onClick={() => setRegistro(registro + 1)}
+              id="submit__button"
+            >
+              <span className="circle2" aria-hidden="true">
+                <span className="icon2 arrow2"></span>
               </span>
-              <span className='button-text'>SUBMIT</span>
+              <span className="button-text">SUBMIT</span>
             </button>
           </div>
         </div>
       </div>
-    </div >
-
+    </div>
   )
 }
 

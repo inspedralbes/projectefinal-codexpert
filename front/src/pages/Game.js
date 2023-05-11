@@ -13,8 +13,6 @@ import Timer from '../components/Timer'
 import heart from '../img/corazon_roto.gif'
 import Modal from 'react-modal'
 
-const Timer2 = Timer;
-
 function Game() {
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
@@ -140,7 +138,7 @@ function Game() {
 
   return (
     <div className='game'>
-      {overtimeDuration > 0
+      {overtimeDuration > 0 && playable
         && <img src={persiana}
           id='persiana'
           className='persiana'
