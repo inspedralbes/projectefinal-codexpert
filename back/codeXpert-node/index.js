@@ -486,7 +486,7 @@ function startOverTime(socket, time) {
     const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
     cont++;
 
-    if (cont === time || lobby?.members.length === lobby?.users_finished) {
+    if (cont === time || lobby.members.length === lobby.users_finished) {
       endGame(socket);
       clearInterval(interval);
     };
