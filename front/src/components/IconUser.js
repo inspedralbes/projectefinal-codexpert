@@ -58,7 +58,7 @@ function IconUser() {
       })
     localStorage.clear()
     if (window.location.pathname === '/') {
-      location.reload()
+      window.location.reload()
     } else {
       navigate('/')
     }
