@@ -30,9 +30,12 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
         if (eventData.valid) {
           if (!sent) {
             setFetchSettings(false)
-            window.postMessage({
-              type: 'start_game-emit'
-            }, '*')
+            window.postMessage(
+              {
+                type: 'start_game-emit'
+              },
+              '*'
+            )
           }
           setSent(true)
         }
@@ -46,16 +49,22 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
 
   const handleStartGame = (e) => {
     e.preventDefault()
-    window.postMessage({
-      type: 'save_settings-emit'
-    }, '*')
+    window.postMessage(
+      {
+        type: 'save_settings-emit'
+      },
+      '*'
+    )
   }
 
   const handleLeave = (e) => {
     e.preventDefault()
-    window.postMessage({
-      type: 'leave_lobby-emit'
-    }, '*')
+    window.postMessage(
+      {
+        type: 'leave_lobby-emit'
+      },
+      '*'
+    )
     setJoined(false)
     setLobbyName('')
     setLobbyList([])
@@ -84,19 +93,20 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   }, [])
 
   return (
-    <div id='lobbyJoined' className='lobbies__lobby lobby'>
-      <button id='goBackToLobby__button' onClick={handleLeave}>
-        <span className='circle' aria-hidden='true'>
-          <span className='icon arrow'></span>
+    <div id="lobbyJoined" className="lobbies__lobby lobby">
+      <button id="goBackToLobby__button" onClick={handleLeave}>
+        <span className="circle" aria-hidden="true">
+          <span className="icon arrow"></span>
         </span>
-        <span className='button-text'>LEAVE CURRENT LOBBY
-        </span>
+        <span className="button-text">LEAVE CURRENT LOBBY</span>
       </button>
       {window.network.getShowSettings()
-        ? <>
+        ? (
+        <>
           <button onClick={() => setShowModal(true)}>Settings</button>
           <Modal
-            style={{ // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+            style={{
+              // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
               content: {
                 top: '50%',
                 left: '50%',
@@ -113,24 +123,46 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
             shouldCloseOnOverlayClick={true}
             isOpen={showModal}
           >
-            <button className='cross' onClick={() => closeModalWithoutSaving()}><img src={cross} alt='X' height={'30px'}></img></button>
+            <button className="cross" onClick={() => closeModalWithoutSaving()}>
+              <img src={cross} alt="X" height={'30px'}></img>
+            </button>
 
-            <Settings fetchSettings={fetchSettings} errorMessage={errorMessage} saveSettings={saveSettings}></Settings>
+            <Settings
+              fetchSettings={fetchSettings}
+              errorMessage={errorMessage}
+              saveSettings={saveSettings}
+            ></Settings>
             <br></br>
-            <div className='lobbyModal__buttons'>
-              <button className='pixel-button lobby-modalBtn' onClick={() => saveChangedSettings()}>Save</button>
+            <div className="lobbyModal__buttons">
+              <button
+                className="pixel-button lobby-modalBtn"
+                onClick={() => saveChangedSettings()}
+              >
+                Save
+              </button>
             </div>
           </Modal>
-        </>
-        : <></>}
+        </>)
+        : (
+        <></>
+          )}
       <ConnectedUsers></ConnectedUsers>
-      {window.network.getShowSettings() &&
-        <div className='button-startGame'>
-          <button className='startGame' id='startGame' onClick={handleStartGame}>Start game</button>
-        </div>}
-      {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
-      <div className='lobby__chat'>
-        <ChatLobby className='chat__chatbox'></ChatLobby>
+      {window.network.getShowSettings() && (
+        <div className="button-startGame">
+          <button
+            className="startGame"
+            id="startGame"
+            onClick={handleStartGame}
+          >
+            Start game
+          </button>
+        </div>
+      )}
+      {errorMessage !== '' && (
+        <h2 className="lobbies__error">{errorMessage}</h2>
+      )}
+      <div className="lobby__chat">
+        <ChatLobby className="chat__chatbox"></ChatLobby>
       </div>
     </div>
   )
