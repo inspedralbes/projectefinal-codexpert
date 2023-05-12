@@ -76,10 +76,6 @@ function Tutorial() {
             )
             tutorialsId.sort()
 
-            if (location.state.id === 6) {
-              localStorage.setItem('tutorialPassed', JSON.stringify(true))
-            }
-
             navigate('/campaign')
           }
         })
@@ -117,8 +113,41 @@ function Tutorial() {
           '' && (
             <>
               <Carousel
-                nextButtonText={'<button>←</button>'}
-                prevButtonText={<button>→</button>}
+                defaultControlsConfig={{
+                  nextButtonText: (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="68"
+                      height="68"
+                      viewBox="0 0 68 68"
+                    >
+                      <g
+                        id="Group_8"
+                        data-name="Group 8"
+                        transform="translate(-1309 -621)"
+                      >
+                        <rect
+                          id="Box"
+                          width="68"
+                          height="68"
+                          transform="translate(1309 621)"
+                          fill="none"
+                        />
+                        <path
+                          id="Icon_Keyboard_Arrow_-_Up_Dark"
+                          data-name="Icon / Keyboard Arrow - Up / Dark"
+                          d="M30.033,20.967,17,7.933,3.967,20.967,0,17,17,0,34,17Z"
+                          transform="translate(1353.483 637.15) rotate(90)"
+                          fill="#fff"
+                        />
+                      </g>
+                    </svg>
+                  ),
+
+                  pagingDotsStyle: {
+                    fill: "green"
+                  }
+                }}
               >
                 {introduction.introductions[
                   location.state.id - 1

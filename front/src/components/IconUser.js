@@ -70,36 +70,34 @@ function IconUser() {
         <div className="container">
           {avatarURL !== null
             ? (
-            <button
-              type="button"
-              className="button"
-              onClick={handleButtonClick}
-            >
-              <img
-                className="button__image"
-                alt="avatar"
-                src={avatarURL}
-                height="50"
-                width="50"
-              ></img>
-            </button>)
+              <button
+                type="button"
+                className="button"
+                onClick={handleButtonClick}
+              >
+                <img
+                  className="button__image"
+                  alt="avatar"
+                  src={avatarURL}
+                  height="50"
+                  width="50"
+                ></img>
+              </button>)
             : (
-            <Loader className="loader" />
-              )}
+              <Loader className="loader" />)}
           {state && (
             <div className="dropdown">
               <ul className="dropdown__list list">
-                <li className="list__item">
+                <li className="list__item" onClick={() => navigate('/profile')}>
                   <button
                     className="button"
-                    onClick={() => navigate('/profile')}
                   >
                     Profile
                   </button>
                 </li>
-                <li className="list__item">
+                <li className="list__item" onClick={() => handleLogOut()}>
                   {' '}
-                  <button className="button" onClick={() => handleLogOut()}>
+                  <button className="button">
                     Log Out
                   </button>
                 </li>

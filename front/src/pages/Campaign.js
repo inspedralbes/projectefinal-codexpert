@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import '../styles/normalize.css'
 import '../styles/campaign.css'
 import routes from '../conn_routes'
@@ -16,6 +14,7 @@ Modal.setAppElement('body')
 function Campaign() {
   const [modal, setModal] = useState(false)
   const [tutorialList, setTutorialList] = useState([])
+  const [lastQuestion, setLastQuestion] = useState('')
   const [userExperience, setUserExperience] = useState('')
   const [tutorialsAnswered, setTutorialsAnswered] = useState([])
   const [lvlUnlocked, setLvlUnlocked] = useState(
@@ -76,13 +75,13 @@ function Campaign() {
       .then((response) => response.json())
       .then((data) => {
         setTutorialList(data)
-        console.log(data)
         setUserExperience(localStorage.getItem('lvlUnlocked'))
+        setLastQuestion(data[data.length - 1].id)
       })
   }
 
   useEffect(() => {
-    if (localStorage.getItem('userExperience') === null) {
+    if (localStorage.getItem('userExperience') === null && cookies.get('token') === undefined) {
       setModal(true)
     } else {
       getTutorials()
@@ -93,6 +92,14 @@ function Campaign() {
       )
     }
   }, [])
+
+  useEffect(() => {
+    if (localStorage.getItem('tutorialsAnswered') !== []) {
+      if (tutorialsAnswered.includes(lastQuestion)) {
+        localStorage.setItem('tutorialPassed', JSON.stringify(true))
+      }
+    }
+  }, [lastQuestion])
 
   return (
     <div className="campaign">
@@ -145,36 +152,35 @@ function Campaign() {
                 <div className="pixel__container level__container">
                   {lvlUnlocked >= index ||
                     element.locked === 0 ||
-                    tutorialsAnswered.includes(element.id - 1) ? (
-                    <>
-                      {console.log(tutorialsAnswered)}
-                      {element.passed ||
-                        tutorialsAnswered.includes(element.id) ? (
-                        <>
-                          <img src={success}></img>
-                        </>
-                      ) : (
-                        <>
-                          <img src={unlocked}></img>
-                        </>
-                      )}
-                      <br></br>
-                      <button
-                        className="pixel-button"
-                        onClick={() =>
-                          navigate('/tutorial', { state: { id: element.id } })
-                        }
-                      >
-                        Play
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <img src={locked}></img>
-                      <br></br>
-                      <button className="pixel-button locked">locked</button>
-                    </>
-                  )}
+                    tutorialsAnswered.includes(element.id - 1)
+                    ? (
+                      <>
+                        {element.passed ||
+                          tutorialsAnswered.includes(element.id)
+                          ? (
+                            <>
+                              <img src={success}></img>
+                            </>)
+                          : (
+                            <>
+                              <img src={unlocked}></img>
+                            </>)}
+                        <br></br>
+                        <button
+                          className="pixel-button"
+                          onClick={() =>
+                            navigate('/tutorial', { state: { id: element.id } })
+                          }
+                        >
+                          Play
+                        </button>
+                      </>)
+                    : (
+                      <>
+                        <img src={locked}></img>
+                        <br></br>
+                        <button className="pixel-button locked">locked</button>
+                      </>)}
                 </div>
               </li>
             )
