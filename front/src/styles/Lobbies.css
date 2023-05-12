@@ -660,6 +660,7 @@
     color: red;
     text-align: center;
     font-family: pixel_operator;
+    font-size: 0.75em;
     src: url(../fonts/pixel_operator/PixelOperator8.ttf);
 }
 
@@ -885,11 +886,20 @@
     margin: 0 auto;
     padding: 0;
     font-size: 1.5rem;
-    color: #ff0000 ;
+    color: #ff0000;
     text-align: center;
     margin-top: 20px;
     opacity: 1 !important;
     position: absolute;
     width: 100%;
     transform: translate(0, -40px);
+}
+
+.lobbyModal__buttons {
+    display: flex;
+}
+
+.lobby-modalBtn {
+    margin: 0 auto;
+    width: fit-content;
 }

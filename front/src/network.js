@@ -68,10 +68,11 @@ const handleMessage = (event) => {
 
     case 'save_settings-emit':
       socket.emit('save_settings', {
-        gameDuration: window.network.getGameDuration(),
+        overtimeDuration: window.network.getOvertimeDuration(),
         heartAmount: window.network.getHeartAmount(),
         unlimitedHearts: window.network.getUnlimitedHearts(),
-        questionAmount: window.network.getQuestionAmount()
+        questionAmount: window.network.getQuestionAmount(),
+        willHaveOvertime: window.network.getWillHaveOvertime()
       })
       break
 
@@ -138,7 +139,8 @@ socket.on('stats', (data) => {
   window.network.setRewards({
     xpEarned: data.xpEarned,
     coinsEarned: data.coinsEarned,
-    eloEarned: data.eloEarned
+    eloEarned: data.eloEarned,
+    resultMessage: data.resultMessage
   })
 })
 
@@ -156,7 +158,7 @@ socket.on('show_settings', (data) => {
 })
 
 socket.on('lobby_settings', (data) => {
-  window.network.setGameDuration(data.gameDuration)
+  window.network.setOvertimeDuration(data.overtimeDuration)
   window.network.setHeartAmount(data.heartAmount)
   window.network.setUnlimitedHearts(data.unlimitedHearts)
   window.network.setQuestionAmount(data.questionAmount)
@@ -202,14 +204,14 @@ socket.on('ALREADY_STARTED', (data) => {
   window.postMessage({ type: 'ALREADY_STARTED-event' }, '*')
 })
 
-socket.on('GAME_TIME_UNDER_MIN', (data) => {
-  window.network.setErrorMessage(`Selected game duration was too low -> Minimum: ${data.min}`)
-  window.postMessage({ type: 'GAME_TIME_UNDER_MIN-event' }, '*')
+socket.on('OVERTIME_UNDER_MIN', (data) => {
+  window.network.setErrorMessage(`Selected overtime duration was too low -> Minimum: ${data.min}`)
+  window.postMessage({ type: 'OVERTIME_UNDER_MIN-event' }, '*')
 })
 
-socket.on('GAME_TIME_ABOVE_MAX', (data) => {
-  window.network.setErrorMessage(`Selected game duration was too high -> Maximum: ${data.max}`)
-  window.postMessage({ type: 'GAME_TIME_ABOVE_MAX-event' }, '*')
+socket.on('OVERTIME_ABOVE_MAX', (data) => {
+  window.network.setErrorMessage(`Selected overtime duration was too high -> Maximum: ${data.max}`)
+  window.postMessage({ type: 'OVERTIME_ABOVE_MAX-event' }, '*')
 })
 
 socket.on('HEARTS_AMT_UNDER_MIN', (data) => {

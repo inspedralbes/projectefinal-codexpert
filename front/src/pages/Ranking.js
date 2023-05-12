@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import RankingPodium from '../components/RankingPodium'
 import RankingTable from '../components/RankingTable'
 import ShareRanking from '../components/ShareRanking'
@@ -13,10 +14,11 @@ function RankingPage() {
   const [rewards, setRewards] = useState({
     xpEarned: 0,
     coinsEarned: 0,
-    eloEarned: 0
+    eloEarned: 0,
+    resultMessage: ''
   })
-  const [result, setResult] = useState('')
   const [dataLoaded, setDataLoaded] = useState(false)
+  const navigate = useNavigate()
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -26,13 +28,16 @@ function RankingPage() {
         setRankingData(window.network.getRankingData())
         setIdGame(eventData.idGame)
         setRewards(window.network.getRewards())
-        setResult(window.network.getResult())
         setDataLoaded(true)
         break
 
       default:
         break
     }
+  }
+
+  function goBackToLobby() {
+    navigate('/lobbies')
   }
 
   useEffect(() => {
@@ -45,10 +50,17 @@ function RankingPage() {
 
   return (
     <>
+      <button id='goBackToLobby__button' onClick={goBackToLobby}>
+        <span className='circle' aria-hidden='true'>
+          <span className='icon arrow'></span>
+        </span>
+        <span className='button-text'>GO BACK TO LOBBY
+        </span>
+      </button>
       {dataLoaded
         ? <main>
           <div className='game__yourResults yourResults'>
-            <h1 className='yourResults__result'>{result}</h1>
+            <h1 className='yourResults__result'>{rewards.resultMessage}</h1>
           </div>
 
           <div className='ranking'>

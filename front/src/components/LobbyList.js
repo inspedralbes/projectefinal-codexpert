@@ -27,12 +27,10 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
       lobby_name: lobbyName,
       rank: 'Owner'
     }, '*')
-    // setJoined(true)
   }
 
   const handleJoin = (e) => {
     e.preventDefault()
-    console.log(e.target)
     setLobbyName(e.target.id)
     window.postMessage({
       type: 'join_room-emit',
@@ -41,7 +39,7 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
     }, '*')
 
     setErrorMessage('')
-    // setJoined(true)
+    window.network.setShowSettings(false)
   }
 
   return (

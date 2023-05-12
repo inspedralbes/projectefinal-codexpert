@@ -7,6 +7,9 @@ import { useLocation } from 'react-router-dom'
 import CodeMirror from '../components/CodeMirror'
 import Cookies from 'universal-cookie'
 import { useNavigate } from 'react-router-dom' // Rutas
+import Carousel from 'nuka-carousel'
+import parse from 'html-react-parser'
+import introduction from '../localData/Introductions.json'
 
 function Tutorial() {
   const location = useLocation()
@@ -82,10 +85,7 @@ function Tutorial() {
             )
 
             if (location.state.id === 6) {
-              localStorage.setItem(
-                'tutorialPassed',
-                JSON.stringify(true)
-              )
+              localStorage.setItem('tutorialPassed', JSON.stringify(true))
             }
 
             navigate('/campaign')
@@ -95,33 +95,47 @@ function Tutorial() {
   }
 
   useEffect(() => {
-    const tutorialData = new FormData()
-    tutorialData.append('id', location.state.id)
-    tutorialData.append(
-      'token',
-      cookies.get('token') !== undefined ? cookies.get('token') : null
-    )
-    fetch(routes.fetchLaravel + 'getTutorialFromId', {
-      method: 'POST',
-      mode: 'cors',
-      body: tutorialData,
-      credentials: 'include'
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        setQst(data)
+    if (location.state === null) {
+      navigate('/campaign')
+    } else {
+      const tutorialData = new FormData()
+      tutorialData.append('id', location.state.id)
+      tutorialData.append(
+        'token',
+        cookies.get('token') !== undefined ? cookies.get('token') : null
+      )
+      fetch(routes.fetchLaravel + 'getTutorialFromId', {
+        method: 'POST',
+        mode: 'cors',
+        body: tutorialData,
+        credentials: 'include'
       })
+        .then((response) => response.json())
+        .then((data) => {
+          setQst(data)
+        })
+    }
   }, [])
 
   return (
     <div className="tutorial__container">
-      <div>
-        <h1>Introduction</h1>
-        <p>
-          Lorem Ipsum et sit lorem apsum miau asdsa dsadsa dsad sad sa dsadsa
-          dsa dsad asdsa dsa
-        </p>
+      <div className="introduction__container">
+        <h1>Introduction:</h1>
+        {introduction.introductions[location.state.id - 1].introduction[0] !==
+          '' && (
+          <>
+            <Carousel
+              nextButtonText={'<button>←</button>'}
+              prevButtonText={<button>→</button>}
+            >
+              {introduction.introductions[
+                location.state.id - 1
+              ].introduction.map((element, index) => {
+                return <div key={index}>{parse(element)}</div>
+              })}
+            </Carousel>
+          </>
+        )}
       </div>
       <div>
         <div className="tutorial__statement">
@@ -133,16 +147,16 @@ function Tutorial() {
             <div className="editor__expected">
               <div className="tutorial__expectedInput">
                 <h2>Example input:</h2>
-                <h1>{qst.inputs[0]}</h1>
+                <h1>{qst.inputs[0].toString()}</h1>
               </div>
 
               <div className="tutorial__expectedOutput">
                 <h2>Example output:</h2>
-                <h1>{qst.output}</h1>
+                <h1>{qst.output.toString()}</h1>
               </div>
               <div className="tutorial__expectedOutput tutorial__result">
                 <h2>Result:</h2>
-                <h1>{qst.output}</h1>
+                <h1></h1>
               </div>
             </div>
             <form className="editor" onSubmit={handleSubmit}>

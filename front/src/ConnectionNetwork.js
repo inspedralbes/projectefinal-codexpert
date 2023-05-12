@@ -14,9 +14,10 @@ class ConnectionNetwork {
   showSettings = false
   settings = {
     heartAmount: 0,
-    gameDuration: 0,
+    overtimeDuration: 0,
     questionAmount: 0,
-    unlimitedHearts: false
+    unlimitedHearts: false,
+    willHaveOvertime: true
   }
 
   setMessage(msg) {
@@ -107,8 +108,12 @@ class ConnectionNetwork {
     return this.rewards
   }
 
-  setGameDuration(duration) {
-    this.settings.gameDuration = duration
+  setOvertimeDuration(duration) {
+    this.settings.overtimeDuration = duration
+  }
+
+  setWillHaveOvertime(willHave) {
+    this.settings.willHaveOvertime = willHave
   }
 
   setHeartAmount(amt) {
@@ -123,8 +128,12 @@ class ConnectionNetwork {
     this.settings.unlimitedHearts = unlimited
   }
 
-  getGameDuration() {
-    return this.settings.gameDuration
+  getWillHaveOvertime() {
+    return this.settings.willHaveOvertime
+  }
+
+  getOvertimeDuration() {
+    return this.settings.overtimeDuration
   }
 
   getHeartAmount() {

@@ -7,6 +7,9 @@
     --pixel-bg: #75b152;
 }
 
+.game {
+    overflow: hidden;
+}
 
 .game__container {
     border: 3px solid #fff;
@@ -15,6 +18,7 @@
     width: 100%;
     margin: 0 auto;
     height: 100vh;
+    overflow: hidden;
     display: grid;
     grid-template-columns: 0.7fr 1.6fr;
     grid-template-rows: 1fr;
@@ -31,6 +35,8 @@
 }
 
 .container__right {
+    height: 10px;
+    width: 10px;
     width: 100%;
     float: right;
     padding: 0;
@@ -288,4 +294,37 @@ h2 {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+}
+
+.game__logo {
+    transform: translate(-20px, -15px);
+    display: flex;
+    margin: 0 0 0 0;
+    align-items: center;
+    justify-content: center;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.persiana {
+    width: 100%;
+    z-index: 1;
+    position: absolute;
+}
+
+@keyframes persianaAnim {
+    0% {
+        bottom: 100vh
+    }
+
+    100% {
+        bottom: 0;
+    }
+}
+
+.ended__game {
+    position: absolute;
+    top: 23%;
+    left: 50%;
 }
