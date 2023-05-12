@@ -3,7 +3,19 @@ import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
 import '../styles/avatarMaker.css'
 import PropTypes from 'prop-types'
-import { cobalt, amy, boysAndGirls, tomorrow, rosePineDawn, noctisLilac, espresso, coolGlow, dracula, barf, birdsOfParadise } from 'thememirror'
+import {
+  cobalt,
+  amy,
+  boysAndGirls,
+  tomorrow,
+  rosePineDawn,
+  noctisLilac,
+  espresso,
+  coolGlow,
+  dracula,
+  barf,
+  birdsOfParadise
+} from 'thememirror'
 
 App.propTypes = {
   code: PropTypes.string,
@@ -58,12 +70,12 @@ function App({ code, setCode }) {
   }
 
   return (
-    <div className='codemirror__editor'>
+    <div className="codemirror__editor">
       <CodeMirror
         value={code}
         style={{ fontSize: '1.1rem' }}
-        height='400px'
-        width='100%'
+        height="400px"
+        width="100%"
         theme={themeShow}
         extensions={[javascript({ jsx: true })]}
         onChange={onChange}
@@ -82,7 +94,7 @@ function App({ code, setCode }) {
         <option value='barf'>barf</option>
         <option value='birdsOfParadise'>birdsOfParadise</option>
       </select> */}
-    </div >
+    </div>
   )
 }
 export default App

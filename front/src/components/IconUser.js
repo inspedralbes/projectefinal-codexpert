@@ -17,7 +17,10 @@ function IconUser() {
 
   useEffect(() => {
     const token = new FormData()
-    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    token.append(
+      'token',
+      cookies.get('token') !== undefined ? cookies.get('token') : null
+    )
     fetch(routes.fetchLaravel + 'getAvatar', {
       method: 'POST',
       mode: 'cors',
@@ -32,7 +35,10 @@ function IconUser() {
 
   const handleLogOut = () => {
     const token = new FormData()
-    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    token.append(
+      'token',
+      cookies.get('token') !== undefined ? cookies.get('token') : null
+    )
     fetch(routes.fetchLaravel + 'logout', {
       method: 'POST',
       mode: 'cors',
@@ -52,7 +58,7 @@ function IconUser() {
       })
     localStorage.clear()
     if (window.location.pathname === '/') {
-      location.reload()
+      window.location.reload()
     } else {
       navigate('/')
     }
@@ -61,19 +67,42 @@ function IconUser() {
   return (
     <>
       {avatarURL !== '' && (
-        <div className='container'>
+        <div className="container">
           {avatarURL !== null
-            ? (<button
-              type='button'
-              className='button'
+            ? (
+            <button
+              type="button"
+              className="button"
               onClick={handleButtonClick}
-            ><img className='button__image' alt='avatar' src={avatarURL} height='50' width='50'></img></button>)
-            : <Loader className='loader' />}
+            >
+              <img
+                className="button__image"
+                alt="avatar"
+                src={avatarURL}
+                height="50"
+                width="50"
+              ></img>
+            </button>)
+            : (
+            <Loader className="loader" />
+              )}
           {state && (
-            <div className='dropdown'>
-              <ul className='dropdown__list list'>
-                <li className='list__item'><button className='button' onClick={() => navigate('/profile')}>Profile</button></li>
-                <li className='list__item'> <button className='button' onClick={() => handleLogOut()}>Log Out</button></li>
+            <div className="dropdown">
+              <ul className="dropdown__list list">
+                <li className="list__item">
+                  <button
+                    className="button"
+                    onClick={() => navigate('/profile')}
+                  >
+                    Profile
+                  </button>
+                </li>
+                <li className="list__item">
+                  {' '}
+                  <button className="button" onClick={() => handleLogOut()}>
+                    Log Out
+                  </button>
+                </li>
               </ul>
             </div>
           )}
