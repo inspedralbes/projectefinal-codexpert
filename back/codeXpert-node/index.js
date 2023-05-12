@@ -336,7 +336,7 @@ socketIO.on("connection", (socket) => {
         if (response.data.correct) {
           socketIO.to(socket.id).emit("answer_correct", {
             correct: true
-          })
+          });
 
           addMessage({
             nickname: "ingame_events",
@@ -381,7 +381,7 @@ socketIO.on("connection", (socket) => {
         } else {
           socketIO.to(socket.id).emit("answer_correct", {
             correct: false
-          })
+          });
 
           addMessage({
             nickname: "ingame_events",

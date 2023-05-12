@@ -148,7 +148,7 @@ function Tutorial() {
               </div>
               <div className="tutorial__expectedOutput tutorial__result">
                 <h2>Result:</h2>
-                <h1></h1>
+                <h1>{error !== '' && <div>{error}</div>}</h1>
               </div>
             </div>
             <form className="editor" onSubmit={handleSubmit}>
