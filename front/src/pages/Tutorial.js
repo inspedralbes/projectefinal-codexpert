@@ -47,7 +47,7 @@ function Tutorial() {
       const checkAnswer = new FormData()
       checkAnswer.append('idQuestion', location.state.id)
       checkAnswer.append('evalRes', JSON.stringify(resultsEvalRecieved))
-      checkAnswer.append('evalPassed', evalPassedBoolean)
+      checkAnswer.append('evalPassed', JSON.stringify(evalPassedBoolean))
       checkAnswer.append(
         'token',
         cookies.get('token') !== undefined ? cookies.get('token') : null
