@@ -10,6 +10,8 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
+use App\Models\Tutorial_test_input;
+use App\Models\Tutorial_test_output;
 use Laravel\Sanctum\PersonalAccessToken;
 class GameController extends Controller
 {
@@ -17,7 +19,7 @@ class GameController extends Controller
      * This function creates a new game relationship in the database
      * @return object $newGame it's the object that has been created in the database
      */    
-    private function createNewGame(Request $request)
+    private function createNewGame()
     {
         //Create a new empty game and return it.
         $newGame = new Game;
@@ -69,7 +71,7 @@ class GameController extends Controller
 
         if ( !($request -> numQuestions == null || $request -> numQuestions == "null" || $request -> numQuestions == 0) ) {
             //Start an empty game
-            $newGame = $this->createNewGame($request);
+            $newGame = $this->createNewGame();
 
             //Get the questions that will be added to the game
             $getQuestions = $this->getQuestions($request);
@@ -419,9 +421,106 @@ class GameController extends Controller
     }     
 
     /**
+     * This function recievs the inputs and if the eval has been passed, outputs, inputs and the result from the evals. It will check if there are enough tests, if the tests are valid and if the tests are repeated it will return which.
+     * @param bool $evalPassed returns if the eval has been passed on frontend
+     * @param array $outputs is the array of the outputs that the user wrote
+     * @param array $evalRes is the array containing the results of each eval
+     * @return bool $correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
+     */     
+    private function checkInputsAndOutputs($inputs, $outputs)
+    {
+        $returnObject = (object) [
+            "correct" => false,
+            "error" => ''
+        ];
+
+        if ( (count($inputs) == count($outputs)) && (count($inputs)) >= 3) {
+            $i = 1;
+            while ($i < count($inputs) && !$returnObject -> correct) {
+                if ($inputs[0] !== $inputs[$i]) {
+                    $returnObject -> correct = true;
+                }
+                $i++;
+            }
+
+            if ($returnObject -> correct) {
+                $i = 0;
+                while ($i < count($inputs) && $returnObject -> correct) {
+                    if ($inputs[$i] === $outputs[$i]) {
+                        $returnObject -> correct = false;
+                    } 
+                    $i++;
+                }
+
+                if (!$returnObject -> correct) {
+                    $returnObject -> error  = "Input and output can't be the same.";
+                }
+                
+            } else {
+                $returnObject -> error  =  "Inputs can't all be the same.";
+            }
+
+        } else {
+            $returnObject -> error = "Not enough tests or the amount of inputs and outputs are not equal.";
+        }
+
+        return $returnObject;
+    }  
+
+    /**
+     * This functions adds a new question to the database, relating the user to it as the creator.
+     * @param string $statement is the statement from the question
+     * @param string $hint is a hint so the users can have a better understanding of the statement if needed
+     * @param int $creatorId is id from the logged in user
+     * @return object $questionAdded is the row that has been added to the database
+     */     
+    private function createNewQuestion($statement, $hint, $creatorId)
+    {
+        $questionAdded = new Question;
+        $questionAdded -> statement = $statement;
+        $questionAdded -> hint = $hint;
+        $questionAdded -> creatorId = $creatorId;
+        $questionAdded -> save();
+
+        return $questionAdded;
+    } 
+
+    /**
+     * This functions adds the test inputs that the user has created to the question that has just been created.
+     * @param int $question_id is id from the question that has just been created
+     * @param array $inputs is an array of all the test inputs
+     */     
+    private function addInputsToQuestion($question_id, $inputs)
+    {
+        for ($i = 0; $i < count($inputs); $i++) { 
+            $input = new Tutorial_test_input;
+            $input -> question_id = $question_id;
+            $input -> input = serialize($inputs[$i]);
+            $input -> save();
+        }
+
+    } 
+    
+    /**
+     * This functions adds the test outputs that the user has created to the question that has just been created.
+     * @param int $question_id is id from the question that has just been created
+     * @param array $outputs is an array of all the test outputs
+     */      
+    private function addOutputsToQuestion($question_id, $outputs)
+    {
+        for ($i = 0; $i < count($outputs); $i++) { 
+            $output = new Tutorial_test_output;
+            $output -> question_id = $question_id;
+            $output -> output = serialize($outputs[$i]);
+            $output -> save();
+        }
+
+    } 
+
+    /**
      * This function will validate and create the given question and relate it to the logged in user.
      * @param int $id is the game id from the database.
-     * @return array $ranking contains an ordered list of players that have played the game.
+     * @return object $returnObject contains 'created', will return true if the question has been added to the database, and 'loggedIn', will return true if the user is logged in.
      */      
     public function addNewQuestion(Request $request)
     {
@@ -434,6 +533,7 @@ class GameController extends Controller
         $userId = $this->getUserId($request -> token);
         
         //Decode the given arrays
+        $evalPassed = json_decode($request -> evalPassed);
         $outputs = json_decode($request -> outputs);
         $evalRes = json_decode($request -> evalRes);
         $inputs = json_decode($request -> evalRes);
@@ -441,10 +541,24 @@ class GameController extends Controller
         if ($userId != null) {
             //If logged in we run all the validations
             $validStatement = $this->checkStatement($request -> statement);
-            $validInputsOutputs = $this->checkEval($request -> evalPassed, $outputs, $evalRes);
+            $correctEvals = $this->checkEval($evalPassed, $outputs, $evalRes);
+            $correctInputsAndOutputs = $this->checkInputsAndOutputs($evalPassed, $outputs, $evalRes);
+            if ($validStatement && $correctEvals && $correctInputsAndOutputs) {
+                $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId);
+                $this->addInputsToQuestion($createdQuestion -> id, $inputs);
+                $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      
+                $returnObject = (object) [
+                    'created' => true,
+                    'loggedIn' => true
+                ];
+            } else {
+                $returnObject = (object) [
+                    'loggedIn' => true
+                ];
+            }
+            
         }
         
-
         return response() -> json($returnObject);
     }     
      
