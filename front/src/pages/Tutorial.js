@@ -47,7 +47,7 @@ function Tutorial() {
       const checkAnswer = new FormData()
       checkAnswer.append('idQuestion', location.state.id)
       checkAnswer.append('evalRes', JSON.stringify(resultsEvalRecieved))
-      checkAnswer.append('evalPassed', evalPassedBoolean)
+      checkAnswer.append('evalPassed', JSON.stringify(evalPassedBoolean))
       checkAnswer.append(
         'token',
         cookies.get('token') !== undefined ? cookies.get('token') : null
@@ -61,28 +61,20 @@ function Tutorial() {
         .then((response) => response.json())
         .then((data) => {
           if (data.correct) {
-            let answered = false
             if (localStorage.getItem('tutorialsAnswered') !== null) {
-              let tutorials = JSON.parse(
+              tutorialsId = JSON.parse(
                 localStorage.getItem('tutorialsAnswered')
               )
-              for (let i = 0; i < tutorials.length; i++) {
-                if (tutorials[i] === location.state.id) {
-                  answered = true
-                }
-              }
-              if (!answered) {
-                tutorialsId = JSON.parse(
-                  localStorage.getItem('tutorialsAnswered')
-                )
-              }
             }
-            tutorialsId.push(location.state.id)
+            if (!tutorialsId.includes(location.state.id)) {
+              tutorialsId.push(location.state.id)
+            }
             tutorialsId.sort()
             localStorage.setItem(
               'tutorialsAnswered',
               JSON.stringify(tutorialsId)
             )
+            tutorialsId.sort()
 
             if (location.state.id === 6) {
               localStorage.setItem('tutorialPassed', JSON.stringify(true))
@@ -123,19 +115,19 @@ function Tutorial() {
         <h1>Introduction:</h1>
         {introduction.introductions[location.state.id - 1].introduction[0] !==
           '' && (
-          <>
-            <Carousel
-              nextButtonText={'<button>←</button>'}
-              prevButtonText={<button>→</button>}
-            >
-              {introduction.introductions[
-                location.state.id - 1
-              ].introduction.map((element, index) => {
-                return <div key={index}>{parse(element)}</div>
-              })}
-            </Carousel>
-          </>
-        )}
+            <>
+              <Carousel
+                nextButtonText={'<button>←</button>'}
+                prevButtonText={<button>→</button>}
+              >
+                {introduction.introductions[
+                  location.state.id - 1
+                ].introduction.map((element, index) => {
+                  return <div key={index}>{parse(element)}</div>
+                })}
+              </Carousel>
+            </>
+          )}
       </div>
       <div>
         <div className="tutorial__statement">
