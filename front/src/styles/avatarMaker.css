@@ -69,9 +69,10 @@
 
 .avatar__colorPicker {
     overflow: auto;
-    padding: 15px;
     display: flex;
     height: 50vh;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .avatar__colorPicker div {
@@ -286,4 +287,8 @@ option {
     font-family: karmatic;
     font-size: 2rem;
     margin: 0;
+}
+
+.noscroll {
+    overflow: hidden;
 }

@@ -25,7 +25,7 @@ function Accessories({ currentColor, handleChangeComplete, setChanges, ArrayColo
           <img src={require('../../img/avatar/accessories/variant04.png')} alt='Accessories' width='100px' height='100px'></img>
         </button>
       </div>
-      <div className='avatar__colorPicker'>
+      <div className='avatar__colorPicker' id='scroll'>
         <TwitterPicker
           color={currentColor}
           onChangeComplete={handleChangeComplete}
