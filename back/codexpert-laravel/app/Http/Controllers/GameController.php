@@ -384,7 +384,6 @@ class GameController extends Controller
         if ($statement != null) {
             if ( (strlen($statement) > 3) && (strlen($statement) <= 500) ) {
                 $canCreate = true;
-
             }
         }
 
@@ -442,7 +441,7 @@ class GameController extends Controller
         if ($userId != null) {
             //If logged in we run all the validations
             $validStatement = $this->checkStatement($request -> statement);
-            $validInputsOutputs = $this->checkEval($request -> evalPassed, $request -> inputs, $request -> outputs);
+            $validInputsOutputs = $this->checkEval($request -> evalPassed, $outputs, $evalRes);
         }
         
 
