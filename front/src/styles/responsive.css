@@ -6,6 +6,67 @@
     --white: white;
 }
 
+@media (max-width: 1680px) {
+    .form {
+        transition: all 0.2s;
+        width: 30%;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        margin: 5vh auto;
+    }
+
+    .form__buttons {
+        display: block;
+    }
+
+
+    #submit__button,
+    #goBack__button {
+        width: 12rem;
+        margin: 10px;
+    }
+
+    #submit__button .button-text,
+    #goBack__button .button-text {
+        font-size: 13px;
+    }
+
+    #goBack__button .circle,
+    #submit__button .circle2 {
+        width: 100%;
+    }
+
+    #goBack__button .circle .icon.arrow {
+        background: #fff;
+        transform: translate(1rem, 0);
+    }
+
+    #submit__button .circle2 .icon2.arrow2 {
+        background: #fff;
+        transform: translate(9rem, 0);
+    }
+
+    #goBack__button .button-text,
+    #submit__button .button-text {
+        color: #fff;
+    }
+
+}
+
+@media (max-width: 1100px) {
+    .form {
+        width: 40%;
+        display: grid;
+        transition: all 0.2s;
+
+        align-items: center;
+        justify-content: center;
+        margin: 5vh auto;
+    }
+}
+
+
 @media (max-width: 600px) {
     body {
         background-size: cover;
@@ -121,5 +182,54 @@
 
     .slider.round:before {
         border-radius: 50%;
+    }
+
+    /* LANDING_________________________________________________________________________________________________________________________ */
+    .landingLogin {
+        text-align: center;
+        margin: 30px;
+        border: none;
+        width: 20%;
+        color: #8ba07b;
+    }
+
+    .landingPage__codexpert {
+        width: 100% !important;
+        transform: translate(0, -20px);
+    }
+
+    .codexpert__intro {
+        text-align: center !important;
+        font-size: 60%;
+        line-height: 25px;
+        width: 90%;
+    }
+
+    .landingPage {
+        color: #2e5e22;
+        margin: 10vh auto !important;
+        width: 80% !important;
+        text-align: center;
+        padding: 30px;
+        border-color: #000000;
+        border-style: solid;
+        border-width: 6px 0;
+        color: #000000;
+        position: relative;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+
+    .landingPage p {
+        margin: 0 !important;
+    }
+
+    .landingbtn {
+        width: 90%;
     }
 }

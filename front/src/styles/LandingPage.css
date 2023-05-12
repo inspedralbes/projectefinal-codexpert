@@ -4,7 +4,7 @@
     margin: 15vh auto;
     width: 60%;
     text-align: center;
-    padding: 60px;
+    padding: 30px;
     border-color: #000000;
     border-style: solid;
     border-width: 6px 0;
@@ -63,16 +63,16 @@
 }
 
 .landingLogin {
-    position: absolute;
-    right: 10px;
+    text-align: center;
     margin: 30px;
-    background-color: rgba(255, 255, 255, 0.438);
-    top: 10px;
     border: none;
     width: 20%;
-    color: rgb(101, 187, 30);
+    color: #8ba07b;
 }
 
 .codexpert__intro {
+    text-align: justify;
+    text-align-last: center;
+    font-size: 60%;
     line-height: 25px;
 }

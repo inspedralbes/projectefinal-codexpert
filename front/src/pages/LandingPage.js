@@ -7,6 +7,7 @@ import routes from '../conn_routes'
 import logo from '../img/logo.gif'
 import { Loader } from '../components/Loading'
 import IconUser from '../components/IconUser'
+import '../styles/responsive.css'
 
 function LandingPage() {
   const cookies = new Cookies()
@@ -36,11 +37,6 @@ function LandingPage() {
       {isUserLogged && (
         <IconUser />
       )}
-      {isUserLogged === false && (
-        <Link className='landingLogin' to='/login'>
-          Login/Register
-        </Link>
-      )}
       <div className='landingPage'>
         <Loader />
         <img src={logo} alt='codeXpert' className='landingPage__codexpert'></img>
@@ -51,12 +47,19 @@ function LandingPage() {
         )}
         {isUserLogged === false && (
           <Link to='/campaign'>
-            <button className='pixel-button'>Get Started</button>
+            <button className='pixel-button landingbtn'>Get Started</button>
           </Link>
+        )}
+        {isUserLogged === false && (
+          <div>
+            <Link className='landingLogin' to='/login'>
+              <p>Login/Register</p>
+            </Link>
+          </div>
         )}
         {isUserLogged && (
           <Link to='/lobbies'>
-            <button className='pixel-button'>Lobbies</button>
+            <button className='pixel-button landingbtn'>Lobbies</button>
           </Link>
         )}
       </div>
