@@ -382,6 +382,7 @@ class TutorialController extends Controller
 
     /**
      * This function will first check that the user is logged in, if logged in it will check if he has completed the tutorial
+     * @param string $token is the session token
      * @return object $returnObject contains the boolean valid that shows if the user has completed the tutorial or not.
     */  
     public function checkTutorialPassed(Request $request)
@@ -394,7 +395,7 @@ class TutorialController extends Controller
         if ($userId != null) {
             $user = User::where('id', $userId) -> first();
             if  ($user -> tutorialPassed) { 
-                $returnObject -> tutorialPassed = true;;
+                $returnObject -> tutorialPassed = true;
             }
         }
 
