@@ -1,5 +1,4 @@
 import * as Phaser from 'phaser'
-import '../assets/tiles/Overworld-map.json'
 
 export default class Preloader extends Phaser.Scene {
   constructor() {
@@ -7,8 +6,10 @@ export default class Preloader extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('tiles', '../assets/tiles/Overworld.png')
-    this.load.tilemapTiledJSON('overworld-map', '../assets/tiles/Overworld-map.json')
+    this.load.image('tiles', 'assets/tiles/Overworld.png')
+    this.load.tilemapTiledJSON('map-tiles', 'assets/tiles/overworld-map.json')
+
+    this.load.atlas('fauna', 'assets/characters/fauna/fauna.png', 'assets/characters/fauna/fauna.json')
   }
 
   create() {
