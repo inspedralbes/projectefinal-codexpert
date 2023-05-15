@@ -608,6 +608,8 @@ class GameController extends Controller
      */      
     public function getMyQuestions(Request $request)
     {  
+        $myQuestions = [];
+        
         //Check if the user is logged in, if not array myQuestions is empty
         $userId = $this->getUserId($request -> token);
 
@@ -626,25 +628,26 @@ class GameController extends Controller
      */    
     public function getMyQuestionWithId(Request $request)
     {  
-        //Check if the user is logged in, if not array myQuestions is empty
+        $returnQuestion = (object)[];
+        //Check if the user is logged in, if not object returnQuestion is empty
         $userId = $this->getUserId($request -> token);
 
         if ($userId != null) {
             $myQuestion = Question::where('id', $request -> questionId) -> first();
+
+            $inputs = Test_input::where('question_id', $request -> questionId) -> get();
+            $outputs = Test_output::where('question_id', $request -> questionId) -> get();
+
+            $returnQuestion = (object) [
+                'id' => $request -> questionId,
+                'title' => $myQuestion -> title,
+                'statement' => $myQuestion -> statement,
+                'hint' => $myQuestion -> hint,
+                'public' => $myQuestion -> public,
+                'inputs' => $inputs, 
+                'outputs' => $outputs
+            ];
         }
-
-        $inputs = Test_input::where('question_id', $request -> questionId) -> get();
-        $outputs = Test_output::where('question_id', $request -> questionId) -> get();
-
-        $returnQuestion = (object) [
-            'id' => $request -> questionId,
-            'title' => $myQuestion -> title,
-            'statement' => $myQuestion -> statement,
-            'hint' => $myQuestion -> hint,
-            'public' => $myQuestion -> public,
-            'inputs' => $inputs, 
-            'outputs' => $outputs
-        ];
 
         return response() -> json($returnQuestion);
     }  
