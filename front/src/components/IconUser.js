@@ -61,23 +61,23 @@ function IconUser() {
     <>
       {avatarURL !== '' && (
         <div className="container">
-          {avatarURL !== null ? (
-            <button
-              type="button"
-              className="button"
-              onClick={handleButtonClick}
-            >
-              <img
-                className="button__image"
-                alt="avatar"
-                src={avatarURL}
-                height="50"
-                width="50"
-              ></img>
-            </button>
-          ) : (
-            <Loader className="loader" />
-          )}
+          {avatarURL !== null
+            ? (
+              <button
+                type="button"
+                className="button"
+                onClick={handleButtonClick}
+              >
+                <img
+                  className="button__image"
+                  alt="avatar"
+                  src={avatarURL}
+                  height="50"
+                  width="50"
+                ></img>
+              </button>)
+            : (
+              <Loader className="loader" />)}
           {state && (
             <div className="dropdown">
               <ul className="dropdown__list list">

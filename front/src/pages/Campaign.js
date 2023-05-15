@@ -156,26 +156,26 @@ function Campaign() {
       <ul className="levels__list">
         {userExperience !== ''
           ? tutorialList.map((element, index) => {
-              return (
-                <li key={element.id}>
-                  <div className="levels-title__container">
-                    <h3>{element.title}</h3>
-                  </div>
-                  <div className="pixel__container level__container">
-                    {lvlUnlocked >= index ||
+            return (
+              <li key={element.id}>
+                <div className="levels-title__container">
+                  <h3>{element.title}</h3>
+                </div>
+                <div className="pixel__container level__container">
+                  {lvlUnlocked >= index ||
                     element.locked === 0 ||
-                    tutorialsAnswered.includes(element.id - 1) ? (
+                    tutorialsAnswered.includes(element.id - 1)
+                    ? (
                       <>
-                        {element.passed ||
-                        tutorialsAnswered.includes(element.id) ? (
-                          <>
-                            <img src={success}></img>
-                          </>
-                        ) : (
-                          <>
-                            <img src={unlocked}></img>
-                          </>
-                        )}
+                        {element.passed || tutorialsAnswered.includes(element.id)
+                          ? (
+                            <>
+                              <img src={success}></img>
+                            </>)
+                          : (
+                            <>
+                              <img src={unlocked}></img>
+                            </>)}
                         <br></br>
                         <button
                           className="pixel-button"
@@ -185,18 +185,17 @@ function Campaign() {
                         >
                           Play
                         </button>
-                      </>
-                    ) : (
+                      </>)
+                    : (
                       <>
                         <img src={locked}></img>
                         <br></br>
                         <button className="pixel-button locked">locked</button>
-                      </>
-                    )}
-                  </div>
-                </li>
-              )
-            })
+                      </>)}
+                </div>
+              </li>
+            )
+          })
           : null}
       </ul>
       {localStorage.getItem('tutorialPassed') !== null && (
