@@ -46,8 +46,7 @@
 .form h1 {
     color: var(--h1-color);
     text-shadow: 4px 4px 4px 4px var(--shadow-color);
-    font-size: 60px;
-    font-size: 100%;
+    font-size: 200%;
 }
 
 .form__buttons {

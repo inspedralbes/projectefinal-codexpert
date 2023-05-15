@@ -62,9 +62,15 @@
     align-content: center;
 }
 
+.landingLogin--div {
+    margin-top: 20px;
+    height: fit-content;
+}
+
 .landingLogin {
     text-align: center;
     margin: 30px;
+    font-size: 1rem;
     border: none;
     width: 20%;
     color: #8ba07b;

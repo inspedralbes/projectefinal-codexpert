@@ -14,18 +14,18 @@
     width: 27%;
     display: block;
     overflow-y: hidden;
-    position: absolute;
+    position: fixed;
     left: 20px;
-    bottom: 5%;
+    bottom: 2%;
     overflow-x: hidden;
     transition: all 2s;
     padding: 0 0 3px 0;
     margin: 0;
     height: 40%;
-    box-shadow: -4px 0 0 0 black,
-        4px 0 0 0 black,
-        0 -4px 0 0 black,
-        0 4px 0 0 black;
+    box-shadow: -4px 0 0 0 #9165F8,
+        4px 0 0 0 #9165F8,
+        0 -4px 0 0 #9165F8,
+        0 4px 0 0 #9165F8;
 }
 
 #form>button {
@@ -75,9 +75,9 @@
     transition: all 2s;
     margin: 0 0 35px 0;
     height: 80%;
-    box-shadow: -3px 0 0 0 #104400,
-        0 -3px 0 0 #104400,
-        0 3px 0 0 #000000;
+    box-shadow: -3px 0 0 0 green,
+        0 -3px 0 0 green,
+        0 3px 0 0 green;
 }
 
 .game__userImage {

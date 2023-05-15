@@ -220,11 +220,17 @@
 .codemirror__editor {
     display: flex;
     flex-wrap: nowrap;
-    width: 100%;
+    width: 98%;
+    margin: 10px auto;
     align-content: center;
     justify-content: center;
     align-items: stretch;
     flex-direction: column;
+    box-shadow: -6px 0 0 0 #63A32D,
+        6px 0 0 0 #63A32D,
+        0 -6px 0 0 #63A32D,
+        0 6px 0 0 #63A32D;
+
 }
 
 #select {

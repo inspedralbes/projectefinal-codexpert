@@ -51,9 +51,9 @@ function LandingPage() {
           </Link>
         )}
         {isUserLogged === false && (
-          <div>
+          <div className='landingLogin--div'>
             <Link className='landingLogin' to='/login'>
-              <p>Login/Register</p>
+              Login/Register
             </Link>
           </div>
         )}

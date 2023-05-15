@@ -6,6 +6,64 @@
     --white: white;
 }
 
+@media (max-width: 1823px) {
+
+    .game__expectedInput,
+    .game__expectedOutput {
+        width: 47% !important;
+        margin: 0 15px !important;
+    }
+
+    .game__result {
+        width: 97% !important;
+        margin: 10px 0 !important;
+    }
+}
+
+
+@media (max-width: 1530px) {
+
+    .game__expectedInput,
+    .game__expectedOutput {
+        width: 45% !important;
+        margin: 0 15px !important;
+    }
+
+    .game__result {
+        width: 97% !important;
+        margin: 10px 0 !important;
+    }
+}
+
+@media (max-width: 1530px) {
+
+    .game__expectedInput,
+    .game__expectedOutput {
+        width: 45% !important;
+        margin: 0 20px !important;
+    }
+
+    .game__result {
+        width: 97% !important;
+        margin: 10px 0 !important;
+    }
+}
+
+
+@media (max-width: 1260px) {
+
+    .game__expectedInput,
+    .game__expectedOutput {
+        width: 40% !important;
+        margin: 0 20px !important;
+    }
+
+    .game__result {
+        width: 97% !important;
+        margin: 10px 0 !important;
+    }
+}
+
 @media (max-width: 1680px) {
     .form {
         transition: all 0.2s;
