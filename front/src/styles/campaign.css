@@ -16,13 +16,14 @@
     margin-left: 1%;
 }
 
-.campaign p {
-    margin-top: 10px;
-    font-size: 20px;
+.modal__content h1 {
+    margin: 40px;
+    font-size: 50pt;
 }
 
-.Camp {
-    width: 200px;
+.modal__content p {
+    margin: 40px;
+    font-size: 20px;
 }
 
 .pixel__container {

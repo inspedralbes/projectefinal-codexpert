@@ -65,6 +65,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/setUserTutorial', [TutorialController::class, 'setUserTutorial']);
 
     Route::post('/addNewQuestion', [GameController::class, 'addNewQuestion']);
+    
+    Route::post('/checkTutorialPassed', [TutorialController::class, 'checkTutorialPassed']);
 
     Route::post('/getMyQuestions', [GameController::class, 'getMyQuestions']);
 

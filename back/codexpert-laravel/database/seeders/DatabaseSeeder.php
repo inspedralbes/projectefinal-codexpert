@@ -281,7 +281,7 @@ class DatabaseSeeder extends Seeder
             //Level 1
             $tutorial_question = new Tutorial_question;
             $tutorial_question -> title = "INTRODUCTION TO VARIABLES";
-            $tutorial_question -> statement = "For this level, declare a variable (choose whatever name you like) using let and assign our variable input to it";
+            $tutorial_question -> statement = "For this level, declare a variable (choose whatever name you like) using <b>let</b> and assign our variable input to it.";
             $tutorial_question -> save();
             //Input 1
             $input = new Tutorial_test_input;
@@ -301,25 +301,25 @@ class DatabaseSeeder extends Seeder
             //Output 1
             $output = new Tutorial_test_output;
             $output -> question_id = 1;
-            $output -> output = serialize(3);
+            $output -> output = serialize(2);
             $output -> save();
             //Output 2
             $output = new Tutorial_test_output;
             $output -> question_id = 1;
-            $output -> output = serialize(5);
+            $output -> output = serialize(2);
             $output -> save();
             //Output 3
             $output = new Tutorial_test_output;
             $output -> question_id = 1;
-            $output -> output = serialize(1);
+            $output -> output = serialize(2);
             $output -> save();                
             
             
             //Level 2
             $tutorial_question = new Tutorial_question;
             $tutorial_question -> title = "ARITHMETIC OPERATORS";
-            $tutorial_question -> statement = "For this level, declare a variable, with whatever name you like, and assign 0 to it. Then, add 3 to this variable, and then add the value of our input to it";
-            $tutorial_question -> hint = "First you need to declare a variable, then use the assign operator from lesson 0 to assign 3 to  it. And then using the addition operator add the variable input";
+            $tutorial_question -> statement = "For this level, declare a variable, with whatever name you like. Then, add 3 to this variable, and then add the value of our input to it.";
+            $tutorial_question -> hint = "First you need to declare a variable, then use the assign operator from lesson 0 to assign 3 to it. And then using the addition operator add the variable input.";
             $tutorial_question -> save();
             //Input 1
             $input = new Tutorial_test_input;
@@ -356,8 +356,8 @@ class DatabaseSeeder extends Seeder
             //Example 3
             $tutorial_question = new Tutorial_question;
             $tutorial_question -> title = "CONDITIONAL STATEMENTS";
-            $tutorial_question -> statement = "For this level, using the conditional statements if and else, and the comparison operator, declare a variable using let (choose whatever name you like) and assign true if input is 1, else, assign false to it";
-            $tutorial_question -> hint = "To assign true or false, we simply write example = true, we don’t need to use quotation marks for true or false because they are a boolean expression, not a string";
+            $tutorial_question -> statement = "For this level, using the conditional statements if and else, and the comparison operator, declare a variable using let (choose whatever name you like) and assign true if input is 1, else, assign false to it.";
+            $tutorial_question -> hint = "To assign true or false, we simply write example = true, we don’t need to use quotation marks for true or false because they are a boolean expression, not a string.";
             $tutorial_question -> save();
             //Input 1
             $input = new Tutorial_test_input;
@@ -395,7 +395,7 @@ class DatabaseSeeder extends Seeder
             $tutorial_question = new Tutorial_question;
             $tutorial_question -> title = "INTRODUCTION TO ARRAYS";
             $tutorial_question -> statement = "Given an array of colors, return the third element of the given array. Remember to use the variable input!";
-            $tutorial_question -> hint = "Remember that the index of arrays starts counting on 0, therefore the first element of an array is not index = 1 but index = 0";
+            $tutorial_question -> hint = "Remember that the index of arrays starts counting on 0, therefore the first element of an array is not index = 1 but index = 0.";
             $tutorial_question -> save();
             //Input 1
             $input = new Tutorial_test_input;
@@ -432,8 +432,8 @@ class DatabaseSeeder extends Seeder
             //Level 5
             $tutorial_question = new Tutorial_question;
             $tutorial_question -> title = "INTRODUCTION TO LOOPS";
-            $tutorial_question -> statement = "The length of an array determines the amount of elements that there are in an array. To get the length of an array we use Level.length, where example is the name of the array. Determine the length of the array input and add up all the numbers inside the array, use whatever form of loop you like the most! ";
-            $tutorial_question -> hint = "First we need to determine the length of the array with input.length. We can save this length in a variable for example. We want to declare another variable where we will add each number of the array inside, we can name it for example additionVariable. What we want to do is, execute the addition code inside a loop, get the current value from the variable additionVariable and add the current value from the array with input[i] where i is the index that will increment each time the code is executed, like in the examples shown before. Our starting point will be 0 and our ending point will be the input.length";
+            $tutorial_question -> statement = "The length of an array determines the amount of elements that there are in an array. To get the length of an array we use input.length, where example is the name of the array. Determine the length of the array input and add up all the numbers inside the array, use whatever form of loop you like the most!";
+            $tutorial_question -> hint = "First we need to determine the length of the array with input.length. We can save this length in a variable for example. We want to declare another variable where we will add each number of the array inside, we can name it for example additionVariable. What we want to do is, execute the addition code inside a loop, get the current value from the variable additionVariable and add the current value from the array with input[i] where i is the index that will increment each time the code is executed, like in the examples shown before. Our starting point will be 0 and our ending point will be the input.length.";
             $tutorial_question -> save();
             //Input 1
             $input = new Tutorial_test_input;
