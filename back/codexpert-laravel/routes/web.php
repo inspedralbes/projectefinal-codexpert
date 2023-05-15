@@ -66,4 +66,6 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/checkTutorialPassed', [TutorialController::class, 'checkTutorialPassed']);
 
+    Route::post('/checkExpertiseChosen', [TutorialController::class, 'checkExpertiseChosen']);
+
 });
