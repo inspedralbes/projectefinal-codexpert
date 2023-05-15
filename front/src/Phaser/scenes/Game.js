@@ -29,7 +29,7 @@ export default class Game extends Phaser.Scene {
     const groundLayer = map.createLayer('Ground', tileset, 0, 0)
     const wallsLayer = map.createLayer('Walls', tileset, 0, 0)
     const overlapObjectLayer = map.getObjectLayer('Overlap')
-    
+
     this.anims.create({
       key: 'fauna-idle-down',
       frames: [
@@ -91,11 +91,9 @@ export default class Game extends Phaser.Scene {
     const group = this.add.group(config)
 
     overlapObjectLayer.objects.forEach(objct => {
-      console.log('object Layer Item: ', objct)
-      const gameObj = personajes.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
-      gameObj.data = objct.properties
-      console.log(gameObj)
-      group.add(gameObj)
+        const gameObj = personajes.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
+        gameObj.data = objct.properties
+        group.add(gameObj)
     })
 
     // console.log(group)
@@ -137,9 +135,6 @@ export default class Game extends Phaser.Scene {
           value: overlapObjectData[0].value
         }, '*')
       }
-
-      // console.log('overlap')
-      // console.log('colisionador: ', colisionador)
       console.log('colisionado: ', colisionado)
       this.overlapTmp = false
       setTimeout(this.checkOverlap.bind(this, () => { console.log("callbakc working") }), 1000)
