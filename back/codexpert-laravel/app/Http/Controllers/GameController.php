@@ -384,7 +384,7 @@ class GameController extends Controller
     {
         $canCreate = false;
         if ($statement != null) {
-            if ( (strlen($statement) > 3) && (strlen($statement) <= 500) ) {
+            if ( (strlen($statement) > 10) && (strlen($statement) <= 500) ) {
                 $canCreate = true;
             }
         }
@@ -519,7 +519,13 @@ class GameController extends Controller
 
     /**
      * This function will validate and create the given question and relate it to the logged in user.
-     * @param int $id is the game id from the database.
+     * @param string $checkToken is the session token
+     * @param string $statement is the statement for the question, where the exercise is explained
+     * @param bool $evalPassed indicates if the eval could be ran successfully
+     * @param array $outputs is the array of outputs that the user is intering
+     * @param array $evalRes is the array containing all the outputs from running the eval for each input
+     * @param array $inputs is the array of inputs that the user is intering
+     * @param string $hint is a hint to make the question a bit easier
      * @return object $returnObject contains 'created', will return true if the question has been added to the database, and 'loggedIn', will return true if the user is logged in.
      */      
     public function addNewQuestion(Request $request)
@@ -533,17 +539,14 @@ class GameController extends Controller
         $userId = $this->getUserId($request -> token);
         
         //Decode the given arrays
-        $evalPassed = json_decode($request -> evalPassed);
         $outputs = json_decode($request -> outputs);
-        $evalRes = json_decode($request -> evalRes);
         $inputs = json_decode($request -> evalRes);
 
         if ($userId != null) {
             //If logged in we run all the validations
             $validStatement = $this->checkStatement($request -> statement);
-            $correctEvals = $this->checkEval($evalPassed, $outputs, $evalRes);
-            $correctInputsAndOutputs = $this->checkInputsAndOutputs($evalPassed, $outputs, $evalRes);
-            if ($validStatement && $correctEvals && $correctInputsAndOutputs -> correct) {
+            $correctInputsAndOutputs = $this->checkInputsAndOutputs($inputs, $outputs);
+            if ($validStatement && $correctInputsAndOutputs -> correct) {
                 $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId);
                 $this->addInputsToQuestion($createdQuestion -> id, $inputs);
                 $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      
@@ -557,6 +560,11 @@ class GameController extends Controller
                         'loggedIn' => true,
                         'error' => $correctInputsAndOutputs -> error
                     ];
+                } else {
+                    $returnObject = (object) [
+                        'loggedIn' => true,
+                        'error' => 'Statement is not valid.'
+                    ];
                 }
 
             }
@@ -566,49 +574,21 @@ class GameController extends Controller
         return response() -> json($returnObject);
     }    
     
-        /**
+    /**
      * This function will return all the questions that the user has created
-     * @param int $id is the game id from the database.
-     * @return object $returnObject contains 'created', will return true if the question has been added to the database, and 'loggedIn', will return true if the user is logged in.
+     * @param string $checkToken is the session token
+     * @return array $myQuestions returns all the questions where the user is the creator
      */      
     public function getMyQuestions(Request $request)
-    {
-        $returnObject = (object) [
-            'created' => false,
-            'loggedIn' => false
-        ];
-
-        //Check if the user is logged in, if not we don't create and notify front end that the user is not logged in
+    {  
+        //Check if the user is logged in, if not array myQuestions is empty
         $userId = $this->getUserId($request -> token);
-        
-        //Decode the given arrays
-        $evalPassed = json_decode($request -> evalPassed);
-        $outputs = json_decode($request -> outputs);
-        $evalRes = json_decode($request -> evalRes);
-        $inputs = json_decode($request -> evalRes);
 
         if ($userId != null) {
-            //If logged in we run all the validations
-            $validStatement = $this->checkStatement($request -> statement);
-            $correctEvals = $this->checkEval($evalPassed, $outputs, $evalRes);
-            $correctInputsAndOutputs = $this->checkInputsAndOutputs($evalPassed, $outputs, $evalRes);
-            if ($validStatement && $correctEvals && $correctInputsAndOutputs) {
-                $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId);
-                $this->addInputsToQuestion($createdQuestion -> id, $inputs);
-                $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      
-                $returnObject = (object) [
-                    'created' => true,
-                    'loggedIn' => true
-                ];
-            } else {
-                $returnObject = (object) [
-                    'loggedIn' => true
-                ];
-            }
-            
+            $myQuestions = Question::where('creatorId', $userId) -> get();
         }
         
-        return response() -> json($returnObject);
+        return response() -> json($myQuestions);
     }  
      
 }
