@@ -442,9 +442,8 @@ class GameController extends Controller
 
     /**
      * This function recievs the inputs and if the eval has been passed, outputs, inputs and the result from the evals. It will check if there are enough tests, if the tests are valid and if the tests are repeated it will return which.
-     * @param bool $evalPassed returns if the eval has been passed on frontend
+     * @param array $inputs is the array of the inputs that the user wrote
      * @param array $outputs is the array of the outputs that the user wrote
-     * @param array $evalRes is the array containing the results of each eval
      * @return object $returnObject containing correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
      */     
     private function checkInputsAndOutputs($inputs, $outputs)
@@ -654,6 +653,7 @@ class GameController extends Controller
 
     /**
      * This function will recieve the question id to be deleted 
+     * @param string $token is the session token
      * @param int $questionId is the id from the question that will be deleted
      * @return object $returnObject contains deleted, true if the user was logged and the question was deleted succesfully
      */      
