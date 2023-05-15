@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom' // Rutas
 import './styles/index.css'
@@ -30,6 +30,10 @@ if (cookies.get('token') !== undefined && cookies.get('token') !== null) {
     token: cookies.get('token')
   }, '*')
 }
+
+// useEffect(() => {
+
+// }, [])
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(

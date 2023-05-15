@@ -1,17 +1,19 @@
-import Phaser from 'phaser'
+import * as Phaser from 'phaser'
 
 import Preloader from './Phaser/scenes/Preloader'
 import Game from './Phaser/scenes/Game'
 
 const PhaserGame = new Phaser.Game({
   type: Phaser.AUTO,
-  parent: 'phaser_container',
+  parent: 'phaser-container',
   backgroundColor: '#1e7cb8',
   scale: {
     mode: Phaser.Scale.ScaleModes.RESIZE,
     width: window.innerWidth,
-    height: window.innerHeight,
-    zoom: 2
+    height: window.innerHeight
+  },
+  dom: {
+    createContainer: true
   },
   physics: {
     default: 'arcade',
