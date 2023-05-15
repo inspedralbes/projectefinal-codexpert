@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Game;
 use App\Models\Question;
 use App\Models\Test_input;
@@ -377,19 +378,38 @@ class GameController extends Controller
 
     /**
      * This function recievs the statement for the next question and validates that it's correct
-     * @param string $statement is the statement that will be validated
-     * @return bool $canCreate is the boolean after the statement validation, true means it's valid
+     * @param object $validateTitleStatement is an object containing title and statement
+     * @return object $validatorInfo is an object, containing a boolean to determine whether title and statement are valid, if not, returns the error
      */     
-    private function checkStatement($statement)
+    private function checkTitleStatement($validateTitleStatement)
     {
-        $canCreate = false;
-        if ($statement != null) {
-            if ( (strlen($statement) > 10) && (strlen($statement) <= 500) ) {
-                $canCreate = true;
-            }
+        $validatorInfo = (object) [
+            'correct' => true,
+        ];
+
+        //Run validation for the title
+        $validateTitle =  Validator::make($validateTitleStatement->all(), [
+            'title' => 'required|string|min:5|max:20',
+        ]);
+        if ($validateTitle->fails()) {
+            $validatorInfo = (object) [
+                'correct' => false,
+                'error' => 'Title must be at least 5 characters long, with a maximum of 20 characters.'
+            ];  
         }
 
-        return $canCreate;
+        //Run validation for the statement
+        $validateStatement =  Validator::make($validateTitleStatement->all(), [
+            'statement' => 'required|string|min:25|max:500',
+        ]);
+        if ($validateStatement->fails()) {
+            $validatorInfo = (object) [
+                'correct' => false,
+                'statement' => 'Title must be at least 25 characters long, with a maximum of 500 characters.'
+            ];  
+        }
+
+        return $validatorInfo;
     }  
 
     /**
@@ -422,9 +442,8 @@ class GameController extends Controller
 
     /**
      * This function recievs the inputs and if the eval has been passed, outputs, inputs and the result from the evals. It will check if there are enough tests, if the tests are valid and if the tests are repeated it will return which.
-     * @param bool $evalPassed returns if the eval has been passed on frontend
+     * @param array $inputs is the array of the inputs that the user wrote
      * @param array $outputs is the array of the outputs that the user wrote
-     * @param array $evalRes is the array containing the results of each eval
      * @return object $returnObject containing correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
      */     
     private function checkInputsAndOutputs($inputs, $outputs)
@@ -474,12 +493,13 @@ class GameController extends Controller
      * @param int $creatorId is id from the logged in user
      * @return object $questionAdded is the row that has been added to the database
      */     
-    private function createNewQuestion($statement, $hint, $creatorId)
+    private function createNewQuestion($statement, $hint, $creatorId, $public)
     {
         $questionAdded = new Question;
         $questionAdded -> statement = $statement;
         $questionAdded -> hint = $hint;
         $questionAdded -> creatorId = $creatorId;
+        $questionAdded -> public = $public;
         $questionAdded -> save();
 
         return $questionAdded;
@@ -519,11 +539,13 @@ class GameController extends Controller
 
     /**
      * This function will validate and create the given question and relate it to the logged in user.
-     * @param string $checkToken is the session token
+     * @param string $token is the session token
+     * @param string $title is a title of the question, it doesn't contain as much information as as the statement
      * @param string $statement is the statement for the question, where the exercise is explained
      * @param array $outputs is the array of outputs that the user is intering
      * @param array $inputs is the array of inputs that the user is intering
      * @param string $hint is a hint to make the question a bit easier
+     * @param bool $public is a boolean that indicates if the user will make the question playable for other users
      * @return object $returnObject contains 'created', will return true if the question has been added to the database, and 'loggedIn', will return true if the user is logged in.
      */      
     public function addNewQuestion(Request $request)
@@ -539,13 +561,19 @@ class GameController extends Controller
         //Decode the given arrays
         $outputs = json_decode($request -> outputs);
         $inputs = json_decode($request -> evalRes);
+        $public = json_decode($request -> public);
+
+        $validateTitleStatement = (object) [
+            'title' => $request -> title,
+            'statement' => $request -> statement
+        ];
 
         if ($userId != null) {
             //If logged in we run all the validations
-            $validStatement = $this->checkStatement($request -> statement);
+            $correctTitleStatement = $this->checkTitleStatement($validateTitleStatement);
             $correctInputsAndOutputs = $this->checkInputsAndOutputs($inputs, $outputs);
-            if ($validStatement && $correctInputsAndOutputs -> correct) {
-                $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId);
+            if ($correctTitleStatement && $correctInputsAndOutputs -> correct) {
+                $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId, $public);
                 $this->addInputsToQuestion($createdQuestion -> id, $inputs);
                 $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      
                 $returnObject = (object) [
@@ -553,15 +581,15 @@ class GameController extends Controller
                     'loggedIn' => true
                 ];
             } else {
-                if ( ($correctInputsAndOutputs -> error != null) || ($correctInputsAndOutputs -> error != "")) {
+                if (!$correctTitleStatement -> correct) {
                     $returnObject = (object) [
                         'loggedIn' => true,
-                        'error' => $correctInputsAndOutputs -> error
+                        'error' => $correctTitleStatement -> error
                     ];
                 } else {
                     $returnObject = (object) [
                         'loggedIn' => true,
-                        'error' => 'Statement is not valid.'
+                        'error' => $correctInputsAndOutputs -> error
                     ];
                 }
 
@@ -574,11 +602,13 @@ class GameController extends Controller
     
     /**
      * This function will return all the questions that the user has created
-     * @param string $checkToken is the session token
+     * @param string $token is the session token
      * @return array $myQuestions returns all the questions where the user is the creator
      */      
     public function getMyQuestions(Request $request)
     {  
+        $myQuestions = [];
+
         //Check if the user is logged in, if not array myQuestions is empty
         $userId = $this->getUserId($request -> token);
 
@@ -588,5 +618,81 @@ class GameController extends Controller
         
         return response() -> json($myQuestions);
     }  
+
+    /**
+     * This function will return all the questions that the user has created
+     * @param string $token is the session token
+     * @param int $questionId is the question id, from the question that will be edited
+     * @return object $returnQuestion returns all the information from the question
+     */    
+    public function getMyQuestionWithId(Request $request)
+    {  
+        $returnQuestion = (object)[];
+        //Check if the user is logged in, if not object returnQuestion is empty
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            $myQuestion = Question::where('id', $request -> questionId) -> first();
+
+            $inputs = Test_input::where('question_id', $request -> questionId) -> get();
+            $outputs = Test_output::where('question_id', $request -> questionId) -> get();
+
+            $returnQuestion = (object) [
+                'id' => $request -> questionId,
+                'title' => $myQuestion -> title,
+                'statement' => $myQuestion -> statement,
+                'hint' => $myQuestion -> hint,
+                'public' => $myQuestion -> public,
+                'inputs' => $inputs, 
+                'outputs' => $outputs
+            ];
+        }
+
+        return response() -> json($returnQuestion);
+    }  
+
+    /**
+     * This function will recieve the question id to be deleted 
+     * @param string $token is the session token
+     * @param int $questionId is the id from the question that will be deleted
+     * @return object $returnObject contains deleted, true if the user was logged and the question was deleted succesfully
+     */      
+    public function deleteMyQuestion(Request $request)
+    {  
+        $returnObject = (object)[
+            'deleted' => false
+        ];
+
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            Question::where('id', $request -> questionId) -> delete();
+            $returnObject -> deleted = true;
+        }
+        
+        return response() -> json($returnObject);
+    } 
+
+    /**
+     * This function will retrieve the question found with the given id 
+     * @param string $token is the session token
+     * @param int $questionId is the id from the question that will be edited
+     * @return object $returnObject returns all the questions where the user is the creator
+     */      
+    public function editMyQuestion(Request $request)
+    {  
+        $returnObject = (object)[];
+        //Check if the user is logged in, if not array myQuestions is empty
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            $returnObject = $this -> addNewQuestion($request);
+            if ($returnObject -> correct) {
+                $this -> deleteMyQuestion($request);
+            }
+        }
+        
+        return response() -> json($returnObject);
+    }      
      
 }

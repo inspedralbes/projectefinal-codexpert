@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
+            $table->longText('title') -> nullable();
             $table->longText('statement');
             $table->longText('hint') -> nullable();
             $table->integer('creatorId')->nullable();
