@@ -521,9 +521,7 @@ class GameController extends Controller
      * This function will validate and create the given question and relate it to the logged in user.
      * @param string $checkToken is the session token
      * @param string $statement is the statement for the question, where the exercise is explained
-     * @param bool $evalPassed indicates if the eval could be ran successfully
      * @param array $outputs is the array of outputs that the user is intering
-     * @param array $evalRes is the array containing all the outputs from running the eval for each input
      * @param array $inputs is the array of inputs that the user is intering
      * @param string $hint is a hint to make the question a bit easier
      * @return object $returnObject contains 'created', will return true if the question has been added to the database, and 'loggedIn', will return true if the user is logged in.
