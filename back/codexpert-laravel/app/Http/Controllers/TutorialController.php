@@ -284,7 +284,9 @@ class TutorialController extends Controller
         $results = [];
         
         $results = json_decode($request -> evalRes);
+
         $evalPassed = json_decode($request -> evalPassed);
+
         //If any of the tests doesn't pass we return that it's not a correct answer.
         if ($evalPassed) {
             $outputs = [];
@@ -379,6 +381,28 @@ class TutorialController extends Controller
 
         return response() -> json($returnObject);
     }       
+
+    /**
+     * This function will first check that the user is logged in, if logged in it will check if he has completed the tutorial
+     * @param string $token is the session token
+     * @return object $returnObject contains the boolean valid that shows if the user has completed the tutorial or not.
+    */  
+    public function checkTutorialPassed(Request $request)
+    {
+        $returnObject = (object)[
+            "tutorialPassed" => false,
+        ];
+
+        $userId = $this->getUserId($request -> token); 
+        if ($userId != null) {
+            $user = User::where('id', $userId) -> first();
+            if  ($user -> tutorialPassed) { 
+                $returnObject -> tutorialPassed = true;
+            }
+        }
+
+        return response() -> json($returnObject);
+    }     
 
     
 }
