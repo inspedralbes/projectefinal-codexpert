@@ -425,7 +425,7 @@ class GameController extends Controller
      * @param bool $evalPassed returns if the eval has been passed on frontend
      * @param array $outputs is the array of the outputs that the user wrote
      * @param array $evalRes is the array containing the results of each eval
-     * @return bool $correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
+     * @return object $returnObject containing correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
      */     
     private function checkInputsAndOutputs($inputs, $outputs)
     {
@@ -543,6 +543,55 @@ class GameController extends Controller
             $validStatement = $this->checkStatement($request -> statement);
             $correctEvals = $this->checkEval($evalPassed, $outputs, $evalRes);
             $correctInputsAndOutputs = $this->checkInputsAndOutputs($evalPassed, $outputs, $evalRes);
+            if ($validStatement && $correctEvals && $correctInputsAndOutputs -> correct) {
+                $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId);
+                $this->addInputsToQuestion($createdQuestion -> id, $inputs);
+                $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      
+                $returnObject = (object) [
+                    'created' => true,
+                    'loggedIn' => true
+                ];
+            } else {
+                if ( ($correctInputsAndOutputs -> error != null) || ($correctInputsAndOutputs -> error != "")) {
+                    $returnObject = (object) [
+                        'loggedIn' => true,
+                        'error' => $correctInputsAndOutputs -> error
+                    ];
+                }
+
+            }
+            
+        }
+        
+        return response() -> json($returnObject);
+    }    
+    
+        /**
+     * This function will return all the questions that the user has created
+     * @param int $id is the game id from the database.
+     * @return object $returnObject contains 'created', will return true if the question has been added to the database, and 'loggedIn', will return true if the user is logged in.
+     */      
+    public function getMyQuestions(Request $request)
+    {
+        $returnObject = (object) [
+            'created' => false,
+            'loggedIn' => false
+        ];
+
+        //Check if the user is logged in, if not we don't create and notify front end that the user is not logged in
+        $userId = $this->getUserId($request -> token);
+        
+        //Decode the given arrays
+        $evalPassed = json_decode($request -> evalPassed);
+        $outputs = json_decode($request -> outputs);
+        $evalRes = json_decode($request -> evalRes);
+        $inputs = json_decode($request -> evalRes);
+
+        if ($userId != null) {
+            //If logged in we run all the validations
+            $validStatement = $this->checkStatement($request -> statement);
+            $correctEvals = $this->checkEval($evalPassed, $outputs, $evalRes);
+            $correctInputsAndOutputs = $this->checkInputsAndOutputs($evalPassed, $outputs, $evalRes);
             if ($validStatement && $correctEvals && $correctInputsAndOutputs) {
                 $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId);
                 $this->addInputsToQuestion($createdQuestion -> id, $inputs);
@@ -560,6 +609,6 @@ class GameController extends Controller
         }
         
         return response() -> json($returnObject);
-    }     
+    }  
      
 }

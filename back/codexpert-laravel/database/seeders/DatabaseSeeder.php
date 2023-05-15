@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             //Example 1
             $question = new Question;
             $question -> statement = "Sort Array in ASCENDING order";
+            $question -> public = true;
             $question -> save();
             //Input 1
             $input = new Test_input;
@@ -67,6 +68,7 @@ class DatabaseSeeder extends Seeder
             //Example 2
             $question = new Question;
             $question -> statement = "Reverse the String";
+            $question -> public = true;
             $question -> save();
             //Input 1
             $input = new Test_input;
@@ -103,6 +105,7 @@ class DatabaseSeeder extends Seeder
             //Example 3
             $question = new Question;
             $question -> statement = "Reverse the given Array";
+            $question -> public = true;
             $question -> save();
             //Input 1
             $input = new Test_input;
@@ -139,6 +142,7 @@ class DatabaseSeeder extends Seeder
             //Example 4
             $question = new Question;
             $question -> statement = "Count number of odd numers in the Array";
+            $question -> public = true;
             $question -> save();
             //Input 1
             $input = new Test_input;
@@ -175,6 +179,7 @@ class DatabaseSeeder extends Seeder
             //Example 5
             $question = new Question;
             $question -> statement = "Sort Array in ASCENDING order";
+            $question -> public = true;
             $question -> save();
             //Input 1
             $input = new Test_input;

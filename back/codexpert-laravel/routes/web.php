@@ -66,4 +66,10 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/addNewQuestion', [GameController::class, 'addNewQuestion']);
 
+    Route::post('/getMyQuestions', [GameController::class, 'getMyQuestions']);
+
+    Route::post('/editMyQuestion', [GameController::class, 'editMyQuestion']);
+
+    Route::post('/deleteMyQuestion', [GameController::class, 'deleteMyQuestion']);
+
 });

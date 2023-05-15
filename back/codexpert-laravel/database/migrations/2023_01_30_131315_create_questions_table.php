@@ -19,6 +19,7 @@ return new class extends Migration
             $table->longText('hint') -> nullable();
             $table->integer('creatorId')->nullable();
             $table->integer('likes')->default(0);
+            $table->bool('public')->default(false);
             $table->timestamps();
         });
     }
