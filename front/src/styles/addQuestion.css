@@ -1,0 +1,44 @@
+.addQuestion__container {
+    background-color: var(--white);
+    color: #2e5e22;
+    margin: 15vh auto;
+    width: 60%;
+    text-align: center;
+    padding: 30px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
+    min-height: 700px;
+}
+
+.addQuestion__container::after {
+    background-color: var(--white);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.addQuestion__container::before {
+    background-color: var(--white);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.grid__inputs {
+  display: grid;
+  grid-template-columns: auto auto;
+  padding: 10px;
+}
