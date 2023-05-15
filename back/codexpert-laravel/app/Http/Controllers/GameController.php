@@ -609,7 +609,7 @@ class GameController extends Controller
     public function getMyQuestions(Request $request)
     {  
         $myQuestions = [];
-        
+
         //Check if the user is logged in, if not array myQuestions is empty
         $userId = $this->getUserId($request -> token);
 
@@ -652,22 +652,47 @@ class GameController extends Controller
         return response() -> json($returnQuestion);
     }  
 
-    // /**
-    //  * This function will retrieve the question found with the given id 
-    //  * @param string $checkToken is the session token
-    //  * @param int $questionId is the id from the question that will be edited
-    //  * @return object $returnObject returns all the questions where the user is the creator
-    //  */      
-    // public function editMyQuestion(Request $request)
-    // {  
-    //     //Check if the user is logged in, if not array myQuestions is empty
-    //     $userId = $this->getUserId($request -> token);
+    /**
+     * This function will recieve the question id to be deleted 
+     * @param int $questionId is the id from the question that will be deleted
+     * @return object $returnObject contains deleted, true if the user was logged and the question was deleted succesfully
+     */      
+    public function deleteMyQuestion(Request $request)
+    {  
+        $returnObject = (object)[
+            'deleted' => false
+        ];
 
-    //     if ($userId != null) {
-            
-    //     }
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            Question::where('id', $request -> questionId) -> delete();
+            $returnObject -> deleted = true;
+        }
         
-    //     return response() -> json($myQuestions);
-    // }      
+        return response() -> json($returnObject);
+    } 
+
+    /**
+     * This function will retrieve the question found with the given id 
+     * @param string $token is the session token
+     * @param int $questionId is the id from the question that will be edited
+     * @return object $returnObject returns all the questions where the user is the creator
+     */      
+    public function editMyQuestion(Request $request)
+    {  
+        $returnObject = (object)[];
+        //Check if the user is logged in, if not array myQuestions is empty
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            $returnObject = $this -> addNewQuestion($request);
+            if ($returnObject -> correct) {
+                $this -> deleteMyQuestion($request);
+            }
+        }
+        
+        return response() -> json($returnObject);
+    }      
      
 }
