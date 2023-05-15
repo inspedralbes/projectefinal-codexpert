@@ -113,7 +113,14 @@ function Tutorial() {
           '' && (
             <>
               <Carousel
+              className='awa'
                 defaultControlsConfig={{
+                  style: {},
+                  containerClassName: 'containerCarousel',
+                  nextButtonClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'nextButtonCarousel',
+                  prevButtonClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'prevButtonCarousel',
+                  pagingDotsContainerClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'dotsCarousel',
+                  
                   nextButtonText: (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

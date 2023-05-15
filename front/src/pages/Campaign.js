@@ -81,7 +81,7 @@ function Campaign() {
   }
 
   useEffect(() => {
-    if (localStorage.getItem('userExperience') === null && cookies.get('token') === undefined) {
+    if (localStorage.getItem('userExperience') === null) {
       setModal(true)
     } else {
       getTutorials()
@@ -113,28 +113,40 @@ function Campaign() {
             bottom: 'auto',
             marginRight: '-50%',
             transform: 'translate(-50%, -50%)'
+          },
+          overlay: {
+            backgroundColor: 'white'
           }
         }}
         isOpen={modal}
       >
-        <h1>What are you?</h1>
-        <p>
-          If you choose <b>beginner</b>, the first level will be unlocked and you will have to complete all of them to finish the tutorial. If you choose <b>expert</b>, all levels will be unlocked, you can complete them all if you want, but you only need to complete the last one to pass the tutorial. Once you have completed the tutorial, you will have access to the multiplayer mode! To save which levels you have completed remember to create an account, you can do it after completing the tutorial or before :)
-        </p>
-        <br></br>
-        <div className="profile__buttons">
-          <button
-            className="pixel-button modalBtn"
-            onClick={() => handleChoiseOption('beginner')}
-          >
-            Beginner
-          </button>
-          <button
-            className="pixel-button modalBtn"
-            onClick={() => handleChoiseOption('expert')}
-          >
-            Expert
-          </button>
+        <div className="modal__content">
+          <h1>What are you?</h1>
+          <p>
+            If you choose <b>beginner</b>, the first level will be unlocked and
+            you will have to complete all of them to finish the tutorial. If you
+            choose <b>expert</b>, all levels will be unlocked, you can complete
+            them all if you want, but you only need to complete the last one to
+            pass the tutorial. Once you have completed the tutorial, you will
+            have access to the multiplayer mode! To save which levels you have
+            completed remember to create an account, you can do it after
+            completing the tutorial or before :)
+          </p>
+          <br></br>
+          <div className="profile__buttons">
+            <button
+              className="pixel-button modalBtn"
+              onClick={() => handleChoiseOption('beginner')}
+            >
+              Beginner
+            </button>
+            <button
+              className="pixel-button modalBtn"
+              onClick={() => handleChoiseOption('expert')}
+            >
+              Expert
+            </button>
+          </div>
         </div>
       </Modal>
       <div className="pixel__container">
@@ -144,27 +156,26 @@ function Campaign() {
       <ul className="levels__list">
         {userExperience !== ''
           ? tutorialList.map((element, index) => {
-            return (
-              <li key={element.id}>
-                <div className="levels-title__container">
-                  <h3>{element.title}</h3>
-                </div>
-                <div className="pixel__container level__container">
-                  {lvlUnlocked >= index ||
+              return (
+                <li key={element.id}>
+                  <div className="levels-title__container">
+                    <h3>{element.title}</h3>
+                  </div>
+                  <div className="pixel__container level__container">
+                    {lvlUnlocked >= index ||
                     element.locked === 0 ||
-                    tutorialsAnswered.includes(element.id - 1)
-                    ? (
+                    tutorialsAnswered.includes(element.id - 1) ? (
                       <>
                         {element.passed ||
-                          tutorialsAnswered.includes(element.id)
-                          ? (
-                            <>
-                              <img src={success}></img>
-                            </>)
-                          : (
-                            <>
-                              <img src={unlocked}></img>
-                            </>)}
+                        tutorialsAnswered.includes(element.id) ? (
+                          <>
+                            <img src={success}></img>
+                          </>
+                        ) : (
+                          <>
+                            <img src={unlocked}></img>
+                          </>
+                        )}
                         <br></br>
                         <button
                           className="pixel-button"
@@ -174,31 +185,38 @@ function Campaign() {
                         >
                           Play
                         </button>
-                      </>)
-                    : (
+                      </>
+                    ) : (
                       <>
                         <img src={locked}></img>
                         <br></br>
                         <button className="pixel-button locked">locked</button>
-                      </>)}
-                </div>
-              </li>
-            )
-          })
+                      </>
+                    )}
+                  </div>
+                </li>
+              )
+            })
           : null}
       </ul>
       {localStorage.getItem('tutorialPassed') !== null && (
         <>
           {cookies.get('token') !== undefined && (
             <div className="lobbies-button">
-              <button className="pixel-button" onClick={() => navigate('/lobbies')}>
+              <button
+                className="pixel-button"
+                onClick={() => navigate('/lobbies')}
+              >
                 GO LOBBIES
               </button>
             </div>
           )}
           {cookies.get('token') === undefined && (
             <div className="lobbies-button">
-              <button className="pixel-button" onClick={() => navigate('/login')}>
+              <button
+                className="pixel-button"
+                onClick={() => navigate('/login')}
+              >
                 LOGIN/REGISTER
               </button>
             </div>
