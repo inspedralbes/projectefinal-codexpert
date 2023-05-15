@@ -286,8 +286,10 @@ class TutorialController extends Controller
         
         $results = json_decode($request -> evalRes);
 
+        $evalPassed = json_decode($request -> evalPassed);
+
         //If any of the tests doesn't pass we return that it's not a correct answer.
-        if ($request -> evalPassed) {
+        if ($evalPassed) {
             $outputs = [];
             $getOutputs = Tutorial_test_output::where('question_id', $request -> idQuestion)->get();
             for ($i = 0; $i < count($getOutputs); $i++) { 

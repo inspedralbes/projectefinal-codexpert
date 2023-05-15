@@ -17,6 +17,7 @@
     "@uiw/react-color-shade-slider": "^1.2.1",
     "@uiw/react-color-sketch": "^1.1.1",
     "@uiw/react-color-slider": "^1.2.1",
+    "animate.css": "^4.1.1",
     "codemirror": "^5.65.12",
     "codemirror-readonly-ranges": "^0.1.0-alpha.1",
     "html-react-parser": "^3.0.16",

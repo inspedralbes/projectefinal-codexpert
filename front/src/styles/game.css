@@ -94,8 +94,9 @@
 .game__statementTitle,
 .game__expectedInput h1,
 .game__expectedOutput h1 {
-    font-size: 0.6em;
+    font-size: 1em;
 }
+
 
 
 .game__statement,
@@ -267,7 +268,6 @@ h2 {
 
 .user__health {
     height: 30px;
-    width: 30px;
 }
 
 .codemirror__editor {
@@ -327,4 +327,14 @@ h2 {
     position: absolute;
     top: 23%;
     left: 50%;
+}
+
+.incorrectAnsw {
+    margin: 30vh auto !important;
+    background-color: #f16c6c !important;
+}
+
+.correctAnsw {
+    margin: 45vh auto !important;
+    background-color: #4bbd5a !important;
 }

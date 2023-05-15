@@ -12,25 +12,31 @@ SkinColor.propTypes = {
   changes: PropTypes.object
 }
 
-function SkinColor({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
+function SkinColor({
+  currentColor,
+  handleChangeComplete,
+  setChanges,
+  ArrayColors,
+  changes
+}) {
   return (
-    <div className='avatar__options--grid'>
-      <div className='avatar__options' id="scroll">
-        <h1 className='noElement'>This element has no type, but you can still change the color!</h1>
-        <img className="Avatar__arrow" src={arrow} alt='' height='300px'></img>
+    <div className="avatar__options--grid">
+      <div className="avatar__options" id="scroll">
+        <h1 className="noElement">
+          This element has no type, but you can still change the color!
+        </h1>
+        <img className="Avatar__arrow" src={arrow} alt="" height="300px"></img>
       </div>
-      <div className='avatar__colorPicker'>
+      <div className="avatar__colorPicker">
         <TwitterPicker
-          triangle={
-            'hide'
-          }
+          triangle={'hide'}
           color={currentColor}
           colors={ArrayColors}
           onChangeComplete={handleChangeComplete}
           onChange={(color) =>
             setChanges({ ...changes, sC: color.hex.replace('#', '') })
-          }>
-        </TwitterPicker>
+          }
+        ></TwitterPicker>
       </div>
     </div>
   )
