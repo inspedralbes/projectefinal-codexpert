@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Game;
 use App\Models\Question;
 use App\Models\Test_input;
@@ -377,19 +378,38 @@ class GameController extends Controller
 
     /**
      * This function recievs the statement for the next question and validates that it's correct
-     * @param string $statement is the statement that will be validated
-     * @return bool $canCreate is the boolean after the statement validation, true means it's valid
+     * @param object $validateTitleStatement is an object containing title and statement
+     * @return object $validatorInfo is an object, containing a boolean to determine whether title and statement are valid, if not, returns the error
      */     
-    private function checkStatement($statement)
+    private function checkTitleStatement($validateTitleStatement)
     {
-        $canCreate = false;
-        if ($statement != null) {
-            if ( (strlen($statement) > 10) && (strlen($statement) <= 500) ) {
-                $canCreate = true;
-            }
+        $validatorInfo = (object) [
+            'correct' => true,
+        ];
+
+        //Run validation for the title
+        $validateTitle =  Validator::make($validateTitleStatement->all(), [
+            'title' => 'required|string|min:5|max:20',
+        ]);
+        if ($validateTitle->fails()) {
+            $validatorInfo = (object) [
+                'correct' => false,
+                'error' => 'Title must be at least 5 characters long, with a maximum of 20 characters.'
+            ];  
         }
 
-        return $canCreate;
+        //Run validation for the statement
+        $validateStatement =  Validator::make($validateTitleStatement->all(), [
+            'statement' => 'required|string|min:25|max:500',
+        ]);
+        if ($validateStatement->fails()) {
+            $validatorInfo = (object) [
+                'correct' => false,
+                'statement' => 'Title must be at least 25 characters long, with a maximum of 500 characters.'
+            ];  
+        }
+
+        return $validatorInfo;
     }  
 
     /**
@@ -520,6 +540,7 @@ class GameController extends Controller
     /**
      * This function will validate and create the given question and relate it to the logged in user.
      * @param string $checkToken is the session token
+     * @param string $title is a title of the question, it doesn't contain as much information as as the statement
      * @param string $statement is the statement for the question, where the exercise is explained
      * @param array $outputs is the array of outputs that the user is intering
      * @param array $inputs is the array of inputs that the user is intering
@@ -540,11 +561,16 @@ class GameController extends Controller
         $outputs = json_decode($request -> outputs);
         $inputs = json_decode($request -> evalRes);
 
+        $validateTitleStatement = (object) [
+            'title' => $request -> title,
+            'statement' => $request -> statement
+        ];
+
         if ($userId != null) {
             //If logged in we run all the validations
-            $validStatement = $this->checkStatement($request -> statement);
+            $correctTitleStatement = $this->checkTitleStatement($validateTitleStatement);
             $correctInputsAndOutputs = $this->checkInputsAndOutputs($inputs, $outputs);
-            if ($validStatement && $correctInputsAndOutputs -> correct) {
+            if ($correctTitleStatement && $correctInputsAndOutputs -> correct) {
                 $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId);
                 $this->addInputsToQuestion($createdQuestion -> id, $inputs);
                 $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      
@@ -553,15 +579,15 @@ class GameController extends Controller
                     'loggedIn' => true
                 ];
             } else {
-                if ( ($correctInputsAndOutputs -> error != null) || ($correctInputsAndOutputs -> error != "")) {
+                if (!$correctTitleStatement -> correct) {
                     $returnObject = (object) [
                         'loggedIn' => true,
-                        'error' => $correctInputsAndOutputs -> error
+                        'error' => $correctTitleStatement -> error
                     ];
                 } else {
                     $returnObject = (object) [
                         'loggedIn' => true,
-                        'error' => 'Statement is not valid.'
+                        'error' => $correctInputsAndOutputs -> error
                     ];
                 }
 
