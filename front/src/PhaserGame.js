@@ -5,7 +5,7 @@ import Game from './Phaser/scenes/Game'
 
 const PhaserGame = new Phaser.Game({
   type: Phaser.AUTO,
-  parent: 'phaser-container',
+  parent: 'phaser_container',
   backgroundColor: '#1e7cb8',
   scale: {
     mode: Phaser.Scale.ScaleModes.RESIZE,

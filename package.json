@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "bitecs": "^0.3.38",
-    "phaser": "^3.60.0",
-    "regenerator-runtime": "^0.13.11"
-  }
-}

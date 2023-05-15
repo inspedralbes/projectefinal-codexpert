@@ -5,7 +5,7 @@ import '../styles/Phaser.css'
 
 function Phaser() {
   return (
-    <div id='phaser-container'></div>
+    <div id='phaser_container'></div>
   )
 }
 

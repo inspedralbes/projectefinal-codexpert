@@ -50,7 +50,7 @@ root.render(
         <Route path='campaign' element={<Campaign />}></Route>
         <Route path='ranking' element={<Ranking />}></Route>
         <Route path='sharedRanking' element={<SharedRanking />}></Route>
-        <Route path='phaser' element={<Phaser />}></Route>
+        <Route path='codeworld' element={<Phaser />}></Route>
         <Route path='404' element={<Error404 />}></Route>
         <Route path='*' element={<Navigate to='/404' />} />
       </Route>
