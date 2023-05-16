@@ -10,7 +10,8 @@ import OverlapPoint from '../items/OverlapPoints'
 export default class Game extends Phaser.Scene {
   // navigate = useNavigate()
   fauna
-  cursors
+  cursor
+  keys
 
   constructor() {
     super('game')
@@ -19,6 +20,13 @@ export default class Game extends Phaser.Scene {
 
   preload() {
     this.cursors = this.input.keyboard.createCursorKeys()
+    this.keys = this.input.keyboard.addKeys({
+      'up': Phaser.Input.Keyboard.KeyCodes.W,
+      'up': Phaser.Input.Keyboard.KeyCodes.UP,
+      'down': Phaser.Input.Keyboard.KeyCodes.S,
+      'left': Phaser.Input.Keyboard.KeyCodes.A,
+      'right': Phaser.Input.Keyboard.KeyCodes.D
+    })
   }
 
   create() {
@@ -72,7 +80,7 @@ export default class Game extends Phaser.Scene {
       frameRate: 15
     })
 
-    const personajes = this.physics.add.staticGroup({
+    const puntosDeOverlap = this.physics.add.staticGroup({
       classType: OverlapPoint
     })
 
@@ -91,12 +99,10 @@ export default class Game extends Phaser.Scene {
     const group = this.add.group(config)
 
     overlapObjectLayer.objects.forEach(objct => {
-        const gameObj = personajes.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
-        gameObj.data = objct.properties
-        group.add(gameObj)
+      const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
+      gameObj.data = objct.properties
+      group.add(gameObj)
     })
-
-    // console.log(group)
 
     wallsLayer.setCollisionByProperty({ collides: true })
 
@@ -137,7 +143,7 @@ export default class Game extends Phaser.Scene {
       }
       console.log('colisionado: ', colisionado)
       this.overlapTmp = false
-      setTimeout(this.checkOverlap.bind(this, () => { console.log("callbakc working") }), 1000)
+      setTimeout(this.checkOverlap.bind(this, () => { console.log("callback working") }), 1000)
 
     }
   }
@@ -156,13 +162,13 @@ export default class Game extends Phaser.Scene {
   }
   update(t, dt) {
 
-    if (!this.cursors || !this.fauna) {
+    if (!this.cursors || !this.fauna || !this.keys) {
       return
     }
 
     const speed = 500
 
-    if (this.cursors.left?.isDown) {
+    if (this.cursors.left?.isDown || this.keys.left?.isDown) {
       this.fauna.anims.play('fauna-run-side', true)
 
       this.fauna.body.velocity.x = -speed
@@ -170,7 +176,7 @@ export default class Game extends Phaser.Scene {
 
       this.fauna.scaleX = -1
       this.fauna.body.offset.x = 24
-    } else if (this.cursors.right?.isDown) {
+    } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
       this.fauna.anims.play('fauna-run-side', true)
 
       this.fauna.body.velocity.x = speed
@@ -178,12 +184,12 @@ export default class Game extends Phaser.Scene {
 
       this.fauna.scaleX = 1
       this.fauna.body.offset.x = 8
-    } else if (this.cursors.up?.isDown) {
+    } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
       this.fauna.anims.play('fauna-run-up', true)
 
       this.fauna.body.velocity.x = 0
       this.fauna.body.velocity.y = -speed
-    } else if (this.cursors.down?.isDown) {
+    } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
       this.fauna.anims.play('fauna-run-down', true)
 
       this.fauna.body.velocity.x = 0

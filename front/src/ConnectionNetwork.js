@@ -1,5 +1,6 @@
 class ConnectionNetwork {
   message = ''
+  userLogged = false
   winnerMessage = ''
   errorMessage = ''
   token = ''
@@ -18,6 +19,14 @@ class ConnectionNetwork {
     questionAmount: 0,
     unlimitedHearts: false,
     willHaveOvertime: true
+  }
+
+  setUserLogged(isUserLogged) {
+    this.userLogged = isUserLogged
+  }
+
+  getUserLogged() {
+    return this.userLogged
   }
 
   setMessage(msg) {
