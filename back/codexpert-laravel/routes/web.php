@@ -80,5 +80,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/removeFriend', [FriendController::class, 'removeFriend']);  
     
     Route::post('/getFriendlist', [FriendController::class, 'getFriendlist']);  
+
+    Route::post('/getPendingRequests', [FriendController::class, 'getPendingRequests']);  
     
 });

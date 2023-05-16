@@ -210,9 +210,9 @@ class FriendController extends Controller
 
 
     /**
-     * This function given the token from the logged in user
+     * This function given the token from the logged in user returns the list of the friends where the status is accepted
      * @param string $token is the session token
-     * @return object $returnObject contains the name of the person that has been rejected
+     * @return array $friendlist is the list of friends where the status is accepted
      */        
     public function getFriendlist(Request $request)
     {
@@ -230,5 +230,28 @@ class FriendController extends Controller
         }
 
         return response() -> json($friendlist);
-    }         
+    }    
+    
+    /**
+     * This function given the token from the logged in user returns the pending friend requests
+     * @param string $token is the session token
+     * @return array $friendlist is the list of friend requests
+     */        
+    public function getPendingRequests(Request $request)
+    {
+        $friendlist = [];
+        $currentUserId = $this->getUserId($request->token);
+
+        if ($currentUserId != null) {
+        $friendlist = DB::table('friends')
+            ->where('sender_id', $currentUserId) 
+            ->where('status', 'pending')
+            ->orWhere( function ($query) use ($currentUserId) {
+                $query->where('receiver_id', $currentUserId)
+                      ->where('status', 'pending');
+            }) -> get();
+        }
+
+        return response() -> json($friendlist);
+    }      
 }
