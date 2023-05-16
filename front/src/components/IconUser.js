@@ -39,6 +39,8 @@ function IconUser() {
       'token',
       cookies.get('token') !== undefined ? cookies.get('token') : null
     )
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+    localStorage.clear()
     fetch(routes.fetchLaravel + 'logout', {
       method: 'POST',
       mode: 'cors',
@@ -47,21 +49,12 @@ function IconUser() {
     })
       .then((response) => response.json())
       .then(() => {
-        const nCookies = document.cookie.split('')
-
-        for (let i = 0; i < nCookies.length; i++) {
-          const cookie = nCookies[i]
-          const eqPos = cookie.indexOf('=')
-          const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
-          document.cookie = name + '=expires=Thu, 01 Jan 1970 00:00:00 GMT'
+        if (window.location.pathname === '/') {
+          window.location.reload()
+        } else {
+          navigate('/')
         }
       })
-    localStorage.clear()
-    if (window.location.pathname === '/') {
-      window.location.reload()
-    } else {
-      navigate('/')
-    }
   }
 
   return (
@@ -70,38 +63,30 @@ function IconUser() {
         <div className="container">
           {avatarURL !== null
             ? (
-            <button
-              type="button"
-              className="button"
-              onClick={handleButtonClick}
-            >
-              <img
-                className="button__image"
-                alt="avatar"
-                src={avatarURL}
-                height="50"
-                width="50"
-              ></img>
-            </button>)
+              <button
+                type="button"
+                className="button"
+                onClick={handleButtonClick}
+              >
+                <img
+                  className="button__image"
+                  alt="avatar"
+                  src={avatarURL}
+                  height="50"
+                  width="50"
+                ></img>
+              </button>)
             : (
-            <Loader className="loader" />
-              )}
+              <Loader className="loader" />)}
           {state && (
             <div className="dropdown">
               <ul className="dropdown__list list">
-                <li className="list__item">
-                  <button
-                    className="button"
-                    onClick={() => navigate('/profile')}
-                  >
-                    Profile
-                  </button>
+                <li className="list__item" onClick={() => navigate('/profile')}>
+                  <button className="button">Profile</button>
                 </li>
-                <li className="list__item">
+                <li className="list__item" onClick={() => handleLogOut()}>
                   {' '}
-                  <button className="button" onClick={() => handleLogOut()}>
-                    Log Out
-                  </button>
+                  <button className="button">Log Out</button>
                 </li>
               </ul>
             </div>

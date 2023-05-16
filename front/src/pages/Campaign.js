@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import '../styles/normalize.css'
 import '../styles/campaign.css'
 import routes from '../conn_routes'
@@ -16,6 +14,7 @@ Modal.setAppElement('body')
 function Campaign() {
   const [modal, setModal] = useState(false)
   const [tutorialList, setTutorialList] = useState([])
+  const [lastQuestion, setLastQuestion] = useState('')
   const [userExperience, setUserExperience] = useState('')
   const [tutorialsAnswered, setTutorialsAnswered] = useState([])
   const [lvlUnlocked, setLvlUnlocked] = useState(
@@ -76,8 +75,8 @@ function Campaign() {
       .then((response) => response.json())
       .then((data) => {
         setTutorialList(data)
-        console.log(data)
         setUserExperience(localStorage.getItem('lvlUnlocked'))
+        setLastQuestion(data[data.length - 1].id)
       })
   }
 
@@ -94,6 +93,14 @@ function Campaign() {
     }
   }, [])
 
+  useEffect(() => {
+    if (localStorage.getItem('tutorialsAnswered') !== []) {
+      if (tutorialsAnswered.includes(lastQuestion)) {
+        localStorage.setItem('tutorialPassed', JSON.stringify(true))
+      }
+    }
+  }, [lastQuestion])
+
   return (
     <div className="campaign">
       <Modal
@@ -106,28 +113,40 @@ function Campaign() {
             bottom: 'auto',
             marginRight: '-50%',
             transform: 'translate(-50%, -50%)'
+          },
+          overlay: {
+            backgroundColor: 'white'
           }
         }}
         isOpen={modal}
       >
-        <h1>What are you?</h1>
-        <p>
-          If you choose <b>beginner</b>, the first level will be unlocked and you will have to complete all of them to finish the tutorial. If you choose <b>expert</b>, all levels will be unlocked, you can complete them all if you want, but you only need to complete the last one to pass the tutorial. Once you have completed the tutorial, you will have access to the multiplayer mode! To save which levels you have completed remember to create an account, you can do it after completing the tutorial or before :)
-        </p>
-        <br></br>
-        <div className="profile__buttons">
-          <button
-            className="pixel-button modalBtn"
-            onClick={() => handleChoiseOption('beginner')}
-          >
-            Beginner
-          </button>
-          <button
-            className="pixel-button modalBtn"
-            onClick={() => handleChoiseOption('expert')}
-          >
-            Expert
-          </button>
+        <div className="modal__content">
+          <h1>What are you?</h1>
+          <p>
+            If you choose <b>beginner</b>, the first level will be unlocked and
+            you will have to complete all of them to finish the tutorial. If you
+            choose <b>expert</b>, all levels will be unlocked, you can complete
+            them all if you want, but you only need to complete the last one to
+            pass the tutorial. Once you have completed the tutorial, you will
+            have access to the multiplayer mode! To save which levels you have
+            completed remember to create an account, you can do it after
+            completing the tutorial or before :)
+          </p>
+          <br></br>
+          <div className="profile__buttons">
+            <button
+              className="pixel-button modalBtn"
+              onClick={() => handleChoiseOption('beginner')}
+            >
+              Beginner
+            </button>
+            <button
+              className="pixel-button modalBtn"
+              onClick={() => handleChoiseOption('expert')}
+            >
+              Expert
+            </button>
+          </div>
         </div>
       </Modal>
       <div className="pixel__container">
@@ -145,36 +164,34 @@ function Campaign() {
                 <div className="pixel__container level__container">
                   {lvlUnlocked >= index ||
                     element.locked === 0 ||
-                    tutorialsAnswered.includes(element.id - 1) ? (
-                    <>
-                      {console.log(tutorialsAnswered)}
-                      {element.passed ||
-                        tutorialsAnswered.includes(element.id) ? (
-                        <>
-                          <img src={success}></img>
-                        </>
-                      ) : (
-                        <>
-                          <img src={unlocked}></img>
-                        </>
-                      )}
-                      <br></br>
-                      <button
-                        className="pixel-button"
-                        onClick={() =>
-                          navigate('/tutorial', { state: { id: element.id } })
-                        }
-                      >
-                        Play
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <img src={locked}></img>
-                      <br></br>
-                      <button className="pixel-button locked">locked</button>
-                    </>
-                  )}
+                    tutorialsAnswered.includes(element.id - 1)
+                    ? (
+                      <>
+                        {element.passed || tutorialsAnswered.includes(element.id)
+                          ? (
+                            <>
+                              <img src={success}></img>
+                            </>)
+                          : (
+                            <>
+                              <img src={unlocked}></img>
+                            </>)}
+                        <br></br>
+                        <button
+                          className="pixel-button"
+                          onClick={() =>
+                            navigate('/tutorial', { state: { id: element.id } })
+                          }
+                        >
+                          Play
+                        </button>
+                      </>)
+                    : (
+                      <>
+                        <img src={locked}></img>
+                        <br></br>
+                        <button className="pixel-button locked">locked</button>
+                      </>)}
                 </div>
               </li>
             )
@@ -185,14 +202,20 @@ function Campaign() {
         <>
           {cookies.get('token') !== undefined && (
             <div className="lobbies-button">
-              <button className="pixel-button" onClick={() => navigate('/lobbies')}>
+              <button
+                className="pixel-button"
+                onClick={() => navigate('/lobbies')}
+              >
                 GO LOBBIES
               </button>
             </div>
           )}
           {cookies.get('token') === undefined && (
             <div className="lobbies-button">
-              <button className="pixel-button" onClick={() => navigate('/login')}>
+              <button
+                className="pixel-button"
+                onClick={() => navigate('/login')}
+              >
                 LOGIN/REGISTER
               </button>
             </div>

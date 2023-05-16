@@ -76,10 +76,6 @@ function Tutorial() {
             )
             tutorialsId.sort()
 
-            if (location.state.id === 6) {
-              localStorage.setItem('tutorialPassed', JSON.stringify(true))
-            }
-
             navigate('/campaign')
           }
         })
@@ -117,8 +113,48 @@ function Tutorial() {
           '' && (
             <>
               <Carousel
-                nextButtonText={'<button>←</button>'}
-                prevButtonText={<button>→</button>}
+                className='awa'
+                defaultControlsConfig={{
+                  style: {},
+                  containerClassName: 'containerCarousel',
+                  nextButtonClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'nextButtonCarousel',
+                  prevButtonClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'prevButtonCarousel',
+                  pagingDotsContainerClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'dotsCarousel',
+
+                  nextButtonText: (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="68"
+                      height="68"
+                      viewBox="0 0 68 68"
+                    >
+                      <g
+                        id="Group_8"
+                        data-name="Group 8"
+                        transform="translate(-1309 -621)"
+                      >
+                        <rect
+                          id="Box"
+                          width="68"
+                          height="68"
+                          transform="translate(1309 621)"
+                          fill="none"
+                        />
+                        <path
+                          id="Icon_Keyboard_Arrow_-_Up_Dark"
+                          data-name="Icon / Keyboard Arrow - Up / Dark"
+                          d="M30.033,20.967,17,7.933,3.967,20.967,0,17,17,0,34,17Z"
+                          transform="translate(1353.483 637.15) rotate(90)"
+                          fill="#fff"
+                        />
+                      </g>
+                    </svg>
+                  ),
+
+                  pagingDotsStyle: {
+                    fill: "green"
+                  }
+                }}
               >
                 {introduction.introductions[
                   location.state.id - 1
@@ -130,23 +166,23 @@ function Tutorial() {
           )}
       </div>
       <div>
-        <div className="tutorial__statement">
+        <div className="game__statement">
           <h2>Statement:</h2>
-          <h1 className="tutorial__statementTitle">{qst.statement}</h1>
+          <h1 className="game__statementTitle">{qst.statement}</h1>
         </div>
-        <div className="tutorial--grid">
+        <div className="game--grid">
           <div className="editor--div">
             <div className="editor__expected">
-              <div className="tutorial__expectedInput">
+              <div className="game__expectedInput">
                 <h2>Example input:</h2>
                 <h1>{qst.inputs[0].toString()}</h1>
               </div>
 
-              <div className="tutorial__expectedOutput">
+              <div className="game__expectedOutput">
                 <h2>Example output:</h2>
                 <h1>{qst.output.toString()}</h1>
               </div>
-              <div className="tutorial__expectedOutput tutorial__result">
+              <div className="game__expectedOutput game__result">
                 <h2>Result:</h2>
                 <h1>{error !== '' && <div>{error}</div>}</h1>
               </div>
@@ -154,7 +190,7 @@ function Tutorial() {
             <form className="editor" onSubmit={handleSubmit}>
               <CodeMirror code={code} setCode={setCode}></CodeMirror>
               <button
-                className="pixel-button tutorial__submit"
+                className="pixel-button game__submit"
                 disabled={code === ''}
               >
                 Submit
