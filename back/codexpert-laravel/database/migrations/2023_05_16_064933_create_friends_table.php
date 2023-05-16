@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('sender_id')->unsigned()->index();
             $table->bigInteger('receiver_id')->unsigned()->index();
 
-            $table->enum('status', ['accepted', 'declined', 'pending'])->default('pending');            
+            $table->enum('status', ['accepted', 'pending'])->default('pending');            
             
             $table->boolean('showNotification')->default(true);
 

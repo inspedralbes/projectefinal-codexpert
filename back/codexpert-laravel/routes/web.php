@@ -71,4 +71,6 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/acceptFriend', [FriendController::class, 'acceptFriend']);
     
+    Route::post('/declineFriend', [FriendController::class, 'declineFriend']);    
+    
 });
