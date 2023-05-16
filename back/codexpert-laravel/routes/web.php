@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\TutorialController;
@@ -66,4 +67,8 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/checkTutorialPassed', [TutorialController::class, 'checkTutorialPassed']);
 
+    Route::post('/addFriend', [FriendController::class, 'addFriend']);
+
+    Route::post('/acceptFriend', [FriendController::class, 'acceptFriend']);
+    
 });
