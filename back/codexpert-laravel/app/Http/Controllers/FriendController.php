@@ -253,5 +253,35 @@ class FriendController extends Controller
         }
 
         return response() -> json($friendlist);
-    }      
+    }     
+    
+    /**
+     * This function given the token from the logged in user returns the pending friend requests
+     * @param string $token is the session token
+     * @return array $friendlist is the list of friend requests
+     */        
+    public function markNotificationsAsRead(Request $request)
+    {
+        $friendlist = [];
+        $currentUserId = $this->getUserId($request->token);
+
+        if ($currentUserId != null) {
+        $friendlist = DB::table('friends')
+            ->where('sender_id', $currentUserId) 
+            ->where('status', 'pending')
+            ->orWhere( function ($query) use ($currentUserId) {
+                $query->where('receiver_id', $currentUserId)
+                      ->where('status', 'pending');
+            }) -> get();
+        }
+
+        //continuar mañana
+        for ($i=0; $i < count($friendlist); $i++) { 
+            $friendlist[$i] -> showNotification = false;
+            $friendship = Friend::where('id',$friendlist[$i] -> id) -> first();
+            $friendship -> showNotification = false;
+            $friendship -> save();
+        }
+        return response() -> json($friendlist);
+    }    
 }
