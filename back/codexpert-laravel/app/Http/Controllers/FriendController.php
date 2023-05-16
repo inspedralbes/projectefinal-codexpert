@@ -120,28 +120,29 @@ class FriendController extends Controller
      * This function given the token of the current logged in user and the id from the user that we will accept its request, modifies the row in the database to accept the request
      * @param string $token is the session token
      * @param int $otherUserId is the id from the user that will be added
-     * @return object $returnObject contains if the petition has been sent successfully sent to the other user
+     * @return object $returnObject contains the name of the new friend
      */        
     public function acceptFriend(Request $request)
     {
         $returnObject = (object) [
-            'friendAdded' => ''
+            'friendAccepted' => ''
         ];
 
         $currentUserId = $this->getUserId($request->token);
 
         if ($currentUserId != null) {
-            //We accept the friend request
+            //We accept the friend request, therefore remove the relationship in the database
             $getFriendship = Friend::where('sender_id', $request -> otherUserId) 
             -> where('receiver_id', $currentUserId)
             -> first();
-
-            $getFriendship -> status = 'accepted';
+            
+            $getFriendship -> status = "accepted";
             $getFriendship -> save();
+
         }
 
-        $userAdded = User::where('id', $request -> otherUserId) -> first();
-        $returnObject -> friendAdded = $userAdded -> name;
+        $userAccepted = User::where('id', $request -> otherUserId) -> first();
+        $returnObject -> friendAccepted = $userAccepted -> name;
 
         return response() -> json($returnObject);
     }    
@@ -150,7 +151,7 @@ class FriendController extends Controller
      * This function given the token of the current logged in user and the id from the user that we will decline its request, modifies the row in the database to accept the request
      * @param string $token is the session token
      * @param int $otherUserId is the id from the user that will be added
-     * @return object $returnObject contains if the petition has been sent successfully sent to the other user
+     * @return object $returnObject contains the name of the person that has been rejected
      */        
     public function declineFriend(Request $request)
     {
@@ -161,19 +162,73 @@ class FriendController extends Controller
         $currentUserId = $this->getUserId($request->token);
 
         if ($currentUserId != null) {
-            //We accept the friend request
+            //We decline the friend request, therefore remove the relationship in the database
             $getFriendship = Friend::where('sender_id', $request -> otherUserId) 
             -> where('receiver_id', $currentUserId)
-            -> first();
-
-            $getFriendship -> status = 'accepted';
-            $getFriendship -> save();
+            -> where('status', 'pending')
+            -> delete();
         }
 
-        $userAdded = User::where('id', $request -> otherUserId) -> first();
-        $returnObject -> friendDeclined = $userAdded -> name;
+        $userRemoved = User::where('id', $request -> otherUserId) -> first();
+        $returnObject -> friendDeclined = $userRemoved -> name;
 
         return response() -> json($returnObject);
-    }        
+    }           
 
+    /**
+     * This function given the token of the current logged in user and the id from the user that we will decline its request, modifies the row in the database to accept the request
+     * @param string $token is the session token
+     * @param int $otherUserId is the id from the user that will be added
+     * @return object $returnObject contains if the petition has been sent successfully sent to the other user
+     */        
+    public function removeFriend(Request $request)
+    {
+        $returnObject = (object) [
+            'friendRemoved' => ''
+        ];
+
+        $currentUserId = $this->getUserId($request->token);
+
+        if ($currentUserId != null) {
+            //We decline the friend request, therefore remove the relationship in the database
+            DB::table('friends')
+            ->where('sender_id', $currentUserId) 
+            ->where('receiver_id', $request -> otherUserId)
+            ->where('status', 'accepted')
+            ->orWhere( function ($query) use ($request, $currentUserId) {
+                $query->where('sender_id', $request -> otherUserId)
+                    ->where('receiver_id', $currentUserId)
+                    ->where('status', 'accepted');
+            }) -> delete();
+        }
+
+        $userRemoved = User::where('id', $request -> otherUserId) -> first();
+        $returnObject -> friendRemoved = $userRemoved -> name;
+
+        return response() -> json($returnObject);
+    }    
+
+
+    /**
+     * This function given the token from the logged in user
+     * @param string $token is the session token
+     * @return object $returnObject contains the name of the person that has been rejected
+     */        
+    public function getFriendlist(Request $request)
+    {
+        $friendlist = [];
+        $currentUserId = $this->getUserId($request->token);
+
+        if ($currentUserId != null) {
+        $friendlist = DB::table('friends')
+            ->where('sender_id', $currentUserId) 
+            ->where('status', 'accepted')
+            ->orWhere( function ($query) use ($currentUserId) {
+                $query->where('receiver_id', $currentUserId)
+                      ->where('status', 'accepted');
+            }) -> get();
+        }
+
+        return response() -> json($friendlist);
+    }         
 }
