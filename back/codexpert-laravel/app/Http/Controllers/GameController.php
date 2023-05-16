@@ -11,8 +11,6 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
-use App\Models\Tutorial_test_input;
-use App\Models\Tutorial_test_output;
 use Laravel\Sanctum\PersonalAccessToken;
 class GameController extends Controller
 {
@@ -381,34 +379,33 @@ class GameController extends Controller
      * @param object $validateTitleStatement is an object containing title and statement
      * @return object $validatorInfo is an object, containing a boolean to determine whether title and statement are valid, if not, returns the error
      */     
-    private function checkTitleStatement($validateTitleStatement)
+    private function checkTitleStatement(Request $request)
     {
         $validatorInfo = (object) [
             'correct' => true,
+            'error' => '',
         ];
-
-        //Run validation for the title
-        $validateTitle =  Validator::make($validateTitleStatement->all(), [
+        $validateTitle =  Validator::make($request->all(), [
             'title' => 'required|string|min:5|max:20',
         ]);
+
         if ($validateTitle->fails()) {
             $validatorInfo = (object) [
                 'correct' => false,
                 'error' => 'Title must be at least 5 characters long, with a maximum of 20 characters.'
             ];  
+        } else {
+            //Run validation for the statement
+            $validateStatement =  Validator::make($request->all(), [
+                'statement' => 'required|string|min:25|max:500',
+            ]);
+            if ($validateStatement->fails()) {
+                $validatorInfo = (object) [
+                    'correct' => false,
+                    'error' => 'Statement must be at least 25 characters long, with a maximum of 500 characters.'
+                ];  
+            }
         }
-
-        //Run validation for the statement
-        $validateStatement =  Validator::make($validateTitleStatement->all(), [
-            'statement' => 'required|string|min:25|max:500',
-        ]);
-        if ($validateStatement->fails()) {
-            $validatorInfo = (object) [
-                'correct' => false,
-                'statement' => 'Title must be at least 25 characters long, with a maximum of 500 characters.'
-            ];  
-        }
-
         return $validatorInfo;
     }  
 
@@ -453,32 +450,33 @@ class GameController extends Controller
             "error" => ''
         ];
 
-        if ( (count($inputs) == count($outputs)) && (count($inputs)) >= 3) {
-            $i = 1;
-            while ($i < count($inputs) && !$returnObject -> correct) {
-                if ($inputs[0] !== $inputs[$i]) {
-                    $returnObject -> correct = true;
-                }
-                $i++;
-            }
-
-            if ($returnObject -> correct) {
-                $i = 0;
-                while ($i < count($inputs) && $returnObject -> correct) {
-                    if ($inputs[$i] === $outputs[$i]) {
-                        $returnObject -> correct = false;
-                    } 
+        if ($inputs !== null && $outputs !== null) {
+            if ( (count($inputs) == count($outputs)) && (count($inputs)) >= 3) {
+                $i = 1;
+                while ($i < count($inputs) && !$returnObject -> correct) {
+                    if ($inputs[0] !== $inputs[$i]) {
+                        $returnObject -> correct = true;
+                    }
                     $i++;
                 }
 
-                if (!$returnObject -> correct) {
-                    $returnObject -> error  = "Input and output can't be the same.";
-                }
-                
-            } else {
-                $returnObject -> error  =  "Inputs can't all be the same.";
-            }
+                if ($returnObject -> correct) {
+                    $i = 0;
+                    while ($i < count($inputs) && $returnObject -> correct) {
+                        if ($inputs[$i] === $outputs[$i]) {
+                            $returnObject -> correct = false;
+                        } 
+                        $i++;
+                    }
 
+                    if (!$returnObject -> correct) {
+                        $returnObject -> error  = "Input and output can't be the same.";
+                    }
+                    
+                } else {
+                    $returnObject -> error  =  "Inputs can't all be the same.";
+                }
+            }
         } else {
             $returnObject -> error = "Not enough tests or the amount of inputs and outputs are not equal.";
         }
@@ -488,16 +486,16 @@ class GameController extends Controller
 
     /**
      * This functions adds a new question to the database, relating the user to it as the creator.
+     * @param string $title is the title from the question
      * @param string $statement is the statement from the question
-     * @param string $hint is a hint so the users can have a better understanding of the statement if needed
      * @param int $creatorId is id from the logged in user
      * @return object $questionAdded is the row that has been added to the database
      */     
-    private function createNewQuestion($statement, $hint, $creatorId, $public)
+    private function createNewQuestion($title, $statement, $creatorId, $public)
     {
         $questionAdded = new Question;
+        $questionAdded -> title = $title;
         $questionAdded -> statement = $statement;
-        $questionAdded -> hint = $hint;
         $questionAdded -> creatorId = $creatorId;
         $questionAdded -> public = $public;
         $questionAdded -> save();
@@ -513,7 +511,7 @@ class GameController extends Controller
     private function addInputsToQuestion($question_id, $inputs)
     {
         for ($i = 0; $i < count($inputs); $i++) { 
-            $input = new Tutorial_test_input;
+            $input = new Test_input;
             $input -> question_id = $question_id;
             $input -> input = serialize($inputs[$i]);
             $input -> save();
@@ -529,7 +527,7 @@ class GameController extends Controller
     private function addOutputsToQuestion($question_id, $outputs)
     {
         for ($i = 0; $i < count($outputs); $i++) { 
-            $output = new Tutorial_test_output;
+            $output = new Test_output;
             $output -> question_id = $question_id;
             $output -> output = serialize($outputs[$i]);
             $output -> save();
@@ -544,7 +542,6 @@ class GameController extends Controller
      * @param string $statement is the statement for the question, where the exercise is explained
      * @param array $outputs is the array of outputs that the user is intering
      * @param array $inputs is the array of inputs that the user is intering
-     * @param string $hint is a hint to make the question a bit easier
      * @param bool $public is a boolean that indicates if the user will make the question playable for other users
      * @return object $returnObject contains 'created', will return true if the question has been added to the database, and 'loggedIn', will return true if the user is logged in.
      */      
@@ -560,7 +557,7 @@ class GameController extends Controller
         
         //Decode the given arrays
         $outputs = json_decode($request -> outputs);
-        $inputs = json_decode($request -> evalRes);
+        $inputs = json_decode($request -> inputs);
         $public = json_decode($request -> public);
 
         $validateTitleStatement = (object) [
@@ -570,10 +567,10 @@ class GameController extends Controller
 
         if ($userId != null) {
             //If logged in we run all the validations
-            $correctTitleStatement = $this->checkTitleStatement($validateTitleStatement);
+            $correctTitleStatement = $this->checkTitleStatement($request);
             $correctInputsAndOutputs = $this->checkInputsAndOutputs($inputs, $outputs);
             if ($correctTitleStatement && $correctInputsAndOutputs -> correct) {
-                $createdQuestion = $this->createNewQuestion($request -> statement, $request -> hint, $request -> userId, $public);
+                $createdQuestion = $this->createNewQuestion($request -> title, $request -> statement, $userId, $public);
                 $this->addInputsToQuestion($createdQuestion -> id, $inputs);
                 $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      
                 $returnObject = (object) [
@@ -641,7 +638,6 @@ class GameController extends Controller
                 'id' => $request -> questionId,
                 'title' => $myQuestion -> title,
                 'statement' => $myQuestion -> statement,
-                'hint' => $myQuestion -> hint,
                 'public' => $myQuestion -> public,
                 'inputs' => $inputs, 
                 'outputs' => $outputs

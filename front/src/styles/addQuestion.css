@@ -1,7 +1,7 @@
-.addQuestion__container {
+.pixel__container {
     background-color: var(--white);
     color: #2e5e22;
-    margin: 15vh auto;
+    margin: 10vh auto;
     width: 60%;
     text-align: center;
     padding: 30px;
@@ -10,10 +10,9 @@
     border-width: 6px 0;
     color: #000000;
     position: relative;
-    min-height: 700px;
 }
 
-.addQuestion__container::after {
+.pixel__container::after {
     background-color: var(--white);
     box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -25,7 +24,7 @@
     width: 6px;
 }
 
-.addQuestion__container::before {
+.pixel__container::before {
     background-color: var(--white);
     box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -37,8 +36,71 @@
     width: 6px;
 }
 
-.grid__inputs {
+.grid-inputs__container {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 50% 50%;
   padding: 10px;
+}
+
+.statement__container {
+    font-size: 1.4vw;
+}
+
+.statement__container textarea {
+    width: 90%;
+    resize: none;
+    font-size: 1.4vw;
+}
+
+.titleHint__container input {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 1.2vw;
+}
+
+.titleHint__container label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+    font-size: 1.2vw;
+}
+
+.title__container {
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+}
+
+.input__container {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+}
+
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.inputOutput__container {
+    display: grid;
+    grid-template-columns: 40% 1% 40% 19%;
+    padding: 10px;
+    margin: 30px 0px 0 0px;
+    width: 100%;
+    
+}
+.inputOutput__container input {
+    font-size: 1vw;
+    margin-top: 10px;
+}
+
+.inputArrows__conainer {
+    margin-top: 42px;
+}
+
+.setPublic__label {
+    
 }
