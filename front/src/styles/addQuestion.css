@@ -101,6 +101,8 @@
     margin-top: 42px;
 }
 
-.setPublic__label {
-    
+.setPublic__label input {
+    font-size: 0vw;
+    width: auto;
+    margin-top: 10px;
 }

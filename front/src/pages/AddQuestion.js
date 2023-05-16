@@ -6,10 +6,10 @@ import Cookies from 'universal-cookie'
 
 function AddQuestion() {
   const [questionData, setQuestionData] = useState({
-    title: 'dsadasdsdasasdas',
-    statement: 'dasdsadssssssssssssssssssssssssssssssssssssasdasdsas',
-    inputs: [123, 321, 123],
-    outputs: [1223, 3221, 1323],
+    title: '',
+    statement: '',
+    inputs: [],
+    outputs: [],
     public: false
   })
   const cookies = new Cookies()
@@ -53,15 +53,12 @@ function AddQuestion() {
               <input type="text"></input>
             </div>
           </div>
+          <div>
 
-          <div className="row">
-            <div className="title__container">
-              <label>Hint:</label>
-            </div>
-            <div className="input__container">
-              <input type="text"></input>
-            </div>
           </div>
+          <label className='setPublic__label'>
+            <input type='checkbox'></input> Set your question public to everyone
+          </label>
         </div>
         <div className='statement__container'>
           Statement:
@@ -89,9 +86,6 @@ function AddQuestion() {
         </div>
       </div>
       <br></br>
-      <label className='setPublic__label'>
-        <input type='checkbox'></input> Set public
-      </label>
 
       <button>Add</button>
     </div>
