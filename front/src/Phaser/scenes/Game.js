@@ -22,10 +22,11 @@ export default class Game extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
       'up': Phaser.Input.Keyboard.KeyCodes.W,
-      'up': Phaser.Input.Keyboard.KeyCodes.UP,
       'down': Phaser.Input.Keyboard.KeyCodes.S,
       'left': Phaser.Input.Keyboard.KeyCodes.A,
-      'right': Phaser.Input.Keyboard.KeyCodes.D
+      'right': Phaser.Input.Keyboard.KeyCodes.D,
+      'interactE': Phaser.Input.Keyboard.KeyCodes.E,
+      'interactEnter': Phaser.Input.Keyboard.KeyCodes.ENTER,
     })
   }
 
@@ -36,6 +37,7 @@ export default class Game extends Phaser.Scene {
 
     const groundLayer = map.createLayer('Ground', tileset, 0, 0)
     const wallsLayer = map.createLayer('Walls', tileset, 0, 0)
+    const uLayer = map.createLayer('U', tileset, 0, 0)
     const overlapObjectLayer = map.getObjectLayer('Overlap')
 
     this.anims.create({
@@ -105,10 +107,11 @@ export default class Game extends Phaser.Scene {
     })
 
     wallsLayer.setCollisionByProperty({ collides: true })
+    uLayer.setCollisionByProperty({ collides: true })
 
     debugDraw(wallsLayer, this)
 
-    this.fauna = this.add.sprite(400, 400, 'fauna')
+    this.fauna = this.add.sprite(350, 350, 'fauna')
 
     this.physics.add.existing(this.fauna)
     this.fauna.body.setSize(this.fauna.width * 0.47, this.fauna.height * 0.8)
@@ -119,6 +122,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.collider(this.fauna, wallsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.fauna, groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.fauna, uLayer, this.handleCollision, null, this)
 
     this.cameras.main.startFollow(this.fauna, true)
   }
@@ -134,17 +138,15 @@ export default class Game extends Phaser.Scene {
     if (!this.overlap) {
       this.overlap = true
 
-      if (overlapObjectData[0].name === 'actionType') {
-        console.log(overlapObjectData[0].value)
-        window.postMessage({
-          type: 'overlapped-msg',
-          value: overlapObjectData[0].value
-        }, '*')
+      if (overlapObjectData[0].name === 'actionType' || overlapObjectData[0].value === 'navigate') {
+        this.currentNavigate = overlapObjectData[1].value
+        this.scene.run('interact-ui')
       }
-      console.log('colisionado: ', colisionado)
       this.overlapTmp = false
-      setTimeout(this.checkOverlap.bind(this, () => { console.log("callback working") }), 1000)
-
+      setTimeout(this.checkOverlap.bind(this, () => { 
+        this.scene.stop('interact-ui')
+        this.currentNavigate = null
+     }), 100)
     }
   }
 
@@ -153,10 +155,9 @@ export default class Game extends Phaser.Scene {
       if (!this.overlapTmp) {
         this.overlap = false
         callback();
-        console.log("Overlap desactivado");
       }
       this.overlapTmp = false
-      setTimeout(this.checkOverlap.bind(this, callback), 1000)
+      setTimeout(this.checkOverlap.bind(this, callback), 100)
     }//else
 
   }
@@ -167,6 +168,13 @@ export default class Game extends Phaser.Scene {
     }
 
     const speed = 500
+
+    if ((this.keys.interactE?.isDown || this.keys.interactEnter?.isDown) && this.overlap && this.currentNavigate != null) {
+      window.postMessage({
+        type: 'navigate_request-msg',
+        value: this.currentNavigate
+      }, '*')
+    }
 
     if (this.cursors.left?.isDown || this.keys.left?.isDown) {
       this.fauna.anims.play('fauna-run-side', true)

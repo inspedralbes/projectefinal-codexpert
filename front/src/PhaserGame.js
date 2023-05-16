@@ -2,6 +2,7 @@ import * as Phaser from 'phaser'
 
 import Preloader from './Phaser/scenes/Preloader'
 import Game from './Phaser/scenes/Game'
+import InteractUI from './Phaser/scenes/InteractUI'
 
 const PhaserGame = new Phaser.Game({
   type: Phaser.AUTO,
@@ -22,7 +23,7 @@ const PhaserGame = new Phaser.Game({
       debug: true
     }
   },
-  scene: [Preloader, Game]
+  scene: [Preloader, Game, InteractUI]
 })
 
 // eslint-disable-next-line import/no-anonymous-default-export

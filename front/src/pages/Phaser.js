@@ -11,10 +11,9 @@ function Phaser() {
 
     // Event handle
     switch (eventData.type) {
-      case 'overlapped-msg':
-        if (eventData.value === 'casa') {
-          navigate('/campaign')
-        }
+      case 'navigate_request-msg':
+        console.log(eventData.value)
+        navigate('/' + eventData.value)
         break
     }
   }
