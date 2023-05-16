@@ -342,17 +342,7 @@
     text-transform: uppercase;
 }
 
-.chat__body {
-    display: block;
-    max-height: 20vh;
-    position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
-    bottom: 50px;
-    max-width: 25%;
-    transition: all 2s;
-    margin: 0;
-}
+
 
 .chat__title {
     color: #000
@@ -793,8 +783,9 @@
 }
 
 .form--grid {
+    position: fixed;
     display: flex;
-
+    bottom: 0;
 }
 
 .inputMsg-div {
@@ -912,4 +903,21 @@
 
 .lobbiesForm__input::placeholder {
     font-size: 80%;
+}
+
+.settings:hover{
+    transform: rotate(30deg);
+}
+
+
+.settings{
+    transition: all 0.5s;
+    transform: rotate(0);
+    margin: 10px 10px 10px 50px;
+}
+
+
+.noBtn{
+    border:none;
+    background: none;
 }
