@@ -18,10 +18,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::group(['middleware' => ['web']], function () {
     Route::post('/register', [AuthController::class, 'register']); 
 
@@ -68,6 +64,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/checkTutorialAnswer', [TutorialController::class, 'checkAnswer']);
 
     Route::post('/setUserTutorial', [TutorialController::class, 'setUserTutorial']);
+
     Route::post('/addNewQuestion', [GameController::class, 'addNewQuestion']);
     
     Route::post('/checkTutorialPassed', [TutorialController::class, 'checkTutorialPassed']);
