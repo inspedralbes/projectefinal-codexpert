@@ -31,6 +31,7 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
+    this.scene.run('interact-ui')
     const map = this.make.tilemap({ key: 'map' })
 
     // const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
@@ -42,6 +43,7 @@ export default class Game extends Phaser.Scene {
     const groundCollisionsLayer = map.createLayer('Ground-collisions', tileset, 0, 0)
     const cropsLayer = map.createLayer('Crops', cropsTileset, 0, 0)
     const wallsLayer = map.createLayer('Walls', buildingsTileset, 0, 0)
+    const aboveWallsLayer = map.createLayer('Above-walls', tileset, 0, 0)
 
     const overlapObjectLayer = map.getObjectLayer('Overlap')
 
@@ -115,6 +117,7 @@ export default class Game extends Phaser.Scene {
     groundLayer.setCollisionByProperty({ collides: true })
     cropsLayer.setCollisionByProperty({ collides: true })
     groundCollisionsLayer.setCollisionByProperty({ collides: true })
+    aboveWallsLayer.setCollisionByProperty({ collides: true })
     // uLayer.setCollisionByProperty({ collides: true })
 
     // debugDraw(wallsLayer, this)
@@ -177,7 +180,7 @@ export default class Game extends Phaser.Scene {
       return
     }
 
-    const speed = 500
+    const speed = 100
 
     if ((this.keys.interactE?.isDown || this.keys.interactEnter?.isDown) && this.overlap && this.currentNavigate != null) {
       window.postMessage({

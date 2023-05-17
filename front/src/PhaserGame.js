@@ -10,9 +10,9 @@ const PhaserGame = new Phaser.Game({
   backgroundColor: '#60A0A8',
   scale: {
     // mode: Phaser.Scale.ScaleModes.RESIZE,
-    width: window.innerWidth / 2,
-    height: window.innerHeight / 2,
-    zoom: 2
+    width: window.innerWidth / 2.5,
+    height: window.innerHeight / 2.5,
+    zoom: 2.5
   },
   dom: {
     createContainer: true
