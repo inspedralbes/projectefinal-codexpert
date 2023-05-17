@@ -10,7 +10,8 @@ import OverlapPoint from '../items/OverlapPoints'
 export default class Game extends Phaser.Scene {
   // navigate = useNavigate()
   fauna
-  cursors
+  cursor
+  keys
 
   constructor() {
     super('game')
@@ -19,15 +20,31 @@ export default class Game extends Phaser.Scene {
 
   preload() {
     this.cursors = this.input.keyboard.createCursorKeys()
+    this.keys = this.input.keyboard.addKeys({
+      'up': Phaser.Input.Keyboard.KeyCodes.W,
+      'down': Phaser.Input.Keyboard.KeyCodes.S,
+      'left': Phaser.Input.Keyboard.KeyCodes.A,
+      'right': Phaser.Input.Keyboard.KeyCodes.D,
+      'interactE': Phaser.Input.Keyboard.KeyCodes.E,
+      'interactEnter': Phaser.Input.Keyboard.KeyCodes.ENTER,
+    })
   }
 
   create() {
-    const map = this.make.tilemap({ key: 'map-tiles' })
+    const map = this.make.tilemap({ key: 'map' })
 
-    const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
+    // const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
+    const buildingsTileset = map.addTilesetImage('cozy-buildings', 'cozy-buildings', 16, 16)
+    const tileset = map.addTilesetImage('cozy-tileset', 'cozy-tileset', 16, 16)
+    const cropsTileset = map.addTilesetImage('crops', 'crops', 16, 16)
 
     const groundLayer = map.createLayer('Ground', tileset, 0, 0)
-    const wallsLayer = map.createLayer('Walls', tileset, 0, 0)
+    const groundCollisionsLayer = map.createLayer('Ground-collisions', tileset, 0, 0)
+    const cropsLayer = map.createLayer('Crops', cropsTileset, 0, 0)
+    const buildingsLayer = map.createLayer('Buildings', buildingsTileset, 0, 0)
+    const aboveBuildingsLayer = map.createLayer('Above-buildings', buildingsTileset, 0, 0)
+    const aboveGroundLayer = map.createLayer('Above-ground', tileset, 0, 0)
+
     const overlapObjectLayer = map.getObjectLayer('Overlap')
 
     this.anims.create({
@@ -72,7 +89,7 @@ export default class Game extends Phaser.Scene {
       frameRate: 15
     })
 
-    const personajes = this.physics.add.staticGroup({
+    const puntosDeOverlap = this.physics.add.staticGroup({
       classType: OverlapPoint
     })
 
@@ -91,28 +108,35 @@ export default class Game extends Phaser.Scene {
     const group = this.add.group(config)
 
     overlapObjectLayer.objects.forEach(objct => {
-        const gameObj = personajes.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
-        gameObj.data = objct.properties
-        group.add(gameObj)
+      const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
+      gameObj.data = objct.properties
+      group.add(gameObj)
     })
 
-    // console.log(group)
+    buildingsLayer.setCollisionByProperty({ collides: true })
+    groundLayer.setCollisionByProperty({ collides: true })
+    cropsLayer.setCollisionByProperty({ collides: true })
+    groundCollisionsLayer.setCollisionByProperty({ collides: true })
+    aboveBuildingsLayer.setDepth(2)
+    aboveGroundLayer.setDepth(1)
 
-    wallsLayer.setCollisionByProperty({ collides: true })
+    // debugDraw(buildingsLayer, this)
 
-    debugDraw(wallsLayer, this)
-
-    this.fauna = this.add.sprite(400, 400, 'fauna')
+    this.fauna = this.add.sprite(350, 350, 'fauna')
 
     this.physics.add.existing(this.fauna)
     this.fauna.body.setSize(this.fauna.width * 0.47, this.fauna.height * 0.8)
 
     this.fauna.anims.play('fauna-idle-down')
 
+
     this.physics.add.overlap(this.fauna, group, this.handleOverlap, null, this)
 
-    this.physics.add.collider(this.fauna, wallsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.fauna, buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.fauna, groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.fauna, groundCollisionsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.fauna, cropsLayer, this.handleCollision, null, this)
+    // this.physics.add.collider(this.fauna, uLayer, this.handleCollision, null, this)
 
     this.cameras.main.startFollow(this.fauna, true)
   }
@@ -128,17 +152,15 @@ export default class Game extends Phaser.Scene {
     if (!this.overlap) {
       this.overlap = true
 
-      if (overlapObjectData[0].name === 'actionType') {
-        console.log(overlapObjectData[0].value)
-        window.postMessage({
-          type: 'overlapped-msg',
-          value: overlapObjectData[0].value
-        }, '*')
+      if (overlapObjectData[0].name === 'actionType' || overlapObjectData[0].value === 'navigate') {
+        this.currentNavigate = overlapObjectData[1].value
+        this.scene.run('interact-ui')
       }
-      console.log('colisionado: ', colisionado)
       this.overlapTmp = false
-      setTimeout(this.checkOverlap.bind(this, () => { console.log("callbakc working") }), 1000)
-
+      setTimeout(this.checkOverlap.bind(this, () => { 
+        this.scene.stop('interact-ui')
+        this.currentNavigate = null
+     }), 100)
     }
   }
 
@@ -147,22 +169,28 @@ export default class Game extends Phaser.Scene {
       if (!this.overlapTmp) {
         this.overlap = false
         callback();
-        console.log("Overlap desactivado");
       }
       this.overlapTmp = false
-      setTimeout(this.checkOverlap.bind(this, callback), 1000)
+      setTimeout(this.checkOverlap.bind(this, callback), 100)
     }//else
 
   }
   update(t, dt) {
 
-    if (!this.cursors || !this.fauna) {
+    if (!this.cursors || !this.fauna || !this.keys) {
       return
     }
 
-    const speed = 500
+    const speed = 100
 
-    if (this.cursors.left?.isDown) {
+    if ((this.keys.interactE?.isDown || this.keys.interactEnter?.isDown) && this.overlap && this.currentNavigate != null) {
+      window.postMessage({
+        type: 'navigate_request-msg',
+        value: this.currentNavigate
+      }, '*')
+    }
+
+    if (this.cursors.left?.isDown || this.keys.left?.isDown) {
       this.fauna.anims.play('fauna-run-side', true)
 
       this.fauna.body.velocity.x = -speed
@@ -170,7 +198,7 @@ export default class Game extends Phaser.Scene {
 
       this.fauna.scaleX = -1
       this.fauna.body.offset.x = 24
-    } else if (this.cursors.right?.isDown) {
+    } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
       this.fauna.anims.play('fauna-run-side', true)
 
       this.fauna.body.velocity.x = speed
@@ -178,12 +206,12 @@ export default class Game extends Phaser.Scene {
 
       this.fauna.scaleX = 1
       this.fauna.body.offset.x = 8
-    } else if (this.cursors.up?.isDown) {
+    } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
       this.fauna.anims.play('fauna-run-up', true)
 
       this.fauna.body.velocity.x = 0
       this.fauna.body.velocity.y = -speed
-    } else if (this.cursors.down?.isDown) {
+    } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
       this.fauna.anims.play('fauna-run-down', true)
 
       this.fauna.body.velocity.x = 0

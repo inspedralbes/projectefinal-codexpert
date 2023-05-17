@@ -2,15 +2,17 @@ import * as Phaser from 'phaser'
 
 import Preloader from './Phaser/scenes/Preloader'
 import Game from './Phaser/scenes/Game'
+import InteractUI from './Phaser/scenes/InteractUI'
 
 const PhaserGame = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'phaser-container',
-  backgroundColor: '#1e7cb8',
+  backgroundColor: '#60A0A8',
   scale: {
-    mode: Phaser.Scale.ScaleModes.RESIZE,
-    width: window.innerWidth,
-    height: window.innerHeight
+    // mode: Phaser.Scale.ScaleModes.RESIZE,
+    width: window.innerWidth / 2.5,
+    height: window.innerHeight / 2.5,
+    zoom: 2.5
   },
   dom: {
     createContainer: true
@@ -22,7 +24,7 @@ const PhaserGame = new Phaser.Game({
       debug: true
     }
   },
-  scene: [Preloader, Game]
+  scene: [Preloader, Game, InteractUI]
 })
 
 // eslint-disable-next-line import/no-anonymous-default-export

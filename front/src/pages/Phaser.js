@@ -5,17 +5,15 @@ import { useNavigate } from 'react-router'
 
 function Phaser() {
   const navigate = useNavigate()
+
   const handleMessage = (event) => {
-    // console.log('hola')
     const eventData = event.data
 
     // Event handle
     switch (eventData.type) {
-      case 'overlapped-msg':
-        console.log('hola')
-        if (eventData.value === 'casa') {
-          navigate('/lobbies')
-        }
+      case 'navigate_request-msg':
+        console.log(eventData.value)
+        navigate('/' + eventData.value)
         break
     }
   }

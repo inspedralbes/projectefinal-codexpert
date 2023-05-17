@@ -21,8 +21,8 @@ import Error404 from './pages/404'
 import Cookies from 'universal-cookie'
 import SharedRanking from './pages/SharedRanking'
 import Ranking from './pages/Ranking'
-import AddQuestion from './pages/AddQuestion'
 import Phaser from './pages/Phaser'
+import AddQuestion from './pages/AddQuestion'
 
 const cookies = new Cookies()
 
@@ -32,10 +32,6 @@ if (cookies.get('token') !== undefined && cookies.get('token') !== null) {
     token: cookies.get('token')
   }, '*')
 }
-
-// useEffect(() => {
-
-// }, [])
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
