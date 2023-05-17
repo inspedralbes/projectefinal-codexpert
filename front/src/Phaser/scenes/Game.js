@@ -41,9 +41,9 @@ export default class Game extends Phaser.Scene {
     const groundLayer = map.createLayer('Ground', tileset, 0, 0)
     const groundCollisionsLayer = map.createLayer('Ground-collisions', tileset, 0, 0)
     const cropsLayer = map.createLayer('Crops', cropsTileset, 0, 0)
-    const wallsLayer = map.createLayer('Walls', buildingsTileset, 0, 0)
-    const aboveWallsLayer = map.createLayer('Above-walls', tileset, 0, 0)
+    const buildingsLayer = map.createLayer('Buildings', buildingsTileset, 0, 0)
     const aboveBuildingsLayer = map.createLayer('Above-buildings', buildingsTileset, 0, 0)
+    const aboveGroundLayer = map.createLayer('Above-ground', tileset, 0, 0)
 
     const overlapObjectLayer = map.getObjectLayer('Overlap')
 
@@ -113,15 +113,14 @@ export default class Game extends Phaser.Scene {
       group.add(gameObj)
     })
 
-    wallsLayer.setCollisionByProperty({ collides: true })
+    buildingsLayer.setCollisionByProperty({ collides: true })
     groundLayer.setCollisionByProperty({ collides: true })
     cropsLayer.setCollisionByProperty({ collides: true })
     groundCollisionsLayer.setCollisionByProperty({ collides: true })
-    aboveWallsLayer.setCollisionByProperty({ collides: true })
-    aboveBuildingsLayer.setDepth(1)
-    // uLayer.setCollisionByProperty({ collides: true })
+    aboveBuildingsLayer.setDepth(2)
+    aboveGroundLayer.setDepth(1)
 
-    // debugDraw(wallsLayer, this)
+    // debugDraw(buildingsLayer, this)
 
     this.fauna = this.add.sprite(350, 350, 'fauna')
 
@@ -133,7 +132,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(this.fauna, group, this.handleOverlap, null, this)
 
-    this.physics.add.collider(this.fauna, wallsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.fauna, buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.fauna, groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.fauna, groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.fauna, cropsLayer, this.handleCollision, null, this)
