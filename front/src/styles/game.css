@@ -4,7 +4,8 @@
 }
 
 :root {
-    --pixel-bg: #75b152;
+    --pixel-bg: #88D34A;
+    --statement-bg: #ADE281;
 }
 
 .game {
@@ -13,7 +14,7 @@
 
 .game__container {
     border: 3px solid #fff;
-    background-color: #fff;
+    background-color: #fdebeb;
     padding: 0 20px;
     width: 100%;
     margin: 0 auto;
@@ -97,16 +98,14 @@
     font-size: 1em;
 }
 
-
-
 .game__statement,
 .game__expectedOutput,
 .game__expectedInput {
-    background: var(--pixel-bg);
+    background: #fff;
     margin: 10px;
     padding: 10px;
     width: 98%;
-    border-color: #000000;
+    border-color: #63A32D;
     border-style: solid;
     border-width: 6px 0;
     color: #000000;
@@ -114,7 +113,7 @@
 }
 
 .game__statement {
-    margin-bottom: 0;
+    font-size: 1.2rem;
 }
 
 .game__expectedInput,
@@ -123,11 +122,41 @@
     margin: 2px 14px;
 }
 
-.game__statement::after,
 .game__expectedOutput::after,
 .game__expectedInput::after,
 .userList__user::after {
-    background-color: var(--pixel-bg);
+    background-color: inherit;
+    box-shadow: 6px 0 0 #63A32D, 0 -6px #63A32D, 0 6px #63A32D;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__expectedOutput::before,
+.game__expectedInput::before,
+.userList__user::before {
+    background-color: inherit;
+    box-shadow: -6px 0 0 #63A32D, 0 -6px #63A32D, 0 6px #63A32D;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__statement {
+    background-color: var(--statement-bg);
+    border-color: black;
+}
+
+.game__statement::after {
+    background-color: inherit;
     box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
     display: block;
@@ -138,11 +167,8 @@
     width: 6px;
 }
 
-.game__statement::before,
-.game__expectedOutput::before,
-.game__expectedInput::before,
-.userList__user::before {
-    background-color: var(--pixel-bg);
+.game__statement::before {
+    background-color: inherit;
     box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
     display: block;
@@ -202,7 +228,7 @@ h2 {
 }
 
 .editor--div {
-    background-color: #ffffff;
+    background-color: var(--statement-bg);
     padding: 10px;
     margin: 10px auto;
     width: 99%;
@@ -268,6 +294,7 @@ h2 {
 
 .user__health {
     height: 30px;
+    width: 30px;
 }
 
 .codemirror__editor {

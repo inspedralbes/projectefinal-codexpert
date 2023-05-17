@@ -16,10 +16,10 @@ function Background({ currentColor, handleChangeComplete, setChanges, ArrayColor
   return (
 
     <div className='avatar__options--grid'>
-      <div className='avatar__options' id="scroll">
+      <div className='avatar__options noscroll' >
         <h1 className='noElement'>This element has no type, but you can still change the color!</h1>
         <img className="Avatar__arrow" src={arrow} alt='' height='300px'></img>      </div>
-      <div className='avatar__colorPicker'>
+      <div className='avatar__colorPicker' id='scroll'>
         <TwitterPicker
           triangle={
             'hide'

@@ -1,9 +1,11 @@
 import '../styles/normalize.css'
+import '../styles/form.css'
 import React, { useState, useEffect } from 'react'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import { Link, useNavigate } from 'react-router-dom' // Rutas
 import Eye from '../components/Eye'
+import '../styles/responsive.css'
 
 function Login() {
   const [login, setLogin] = useState(0)

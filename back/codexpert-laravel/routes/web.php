@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\TutorialController;
@@ -17,10 +18,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::group(['middleware' => ['web']], function () {
     Route::post('/register', [AuthController::class, 'register']); 
 
@@ -35,12 +32,16 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/changePassword', [UserController::class, 'changePassword']);
 
     Route::post('/changeUsername', [UserController::class, 'changeUsername']);
+
+    Route::post('/getAvatarFromOtherUser', [UserController::class, 'getAvatarFromOtherUser']);
     
     Route::post('/getAvatar', [UserController::class, 'getAvatar']);
 
     Route::post('/setAvatar', [UserController::class, 'setAvatar']);
 
-    Route::post('/getUserData', [UserController::class, 'getUserData']);
+    Route::post('/getUserData', [UserController::class, 'getUserData']); 
+
+    Route::post('/getUserDataFromId', [UserController::class, 'getUserDataFromId']);    
 
     Route::post('/startGame', [GameController::class, 'startGame']);
 
@@ -75,5 +76,19 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/editMyQuestion', [GameController::class, 'editMyQuestion']);
 
     Route::post('/deleteMyQuestion', [GameController::class, 'deleteMyQuestion']);
+
+    Route::post('/addFriend', [FriendController::class, 'addFriend']);
+
+    Route::post('/acceptFriend', [FriendController::class, 'acceptFriend']);
+    
+    Route::post('/declineFriend', [FriendController::class, 'declineFriend']);    
+
+    Route::post('/removeFriend', [FriendController::class, 'removeFriend']);  
+    
+    Route::post('/getFriendlist', [FriendController::class, 'getFriendlist']);  
+
+    Route::post('/getPendingRequests', [FriendController::class, 'getPendingRequests']);  
+    
+    Route::post('/markNotificationsAsRead', [FriendController::class, 'markNotificationsAsRead']);  
 
 });

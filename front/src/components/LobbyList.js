@@ -83,7 +83,7 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
                         className='col col-1'
                         data-label='Lobby Name'
                       >
-                      {element.lobby_name}
+                        {element.lobby_name}
                       </div>
                       <div
                         id={element.lobby_name}
@@ -125,7 +125,7 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
                 id='email'
                 className='lobbiesForm__input'
                 value={lobbyName}
-                placeholder='INTRODUCE LOBBY NAME'
+                placeholder='INTRODUCE NEW LOBBY NAME'
                 type='text'
                 onChange={(e) => {
                   setLobbyName(e.target.value)

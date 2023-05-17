@@ -62,7 +62,7 @@ function Glasses({ currentColor, handleChangeComplete, setChanges, ArrayColors, 
           <img src={require('../../img/avatar/glasses/light07.png')} alt='Glasses' width='100px' height='100px'></img>
         </button>
       </div>
-      <div className='avatar__colorPicker'>
+      <div className='avatar__colorPicker' id='scroll'>
         <TwitterPicker
           color={currentColor}
           onChangeComplete={handleChangeComplete}

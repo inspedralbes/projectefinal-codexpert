@@ -275,7 +275,7 @@ function Mouth({
           ></img>
         </button>
       </div>
-      <div className="avatar__colorPicker">
+      <div className="avatar__colorPicker" id='scroll'>
         <TwitterPicker
           color={currentColor}
           onChangeComplete={handleChangeComplete}
