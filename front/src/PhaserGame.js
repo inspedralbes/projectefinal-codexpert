@@ -7,7 +7,7 @@ import InteractUI from './Phaser/scenes/InteractUI'
 const PhaserGame = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'phaser-container',
-  backgroundColor: '#1e7cb8',
+  backgroundColor: '#60A0A8',
   scale: {
     mode: Phaser.Scale.ScaleModes.RESIZE,
     width: window.innerWidth,

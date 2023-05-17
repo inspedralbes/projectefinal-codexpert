@@ -31,13 +31,15 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    const map = this.make.tilemap({ key: 'map-tiles' })
+    const map = this.make.tilemap({ key: 'map' })
 
-    const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
+    // const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
+    const buildingsTileset = map.addTilesetImage('cozy-buildings', 'cozy-buildings', 16, 16)
+    const tileset = map.addTilesetImage('cozy-tileset', 'cozy-tileset', 16, 16)
 
     const groundLayer = map.createLayer('Ground', tileset, 0, 0)
-    const wallsLayer = map.createLayer('Walls', tileset, 0, 0)
-    const uLayer = map.createLayer('U', tileset, 0, 0)
+    const wallsLayer = map.createLayer('Walls', buildingsTileset, 0, 0)
+    // const uLayer = map.createLayer('U', tileset, 0, 0)
     const overlapObjectLayer = map.getObjectLayer('Overlap')
 
     this.anims.create({
@@ -107,9 +109,10 @@ export default class Game extends Phaser.Scene {
     })
 
     wallsLayer.setCollisionByProperty({ collides: true })
-    uLayer.setCollisionByProperty({ collides: true })
+    groundLayer.setCollisionByProperty({ collides: true })
+    // uLayer.setCollisionByProperty({ collides: true })
 
-    debugDraw(wallsLayer, this)
+    // debugDraw(wallsLayer, this)
 
     this.fauna = this.add.sprite(350, 350, 'fauna')
 
@@ -122,7 +125,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.collider(this.fauna, wallsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.fauna, groundLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.fauna, uLayer, this.handleCollision, null, this)
+    // this.physics.add.collider(this.fauna, uLayer, this.handleCollision, null, this)
 
     this.cameras.main.startFollow(this.fauna, true)
   }
