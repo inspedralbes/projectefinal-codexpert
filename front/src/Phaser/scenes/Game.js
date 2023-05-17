@@ -43,6 +43,7 @@ export default class Game extends Phaser.Scene {
     const cropsLayer = map.createLayer('Crops', cropsTileset, 0, 0)
     const wallsLayer = map.createLayer('Walls', buildingsTileset, 0, 0)
     const aboveWallsLayer = map.createLayer('Above-walls', tileset, 0, 0)
+    const aboveBuildingsLayer = map.createLayer('Above-buildings', buildingsTileset, 0, 0)
 
     const overlapObjectLayer = map.getObjectLayer('Overlap')
 
@@ -117,6 +118,7 @@ export default class Game extends Phaser.Scene {
     cropsLayer.setCollisionByProperty({ collides: true })
     groundCollisionsLayer.setCollisionByProperty({ collides: true })
     aboveWallsLayer.setCollisionByProperty({ collides: true })
+    aboveBuildingsLayer.setDepth(1)
     // uLayer.setCollisionByProperty({ collides: true })
 
     // debugDraw(wallsLayer, this)
@@ -127,6 +129,7 @@ export default class Game extends Phaser.Scene {
     this.fauna.body.setSize(this.fauna.width * 0.47, this.fauna.height * 0.8)
 
     this.fauna.anims.play('fauna-idle-down')
+
 
     this.physics.add.overlap(this.fauna, group, this.handleOverlap, null, this)
 
