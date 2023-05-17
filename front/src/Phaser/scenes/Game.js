@@ -31,7 +31,6 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    this.scene.run('interact-ui')
     const map = this.make.tilemap({ key: 'map' })
 
     // const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
