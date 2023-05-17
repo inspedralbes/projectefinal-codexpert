@@ -52,7 +52,7 @@ function AddQuestion() {
   }, [])
 
   return (
-    <div className='pixel__container'>
+    <div className='addQuestionPixel__container'>
       <h1>Add question</h1>
 
       <div className='grid-inputs__container'>
@@ -77,7 +77,7 @@ function AddQuestion() {
           <textarea onChange={(e) => { setQuestionData({ ...questionData, statement: e.value }) }}></textarea>
         </div>
       </div>
-      <div className='pixel__container grid__container'>
+      <div className='addQuestionPixel__container grid__container'>
         <div className='inputOutput__container' id='scroll'>
           <div>
             <h2>INPUTS</h2>
