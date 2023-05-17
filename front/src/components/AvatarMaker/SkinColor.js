@@ -27,7 +27,7 @@ function SkinColor({
         </h1>
         <img className="Avatar__arrow" src={arrow} alt="" height="300px"></img>
       </div>
-      <div className="avatar__colorPicker">
+      <div className="avatar__colorPicker noscroll" >
         <TwitterPicker
           triangle={'hide'}
           color={currentColor}

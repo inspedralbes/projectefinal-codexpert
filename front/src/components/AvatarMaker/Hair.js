@@ -152,7 +152,7 @@ function Hair({ currentColor, handleChangeComplete, setChanges, ArrayColors, cha
           <img src={require('../../img/avatar/hair/short24.png')} alt='Hair' width='100px' height='100px'></img>
         </button>
       </div>
-      <div className='avatar__colorPicker'>
+      <div className='avatar__colorPicker' id='scroll'>
 
         <TwitterPicker
           color={currentColor}

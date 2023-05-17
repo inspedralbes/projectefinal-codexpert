@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Game;
 use App\Models\Question;
 use App\Models\Test_input;
@@ -10,15 +11,14 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
-use PhpParser\Node\Stmt\For_;
-
+use Laravel\Sanctum\PersonalAccessToken;
 class GameController extends Controller
 {
     /**
      * This function creates a new game relationship in the database
      * @return object $newGame it's the object that has been created in the database
      */    
-    private function createNewGame(Request $request)
+    private function createNewGame()
     {
         //Create a new empty game and return it.
         $newGame = new Game;
@@ -70,7 +70,7 @@ class GameController extends Controller
 
         if ( !($request -> numQuestions == null || $request -> numQuestions == "null" || $request -> numQuestions == 0) ) {
             //Start an empty game
-            $newGame = $this->createNewGame($request);
+            $newGame = $this->createNewGame();
 
             //Get the questions that will be added to the game
             $getQuestions = $this->getQuestions($request);
@@ -160,33 +160,21 @@ class GameController extends Controller
     {
         $returnObject = (object) [
             'correct'=> true,
-            'testsPassed' => 0,
             'user_game'=> null,
             'game' => null
         ];
 
-        //If any of the tests doesn't pass we return that it's not a correct answer.
-        if ($request -> evalPassed) {
-            $outputs = [];
-            $getOutputs = Test_output::where('question_id', $request -> idQuestion)->get();
-            for ($i = 0; $i < count($getOutputs); $i++) { 
-                $outputs[$i] = unserialize($getOutputs[$i] -> output);
-            }
-
-            foreach($outputs as $key => $val) {
-                if ($val == $request -> evalRes[$key]) {
-                    $returnObject -> testsPassed++;
-                } else {
-                    $returnObject -> correct = false;
-                }
-            }
-
-        } else {
-            $returnObject -> correct = false;
+        //Get the outputs and check if the tests are correct
+        $outputs = [];
+        $getOutputs = Test_output::where('question_id', $request -> idQuestion)->get();
+        for ($i = 0; $i < count($getOutputs); $i++) { 
+            $outputs[$i] = unserialize($getOutputs[$i] -> output);
         }
+        $correct = $this->checkEval($request -> evalPassed, $outputs, $request -> evalRes);
+        $returnObject -> correct = $correct;
 
+        //Get the game being played and update accordingly
         $game = Game::where('id', $request -> idGame) -> first();
-
         $user_game = User_game::where('game_id', $request -> idGame) 
         -> where ('user_id', $request -> idUser)
         -> first();
@@ -359,5 +347,348 @@ class GameController extends Controller
         
         return response() -> json($ranking);
     }     
+
+    /**
+     * This function checks with the token recieved if the token is valid on the database, if it is it will return the user id
+     * @param string $checkToken is the session token
+     * @return int $userId is the user id found linked to the token in the database
+     */     
+    private function getUserId($checkToken)
+    {
+        $userId = null;
+        //Check if we have recieved a token
+        if ( !($checkToken == null || $checkToken == "" || $checkToken == "null") ) {
+            
+            //Return if the user is logged in or not from the token
+            [$id, $token] = explode('|', $checkToken, 2);
+            $accessToken = PersonalAccessToken::find($id);
+
+            if ($accessToken != null) {
+                if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                    $userId = $accessToken->tokenable_id;
+                }
+            }
+
+        }
+
+        return $userId;
+    }  
+
+    /**
+     * This function recievs the statement for the next question and validates that it's correct
+     * @param object $validateTitleStatement is an object containing title and statement
+     * @return object $validatorInfo is an object, containing a boolean to determine whether title and statement are valid, if not, returns the error
+     */     
+    private function checkTitleStatement(Request $request)
+    {
+        $validatorInfo = (object) [
+            'correct' => true,
+            'error' => '',
+        ];
+        $validateTitle =  Validator::make($request->all(), [
+            'title' => 'required|string|min:5|max:20',
+        ]);
+
+        if ($validateTitle->fails()) {
+            $validatorInfo = (object) [
+                'correct' => false,
+                'error' => 'Title must be at least 5 characters long, with a maximum of 20 characters.'
+            ];  
+        } else {
+            //Run validation for the statement
+            $validateStatement =  Validator::make($request->all(), [
+                'statement' => 'required|string|min:25|max:500',
+            ]);
+            if ($validateStatement->fails()) {
+                $validatorInfo = (object) [
+                    'correct' => false,
+                    'error' => 'Statement must be at least 25 characters long, with a maximum of 500 characters.'
+                ];  
+            }
+        }
+        return $validatorInfo;
+    }  
+
+    /**
+     * This function recievs the inputs and if the eval has been passed, outputs, inputs and the result from the evals. It will check if there are enough tests, if the tests are valid and if the tests are repeated it will return which.
+     * @param bool $evalPassed returns if the eval has been passed on frontend
+     * @param array $outputs is the array of the outputs that the user wrote
+     * @param array $evalRes is the array containing the results of each eval
+     * @return bool $correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
+     */     
+    private function checkEval($evalPassed, $outputs, $evalRes)
+    {
+        $correct = false;
+        $testsPassed = 0;
+
+        //If any of the tests doesn't pass we return that it's not a correct answer.
+        if ($evalPassed) {
+            foreach($outputs as $index => $outputValue) {
+                if ($outputValue == $evalRes[$index]) {
+                    $testsPassed++;
+                }
+            }
+        }
+
+        if ($testsPassed >= count($outputs)) {
+            $correct = true;
+        }
+
+        return $correct;
+    }     
+
+    /**
+     * This function recievs the inputs and if the eval has been passed, outputs, inputs and the result from the evals. It will check if there are enough tests, if the tests are valid and if the tests are repeated it will return which.
+     * @param array $inputs is the array of the inputs that the user wrote
+     * @param array $outputs is the array of the outputs that the user wrote
+     * @return object $returnObject containing correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
+     */     
+    private function checkInputsAndOutputs($inputs, $outputs)
+    {
+        $returnObject = (object) [
+            "correct" => false,
+            "error" => ''
+        ];
+
+        if ($inputs !== null && $outputs !== null) {
+            if ( (count($inputs) == count($outputs)) && (count($inputs)) >= 3) {
+                $i = 1;
+                while ($i < count($inputs) && !$returnObject -> correct) {
+                    if ($inputs[0] !== $inputs[$i]) {
+                        $returnObject -> correct = true;
+                    }
+                    $i++;
+                }
+
+                if ($returnObject -> correct) {
+                    $i = 0;
+                    while ($i < count($inputs) && $returnObject -> correct) {
+                        if ($inputs[$i] === $outputs[$i]) {
+                            $returnObject -> correct = false;
+                        } 
+                        $i++;
+                    }
+
+                    if (!$returnObject -> correct) {
+                        $returnObject -> error  = "Input and output can't be the same.";
+                    }
+                    
+                } else {
+                    $returnObject -> error  =  "Inputs can't all be the same.";
+                }
+            }
+        } else {
+            $returnObject -> error = "Not enough tests or the amount of inputs and outputs are not equal.";
+        }
+
+        return $returnObject;
+    }  
+
+    /**
+     * This functions adds a new question to the database, relating the user to it as the creator.
+     * @param string $title is the title from the question
+     * @param string $statement is the statement from the question
+     * @param int $creatorId is id from the logged in user
+     * @return object $questionAdded is the row that has been added to the database
+     */     
+    private function createNewQuestion($title, $statement, $creatorId, $public)
+    {
+        $questionAdded = new Question;
+        $questionAdded -> title = $title;
+        $questionAdded -> statement = $statement;
+        $questionAdded -> creatorId = $creatorId;
+        $questionAdded -> public = $public;
+        $questionAdded -> save();
+
+        return $questionAdded;
+    } 
+
+    /**
+     * This functions adds the test inputs that the user has created to the question that has just been created.
+     * @param int $question_id is id from the question that has just been created
+     * @param array $inputs is an array of all the test inputs
+     */     
+    private function addInputsToQuestion($question_id, $inputs)
+    {
+        for ($i = 0; $i < count($inputs); $i++) { 
+            $input = new Test_input;
+            $input -> question_id = $question_id;
+            $input -> input = serialize($inputs[$i]);
+            $input -> save();
+        }
+
+    } 
+    
+    /**
+     * This functions adds the test outputs that the user has created to the question that has just been created.
+     * @param int $question_id is id from the question that has just been created
+     * @param array $outputs is an array of all the test outputs
+     */      
+    private function addOutputsToQuestion($question_id, $outputs)
+    {
+        for ($i = 0; $i < count($outputs); $i++) { 
+            $output = new Test_output;
+            $output -> question_id = $question_id;
+            $output -> output = serialize($outputs[$i]);
+            $output -> save();
+        }
+
+    } 
+
+    /**
+     * This function will validate and create the given question and relate it to the logged in user.
+     * @param string $token is the session token
+     * @param string $title is a title of the question, it doesn't contain as much information as as the statement
+     * @param string $statement is the statement for the question, where the exercise is explained
+     * @param array $outputs is the array of outputs that the user is intering
+     * @param array $inputs is the array of inputs that the user is intering
+     * @param bool $public is a boolean that indicates if the user will make the question playable for other users
+     * @return object $returnObject contains 'created', will return true if the question has been added to the database, and 'loggedIn', will return true if the user is logged in.
+     */      
+    public function addNewQuestion(Request $request)
+    {
+        $returnObject = (object) [
+            'created' => false,
+            'loggedIn' => false
+        ];
+
+        //Check if the user is logged in, if not we don't create and notify front end that the user is not logged in
+        $userId = $this->getUserId($request -> token);
+        
+        //Decode the given arrays
+        $outputs = json_decode($request -> outputs);
+        $inputs = json_decode($request -> inputs);
+        $public = json_decode($request -> public);
+
+        $validateTitleStatement = (object) [
+            'title' => $request -> title,
+            'statement' => $request -> statement
+        ];
+
+        if ($userId != null) {
+            //If logged in we run all the validations
+            $correctTitleStatement = $this->checkTitleStatement($request);
+            $correctInputsAndOutputs = $this->checkInputsAndOutputs($inputs, $outputs);
+            if ($correctTitleStatement && $correctInputsAndOutputs -> correct) {
+                $createdQuestion = $this->createNewQuestion($request -> title, $request -> statement, $userId, $public);
+                $this->addInputsToQuestion($createdQuestion -> id, $inputs);
+                $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      
+                $returnObject = (object) [
+                    'created' => true,
+                    'loggedIn' => true
+                ];
+            } else {
+                if (!$correctTitleStatement -> correct) {
+                    $returnObject = (object) [
+                        'loggedIn' => true,
+                        'error' => $correctTitleStatement -> error
+                    ];
+                } else {
+                    $returnObject = (object) [
+                        'loggedIn' => true,
+                        'error' => $correctInputsAndOutputs -> error
+                    ];
+                }
+
+            }
+            
+        }
+        
+        return response() -> json($returnObject);
+    }    
+    
+    /**
+     * This function will return all the questions that the user has created
+     * @param string $token is the session token
+     * @return array $myQuestions returns all the questions where the user is the creator
+     */      
+    public function getMyQuestions(Request $request)
+    {  
+        $myQuestions = [];
+
+        //Check if the user is logged in, if not array myQuestions is empty
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            $myQuestions = Question::where('creatorId', $userId) -> get();
+        }
+        
+        return response() -> json($myQuestions);
+    }  
+
+    /**
+     * This function will return all the questions that the user has created
+     * @param string $token is the session token
+     * @param int $questionId is the question id, from the question that will be edited
+     * @return object $returnQuestion returns all the information from the question
+     */    
+    public function getMyQuestionWithId(Request $request)
+    {  
+        $returnQuestion = (object)[];
+        //Check if the user is logged in, if not object returnQuestion is empty
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            $myQuestion = Question::where('id', $request -> questionId) -> first();
+
+            $inputs = Test_input::where('question_id', $request -> questionId) -> get();
+            $outputs = Test_output::where('question_id', $request -> questionId) -> get();
+
+            $returnQuestion = (object) [
+                'id' => $request -> questionId,
+                'title' => $myQuestion -> title,
+                'statement' => $myQuestion -> statement,
+                'public' => $myQuestion -> public,
+                'inputs' => $inputs, 
+                'outputs' => $outputs
+            ];
+        }
+
+        return response() -> json($returnQuestion);
+    }  
+
+    /**
+     * This function will recieve the question id to be deleted 
+     * @param string $token is the session token
+     * @param int $questionId is the id from the question that will be deleted
+     * @return object $returnObject contains deleted, true if the user was logged and the question was deleted succesfully
+     */      
+    public function deleteMyQuestion(Request $request)
+    {  
+        $returnObject = (object)[
+            'deleted' => false
+        ];
+
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            Question::where('id', $request -> questionId) -> delete();
+            $returnObject -> deleted = true;
+        }
+        
+        return response() -> json($returnObject);
+    } 
+
+    /**
+     * This function will retrieve the question found with the given id 
+     * @param string $token is the session token
+     * @param int $questionId is the id from the question that will be edited
+     * @return object $returnObject returns all the questions where the user is the creator
+     */      
+    public function editMyQuestion(Request $request)
+    {  
+        $returnObject = (object)[];
+        //Check if the user is logged in, if not array myQuestions is empty
+        $userId = $this->getUserId($request -> token);
+
+        if ($userId != null) {
+            $returnObject = $this -> addNewQuestion($request);
+            if ($returnObject -> correct) {
+                $this -> deleteMyQuestion($request);
+            }
+        }
+        
+        return response() -> json($returnObject);
+    }      
      
 }
