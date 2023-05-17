@@ -69,9 +69,10 @@
 
 .avatar__colorPicker {
     overflow: auto;
-    padding: 15px;
     display: flex;
     height: 50vh;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .avatar__colorPicker div {
@@ -219,11 +220,17 @@
 .codemirror__editor {
     display: flex;
     flex-wrap: nowrap;
-    width: 100%;
+    width: 98%;
+    margin: 10px auto;
     align-content: center;
     justify-content: center;
     align-items: stretch;
     flex-direction: column;
+    box-shadow: -6px 0 0 0 #63A32D,
+        6px 0 0 0 #63A32D,
+        0 -6px 0 0 #63A32D,
+        0 6px 0 0 #63A32D;
+
 }
 
 #select {
@@ -286,4 +293,8 @@ option {
     font-family: karmatic;
     font-size: 2rem;
     margin: 0;
+}
+
+.noscroll {
+    overflow: hidden;
 }

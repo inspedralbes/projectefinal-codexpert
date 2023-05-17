@@ -13,7 +13,7 @@ use App\Models\User_game;
 use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
 class GameController extends Controller
-{
+{ 
     /**
      * This function creates a new game relationship in the database
      * @return object $newGame it's the object that has been created in the database
@@ -39,6 +39,80 @@ class GameController extends Controller
         $questions = Question::inRandomOrder()->limit($request -> numQuestions)->get();
 
         return ($questions);
+    }
+
+    /**
+     * Given the user token return the questions created by the system, the questions from the user's library and the questions that other users have created.
+     * @param string $token is the session token from the logged in user
+     * @return object $questions is an object containing the amount of questions requested
+     */    
+    public function getAllQuestions(Request $request)
+    {
+        $getDefault = [];
+        $getPublic = [];
+        $getMine = [];
+        $allDefaultQuestions = [];
+        $allPublicQuestions = [];
+        $allMyQuestions = [];
+        $questions = (object) ['default' => [], 'public' => [], 'myQuestions' => []];
+
+        //Check if user is logged
+        $userId = $this->getUserId($request->token);
+
+        if ($userId != null) {
+            //Get all questions where the user is the creator.
+            $getMine = Question::where('creatorId', $userId)->get();
+            $creatorName = User::where('id', $userId)->first();
+            for ($i = 0; $i < count($getMine); $i++) {
+                $question = (object)
+                [
+                    'id' => $getMine[$i]->id,
+                    'title' => $getMine[$i]->title,
+                    'likes' => $getMine[$i]->likes,
+                    'createdBy' => $creatorName,
+                    'createdAt' => $getMine[$i]->created_at->format('d/m/Y')
+                ];
+                $allMyQuestions[$i] = $question;
+            }
+        }
+
+        //Always get default questions.
+        $getDefault = Question::where('creatorId', NULL)->get();
+        $creatorName = "SYSTEM";
+        for ($i = 0; $i < count($getDefault); $i++) {
+            $question = (object)
+            [
+                'id' => $getDefault[$i]->id,
+                'title' => $getDefault[$i]->title,
+                'likes' => $getDefault[$i]->likes,
+                'createdBy' => $creatorName,
+                'createdAt' => $getDefault[$i]->created_at->format('d/m/Y')
+            ];
+            $allDefaultQuestions[$i] = $question;
+        }
+
+        //Always get questions created by other users.
+        $getPublic = Question::where('creatorId', '!=', $userId)
+        ->where('public', true)
+        ->get();
+        for ($i = 0; $i < count($getPublic); $i++) {
+            $creatorName = User::where('id', $getPublic[$i]->creatorId)->first();
+            $question = (object)
+            [
+                'id' => $getPublic[$i]->id,
+                'title' => $getPublic[$i]->title,
+                'likes' => $getPublic[$i]->likes,
+                'createdBy' => $creatorName,
+                'createdAt' => $getPublic[$i]->created_at->format('d/m/Y')
+            ];
+            $allPublicQuestions[$i] = $question;
+        }
+
+        $questions->default = $allDefaultQuestions;
+        $questions->public = $allPublicQuestions;
+        $questions->myQuestions = $allMyQuestions;
+
+        return response()->json($questions);
     }
 
     /**

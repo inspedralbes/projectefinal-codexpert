@@ -146,7 +146,9 @@ function Lobbies() {
     return (
       <div className='lobbies'>
         {!joinedLobby && (
-          <LobbyList lobbyName={lobbyName} setLobbyName={setLobbyName} lobbyList={lobbyList} setJoined={setJoined} errorMessage={errorMessage} setErrorMessage={setErrorMessage}></LobbyList>
+          <>
+            <LobbyList lobbyName={lobbyName} setLobbyName={setLobbyName} lobbyList={lobbyList} setJoined={setJoined} errorMessage={errorMessage} setErrorMessage={setErrorMessage}></LobbyList>
+          </>
         )}
 
         {joinedLobby && (

@@ -54,7 +54,7 @@ function Eyes({ currentColor, handleChangeComplete, setChanges, ArrayColors, cha
           <img src={require('../../img/avatar/eyes/variant12.png')} alt='Eyes' width='100px' height='100px'></img>
         </button>
       </div>
-      <div className='avatar__colorPicker'>
+      <div className='avatar__colorPicker' id='scroll'>
 
         <TwitterPicker
           triangle={

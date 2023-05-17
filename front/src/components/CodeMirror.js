@@ -74,7 +74,7 @@ function App({ code, setCode }) {
       <CodeMirror
         value={code}
         style={{ fontSize: '1.1rem' }}
-        height="400px"
+        height="350px"
         width="100%"
         theme={themeShow}
         extensions={[javascript({ jsx: true })]}

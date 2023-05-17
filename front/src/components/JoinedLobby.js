@@ -1,4 +1,5 @@
 import '../styles/normalize.css'
+import '../styles/Lobbies.css'
 import ChatLobby from '../components/ChatLobby'
 import ConnectedUsers from '../components/ConnectedUsers'
 import React, { useState, useEffect } from 'react'
@@ -6,6 +7,7 @@ import Settings from './Settings'
 import Modal from 'react-modal'
 import PropTypes from 'prop-types'
 import cross from '../img/cross.png'
+import settings from '../img/settings.png'
 
 Modal.setAppElement('body')
 
@@ -103,7 +105,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
       {window.network.getShowSettings()
         ? (
         <>
-          <button onClick={() => setShowModal(true)}>Settings</button>
+          <button className="noBtn" onClick={() => setShowModal(true)}><img className="settings" src={settings} alt='SETTINGS' height={'50px'}></img></button>
           <Modal
             style={{
               // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
@@ -161,9 +163,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
       {errorMessage !== '' && (
         <h2 className="lobbies__error">{errorMessage}</h2>
       )}
-      <div className="lobby__chat">
         <ChatLobby className="chat__chatbox"></ChatLobby>
-      </div>
     </div>
   )
 }
