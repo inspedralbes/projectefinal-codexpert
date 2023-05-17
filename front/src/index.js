@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom' // Rutas
 import './styles/index.css'
@@ -22,6 +22,7 @@ import Cookies from 'universal-cookie'
 import SharedRanking from './pages/SharedRanking'
 import Ranking from './pages/Ranking'
 import AddQuestion from './pages/AddQuestion'
+import Phaser from './pages/Phaser'
 
 const cookies = new Cookies()
 
@@ -31,6 +32,10 @@ if (cookies.get('token') !== undefined && cookies.get('token') !== null) {
     token: cookies.get('token')
   }, '*')
 }
+
+// useEffect(() => {
+
+// }, [])
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
@@ -52,6 +57,7 @@ root.render(
         <Route path='ranking' element={<Ranking />}></Route>
         <Route path='addQuestion' element={<AddQuestion />}></Route>
         <Route path='sharedRanking' element={<SharedRanking />}></Route>
+        <Route path='codeworld' element={<Phaser />}></Route>
         <Route path='404' element={<Error404 />}></Route>
         <Route path='*' element={<Navigate to='/404' />} />
       </Route>
