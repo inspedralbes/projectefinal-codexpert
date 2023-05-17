@@ -16,7 +16,7 @@ function Phaser() {
         navigate('/' + eventData.value)
         break
     }
-  }
+  }  
 
   useEffect(() => {
     window.addEventListener('message', handleMessage)
@@ -25,9 +25,7 @@ function Phaser() {
       window.removeEventListener('message', handleMessage)
     }
   }, [])
-  return (
-    <div id='phaser-container'></div>
-  )
+  return <div id="phaser-container"></div>
 }
 
 export default Phaser
