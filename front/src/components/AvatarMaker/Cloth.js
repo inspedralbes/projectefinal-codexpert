@@ -86,7 +86,7 @@ function Cloth({ currentColor, handleChangeComplete, setChanges, ArrayColors, ch
         </button>
       </div>
       <br />
-      <div className='avatar__colorPicker'>
+      <div className='avatar__colorPicker' id='scroll'>
         <TwitterPicker
           triangle={
             'hide'

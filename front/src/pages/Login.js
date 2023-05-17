@@ -1,9 +1,11 @@
 import '../styles/normalize.css'
+import '../styles/form.css'
 import React, { useState, useEffect } from 'react'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import { Link, useNavigate } from 'react-router-dom' // Rutas
 import Eye from '../components/Eye'
+import '../styles/responsive.css'
 
 function Login() {
   const [login, setLogin] = useState(0)
@@ -14,22 +16,30 @@ function Login() {
   const navigate = useNavigate()
 
   const sendTutorialLocalStorageData = (token) => {
-    const data = new FormData()
-    data.append('token', token)
-    data.append('tutorialsAnswered', localStorage.getItem('tutorialsAnswered'))
-    data.append('tutorialPassed', localStorage.getItem('tutorialPassed'))
-    data.append('userExperience', localStorage.getItem('userExperience'))
+    if (
+      localStorage.getItem('tutorialsAnswered') !== null &&
+      localStorage.getItem('userExperience') !== null
+    ) {
+      const data = new FormData()
+      data.append('token', token)
+      data.append(
+        'tutorialsAnswered',
+        localStorage.getItem('tutorialsAnswered')
+      )
+      data.append('tutorialPassed', localStorage.getItem('tutorialPassed'))
+      data.append('userExperience', localStorage.getItem('userExperience'))
 
-    fetch(routes.fetchLaravel + 'setUserTutorial', {
-      method: 'POST',
-      mode: 'cors',
-      body: data,
-      credentials: 'include'
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data)
+      fetch(routes.fetchLaravel + 'setUserTutorial', {
+        method: 'POST',
+        mode: 'cors',
+        body: data,
+        credentials: 'include'
       })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data)
+        })
+    }
   }
 
   useEffect(() => {

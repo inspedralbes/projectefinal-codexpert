@@ -18,6 +18,15 @@ function ChatLobby() {
     }
   }
 
+  function showChat() {
+    document.getElementById('chat__body').style.display = 'block'
+    document.getElementById('chat__body').style.transition = 'all 2s ease-in'
+  }
+
+  function NoFocus() {
+    document.getElementById('chat__body').style.display = 'none'
+  }
+
   const handleSendMessage = (e) => {
     e.preventDefault()
     if (msg !== '') {
@@ -30,15 +39,6 @@ function ChatLobby() {
   }
 
   useEffect(() => {
-    if (document.getElementById('input_message') === document.click) {
-      document.getElementById('chat__body').style.display = 'block'
-      document.getElementById('chat__body').style.transition = 'all 2s ease-in'
-    }
-
-    if (!document.getElementById('input_message') === document.click) {
-      document.getElementById('chat__body').style.display = 'none'
-    }
-
     document.getElementById('chat__body').scrollTop = document.getElementById('chat__body').scrollHeight
 
     window.addEventListener('message', handleMessage)
@@ -51,7 +51,7 @@ function ChatLobby() {
   return (
     <div className='lobby__chat chat'>
       <div className='chat__body' id='chat__body'>
-        <ul id='messages' className='lobby__chat chat'>
+        <ul id='messages' className='lobby__chatUl chat' >
           {Array.isArray(messages)
             ? messages.map((element, index) => {
               if (element.nickname !== 'ingame_events') {
@@ -80,6 +80,8 @@ function ChatLobby() {
         <div className='form--grid'>
           <div className='inputMsg-div'>
             <input
+              onFocus={showChat}
+              onBlur={NoFocus}
               id='input_message'
               autoComplete='off'
               value={msg}

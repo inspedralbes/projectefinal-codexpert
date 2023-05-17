@@ -63,6 +63,29 @@ class UserController extends Controller
     }
     
     /**
+     * This function will recieve the userId from and will send the url from the user's avatar
+     * @param int $userId is id from the user that we want to get their avatar
+     * @return object $returnAvatar is the object containing the url from the user's avatar
+     */      
+    public function getAvatarFromOtherUser(Request $request)
+    {
+        $userFound = (object) ['url' => null];
+        $returnAvatar = (object) ['url' => null];
+
+        //Check if the user id is null, if not we get the user's avatar.
+        if ($request -> userId != null) {
+            $userFound = User::where('id', $request -> userId)->first();
+            if ($userFound != null) {
+                $returnAvatar = (object) [
+                    'url' => $userFound -> avatar
+                ];
+            }
+        } 
+        
+        return response() -> json($returnAvatar);
+    }
+
+    /**
      * This function will recieve the userId from the user token and will check if the new avatar is valid, if valid it will change it, if not the avatar will remain unchanged
      * @param string $token is the session token
      * @param string $newAvatar is the url of the new avatar
@@ -112,6 +135,31 @@ class UserController extends Controller
                 $returnUser = (object) [
                     'name' => $userFound -> name,
                     'email' => $userFound -> email,
+                    'avatar' => $userFound -> avatar,
+                ];
+            }
+        }
+        
+        return response() -> json($returnUser);
+    }
+
+    /**
+     * This function will recieve the userId from the user and will return the user information
+     * @param int $userId is id from the user that we want to retrieve their information 
+     * @return object $returnUser will return 'name', 'email' and 'avatar' from the requested user. If the user id is not valid or the user could't be found it will return an error message.
+     */        
+    public function getUserDataFromId(Request $request)
+    {
+        $returnUser = (object) [
+            'error' => "User is not logged in."
+        ];
+
+        //If the user id is not null we return the information from the user (name, email, avatar)
+        if ($request -> userId != null) {
+            $userFound = User::where('id', $request -> userId)->first();
+            if ($userFound != null) {
+                $returnUser = (object) [
+                    'name' => $userFound -> name,
                     'avatar' => $userFound -> avatar,
                 ];
             }

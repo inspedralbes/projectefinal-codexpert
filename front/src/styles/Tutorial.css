@@ -134,3 +134,66 @@
     height: fit-content;
     box-shadow: none;
 }
+
+.nextButtonCarousel, .prevButtonCarousel {
+    margin-top: 330px;
+    width: 40%;
+    background-color: green;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #ffffff;
+    display: inline-block;
+    padding: 20px;
+    position: relative;
+    font-size: 80%;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #ffffff;
+    transition: all 0.5s;
+    height: 90px;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.37);
+}
+
+.nextButtonCarousel::after, .prevButtonCarousel::after {
+    background-color: green;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.nextButtonCarousel::before, .prevButtonCarousel::before {
+    background-color: green;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.dotsCarousel {
+    
+}
+
+.awa button {
+    background: white;
+}
+
+.containerCarousel {
+    color: white;
+    height: 0px;
+}
+
+.hiddenCarousel {
+    visibility: hidden;
+}
