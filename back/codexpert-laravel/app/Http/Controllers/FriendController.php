@@ -275,13 +275,12 @@ class FriendController extends Controller
             }) -> get();
         }
 
-        //continuar mañana
         for ($i=0; $i < count($friendlist); $i++) { 
-            $friendlist[$i] -> showNotification = false;
             $friendship = Friend::where('id',$friendlist[$i] -> id) -> first();
             $friendship -> showNotification = false;
             $friendship -> save();
         }
+        
         return response() -> json($friendlist);
     }    
 }
