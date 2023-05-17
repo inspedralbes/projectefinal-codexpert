@@ -8,6 +8,7 @@ export default class Preloader extends Phaser.Scene {
   preload() {
     this.load.image('cozy-tileset', 'assets/tiles/cozy-tileset.png')
     this.load.image('cozy-buildings', 'assets/tiles/cozy-buildings.png')
+    this.load.image('crops', 'assets/tiles/crops.png')
     this.load.tilemapTiledJSON('map', 'assets/tiles/cozy-map.json')
 
     this.load.atlas('fauna', 'assets/characters/fauna/fauna.png', 'assets/characters/fauna/fauna.json')
