@@ -174,7 +174,9 @@ export default class Game extends Phaser.Scene {
       this.scene.run('interact-ui')
       this.overlapTmp = false
       setTimeout(this.checkOverlap.bind(this, () => {
-        this.scene.stop('interact-ui')
+        if (this.scene.isActive('interact-ui')) {
+          this.scene.stop('interact-ui')
+        }
         this.currentNavigate = null
       }), 100)
     }

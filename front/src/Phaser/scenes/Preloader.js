@@ -22,6 +22,8 @@ export default class Preloader extends Phaser.Scene {
 
     // Music
     this.load.audio('worldMusic', 'assets/music/world.mp3')
+
+    // Dialogs
   }
 
   create() {
