@@ -33,6 +33,9 @@ export default class Game extends Phaser.Scene {
   create() {
     const map = this.make.tilemap({ key: 'map' })
 
+    this.worldMusic = this.sound.add('worldMusic')
+    this.worldMusic.play({ mute: false, volume: 1, rate: 1, seek: 0, loop: true })
+
     // const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
     const buildingsTileset = map.addTilesetImage('cozy-buildings', 'cozy-buildings', 16, 16)
     const tileset = map.addTilesetImage('cozy-tileset', 'cozy-tileset', 16, 16)
@@ -157,10 +160,10 @@ export default class Game extends Phaser.Scene {
       }
       this.scene.run('interact-ui')
       this.overlapTmp = false
-      setTimeout(this.checkOverlap.bind(this, () => { 
+      setTimeout(this.checkOverlap.bind(this, () => {
         this.scene.stop('interact-ui')
         this.currentNavigate = null
-     }), 100)
+      }), 100)
     }
   }
 

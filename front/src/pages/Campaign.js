@@ -149,7 +149,7 @@ function Campaign() {
           </div>
         </div>
       </Modal>
-      <div className="pixel__container">
+      <div className="campaignPixel__container">
         <h1>Campaign</h1>
       </div>
       <h2>Tutorial:</h2>
@@ -161,7 +161,7 @@ function Campaign() {
                 <div className="levels-title__container">
                   <h3>{element.title}</h3>
                 </div>
-                <div className="pixel__container level__container">
+                <div className="campaignPixel__container level__container">
                   {lvlUnlocked >= index ||
                     element.locked === 0 ||
                     tutorialsAnswered.includes(element.id - 1)

@@ -109,7 +109,6 @@ function Settings({ fetchSettings, errorMessage, saveSettings }) {
         </form>
       </div>
     </>
-
   )
 }
 
