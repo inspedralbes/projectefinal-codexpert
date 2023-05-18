@@ -36,9 +36,9 @@ const CodeWorld = () => {
         backgroundColor: '#60A0A8',
         scale: {
           // mode: Phaser.Scale.ScaleModes.RESIZE,
-          width: window.innerWidth / 2,
-          height: window.innerHeight / 2,
-          zoom: 2
+          width: window.innerWidth / 2.5,
+          height: window.innerHeight / 2.5,
+          zoom: 2.5
         },
         dom: {
           createContainer: true
@@ -58,9 +58,9 @@ const CodeWorld = () => {
     window.addEventListener('message', handleMessage)
 
     return () => {
-      if (game) {
+      if (game != null) {
         // Realizar las tareas de limpieza de Phaser si es necesario
-        game.destroy()
+        // game.destroy()
         game = null
       }
       window.removeEventListener('message', handleMessage)

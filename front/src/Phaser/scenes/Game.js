@@ -154,8 +154,8 @@ export default class Game extends Phaser.Scene {
 
       if (overlapObjectData[0].name === 'actionType' || overlapObjectData[0].value === 'navigate') {
         this.currentNavigate = overlapObjectData[1].value
-        this.scene.run('interact-ui')
       }
+      this.scene.run('interact-ui')
       this.overlapTmp = false
       setTimeout(this.checkOverlap.bind(this, () => { 
         this.scene.stop('interact-ui')
