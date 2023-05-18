@@ -20,7 +20,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('enter3-key', 'assets/UI/enter_key_3.png')
     this.load.image('enter4-key', 'assets/UI/enter_key_4.png')
 
-    //Music
+    // Music
     this.load.audio('worldMusic', 'assets/music/world.mp3')
   }
 

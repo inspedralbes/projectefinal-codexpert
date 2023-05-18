@@ -16,7 +16,7 @@ function Phaser() {
         navigate('/' + eventData.value)
         break
     }
-  }  
+  }
 
   useEffect(() => {
     window.addEventListener('message', handleMessage)
