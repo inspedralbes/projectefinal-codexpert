@@ -66,6 +66,10 @@
     font-size: 1.2vw;
 }
 
+.titleCheckbox__container label:first-child {
+    padding: 12px 0;
+}
+
 .title__container {
     float: left;
     width: 25%;
@@ -111,6 +115,9 @@
     margin-top: 42px;
 }
 
+.setPublic__label:hover {
+    cursor: pointer;
+}
 .setPublic__label p {
     font-size: 0.8vw;
     display: inline-block;
@@ -119,20 +126,39 @@
 .setPublic__label input {
     float: left;
     margin-top: 9px;
+    margin-left: 0px;
+}
+
+.addInputOutput-button {
+    height: 100%;
+    width: 50%;
 }
 
 .removeItem__conainer {
-    margin-top: 42px;
+    margin-top: 40px;
 }
 
 .removeItem__conainer button {
-    width: 20px;
-    height: 40px;
+    width: 31%;
+    height: 25px;
     padding: 0;
+    margin-top: 8%;
+    color: white;
     background-color: red;
     box-shadow: -6px 0 0 0 black,
         6px 0 0 0 black,
         0 -6px 0 0 black,
         0 6px 0 0 black;
+}
+
+.removeItem__conainer button:hover {
+    background-color: rgb(218, 0, 0);
+    cursor: pointer;
+}
+
+.removeItem__conainer button:disabled {
+    transform: translate(0, 5px);
+    cursor: pointer;
+    background-color: grey;
 }
 
