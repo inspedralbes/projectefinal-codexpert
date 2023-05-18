@@ -12,8 +12,6 @@ import { useNavigate } from 'react-router'
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 
-import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js'
-
 const CodeWorld = () => {
   const cookies = new Cookies()
   const navigate = useNavigate()
@@ -56,15 +54,6 @@ const CodeWorld = () => {
             debug: true
           }
         },
-        plugins: {
-          scene: [{
-            key: 'rexUI',
-            plugin: UIPlugin,
-            mapping: 'rexUI'
-          }
-            // ...
-          ]
-        },
         scene: [Preloader, Game, InteractUI]
       }
       worldGame = new Phaser.Game(config)
@@ -73,10 +62,19 @@ const CodeWorld = () => {
     window.addEventListener('message', handleMessage)
 
     return () => {
-      if (worldGame != null) {
-        // Realizar las tareas de limpieza de Phaser si es necesario
-        worldGame.destroy()
-        worldGame = null
+      if (worldGame) {
+        console.log(worldGame)
+        worldGame.events.off(); // Desconecta los eventos del juego
+  
+        // Detener cada escena individualmente
+        worldGame.scene.scenes.forEach((scene) => {
+          worldGame.scene.stop(scene.scene.key);
+          scene.input.keyboard.enabled = false;
+        });
+
+        // worldGame.destroy(true); // Destruye el juego (incluyendo el canvas y los recursos)
+        // worldGame.runDestroy(); // Ejecuta las funciones de limpieza adicionales (si las tienes definidas en tus escenas)
+        worldGame = null; // Asigna null a la variable para indicar que el juego se ha destruido
       }
       window.removeEventListener('message', handleMessage)
     }
