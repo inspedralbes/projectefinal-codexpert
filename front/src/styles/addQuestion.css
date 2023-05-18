@@ -1,4 +1,4 @@
-.pixel__container {
+.addQuestionPixel__container {
     background-color: var(--white);
     color: #2e5e22;
     margin: 10vh auto;
@@ -12,7 +12,7 @@
     position: relative;
 }
 
-.pixel__container::after {
+.addQuestionPixel__container::after {
     background-color: var(--white);
     box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -24,7 +24,7 @@
     width: 6px;
 }
 
-.pixel__container::before {
+.addQuestionPixel__container::before {
     background-color: var(--white);
     box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";

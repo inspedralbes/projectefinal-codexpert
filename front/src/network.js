@@ -76,6 +76,10 @@ const handleMessage = (event) => {
       })
       break
 
+    case 'set_questions-emit':
+      socket.emit('set_questions', { ids: eventData.ids })
+      break
+
     default:
       // UNKNOWN EVENT
       break
@@ -89,6 +93,10 @@ window.addEventListener('message', handleMessage)
 socket.on('YOU_ARE_ON_LOBBY', (data) => {
   window.network.setLobbyName(data.lobby_name)
   window.postMessage({ type: 'YOU_ARE_ON_LOBBY-event' }, '*')
+})
+
+socket.on('questions', (data) => {
+  window.postMessage({ type: 'questions-event', questionsData: data }, '*')
 })
 
 socket.on('lobby_name', (data) => {
