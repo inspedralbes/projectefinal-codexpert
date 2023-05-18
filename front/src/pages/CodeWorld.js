@@ -62,19 +62,10 @@ const CodeWorld = () => {
     window.addEventListener('message', handleMessage)
 
     return () => {
-      if (worldGame) {
-        console.log(worldGame)
-        worldGame.events.off(); // Desconecta los eventos del juego
-  
-        // Detener cada escena individualmente
-        worldGame.scene.scenes.forEach((scene) => {
-          worldGame.scene.stop(scene.scene.key);
-          scene.input.keyboard.enabled = false;
-        });
-
-        // worldGame.destroy(true); // Destruye el juego (incluyendo el canvas y los recursos)
-        // worldGame.runDestroy(); // Ejecuta las funciones de limpieza adicionales (si las tienes definidas en tus escenas)
-        worldGame = null; // Asigna null a la variable para indicar que el juego se ha destruido
+      if (worldGame != null) {
+        // Realizar las tareas de limpieza de Phaser si es necesario
+        worldGame.destroy(true, false)
+        worldGame = null
       }
       window.removeEventListener('message', handleMessage)
     }
