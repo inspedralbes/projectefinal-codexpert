@@ -9,7 +9,11 @@ import React, { useEffect, useRef } from 'react'
 // import '../PhaserGame'
 import { useNavigate } from 'react-router'
 
+import Cookies from 'universal-cookie'
+import routes from '../conn_routes'
+
 const CodeWorld = () => {
+  const cookies = new Cookies()
   const navigate = useNavigate()
 
   const handleMessage = (event) => {
@@ -47,7 +51,7 @@ const CodeWorld = () => {
           default: 'arcade',
           arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
           }
         },
         scene: [Preloader, Game, InteractUI]
@@ -65,6 +69,21 @@ const CodeWorld = () => {
       }
       window.removeEventListener('message', handleMessage)
     }
+  }, [])
+
+  useEffect(() => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'isUserLogged', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        window.network.setUserLogged(data.correct)
+      })
   }, [])
 
   return (

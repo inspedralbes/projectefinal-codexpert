@@ -49,6 +49,7 @@ export default class Game extends Phaser.Scene {
     const aboveGroundLayer = map.createLayer('Above-ground', tileset, 0, 0)
 
     const overlapObjectLayer = map.getObjectLayer('Overlap')
+    const notLoggedOverlapObjectLayer = map.getObjectLayer('Not-Logged overlap')
 
     this.anims.create({
       key: 'fauna-idle-down',
@@ -108,14 +109,6 @@ export default class Game extends Phaser.Scene {
       createMultipleCallback: null
     }
 
-    const group = this.add.group(config)
-
-    overlapObjectLayer.objects.forEach(objct => {
-      const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
-      gameObj.data = objct.properties
-      group.add(gameObj)
-    })
-
     buildingsLayer.setCollisionByProperty({ collides: true })
     groundLayer.setCollisionByProperty({ collides: true })
     cropsLayer.setCollisionByProperty({ collides: true })
@@ -132,6 +125,26 @@ export default class Game extends Phaser.Scene {
 
     this.fauna.anims.play('fauna-idle-down')
 
+    const group = this.add.group(config)
+
+    if (!window.network.getUserLogged()) {
+      notLoggedOverlapObjectLayer.objects.forEach(objct => {
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
+        gameObj.data = objct.properties
+        group.add(gameObj)
+      })
+
+      const notLoggedLayer = map.createLayer('Not-logged', tileset, 0, 0)
+      notLoggedLayer.setCollisionByProperty({ collides: true })
+      this.physics.add.collider(this.fauna, notLoggedLayer, this.handleCollision, null, this)
+    } else {
+      overlapObjectLayer.objects.forEach(objct => {
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
+        gameObj.data = objct.properties
+        group.add(gameObj)
+      })
+    }
+
 
     this.physics.add.overlap(this.fauna, group, this.handleOverlap, null, this)
 
@@ -145,7 +158,7 @@ export default class Game extends Phaser.Scene {
   }
 
   handleCollision(colisionador, colisionado) {
-    console.log('collide')
+    // console.log('collide')
   }
 
   handleOverlap(colisionador, colisionado) {

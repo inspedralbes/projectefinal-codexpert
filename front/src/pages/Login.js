@@ -66,6 +66,7 @@ function Login() {
               },
               '*'
             )
+            window.network.setUserLogged(true)
 
             sendTutorialLocalStorageData(data.token)
             localStorage.clear()
