@@ -91,7 +91,7 @@ function AddQuestion() {
             {inputsOutputs.map((element, index) => { return <input key={index} type="text"></input> })}
           </div>
           <div className='removeItem__conainer'>
-            {inputsOutputs.map((element, index) => { return <button key={index} onClick={() => handleRemoveInputOutput()} disabled={inputsOutputs.length <= 3}>-</button> })}
+            {inputsOutputs.map((element, index) => { return <div key={index}><button onClick={() => handleRemoveInputOutput()} disabled={inputsOutputs.length <= 3}>-</button><br></br></div> })}
           </div>
         </div>
         <div>
