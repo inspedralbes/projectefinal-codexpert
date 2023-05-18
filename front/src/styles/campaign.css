@@ -26,7 +26,7 @@
     font-size: 20px;
 }
 
-.pixel__container {
+.campaignPixel__container {
     background-color: var(--white);
     margin: 2vh auto;
     width: 90%;
@@ -41,7 +41,7 @@
     background-color: #baffb1;
 }
 
-.pixel__container::after {
+.campaignPixel__container::after {
     background-color: var(--white);
     box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -54,7 +54,7 @@
     background-color: #baffb1;
 }
 
-.pixel__container::before {
+.campaignPixel__container::before {
     background-color: var(--white);
     box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -71,7 +71,7 @@
     width: 50%;
 }
 
-.pixel__container h1 {
+.campaignPixel__container h1 {
     font-size: 40px;
     text-transform: uppercase;
 }

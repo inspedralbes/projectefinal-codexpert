@@ -24,11 +24,8 @@ function LandingPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.correct) {
-          setisUserLogged(true)
-        } else {
-          setisUserLogged(false)
-        }
+        setisUserLogged(data.correct)
+        window.network.setUserLogged(data.correct)
       })
   }, [])
 

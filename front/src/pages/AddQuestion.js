@@ -6,94 +6,101 @@ import Cookies from 'universal-cookie'
 
 function AddQuestion() {
   const [questionData, setQuestionData] = useState({
-    title: 'dsadasdsdasasdas',
-    statement: 'dasdsadssssssssssssssssssssssssssssssssssssasdasdsas',
-    inputs: [123, 321, 123],
-    outputs: [1223, 3221, 1323],
+    title: '',
+    statement: '',
+    inputs: [],
+    outputs: [],
     public: false
   })
+  const [inputsOutputs, setInputsOutputs] = useState(['', '', ''])
   const cookies = new Cookies()
 
-  useEffect(() => {
-    setQuestionData()
+  const handleAddInputOutput = () => {
+    setInputsOutputs([...inputsOutputs, ''])
+  }
+  const handleRemoveInputOutput = () => {
+    setInputsOutputs([...inputsOutputs, ''])
+  }
+
+  const handleAddQuestion = () => {
     const data = new FormData()
     data.append(
       'token',
       cookies.get('token') !== undefined ? cookies.get('token') : null
     )
 
-    data.append('title', questionData.title)
-    data.append('statement', questionData.statement)
-    data.append('inputs', JSON.stringify(questionData.inputs))
-    data.append('outputs', JSON.stringify(questionData.outputs))
-    data.append('public', JSON.stringify(questionData.public))
-    fetch(routes.fetchLaravel + 'addNewQuestion', {
-      method: 'POST',
-      mode: 'cors',
-      body: data,
-      credentials: 'include'
-    })
-      .then((response) => response.json())
-      .then(() => {
-
+    if (questionData.title !== '') {
+      data.append('title', questionData.title)
+      data.append('statement', questionData.statement)
+      data.append('inputs', JSON.stringify(questionData.inputs))
+      data.append('outputs', JSON.stringify(questionData.outputs))
+      data.append('public', JSON.stringify(questionData.public))
+      fetch(routes.fetchLaravel + 'addNewQuestion', {
+        method: 'POST',
+        mode: 'cors',
+        body: data,
+        credentials: 'include'
       })
+        .then((response) => response.json())
+        .then(() => {
+
+        })
+    }
+  }
+
+  useEffect(() => {
   }, [])
 
   return (
-    <div className='pixel__container'>
+    <div className='addQuestionPixel__container'>
       <h1>Add question</h1>
 
       <div className='grid-inputs__container'>
-        <div className='titleHint__container'>
+        <div className='titleCheckbox__container'>
           <div className="row">
             <div className="title__container">
               <label>Title:</label>
             </div>
             <div className="input__container">
-              <input type="text"></input>
+              <input type="text" onChange={(e) => { setQuestionData({ ...questionData, title: e.value }) }}></input>
             </div>
           </div>
+          <div>
 
-          <div className="row">
-            <div className="title__container">
-              <label>Hint:</label>
-            </div>
-            <div className="input__container">
-              <input type="text"></input>
-            </div>
           </div>
+          <label className='setPublic__label'>
+            <input type='checkbox' onChange={(e) => { setQuestionData({ ...questionData, public: e.value }) }}></input><p>Set your question public to everyone</p>
+          </label>
         </div>
         <div className='statement__container'>
-          Statement:
-          <textarea></textarea>
+          <p>Statement:</p>
+          <textarea onChange={(e) => { setQuestionData({ ...questionData, statement: e.value }) }}></textarea>
         </div>
       </div>
-      <div className='pixel__container inputOutput__container'>
-        <div>
-          <h2>INPUTS</h2>
-          <input type="text"></input>
-          <input type="text"></input>
-          <input type="text"></input>
+      <div className='addQuestionPixel__container grid__container'>
+        <div className='inputOutput__container' id='scroll'>
+          <div>
+            <h2>INPUTS</h2>
+            {inputsOutputs.map((element, index) => { return <input onChange={(e) => { setQuestionData({ ...questionData, inputs: e.value }) }} key={index} type="text"></input> })}
+          </div>
+          <div className='inputArrows__conainer'>
+            {inputsOutputs.map((element, index) => { return <div key={index}> → </div> })}
+          </div>
+          <div>
+            <h2>OUTPUTS</h2>
+            {inputsOutputs.map((element, index) => { return <input key={index} type="text"></input> })}
+          </div>
+          <div className='removeItem__conainer'>
+            {inputsOutputs.map((element, index) => { return <button key={index} onClick={() => handleRemoveInputOutput()} disabled={inputsOutputs.length <= 3}>-</button> })}
+          </div>
         </div>
-        <div className='inputArrows__conainer'>
-          →<br></br>→<br></br>→
-        </div>
         <div>
-          <h2>OUTPUTS</h2>
-          <input type="text"></input>
-          <input type="text"></input>
-          <input type="text"></input>
-        </div>
-        <div>
-          <button>+</button>
+          <button className='pixel-button' onClick={() => handleAddInputOutput()}>+</button>
         </div>
       </div>
       <br></br>
-      <label className='setPublic__label'>
-        <input type='checkbox'></input> Set public
-      </label>
 
-      <button>Add</button>
+      <button className='pixel-button' onClick={() => handleAddQuestion()}>Add</button>
     </div>
   )
 }
