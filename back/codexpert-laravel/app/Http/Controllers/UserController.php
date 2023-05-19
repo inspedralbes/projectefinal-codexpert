@@ -136,6 +136,8 @@ class UserController extends Controller
                     'name' => $userFound -> name,
                     'email' => $userFound -> email,
                     'avatar' => $userFound -> avatar,
+                    'friends' => '',
+                    'games' => '',
                 ];
             }
         }
