@@ -507,23 +507,45 @@ class DatabaseSeeder extends Seeder
 
         //Migrations for NPcs
         {
-            $dialogue = (object)[
-                "options" => ["Option 1", "Option 2", "Option 3"],
-                "answers" => ["Answer 1", "Answer 2", "Answer 3"],
+            //NPC 1
+            {     
+                {
+                    //Dialogue 1
+                    $dialogue = (object)[
+                    "options" => ["Option 1", "Option 2", "Option 3"],
+                    "answers" => ["Answer 1", "Answer 2", "Answer 3"],
 
-            ];
-            $dialogue = json_encode($dialogue);
+                    ];
+                    $dialogue = json_encode($dialogue);
+                    
+                    $newNPC = new npc;
+                    $newNPC -> name = "Gaspar";
+                    $newNPC -> introduction = "Hi! (with rizz) My name is Gaspar. I love Node :D";
+                    $newNPC -> save();
+                    
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption -> npc_id = $newNPC -> id;
+                    $newDialogueOption -> sentence = "Did you know you could sort arrays with array.sort?";
+                    $newDialogueOption -> dialogueOptions = $dialogue;
+                    $newDialogueOption -> save(); 
+                    }
+                {
+                    //Dialogue 2
+                    $dialogue = (object)[
+                        "options" => [],
+                        "answers" => ["Answer Onichan 1"],
+
+                    ];
+                    $dialogue = json_encode($dialogue);                  
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption -> npc_id = $newNPC -> id;
+                    $newDialogueOption -> sentence = "Did you know you I can scream onichan?";
+                    $newDialogueOption -> dialogueOptions = $dialogue;
+                    $newDialogueOption -> save(); 
+                }
+
+            }
             
-            $newNPC = new npc;
-            $newNPC -> name = "Gaspar";
-            $newNPC -> introduction = "Hi! (with rizz) My name is Gaspar. I love Node :D";
-            $newNPC -> save();
-            
-            $newDialogueOption = new Dialogue;
-            $newDialogueOption -> npc_id = $newNPC -> id;
-            $newDialogueOption -> sentence = "Did you know you could sort arrays with array.sort?";
-            $newDialogueOption -> dialogueOptions = $dialogue;
-            $newDialogueOption -> save(); 
         }
     }
 }
