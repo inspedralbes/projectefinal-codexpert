@@ -30,13 +30,22 @@ class GameController extends Controller
     /**
      * This function returns questions depending on the number that has been sent
      * @param int $numQuestions is the number of questions that have been requested
+     * @param array $chosenQuestions is the ids of questions the user wants to play
      * @return object $questions is an object containing the amount of questions requested
      */    
     private function getQuestions(Request $request)
     {        
-        $questions = null;
+        $questions = [];
         //Return X number of questions, where X is given by the frontend
-        $questions = Question::inRandomOrder()->limit($request -> numQuestions)->get();
+        
+        if ( count($request -> chosenQuestions) > 0 ){
+            for ($i=0; $i < count($request -> chosenQuestions); $i++) { 
+                $question = Question::where("id", $request -> chosenQuestions[$i]) -> first();
+                array_push($questions, $question);
+            }
+        } else {
+            $questions = Question::inRandomOrder()->limit($request -> numQuestions)->get();
+        }
 
         return ($questions);
     }
