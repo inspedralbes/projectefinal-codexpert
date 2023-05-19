@@ -58,6 +58,7 @@ class TutorialController extends Controller
             if ((strcmp($request -> userExperience, "beginner") == 0) || (strcmp($request -> userExperience, "expert") == 0) ) {
                 $user = User::where('id', $userId) -> first();
                 $user -> expertiseJS = $request -> userExperience;
+                $user -> expertiseChosen = true;
                 $user -> save();
                 $returnChanges = (object) [
                     'changed' => true,
@@ -402,7 +403,28 @@ class TutorialController extends Controller
         }
 
         return response() -> json($returnObject);
+    }    
+    
+    /**
+     * This function will first check that the user is logged in, if logged in it will check if he has chosen an expertise
+     * @param string $token is the session token
+     * @return object $returnObject contains the boolean started, that indicates if the user has chosen a difficulty for the tutorial
+    */     
+    public function checkExpertiseChosen(Request $request)
+    {
+        $returnObject = (object)[
+            "chosenExpertise" => false,
+        ];
+
+        $userId = $this->getUserId($request -> token); 
+        if ($userId != null) {
+            $user = User::where('id', $userId) -> first();
+            if  ($user -> expertiseChosen) { 
+                $returnObject -> chosenExpertise = true;
+            }
+        }
+
+        return response() -> json($returnObject);
     }     
 
-    
 }
