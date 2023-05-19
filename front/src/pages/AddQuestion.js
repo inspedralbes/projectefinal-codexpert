@@ -16,10 +16,15 @@ function AddQuestion() {
   const cookies = new Cookies()
 
   const handleAddInputOutput = () => {
-    setInputsOutputs([...inputsOutputs, ''])
+    if (inputsOutputs.length <= 10) {
+      setInputsOutputs([...inputsOutputs, ''])
+    }
   }
-  const handleRemoveInputOutput = () => {
-    setInputsOutputs([...inputsOutputs, ''])
+  const handleRemoveInputOutput = (i) => {
+    const array = [...inputsOutputs]
+    array.splice(i, 1)
+    setInputsOutputs(array)
+    console.log(inputsOutputs)
   }
 
   const handleAddQuestion = () => {
@@ -91,11 +96,11 @@ function AddQuestion() {
             {inputsOutputs.map((element, index) => { return <input key={index} type="text"></input> })}
           </div>
           <div className='removeItem__conainer'>
-            {inputsOutputs.map((element, index) => { return <button key={index} onClick={() => handleRemoveInputOutput()} disabled={inputsOutputs.length <= 3}>-</button> })}
+            {inputsOutputs.map((element, index) => { return <div key={index}><button onClick={() => handleRemoveInputOutput(index)} disabled={inputsOutputs.length <= 3}>-</button><br></br></div> })}
           </div>
         </div>
         <div>
-          <button className='pixel-button' onClick={() => handleAddInputOutput()}>+</button>
+          <button className='pixel-button addInputOutput-button' onClick={() => handleAddInputOutput()}>+</button>
         </div>
       </div>
       <br></br>

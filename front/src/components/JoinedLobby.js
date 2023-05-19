@@ -8,6 +8,7 @@ import Settings from './Settings'
 import Modal from 'react-modal'
 import PropTypes from 'prop-types'
 import cross from '../img/cross.png'
+import 'animate.css'
 import settings from '../img/settings.png'
 
 Modal.setAppElement('body')

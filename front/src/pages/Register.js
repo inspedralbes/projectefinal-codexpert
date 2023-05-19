@@ -125,6 +125,8 @@ function Register() {
               },
               '*'
             )
+            window.network.setUserLogged(true)
+
             sendTutorialLocalStorageData(data.token)
             localStorage.clear()
             navigate('/avatarMaker')
