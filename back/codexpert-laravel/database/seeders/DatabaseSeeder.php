@@ -12,6 +12,8 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
+use App\Models\Npc;
+use App\Models\Dialogue;
 use App\Models\Tutorial_question;
 use App\Models\Tutorial_test_input;
 use App\Models\Tutorial_test_output;
@@ -501,6 +503,27 @@ class DatabaseSeeder extends Seeder
             $output -> question_id = 6;
             $output -> output = serialize(1);
             $output -> save();            
+        }
+
+        //Migrations for NPcs
+        {
+            $dialogue = (object)[
+                "options" => ["Option 1", "Option 2", "Option 3"],
+                "answers" => ["Answer 1", "Answer 2", "Answer 3"],
+
+            ];
+            $dialogue = json_encode($dialogue);
+            
+            $newNPC = new npc;
+            $newNPC -> name = "Gaspar";
+            $newNPC -> introduction = "Hi! (with rizz) My name is Gaspar. I love Node :D";
+            $newNPC -> save();
+            
+            $newDialogueOption = new Dialogue;
+            $newDialogueOption -> npc_id = $newNPC -> id;
+            $newDialogueOption -> sentence = "Did you know you could sort arrays with array.sort?";
+            $newDialogueOption -> dialogueOptions = $dialogue;
+            $newDialogueOption -> save(); 
         }
     }
 }

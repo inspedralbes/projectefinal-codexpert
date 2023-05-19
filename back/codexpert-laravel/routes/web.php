@@ -4,6 +4,7 @@ use App\Http\Controllers\FriendController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\TutorialController;
+use App\Http\Controllers\NPCController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -91,4 +92,7 @@ Route::group(['middleware' => ['web']], function () {
     
     Route::post('/markNotificationsAsRead', [FriendController::class, 'markNotificationsAsRead']);  
 
+    Route::post('/getAllNPCS', [NPCController::class, 'getAllNPCS']);  
+
+    Route::post('/setSpokenToNPC', [NPCController::class, 'setSpokenToNPC']);  
 });
