@@ -4,10 +4,11 @@ import '../styles/Bell.css'
 import campana from '../img/campana.png'
 import success from '../img/campaign/success.png'
 import deny from '../img/campaign/deny.png'
+import bellSleeping from '../img/bellSleeping.gif'
 
 function Bell() {
   const [showNotification, setShowNotification] = useState(false)
-  const [notificationList, setNotificationList] = useState([1, 2, 3])
+  const [notificationList, setNotificationList] = useState([1, 1, 1, 1, 1, 1, 1])
   const handleClick = () => {
     setShowNotification(!showNotification)
   }
@@ -43,7 +44,7 @@ function Bell() {
                   </div>
                 </li>
               })
-              : <div className='noNotification'>There are not notifications yet!</div>
+              : <div className='noNotification'><b>You don't have any notifications yet!</b><img src={bellSleeping}></img></div>
             }
           </ul>
         </div>
