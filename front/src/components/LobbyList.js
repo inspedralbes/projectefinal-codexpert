@@ -1,6 +1,6 @@
 import React from 'react'
 import '../styles/normalize.css'
-import IconUser from '../components/IconUser'
+import Header from '../components/Header'
 import lobbyTitle from '../img/lobbies.gif'
 import arrow from '../img/arrow.gif'
 import PropTypes from 'prop-types'
@@ -55,7 +55,7 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
 
   return (
     <main>
-      <IconUser></IconUser>
+      <Header></Header>
       <div id='lobbyList' className='lobbies__lobbylist lobbylist'>
         <div className='lobbylist__container'>
           <img

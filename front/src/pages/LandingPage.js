@@ -6,7 +6,7 @@ import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import logo from '../img/logo.gif'
 import { Loader } from '../components/Loading'
-import IconUser from '../components/IconUser'
+import Header from '../components/Header'
 import '../styles/responsive.css'
 
 function LandingPage() {
@@ -32,7 +32,7 @@ function LandingPage() {
   return (
     <div>
       {isUserLogged && (
-        <IconUser />
+        <Header />
       )}
       <div className='landingPage'>
         <Loader />
