@@ -23,9 +23,10 @@ JoinedLobby.propTypes = {
 function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [showQuestionsModal, setShowQuestionsModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
   const [saveSettings, setSaveSettings] = useState(0)
-  const [questionsData, setQuestionsData] = useState([])
+  const [questionsData, setQuestionsData] = useState({})
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -48,6 +49,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
 
       case 'questions-event':
         setQuestionsData(eventData.questionsData)
+        console.log(eventData)
         break
 
       case 'lobby_settings-event':
@@ -102,7 +104,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   }, [])
 
   return (
-    <div id="lobbyJoined" className="lobbies__lobby lobby">
+    <main id="lobbyJoined" className="lobbies__lobby lobby">
       <button id="goBackToLobby__button" onClick={handleLeave}>
         <span className="circle" aria-hidden="true">
           <span className="icon arrow"></span>
@@ -110,7 +112,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
         <span className="button-text">LEAVE CURRENT LOBBY</span>
       </button>
       {window.network.getShowSettings()
-        ? (<>
+        ? (<div>
           <button className="noBtn" onClick={() => setShowModal(true)}><img className="settings" src={settings} alt='SETTINGS' height={'50px'}></img></button>
           <Modal
             style={{
@@ -150,8 +152,38 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
               </button>
             </div>
           </Modal>
-          <QuestionLibrary questionsData={questionsData}></QuestionLibrary>
-        </>)
+          <button onClick={() => setShowQuestionsModal(true)}>Questions</button>
+          <Modal
+            style={{
+              // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+              content: {
+                top: '50%',
+                left: '50%',
+                right: 'auto',
+                bottom: 'auto',
+                marginRight: '-50%',
+                transform: 'translate(-50%, -50%)',
+                padding: '1%',
+                width: '60%',
+                height: '90%'
+              }
+            }}
+            onRequestClose={() => setShowQuestionsModal(false)}
+            shouldCloseOnOverlayClick={true}
+            isOpen={showQuestionsModal}
+          >
+            <QuestionLibrary questionsData={questionsData}></QuestionLibrary>
+            <br></br>
+            <div className="lobbyModal__buttons">
+              <button
+                className="pixel-button lobby-modalBtn"
+                onClick={() => setShowQuestionsModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </Modal>
+        </div>)
         : (<></>)}
       <ConnectedUsers></ConnectedUsers>
       {window.network.getShowSettings() && (
@@ -169,7 +201,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
         <h2 className="lobbies__error">{errorMessage}</h2>
       )}
       <ChatLobby className="chat__chatbox"></ChatLobby>
-    </div>
+    </main>
   )
 }
 
