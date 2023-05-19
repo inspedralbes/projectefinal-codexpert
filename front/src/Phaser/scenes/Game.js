@@ -1,5 +1,6 @@
 /* eslint-disable */
 import * as Phaser from 'phaser'
+import NPC from '../Characters/NPC'
 
 import { debugDraw } from '../utils/debug'
 // import Fauna from '../Characters/Fauna'
@@ -33,6 +34,9 @@ export default class Game extends Phaser.Scene {
   create() {
     const map = this.make.tilemap({ key: 'map' })
 
+    this.worldMusic = this.sound.add('worldMusic')
+    this.worldMusic.play({ mute: false, volume: 1, rate: 1, seek: 0, loop: true })
+
     // const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
     const buildingsTileset = map.addTilesetImage('cozy-buildings', 'cozy-buildings', 16, 16)
     const tileset = map.addTilesetImage('cozy-tileset', 'cozy-tileset', 16, 16)
@@ -46,6 +50,8 @@ export default class Game extends Phaser.Scene {
     const aboveGroundLayer = map.createLayer('Above-ground', tileset, 0, 0)
 
     const overlapObjectLayer = map.getObjectLayer('Overlap')
+    const notLoggedOverlapObjectLayer = map.getObjectLayer('Not-Logged overlap')
+    const NPCsObjectLayer = map.getObjectLayer('NPCs')
 
     this.anims.create({
       key: 'fauna-idle-down',
@@ -93,6 +99,10 @@ export default class Game extends Phaser.Scene {
       classType: OverlapPoint
     })
 
+    const puntosNPCs = this.physics.add.staticGroup({
+      classType: NPC
+    })
+
     const config = {
       classType: Phaser.GameObjects.Sprite,
       defaultKey: null,
@@ -104,14 +114,6 @@ export default class Game extends Phaser.Scene {
       removeCallback: null,
       createMultipleCallback: null
     }
-
-    const group = this.add.group(config)
-
-    overlapObjectLayer.objects.forEach(objct => {
-      const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
-      gameObj.data = objct.properties
-      group.add(gameObj)
-    })
 
     buildingsLayer.setCollisionByProperty({ collides: true })
     groundLayer.setCollisionByProperty({ collides: true })
@@ -129,8 +131,51 @@ export default class Game extends Phaser.Scene {
 
     this.fauna.anims.play('fauna-idle-down')
 
+    const overlapGroup = this.add.group(config)
+    const npcGroup = this.add.group(config)
 
-    this.physics.add.overlap(this.fauna, group, this.handleOverlap, null, this)
+    if (!window.network.getUserLogged()) {
+      notLoggedOverlapObjectLayer.objects.forEach(objct => {
+        const objData = new Map();
+
+        objct.properties.forEach(prop => {
+          objData.set(prop.name, prop.value);
+        });
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
+        gameObj.data = objData
+        overlapGroup.add(gameObj)
+      })
+
+      const notLoggedLayer = map.createLayer('Not-logged', tileset, 0, 0)
+      notLoggedLayer.setCollisionByProperty({ collides: true })
+      this.physics.add.collider(this.fauna, notLoggedLayer, this.handleCollision, null, this)
+    } else {
+      overlapObjectLayer.objects.forEach(objct => {
+        const objData = new Map();
+
+        objct.properties.forEach(prop => {
+          objData.set(prop.name, prop.value);
+        });
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
+        gameObj.data = objData
+        overlapGroup.add(gameObj)
+      })
+    }
+
+    NPCsObjectLayer.objects.forEach(objct => {
+      const objData = new Map();
+
+      objct.properties.forEach(prop => {
+        objData.set(prop.name, prop.value);
+      });
+      const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
+      gameObj.data = objData
+      npcGroup.add(gameObj)
+    })
+
+
+    this.physics.add.overlap(this.fauna, overlapGroup, this.handleOverlap, null, this)
+    this.physics.add.overlap(this.fauna, npcGroup, this.handleOverlap, null, this)
 
     this.physics.add.collider(this.fauna, buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.fauna, groundLayer, this.handleCollision, null, this)
@@ -142,7 +187,7 @@ export default class Game extends Phaser.Scene {
   }
 
   handleCollision(colisionador, colisionado) {
-    console.log('collide')
+    // console.log('collide')
   }
 
   handleOverlap(colisionador, colisionado) {
@@ -152,15 +197,21 @@ export default class Game extends Phaser.Scene {
     if (!this.overlap) {
       this.overlap = true
 
-      if (overlapObjectData[0].name === 'actionType' || overlapObjectData[0].value === 'navigate') {
-        this.currentNavigate = overlapObjectData[1].value
-        this.scene.run('interact-ui')
+      if (overlapObjectData.get('actionType') === 'navigate') {
+        this.currentNavigate = overlapObjectData.get('route')
+      } else if (overlapObjectData.get('idNPC') > 0) {
+        this.currentIdNPC = overlapObjectData.get('idNPC')
+        console.log('npc con id ' + this.currentIdNPC)
       }
+      this.scene.run('interact-ui')
       this.overlapTmp = false
-      setTimeout(this.checkOverlap.bind(this, () => { 
-        this.scene.stop('interact-ui')
+      setTimeout(this.checkOverlap.bind(this, () => {
+        if (this.scene.isActive('interact-ui')) {
+          this.scene.stop('interact-ui')
+        }
         this.currentNavigate = null
-     }), 100)
+        this.currentIdNPC = null
+      }), 100)
     }
   }
 
@@ -182,11 +233,17 @@ export default class Game extends Phaser.Scene {
 
     const speed = 100
 
-    if ((this.keys.interactE?.isDown || this.keys.interactEnter?.isDown) && this.overlap && this.currentNavigate != null) {
-      window.postMessage({
-        type: 'navigate_request-msg',
-        value: this.currentNavigate
-      }, '*')
+    if ((this.keys.interactE?.isDown || this.keys.interactEnter?.isDown) && this.overlap) {
+      if (this.currentNavigate != null) {
+        window.postMessage({
+          type: 'navigate_request-msg',
+          value: this.currentNavigate
+        }, '*')
+      }
+      if (this.currentIdNPC != null && !this.inDialogue) {
+        this.inDialogue = true;
+        console.log('interactuar con id ' + this.currentIdNPC)
+      }
     }
 
     if (this.cursors.left?.isDown || this.keys.left?.isDown) {

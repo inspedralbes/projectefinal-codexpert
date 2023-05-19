@@ -1,4 +1,4 @@
-import * as Phaser from 'phaser'
+import Phaser from 'phaser'
 
 import Preloader from '../Phaser/scenes/Preloader'
 import Game from '../Phaser/scenes/Game'
@@ -9,7 +9,11 @@ import React, { useEffect, useRef } from 'react'
 // import '../PhaserGame'
 import { useNavigate } from 'react-router'
 
+import Cookies from 'universal-cookie'
+import routes from '../conn_routes'
+
 const CodeWorld = () => {
+  const cookies = new Cookies()
   const navigate = useNavigate()
 
   const handleMessage = (event) => {
@@ -25,7 +29,7 @@ const CodeWorld = () => {
   }
 
   const parentRef = useRef(null)
-  let game = null
+  let worldGame = null
 
   useEffect(() => {
     if (parentRef.current) {
@@ -36,9 +40,9 @@ const CodeWorld = () => {
         backgroundColor: '#60A0A8',
         scale: {
           // mode: Phaser.Scale.ScaleModes.RESIZE,
-          width: window.innerWidth / 2,
-          height: window.innerHeight / 2,
-          zoom: 2
+          width: window.innerWidth / 2.5,
+          height: window.innerHeight / 2.5,
+          zoom: 2.5
         },
         dom: {
           createContainer: true
@@ -52,19 +56,34 @@ const CodeWorld = () => {
         },
         scene: [Preloader, Game, InteractUI]
       }
-      game = new Phaser.Game(config)
+      worldGame = new Phaser.Game(config)
     }
 
     window.addEventListener('message', handleMessage)
 
     return () => {
-      if (game) {
+      if (worldGame != null) {
         // Realizar las tareas de limpieza de Phaser si es necesario
-        game.destroy()
-        game = null
+        worldGame.destroy(true, false)
+        worldGame = null
       }
       window.removeEventListener('message', handleMessage)
     }
+  }, [])
+
+  useEffect(() => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'isUserLogged', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        window.network.setUserLogged(data.correct)
+      })
   }, [])
 
   return (

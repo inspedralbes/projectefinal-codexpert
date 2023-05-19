@@ -85,11 +85,13 @@ socketIO.on("connection", (socket) => {
     console.log(data.message);
   });
   socket.data.current_lobby = null;
+  socket.data.token = null;
 
   socket.join("chat-general");
 
   socket.on("send_token", (data) => {
     const userToken = data.token;
+    socket.data.token = userToken;
 
     axios
       .post(laravelRoute + "getUserInfo", {
@@ -175,6 +177,7 @@ socketIO.on("connection", (socket) => {
         lobby_name: lobby,
         members: [],
         messages: [],
+        questions: [],
         settings: defaultSettings,
         owner_name: socket.data.name,
         total_elo: 0,
@@ -262,6 +265,8 @@ socketIO.on("connection", (socket) => {
           });
 
           socketIO.to(socket.id).emit("lobby_settings", settings);
+
+          sendQuestionsToUser(socket);
         }
       }
 
@@ -480,10 +485,31 @@ socketIO.on("connection", (socket) => {
     });
   });
 
+  socket.on("set_questions", (data) => {
+    lobbies.forEach(lobby => {
+      if (lobby.lobby_name === socket.data.current_lobby) {
+        lobby.questions = data.ids;
+      }
+    });
+  });
+
   socket.on("disconnect", () => {
     leaveLobby(socket);
   });
 });
+
+async function sendQuestionsToUser(socket) {
+  await axios
+    .post(laravelRoute + "getQuestions", {
+      token: socket.data.token
+    })
+    .then(function (response) {
+      socketIO.to(socket.id).emit("questions", response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 
 function startOverTime(socket, time) {
   const room = socket.data.current_lobby;

@@ -18,15 +18,26 @@ LobbyList.propTypes = {
 function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorMessage }) {
   const handleSubmit = (e) => {
     e.preventDefault()
-    window.postMessage({
-      type: 'new_lobby-emit',
-      lobby_name: lobbyName
-    }, '*')
-    window.postMessage({
-      type: 'join_room-emit',
-      lobby_name: lobbyName,
-      rank: 'Owner'
-    }, '*')
+    if (lobbyName === '') {
+      document.getElementById('lobbyName').setAttribute('class', 'lobbiesForm__inputGroup red animate__animated  animate__shakeX')
+      console.log(e)
+      setTimeout(() => {
+        document.getElementById('lobbyName').setAttribute('class', 'lobbiesForm__inputGroup red')
+        console.log('color:' + document.getElementById('inputName').style.backgroundColor)
+        document.getElementById('lobbyName').before.backgroundColor = document.getElementById('inputName').style.backgroundColor
+        document.getElementById('lobbyName').after.backgroundColor = document.getElementById('inputName').style.backgroundColor
+      }, 500)
+    } else {
+      window.postMessage({
+        type: 'new_lobby-emit',
+        lobby_name: lobbyName
+      }, '*')
+      window.postMessage({
+        type: 'join_room-emit',
+        lobby_name: lobbyName,
+        rank: 'Owner'
+      }, '*')
+    }
   }
 
   const handleJoin = (e) => {
@@ -120,9 +131,10 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
             className='lobbies__form'
             onSubmit={handleSubmit}
           >
-            <div className='lobbiesForm__inputGroup'>
+            <div id='lobbyName'
+              className='lobbiesForm__inputGroup'>
               <input
-                id='email'
+                id='inputName'
                 className='lobbiesForm__input'
                 value={lobbyName}
                 placeholder='INTRODUCE NEW LOBBY NAME'
@@ -131,10 +143,9 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
                   setLobbyName(e.target.value)
                 }}
                 autoComplete='off'
-                required
               ></input>
             </div>
-            <button className='lobbies__button' disabled={lobbyName === ''}>
+            <button className='lobbies__button' >
               Create lobby
             </button>
           </form>

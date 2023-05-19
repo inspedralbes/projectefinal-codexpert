@@ -6,7 +6,7 @@ export default class InteractUI extends Phaser.Scene {
   }
 
   create() {
-    const container = this.add.container(window.innerWidth / 2, window.innerHeight / 2)
+    const container = this.add.container(window.innerWidth / 2.5, window.innerHeight / 2.5)
 
     const text = this.add.text(-280, -40, 'Press', { color: '#FFFFFF', fontSize: '15px', fontStyle: 'bold' })
     const text2 = this.add.text(-200, -40, 'or', { color: '#FFFFFF', fontSize: '15px', fontStyle: 'bold' })
