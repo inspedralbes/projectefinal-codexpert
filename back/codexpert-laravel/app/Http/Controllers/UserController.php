@@ -211,10 +211,14 @@ class UserController extends Controller
         //If the user id is not null we return the information from the user (name, email, avatar)
         if ($request -> userId != null) {
             $userFound = User::where('id', $request -> userId)->first();
+            $friendList = $this -> getFriends($request -> userId);
+            $gameList = $this -> getGames($request -> userId);
             if ($userFound != null) {
                 $returnUser = (object) [
                     'name' => $userFound -> name,
                     'avatar' => $userFound -> avatar,
+                    'friends' => $friendList,
+                    'games' => $gameList
                 ];
             }
         }
