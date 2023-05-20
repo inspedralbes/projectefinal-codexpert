@@ -318,6 +318,10 @@ class GameController extends Controller
                     $newCoins = ($myGame -> question_at) * $multiplier;
                     $newElo = (($myGame -> question_at) * 2) * $multiplier;
 
+                    $myGame -> coinsEarned = $newCoins;
+                    $myGame -> eloEarned = $newElo;
+                    $myGame -> xpEarned = $newXp;
+
                     $myProfile -> xp += $newXp;
                     $myProfile -> coins += $newCoins;
                     $myProfile -> elo += $newElo;
@@ -332,6 +336,7 @@ class GameController extends Controller
                     $updatedProfiles[$i] = $updatedStats;
                     
                     $myProfile -> save();
+                    $myGame -> save();
                 }
             }
         }

@@ -117,6 +117,56 @@ class UserController extends Controller
     }
 
     /**
+     * This function will return the friendlist given an id.
+     * @param int $userId is the id from the user.
+     * @return array $friendList will return the list of friends from the user.
+     */        
+    public function getFriends($userId)
+    {
+        $friendList = [];
+
+        if ($userId != null) {
+        $friendList = DB::table('friends')
+            ->where('sender_id', $userId) 
+            ->where('status', 'accepted')
+            ->orWhere( function ($query) use ($userId) {
+                $query->where('receiver_id', $userId)
+                      ->where('status', 'accepted');
+            }) -> get();
+        }
+
+        return response() -> json($friendList);
+    }  
+    
+    /**
+     * This function will reteurn the games from the user given their id.
+     * @param int $userId is the id from the user.
+     * @return object $gameList will return the games that the user has played.
+     */        
+    public function getGames($userId)
+    {
+        $gameList = [];
+
+        $getGames = User_game::where('user_id', $userId)
+        -> get();
+
+        if ( ($userId != null) && (count($getGames) > 0)) { 
+            for ($i=0; $i < count($getGames); $i++) { 
+                $getGame = Game::where('id', $getGames[$i] -> game_id) -> first();
+                $newGame = (object) [
+                    'finished_position' => $getGames[$i] -> finished_position,
+                    'hearts_remaining' => $getGames[$i] -> hearts_remaining,
+                    'eloEarned' => $getGames[$i] -> eloEarned,
+                    'date' =>  $getGames[$i] -> created_at -> format('d/m/Y')
+                ];
+                array_push($gameList, $newGame);
+            }
+        }
+
+        return response() -> json($gameList);
+    }
+
+    /**
      * This function will recieve the userId from the user token and will return the user information if the user is found
      * @param string $token is the session token
      * @return object $returnUser will return 'name', 'email' and 'avatar' from the requested user. If the user id is not valid or the user could't be found it will return an error message.
@@ -131,13 +181,15 @@ class UserController extends Controller
         //If the user id is not null we return the information from the user (name, email, avatar)
         if ($userId != null) {
             $userFound = User::where('id', $userId)->first();
+            $friendList = $this -> getFriends($userId);
+            $gameList = $this -> getGames($userId);
             if ($userFound != null) {
                 $returnUser = (object) [
                     'name' => $userFound -> name,
                     'email' => $userFound -> email,
                     'avatar' => $userFound -> avatar,
-                    'friends' => '',
-                    'games' => '',
+                    'friends' => $friendList,
+                    'games' => $gameList
                 ];
             }
         }
