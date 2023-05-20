@@ -56,7 +56,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/ranking/{id}', [GameController::class, 'getRanking']);
-
+    
     Route::post('/setExpertise', [TutorialController::class, 'setExpertise']);
 
     Route::post('/getTutorials', [TutorialController::class, 'getTutorials']);

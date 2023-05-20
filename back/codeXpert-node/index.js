@@ -370,7 +370,7 @@ socketIO.on("connection", (socket) => {
               if (willHaveOvertime) {
                 startOverTime(socket, overtimeDuration);
               } else {
-                endGame(socket);
+                endGame(socket.data.name, socket.data.current_lobby, socket.data.game_data.idGame);
               }
             } else {
               socket.data.resultMessage = "YOU FINISHED";
@@ -500,7 +500,7 @@ socketIO.on("connection", (socket) => {
 
 async function sendQuestionsToUser(socket) {
   await axios
-    .post(laravelRoute + "getQuestions", {
+    .post(laravelRoute + "getMyQuestions", {
       token: socket.data.token
     })
     .then(function (response) {
@@ -515,7 +515,6 @@ function startOverTime(socket, time) {
   const room = socket.data.current_lobby;
   const winnerName = socket.data.name;
   const idGame = socket.data.game_data.idGame;
-
   socketIO.to(room).emit("overtime_starts", { time: (time * 1000) });
 
   let cont = -1;

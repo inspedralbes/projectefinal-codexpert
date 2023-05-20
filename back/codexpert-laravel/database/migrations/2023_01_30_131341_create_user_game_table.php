@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('perks_used')->default(0);
             $table->integer('question_at')->default(0);
             $table->boolean('dead')->default(false);
+            $table->boolean('finished')->default(false);
             $table->integer('finished_position')->default(0);
             $table->integer('coinsEarned')->default(0);
             $table->integer('eloEarned')->default(0);

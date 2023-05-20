@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Models\User_game;
+use App\Models\Game;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
@@ -157,6 +160,7 @@ class UserController extends Controller
                     'finished_position' => $getGames[$i] -> finished_position,
                     'hearts_remaining' => $getGames[$i] -> hearts_remaining,
                     'eloEarned' => $getGames[$i] -> eloEarned,
+                    'completedAllQuestions' => $getGames[$i] -> finished,
                     'date' =>  $getGames[$i] -> created_at -> format('d/m/Y')
                 ];
                 array_push($gameList, $newGame);
