@@ -9,6 +9,8 @@ import { debugDraw } from '../utils/debug'
 import OverlapPoint from '../items/OverlapPoints'
 // import { useNavigate } from 'react-router'
 
+const spriteAnimsCreated = []
+
 export default class Game extends Phaser.Scene {
   // navigate = useNavigate()
   strawberry
@@ -36,7 +38,7 @@ export default class Game extends Phaser.Scene {
 
 
   create() {
-    this.createAnims()
+    this.createAnims('strawberry')
 
     this.map = this.make.tilemap({ key: 'map' })
 
@@ -58,8 +60,8 @@ export default class Game extends Phaser.Scene {
     this.groundLayer.setCollisionByProperty({ collides: true })
     this.cropsLayer.setCollisionByProperty({ collides: true })
     this.groundCollisionsLayer.setCollisionByProperty({ collides: true })
-    this.aboveBuildingsLayer.setDepth(2)
-    this.aboveGroundLayer.setDepth(1)
+    this.aboveBuildingsLayer.setDepth(3)
+    this.aboveGroundLayer.setDepth(2)
 
     // debugDraw(this.buildingsLayer, this)
 
@@ -68,6 +70,7 @@ export default class Game extends Phaser.Scene {
     this.loadObjectLayers()
 
     this.physics.add.existing(this.strawberry)
+    this.strawberry.setDepth(1)
     this.strawberry.body.setSize(this.strawberry.width * 0.3, this.strawberry.height * 0.3)
 
     this.strawberry.body.offset.y = 22
@@ -81,6 +84,7 @@ export default class Game extends Phaser.Scene {
     // this.physics.add.collider(this.strawberry, uLayer, this.handleCollision, null, this)
 
     this.cameras.main.startFollow(this.strawberry, true)
+    // this.cameras.main.setFollowOffset(-100, -100);
   }
 
   handleCollision(colisionador, colisionado) {
@@ -144,7 +148,7 @@ export default class Game extends Phaser.Scene {
     let speed = 100
 
     if (this.keys.run?.isDown) {
-      speed = 150
+      speed = 125
     }
 
     if (this.cursors.left?.isDown || this.keys.left?.isDown) {
@@ -194,11 +198,19 @@ export default class Game extends Phaser.Scene {
     })
 
     const puntosNPCs = this.physics.add.staticGroup({
-      classType: NPC
+      classType: NPC,
+      createCallback: (go) => {
+        const npcGo = go
+        npcGo.body.onCollide = true
+      }
     })
 
     const puntosMobs = this.physics.add.staticGroup({
-      classType: Mob
+      classType: Mob,
+      createCallback: (go) => {
+        const lizGo = go
+        lizGo.body.onCollide = true
+      }
     })
 
     const config = {
@@ -253,7 +265,8 @@ export default class Game extends Phaser.Scene {
       objct.properties.forEach(prop => {
         objData.set(prop.name, prop.value);
       });
-      const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
+      this.createAnims(objData.get('sprite'))
+      const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, objData.get('sprite'), undefined, true)
       gameObj.data = objData
       npcGroup.add(gameObj)
     })
@@ -264,6 +277,7 @@ export default class Game extends Phaser.Scene {
       objct.properties.forEach(prop => {
         objData.set(prop.name, prop.value);
       });
+      this.createMobAnims(objData.get('sprite'))
       const gameObj = puntosMobs.get(objct.x + objct.width * 0.1, objct.y - objct.height * 0.1, objData.get('sprite'), undefined, true)
       gameObj.data = objData
       // console.log(gameObj)
@@ -273,65 +287,133 @@ export default class Game extends Phaser.Scene {
     this.physics.add.overlap(this.strawberry, overlapGroup, this.handleOverlap, null, this)
     this.physics.add.overlap(this.strawberry, npcGroup, this.handleOverlap, null, this)
     this.physics.add.collider(mobGroup, this.buildingsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(mobGroup, npcGroup, this.handleCollision, null, this)
     this.physics.add.collider(mobGroup, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(mobGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(mobGroup, this.cropsLayer, this.handleCollision, null, this)
 
+    this.physics.add.collider(npcGroup, this.buildingsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(npcGroup, mobGroup, this.handleCollision, null, this)
+    this.physics.add.collider(npcGroup, this.groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(npcGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(npcGroup, this.cropsLayer, this.handleCollision, null, this)
+
+    this.physics.add.collider(this.strawberry, npcGroup, this.handlePlayerNPCCollision, null, this)
   }
 
-  createAnims() {
+  handlePlayerNPCCollision(obj1, colisionado) {
+    const npc = colisionado
+
+    const dx = npc.x - this.strawberry.x
+    const dy = npc.y - this.strawberry.y
+
+    const dir = new Phaser.Math.Vector2(dx, dy).normalize().scale(100)
+    npc.body.velocity.x = dir.x
+    npc.body.velocity.y = dir.y
+
+    npc.handleDamage(dir)
+  }
+
+  createMobAnims(texture) {
+    if (spriteAnimsCreated.some((element) => element === texture)) {
+      return
+    }
+    spriteAnimsCreated.push(texture)
+
     this.anims.create({
-      key: 'strawberry-idle-down',
+      key: `${texture}-walk-back`,
+      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-back-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 6
+    })
+
+    this.anims.create({
+      key: `${texture}-walk-front`,
+      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-front-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 6
+    })
+
+    this.anims.create({
+      key: `${texture}-walk-left`,
+      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-left-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 6
+    })
+
+    this.anims.create({
+      key: `${texture}-walk-right`,
+      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-right-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 6
+    })
+
+    this.anims.create({
+      key: `${texture}-sleep`,
+      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'sleep-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 3
+    })
+  }
+
+  createAnims(texture) {
+    if (spriteAnimsCreated.some((element) => element === texture)) {
+      return
+    }
+
+    spriteAnimsCreated.push(texture)
+    this.anims.create({
+      key: `${texture}-idle-down`,
       frames: [
-        { key: 'strawberry', frame: 'walk-front-1.png' }
+        { key: `${texture}`, frame: 'walk-front-1.png' }
       ]
     })
 
     this.anims.create({
-      key: 'strawberry-idle-up',
+      key: `${texture}-idle-up`,
       frames: [
-        { key: 'strawberry', frame: 'walk-back-1.png' }
+        { key: `${texture}`, frame: 'walk-back-1.png' }
       ]
     })
 
     this.anims.create({
-      key: 'strawberry-idle-right',
+      key: `${texture}-idle-right`,
       frames: [
-        { key: 'strawberry', frame: 'walk-right-1.png' }
+        { key: `${texture}`, frame: 'walk-right-1.png' }
       ]
     })
 
     this.anims.create({
-      key: 'strawberry-idle-left',
+      key: `${texture}-idle-left`,
       frames: [
-        { key: 'strawberry', frame: 'walk-left-1.png' }
+        { key: `${texture}`, frame: 'walk-left-1.png' }
       ]
     })
 
     this.anims.create({
-      key: 'strawberry-walk-down',
-      frames: this.anims.generateFrameNames('strawberry', { start: 1, end: 8, prefix: 'walk-front-', suffix: '.png' }),
+      key: `${texture}-walk-down`,
+      frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-front-', suffix: '.png' }),
       repeat: -1,
       frameRate: 12
     })
 
     this.anims.create({
-      key: 'strawberry-walk-up',
-      frames: this.anims.generateFrameNames('strawberry', { start: 1, end: 8, prefix: 'walk-back-', suffix: '.png' }),
+      key: `${texture}-walk-up`,
+      frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-back-', suffix: '.png' }),
       repeat: -1,
       frameRate: 12
     })
 
     this.anims.create({
-      key: 'strawberry-walk-right',
-      frames: this.anims.generateFrameNames('strawberry', { start: 1, end: 8, prefix: 'walk-right-', suffix: '.png' }),
+      key: `${texture}-walk-right`,
+      frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-right-', suffix: '.png' }),
       repeat: -1,
       frameRate: 12
     })
 
     this.anims.create({
-      key: 'strawberry-walk-left',
-      frames: this.anims.generateFrameNames('strawberry', { start: 1, end: 8, prefix: 'walk-left-', suffix: '.png' }),
+      key: `${texture}-walk-left`,
+      frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-left-', suffix: '.png' }),
       repeat: -1,
       frameRate: 12
     })

@@ -1,5 +1,9 @@
 import * as Phaser from 'phaser'
 
+// 0 --> Back
+// 1 --> Front
+// 2 --> Left
+// 3 --> Right
 const movements = [0, 1, 2, 3]
 export default class Mob extends Phaser.Physics.Arcade.Sprite {
   direction = movements[3]
@@ -12,8 +16,6 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, texture, frame)
 
     this.mobTexture = texture
-
-    this.createAnims()
 
     scene.physics.add.existing(this)
     scene.physics.world.on(Phaser.Physics.Arcade.Events.TILE_COLLIDE, this.handleTileColission, this)
@@ -35,10 +37,10 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
   }
 
   randomDirection() {
-    let newDirection = Phaser.Math.Between(0, 4)
+    let newDirection = Phaser.Math.Between(0, movements.length + 1)
 
     while (newDirection === this.direction) {
-      newDirection = Phaser.Math.Between(0, 4)
+      newDirection = Phaser.Math.Between(0, movements.length + 1)
     }
 
     return newDirection
@@ -111,42 +113,5 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
         }
         break
     }
-  }
-
-  createAnims() {
-    this.anims.create({
-      key: `${this.mobTexture}-walk-back`,
-      frames: this.anims.generateFrameNames(this.mobTexture, { start: 1, end: 4, prefix: 'walk-back-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 6
-    })
-
-    this.anims.create({
-      key: `${this.mobTexture}-walk-front`,
-      frames: this.anims.generateFrameNames(this.mobTexture, { start: 1, end: 4, prefix: 'walk-front-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 6
-    })
-
-    this.anims.create({
-      key: `${this.mobTexture}-walk-left`,
-      frames: this.anims.generateFrameNames(this.mobTexture, { start: 1, end: 4, prefix: 'walk-left-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 6
-    })
-
-    this.anims.create({
-      key: `${this.mobTexture}-walk-right`,
-      frames: this.anims.generateFrameNames(this.mobTexture, { start: 1, end: 4, prefix: 'walk-right-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 6
-    })
-
-    this.anims.create({
-      key: `${this.mobTexture}-sleep`,
-      frames: this.anims.generateFrameNames(this.mobTexture, { start: 1, end: 4, prefix: 'sleep-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 3
-    })
   }
 }

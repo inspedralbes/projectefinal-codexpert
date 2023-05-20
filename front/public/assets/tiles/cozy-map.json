@@ -574,71 +574,113 @@
          "objects":[
                 {
                  "height":0,
-                 "id":4,
-                 "name":"Farmer",
+                 "id":16,
+                 "name":"Gaspa",
                  "properties":[
                         {
                          "name":"idNPC",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"gaspa"
                         }],
                  "rotation":0,
                  "type":"NPC",
                  "visible":true,
                  "width":0,
-                 "x":237.25,
-                 "y":135
+                 "x":117.5,
+                 "y":290
                 }, 
                 {
                  "height":0,
-                 "id":5,
-                 "name":"Old Man",
+                 "id":18,
+                 "name":"Strawberry",
                  "properties":[
                         {
                          "name":"idNPC",
                          "type":"int",
-                         "value":2
+                         "value":5
+                        }, 
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"strawberry"
                         }],
                  "rotation":0,
                  "type":"NPC",
                  "visible":true,
                  "width":0,
-                 "x":697.340909090909,
-                 "y":483.992424242424
+                 "x":187.5,
+                 "y":495.5
                 }, 
                 {
                  "height":0,
-                 "id":6,
-                 "name":"Shop keeper",
+                 "id":19,
+                 "name":"Martin",
                  "properties":[
                         {
                          "name":"idNPC",
                          "type":"int",
                          "value":3
+                        }, 
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"martin"
                         }],
                  "rotation":0,
                  "type":"NPC",
                  "visible":true,
                  "width":0,
-                 "x":391.75,
-                 "y":128.25
+                 "x":608.666666666667,
+                 "y":106.166666666667
                 }, 
                 {
                  "height":0,
-                 "id":7,
-                 "name":"Major",
+                 "id":20,
+                 "name":"Amae",
                  "properties":[
                         {
                          "name":"idNPC",
                          "type":"int",
                          "value":4
+                        }, 
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"amae"
                         }],
                  "rotation":0,
                  "type":"NPC",
                  "visible":true,
                  "width":0,
-                 "x":594.666666666667,
-                 "y":116.333333333333
+                 "x":457.166666666667,
+                 "y":316.833333333333
+                }, 
+                {
+                 "height":0,
+                 "id":21,
+                 "name":"Asselia",
+                 "properties":[
+                        {
+                         "name":"idNPC",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"asselia"
+                        }],
+                 "rotation":0,
+                 "type":"NPC",
+                 "visible":true,
+                 "width":0,
+                 "x":658.333333333333,
+                 "y":304.333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -666,8 +708,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":746.5,
-                 "y":258.75
+                 "x":755.166666666667,
+                 "y":259.75
                 }, 
                 {
                  "height":0,
@@ -684,8 +726,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":734.25,
-                 "y":279.75
+                 "x":759.25,
+                 "y":282.416666666667
                 }, 
                 {
                  "height":0,
@@ -702,8 +744,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":727.666666666667,
-                 "y":258
+                 "x":731.333333333333,
+                 "y":270.333333333333
                 }, 
                 {
                  "height":0,
@@ -766,7 +808,7 @@
          "y":0
         }],
  "nextlayerid":15,
- "nextobjectid":14,
+ "nextobjectid":22,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
@@ -79737,7 +79779,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -79746,7 +79788,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -79755,7 +79797,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -79764,7 +79806,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -79773,7 +79815,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -79782,7 +79824,7 @@
                         {
                          "name":"collides",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {

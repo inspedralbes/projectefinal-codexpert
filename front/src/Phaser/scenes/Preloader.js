@@ -11,8 +11,6 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('crops', 'assets/tiles/crops.png')
     this.load.tilemapTiledJSON('map', 'assets/tiles/cozy-map.json')
 
-    this.load.atlas('strawberry', 'assets/characters/strawberry/strawberry.png', 'assets/characters/strawberry/strawberry.json')
-
     // UI
     this.load.image('e-key', 'assets/UI/e_key.png')
     this.load.image('enter1-key', 'assets/UI/enter_key_1.png')
@@ -24,6 +22,13 @@ export default class Preloader extends Phaser.Scene {
     this.load.audio('worldMusic', 'assets/music/world.mp3')
 
     // Dialogs
+
+    // Characters
+    this.load.atlas('gaspa', 'assets/characters/strawberry/strawberry.png', 'assets/characters/strawberry/strawberry.json')
+    this.load.atlas('strawberry', 'assets/characters/gaspa/gaspa.png', 'assets/characters/gaspa/gaspa.json')
+    this.load.atlas('asselia', 'assets/characters/asselia/asselia.png', 'assets/characters/asselia/asselia.json')
+    this.load.atlas('martin', 'assets/characters/martin/martin.png', 'assets/characters/martin/martin.json')
+    this.load.atlas('amae', 'assets/characters/amae/amae.png', 'assets/characters/amae/amae.json')
 
     // Mobs
     this.load.atlas('chicken', 'assets/mobs/chicken/chicken.png', 'assets/mobs/chicken/chicken.json')
