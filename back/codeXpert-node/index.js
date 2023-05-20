@@ -370,7 +370,7 @@ socketIO.on("connection", (socket) => {
               if (willHaveOvertime) {
                 startOverTime(socket, overtimeDuration);
               } else {
-                endGame(socket);
+                endGame(socket.data.name, socket.data.current_lobby, socket.data.game_data.idGame);
               }
             } else {
               socket.data.resultMessage = "YOU FINISHED";

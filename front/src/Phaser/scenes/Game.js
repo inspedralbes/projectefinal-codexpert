@@ -1,16 +1,17 @@
 /* eslint-disable */
 import * as Phaser from 'phaser'
 import NPC from '../Characters/NPC'
+import Mob from '../Mobs/Mob'
 
 import { debugDraw } from '../utils/debug'
-// import Fauna from '../Characters/Fauna'
+// import strawberry from '../Characters/strawberry'
 // import createCharacterAnims from '../anims/CharacterAnims'
 import OverlapPoint from '../items/OverlapPoints'
 // import { useNavigate } from 'react-router'
 
 export default class Game extends Phaser.Scene {
   // navigate = useNavigate()
-  fauna
+  strawberry
   cursor
   keys
 
@@ -28,162 +29,58 @@ export default class Game extends Phaser.Scene {
       'right': Phaser.Input.Keyboard.KeyCodes.D,
       'interactE': Phaser.Input.Keyboard.KeyCodes.E,
       'interactEnter': Phaser.Input.Keyboard.KeyCodes.ENTER,
+      'run': Phaser.Input.Keyboard.KeyCodes.SHIFT
     })
   }
 
+
+
   create() {
-    const map = this.make.tilemap({ key: 'map' })
+    this.createAnims()
+
+    this.map = this.make.tilemap({ key: 'map' })
 
     this.worldMusic = this.sound.add('worldMusic')
     this.worldMusic.play({ mute: false, volume: 1, rate: 1, seek: 0, loop: true })
 
-    // const tileset = map.addTilesetImage('map-tiles', 'tiles', 16, 16)
-    const buildingsTileset = map.addTilesetImage('cozy-buildings', 'cozy-buildings', 16, 16)
-    const tileset = map.addTilesetImage('cozy-tileset', 'cozy-tileset', 16, 16)
-    const cropsTileset = map.addTilesetImage('crops', 'crops', 16, 16)
+    this.buildingsTileset = this.map.addTilesetImage('cozy-buildings', 'cozy-buildings', 16, 16)
+    this.tileset = this.map.addTilesetImage('cozy-tileset', 'cozy-tileset', 16, 16)
+    this.cropsTileset = this.map.addTilesetImage('crops', 'crops', 16, 16)
 
-    const groundLayer = map.createLayer('Ground', tileset, 0, 0)
-    const groundCollisionsLayer = map.createLayer('Ground-collisions', tileset, 0, 0)
-    const cropsLayer = map.createLayer('Crops', cropsTileset, 0, 0)
-    const buildingsLayer = map.createLayer('Buildings', buildingsTileset, 0, 0)
-    const aboveBuildingsLayer = map.createLayer('Above-buildings', buildingsTileset, 0, 0)
-    const aboveGroundLayer = map.createLayer('Above-ground', tileset, 0, 0)
+    this.groundLayer = this.map.createLayer('Ground', this.tileset, 0, 0)
+    this.groundCollisionsLayer = this.map.createLayer('Ground-collisions', this.tileset, 0, 0)
+    this.cropsLayer = this.map.createLayer('Crops', this.cropsTileset, 0, 0)
+    this.buildingsLayer = this.map.createLayer('Buildings', this.buildingsTileset, 0, 0)
+    this.aboveBuildingsLayer = this.map.createLayer('Above-buildings', this.buildingsTileset, 0, 0)
+    this.aboveGroundLayer = this.map.createLayer('Above-ground', this.tileset, 0, 0)
 
-    const overlapObjectLayer = map.getObjectLayer('Overlap')
-    const notLoggedOverlapObjectLayer = map.getObjectLayer('Not-Logged overlap')
-    const NPCsObjectLayer = map.getObjectLayer('NPCs')
+    this.buildingsLayer.setCollisionByProperty({ collides: true })
+    this.groundLayer.setCollisionByProperty({ collides: true })
+    this.cropsLayer.setCollisionByProperty({ collides: true })
+    this.groundCollisionsLayer.setCollisionByProperty({ collides: true })
+    this.aboveBuildingsLayer.setDepth(2)
+    this.aboveGroundLayer.setDepth(1)
 
-    this.anims.create({
-      key: 'fauna-idle-down',
-      frames: [
-        { key: 'fauna', frame: 'walk-down-3.png' }
-      ]
-    })
+    // debugDraw(this.buildingsLayer, this)
 
-    this.anims.create({
-      key: 'fauna-idle-up',
-      frames: [
-        { key: 'fauna', frame: 'walk-up-3.png' }
-      ]
-    })
+    this.strawberry = this.add.sprite(350, 350, 'strawberry')
 
-    this.anims.create({
-      key: 'fauna-idle-side',
-      frames: [
-        { key: 'fauna', frame: 'walk-side-3.png' }
-      ]
-    })
+    this.loadObjectLayers()
 
-    this.anims.create({
-      key: 'fauna-run-down',
-      frames: this.anims.generateFrameNames('fauna', { start: 1, end: 8, prefix: 'run-down-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 15
-    })
+    this.physics.add.existing(this.strawberry)
+    this.strawberry.body.setSize(this.strawberry.width * 0.3, this.strawberry.height * 0.3)
 
-    this.anims.create({
-      key: 'fauna-run-up',
-      frames: this.anims.generateFrameNames('fauna', { start: 1, end: 8, prefix: 'run-up-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 15
-    })
+    this.strawberry.body.offset.y = 22
 
-    this.anims.create({
-      key: 'fauna-run-side',
-      frames: this.anims.generateFrameNames('fauna', { start: 1, end: 8, prefix: 'run-side-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 15
-    })
+    this.strawberry.anims.play('strawberry-idle-down')
 
-    const puntosDeOverlap = this.physics.add.staticGroup({
-      classType: OverlapPoint
-    })
+    this.physics.add.collider(this.strawberry, this.buildingsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.strawberry, this.groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.strawberry, this.groundCollisionsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.strawberry, this.cropsLayer, this.handleCollision, null, this)
+    // this.physics.add.collider(this.strawberry, uLayer, this.handleCollision, null, this)
 
-    const puntosNPCs = this.physics.add.staticGroup({
-      classType: NPC
-    })
-
-    const config = {
-      classType: Phaser.GameObjects.Sprite,
-      defaultKey: null,
-      defaultFrame: null,
-      active: true,
-      maxSize: undefined,
-      runChildUpdate: false,
-      createCallback: null,
-      removeCallback: null,
-      createMultipleCallback: null
-    }
-
-    buildingsLayer.setCollisionByProperty({ collides: true })
-    groundLayer.setCollisionByProperty({ collides: true })
-    cropsLayer.setCollisionByProperty({ collides: true })
-    groundCollisionsLayer.setCollisionByProperty({ collides: true })
-    aboveBuildingsLayer.setDepth(2)
-    aboveGroundLayer.setDepth(1)
-
-    // debugDraw(buildingsLayer, this)
-
-    this.fauna = this.add.sprite(350, 350, 'fauna')
-
-    this.physics.add.existing(this.fauna)
-    this.fauna.body.setSize(this.fauna.width * 0.47, this.fauna.height * 0.8)
-
-    this.fauna.anims.play('fauna-idle-down')
-
-    const overlapGroup = this.add.group(config)
-    const npcGroup = this.add.group(config)
-
-    if (!window.network.getUserLogged()) {
-      notLoggedOverlapObjectLayer.objects.forEach(objct => {
-        const objData = new Map();
-
-        objct.properties.forEach(prop => {
-          objData.set(prop.name, prop.value);
-        });
-        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
-        gameObj.data = objData
-        overlapGroup.add(gameObj)
-      })
-
-      const notLoggedLayer = map.createLayer('Not-logged', tileset, 0, 0)
-      notLoggedLayer.setCollisionByProperty({ collides: true })
-      this.physics.add.collider(this.fauna, notLoggedLayer, this.handleCollision, null, this)
-    } else {
-      overlapObjectLayer.objects.forEach(objct => {
-        const objData = new Map();
-
-        objct.properties.forEach(prop => {
-          objData.set(prop.name, prop.value);
-        });
-        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
-        gameObj.data = objData
-        overlapGroup.add(gameObj)
-      })
-    }
-
-    NPCsObjectLayer.objects.forEach(objct => {
-      const objData = new Map();
-
-      objct.properties.forEach(prop => {
-        objData.set(prop.name, prop.value);
-      });
-      const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'fauna', undefined, false)
-      gameObj.data = objData
-      npcGroup.add(gameObj)
-    })
-
-
-    this.physics.add.overlap(this.fauna, overlapGroup, this.handleOverlap, null, this)
-    this.physics.add.overlap(this.fauna, npcGroup, this.handleOverlap, null, this)
-
-    this.physics.add.collider(this.fauna, buildingsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.fauna, groundLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.fauna, groundCollisionsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.fauna, cropsLayer, this.handleCollision, null, this)
-    // this.physics.add.collider(this.fauna, uLayer, this.handleCollision, null, this)
-
-    this.cameras.main.startFollow(this.fauna, true)
+    this.cameras.main.startFollow(this.strawberry, true)
   }
 
   handleCollision(colisionador, colisionado) {
@@ -227,11 +124,9 @@ export default class Game extends Phaser.Scene {
 
   }
   update(t, dt) {
-    if (!this.cursors || !this.fauna || !this.keys) {
+    if (!this.cursors || !this.strawberry || !this.keys) {
       return
     }
-
-    const speed = 100
 
     if ((this.keys.interactE?.isDown || this.keys.interactEnter?.isDown) && this.overlap) {
       if (this.currentNavigate != null) {
@@ -246,39 +141,199 @@ export default class Game extends Phaser.Scene {
       }
     }
 
-    if (this.cursors.left?.isDown || this.keys.left?.isDown) {
-      this.fauna.anims.play('fauna-run-side', true)
+    let speed = 100
 
-      this.fauna.body.velocity.x = -speed
-      this.fauna.body.velocity.y = 0
-
-      this.fauna.scaleX = -1
-      this.fauna.body.offset.x = 24
-    } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
-      this.fauna.anims.play('fauna-run-side', true)
-
-      this.fauna.body.velocity.x = speed
-      this.fauna.body.velocity.y = 0
-
-      this.fauna.scaleX = 1
-      this.fauna.body.offset.x = 8
-    } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
-      this.fauna.anims.play('fauna-run-up', true)
-
-      this.fauna.body.velocity.x = 0
-      this.fauna.body.velocity.y = -speed
-    } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
-      this.fauna.anims.play('fauna-run-down', true)
-
-      this.fauna.body.velocity.x = 0
-      this.fauna.body.velocity.y = speed
-    } else {
-      const parts = this.fauna.anims.currentAnim.key.split('-')
-      parts[1] = 'idle'
-      this.fauna.play(parts.join('-'))
-
-      this.fauna.body.velocity.x = 0
-      this.fauna.body.velocity.y = 0
+    if (this.keys.run?.isDown) {
+      speed = 150
     }
+
+    if (this.cursors.left?.isDown || this.keys.left?.isDown) {
+      this.strawberry.anims.play('strawberry-walk-left', true)
+
+      this.strawberry.body.velocity.x = -speed
+      this.strawberry.body.velocity.y = 0
+
+      // this.strawberry.scaleX = -1
+      this.strawberry.body.offset.x = 11
+    } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
+      this.strawberry.anims.play('strawberry-walk-right', true)
+
+      this.strawberry.body.velocity.x = speed
+      this.strawberry.body.velocity.y = 0
+
+      // this.strawberry.scaleX = 1
+      this.strawberry.body.offset.x = 11
+    } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
+      this.strawberry.anims.play('strawberry-walk-up', true)
+
+      this.strawberry.body.velocity.x = 0
+      this.strawberry.body.velocity.y = -speed
+    } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
+      this.strawberry.anims.play('strawberry-walk-down', true)
+
+      this.strawberry.body.velocity.x = 0
+      this.strawberry.body.velocity.y = speed
+    } else {
+      const parts = this.strawberry.anims.currentAnim.key.split('-')
+      parts[1] = 'idle'
+      this.strawberry.play(parts.join('-'))
+
+      this.strawberry.body.velocity.x = 0
+      this.strawberry.body.velocity.y = 0
+    }
+  }
+
+  loadObjectLayers() {
+    const overlapObjectLayer = this.map.getObjectLayer('Overlap')
+    const notLoggedOverlapObjectLayer = this.map.getObjectLayer('Not-Logged overlap')
+    const NPCsObjectLayer = this.map.getObjectLayer('NPCs')
+    const mobsObjectLayer = this.map.getObjectLayer('Mobs')
+
+    const puntosDeOverlap = this.physics.add.staticGroup({
+      classType: OverlapPoint
+    })
+
+    const puntosNPCs = this.physics.add.staticGroup({
+      classType: NPC
+    })
+
+    const puntosMobs = this.physics.add.staticGroup({
+      classType: Mob
+    })
+
+    const config = {
+      classType: Phaser.GameObjects.Sprite,
+      defaultKey: null,
+      defaultFrame: null,
+      active: true,
+      maxSize: undefined,
+      runChildUpdate: false,
+      createCallback: null,
+      removeCallback: null,
+      createMultipleCallback: null
+    }
+
+    const overlapGroup = this.add.group(config)
+    const npcGroup = this.add.group(config)
+    const mobGroup = this.add.group(config)
+
+    if (!window.network.getUserLogged()) {
+      notLoggedOverlapObjectLayer.objects.forEach(objct => {
+        const objData = new Map();
+
+        objct.properties.forEach(prop => {
+          objData.set(prop.name, prop.value);
+        });
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
+        gameObj.data = objData
+        overlapGroup.add(gameObj)
+      })
+
+      const notLoggedLayer = this.map.createLayer('Not-logged', this.tileset, 0, 0)
+      const notLoggedBuildingsLayer = this.map.createLayer('Not-logged-buildings', this.buildingsTileset, 0, 0)
+      notLoggedLayer.setCollisionByProperty({ collides: true })
+      notLoggedBuildingsLayer.setCollisionByProperty({ collides: true })
+      this.physics.add.collider(this.strawberry, notLoggedLayer, this.handleCollision, null, this)
+    } else {
+      overlapObjectLayer.objects.forEach(objct => {
+        const objData = new Map();
+
+        objct.properties.forEach(prop => {
+          objData.set(prop.name, prop.value);
+        });
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
+        gameObj.data = objData
+        overlapGroup.add(gameObj)
+      })
+    }
+
+    NPCsObjectLayer.objects.forEach(objct => {
+      const objData = new Map();
+
+      objct.properties.forEach(prop => {
+        objData.set(prop.name, prop.value);
+      });
+      const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
+      gameObj.data = objData
+      npcGroup.add(gameObj)
+    })
+
+    mobsObjectLayer.objects.forEach(objct => {
+      const objData = new Map();
+
+      objct.properties.forEach(prop => {
+        objData.set(prop.name, prop.value);
+      });
+      const gameObj = puntosMobs.get(objct.x + objct.width * 0.1, objct.y - objct.height * 0.1, objData.get('sprite'), undefined, true)
+      gameObj.data = objData
+      // console.log(gameObj)
+      mobGroup.add(gameObj)
+    })
+
+    this.physics.add.overlap(this.strawberry, overlapGroup, this.handleOverlap, null, this)
+    this.physics.add.overlap(this.strawberry, npcGroup, this.handleOverlap, null, this)
+    this.physics.add.collider(mobGroup, this.buildingsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(mobGroup, this.groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(mobGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(mobGroup, this.cropsLayer, this.handleCollision, null, this)
+
+  }
+
+  createAnims() {
+    this.anims.create({
+      key: 'strawberry-idle-down',
+      frames: [
+        { key: 'strawberry', frame: 'walk-front-1.png' }
+      ]
+    })
+
+    this.anims.create({
+      key: 'strawberry-idle-up',
+      frames: [
+        { key: 'strawberry', frame: 'walk-back-1.png' }
+      ]
+    })
+
+    this.anims.create({
+      key: 'strawberry-idle-right',
+      frames: [
+        { key: 'strawberry', frame: 'walk-right-1.png' }
+      ]
+    })
+
+    this.anims.create({
+      key: 'strawberry-idle-left',
+      frames: [
+        { key: 'strawberry', frame: 'walk-left-1.png' }
+      ]
+    })
+
+    this.anims.create({
+      key: 'strawberry-walk-down',
+      frames: this.anims.generateFrameNames('strawberry', { start: 1, end: 8, prefix: 'walk-front-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 12
+    })
+
+    this.anims.create({
+      key: 'strawberry-walk-up',
+      frames: this.anims.generateFrameNames('strawberry', { start: 1, end: 8, prefix: 'walk-back-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 12
+    })
+
+    this.anims.create({
+      key: 'strawberry-walk-right',
+      frames: this.anims.generateFrameNames('strawberry', { start: 1, end: 8, prefix: 'walk-right-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 12
+    })
+
+    this.anims.create({
+      key: 'strawberry-walk-left',
+      frames: this.anims.generateFrameNames('strawberry', { start: 1, end: 8, prefix: 'walk-left-', suffix: '.png' }),
+      repeat: -1,
+      frameRate: 12
+    })
   }
 }
