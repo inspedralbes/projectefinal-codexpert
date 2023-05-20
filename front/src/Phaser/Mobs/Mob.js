@@ -1,5 +1,9 @@
 import * as Phaser from 'phaser'
 
+// 0 --> IDLE
+// 1 --> DAMAGE
+const STATE = [0, 1]
+
 // 0 --> Back
 // 1 --> Front
 // 2 --> Left
@@ -11,6 +15,8 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
   mobTexture
   timeWithoutSleeping
   canSleep = true
+  state = STATE[0]
+  movingTime = 0
 
   constructor(scene, x, y, texture, frame) {
     super(scene, x, y, texture, frame)
@@ -59,6 +65,22 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     this.direction = this.randomDirection(this.direction)
   }
 
+  handleDamage(dir) {
+    if (this.state === STATE[1]) {
+      return
+    }
+    if (this.anims.currentAnim.key === `${this.mobTexture}-sleep`) {
+      this.direction = this.randomDirection(this.direction)
+    }
+    this.body.velocity.x = dir.x
+    this.body.velocity.y = dir.y
+
+    // this.setTint(0xff0000)
+
+    this.state = STATE[1]
+    this.damageTime = 0
+  }
+
   preUpdate(t, dt) {
     super.preUpdate(t, dt)
 
@@ -69,6 +91,22 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
 
     if (this.timeWithoutSleeping > 10) {
       this.canSleep = true
+    }
+
+    switch (this.state) {
+      case STATE[0]:
+        this.body.velocity.x = 0
+        this.body.velocity.y = 0
+        break
+
+      case STATE[1]:
+        this.movingTime += dt
+        if (this.movingTime >= 100) {
+          this.state = STATE[0]
+          this.setTint(0xffffff)
+          this.movingTime = 0
+        }
+        break
     }
 
     switch (this.direction) {

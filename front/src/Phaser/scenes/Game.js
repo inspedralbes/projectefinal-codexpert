@@ -145,10 +145,10 @@ export default class Game extends Phaser.Scene {
       }
     }
 
-    let speed = 100
+    let speed = 125
 
     if (this.keys.run?.isDown) {
-      speed = 125
+      speed = 150
     }
 
     if (this.cursors.left?.isDown || this.keys.left?.isDown) {
@@ -298,20 +298,21 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(npcGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(npcGroup, this.cropsLayer, this.handleCollision, null, this)
 
-    this.physics.add.collider(this.strawberry, npcGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(this.strawberry, mobGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(mobGroup, mobGroup, this.handlePlayerNPCCollision, null, this)
   }
 
   handlePlayerNPCCollision(obj1, colisionado) {
-    const npc = colisionado
+    const mob = colisionado
 
-    const dx = npc.x - this.strawberry.x
-    const dy = npc.y - this.strawberry.y
+    const dx = mob.x - this.strawberry.x
+    const dy = mob.y - this.strawberry.y
 
     const dir = new Phaser.Math.Vector2(dx, dy).normalize().scale(100)
-    npc.body.velocity.x = dir.x
-    npc.body.velocity.y = dir.y
+    mob.body.velocity.x = 0
+    mob.body.velocity.y = 0
 
-    npc.handleDamage(dir)
+    mob.handleDamage(dir)
   }
 
   createMobAnims(texture) {
@@ -324,28 +325,28 @@ export default class Game extends Phaser.Scene {
       key: `${texture}-walk-back`,
       frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-back-', suffix: '.png' }),
       repeat: -1,
-      frameRate: 6
+      frameRate: 12
     })
 
     this.anims.create({
       key: `${texture}-walk-front`,
       frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-front-', suffix: '.png' }),
       repeat: -1,
-      frameRate: 6
+      frameRate: 12
     })
 
     this.anims.create({
       key: `${texture}-walk-left`,
       frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-left-', suffix: '.png' }),
       repeat: -1,
-      frameRate: 6
+      frameRate: 12
     })
 
     this.anims.create({
       key: `${texture}-walk-right`,
       frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-right-', suffix: '.png' }),
       repeat: -1,
-      frameRate: 6
+      frameRate: 12
     })
 
     this.anims.create({

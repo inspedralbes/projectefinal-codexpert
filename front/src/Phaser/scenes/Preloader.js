@@ -24,8 +24,8 @@ export default class Preloader extends Phaser.Scene {
     // Dialogs
 
     // Characters
-    this.load.atlas('gaspa', 'assets/characters/strawberry/strawberry.png', 'assets/characters/strawberry/strawberry.json')
-    this.load.atlas('strawberry', 'assets/characters/gaspa/gaspa.png', 'assets/characters/gaspa/gaspa.json')
+    this.load.atlas('strawberry', 'assets/characters/strawberry/strawberry.png', 'assets/characters/strawberry/strawberry.json')
+    this.load.atlas('gaspa', 'assets/characters/gaspa/gaspa.png', 'assets/characters/gaspa/gaspa.json')
     this.load.atlas('asselia', 'assets/characters/asselia/asselia.png', 'assets/characters/asselia/asselia.json')
     this.load.atlas('martin', 'assets/characters/martin/martin.png', 'assets/characters/martin/martin.json')
     this.load.atlas('amae', 'assets/characters/amae/amae.png', 'assets/characters/amae/amae.json')
