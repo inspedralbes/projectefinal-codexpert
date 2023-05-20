@@ -40,7 +40,8 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
 
     switch (this.healthState) {
       case HealthState[0]:
-
+        this.body.velocity.x = 0
+        this.body.velocity.y = 0
         break
 
       case HealthState[1]:
@@ -52,17 +53,5 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
         }
         break
     }
-  }
-
-  update(t, dt) {
-    if (this.healthState === HealthState[1]) {
-      return
-    }
-
-    const parts = this.anims.currentAnim.key.split('-')
-    parts[1] = 'idle'
-    this.anims.play(parts.join('-'))
-    this.body.velocity.x = 0
-    this.body.velocity.y = 0
   }
 }
