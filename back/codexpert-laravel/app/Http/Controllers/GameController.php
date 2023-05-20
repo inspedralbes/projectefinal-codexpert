@@ -285,7 +285,7 @@ class GameController extends Controller
     }    
 
     /**
-     * This function given a game id and user id
+     * This function given a game id and user id returns the position from the player in the game ranking.
      * @param int $game_id is the game id of the game that we want to get their position
      * @param int $user_id is the id from the user that we want to get their position.
      * @return int $userPosition is the position of the user in the ranking from that game.
@@ -305,8 +305,14 @@ class GameController extends Controller
                 $playerFound = true;
             } 
             $i++;
-        }
-        
+        }        
+
+        $updateUser = User_game::where('game_id', $game_id) 
+        -> where('user_id', $user_id)
+        -> first();
+        $updateUser -> finished_position = $userPosition;
+        $updateUser -> save();
+
         return $userPosition;
     }  
 
