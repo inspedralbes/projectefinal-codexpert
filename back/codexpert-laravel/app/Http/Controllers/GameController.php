@@ -285,6 +285,32 @@ class GameController extends Controller
     }    
 
     /**
+     * This function given a game id and user id
+     * @param int $game_id is the game id of the game that we want to get their position
+     * @param int $user_id is the id from the user that we want to get their position.
+     * @return int $userPosition is the position of the user in the ranking from that game.
+     */      
+    private function getPlayerPosition($game_id, $user_id)
+    {
+        $ranking = $this -> getRanking($game_id);
+        $ranking = json_decode($ranking);
+        $playerFound = false;
+        $userPosition = -1;
+
+        $i = 0;
+        while( ($i < count($ranking)) && (!$playerFound) ) {
+            if ( ($ranking[$i] -> id) == ($user_id) ) {
+                $i += 1;
+                $userPosition = $i;
+                $playerFound = true;
+            } 
+            $i++;
+        }
+        
+        return $userPosition;
+    }  
+
+    /**
      * This function updates elo, coins and level experience of the users, depending on their question_at position and if they're the winner
      * @param array $users is an array made of objects, each object represents a user from the lobby, contains their id.
      * @param int $idGame is the id from the game that the members of the lobby are playing
@@ -308,6 +334,8 @@ class GameController extends Controller
                     -> where('user_id', $members[$i]['idUser'])
                     -> first();
 
+                    $playerPosition = $this -> getPlayerPosition($request -> idGame, $members[$i]['idUser']);
+
                     $myProfile = User::where('id', $members[$i]['idUser']) -> first();
 
                     if ($game -> winner_id == $members[$i]['idUser']) {
@@ -321,6 +349,7 @@ class GameController extends Controller
                     $myGame -> coinsEarned = $newCoins;
                     $myGame -> eloEarned = $newElo;
                     $myGame -> xpEarned = $newXp;
+                    $myGame -> finished_position = $playerPosition;
 
                     $myProfile -> xp += $newXp;
                     $myProfile -> coins += $newCoins;
