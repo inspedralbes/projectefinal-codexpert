@@ -8,6 +8,7 @@ import success from '../img/campaign/success.png'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import Cookies from 'universal-cookie'
+import { Loading } from '../components/Loading'
 
 Modal.setAppElement('body')
 
@@ -15,7 +16,8 @@ function Campaign() {
   const [modal, setModal] = useState(false)
   const [tutorialList, setTutorialList] = useState([])
   const [lastQuestion, setLastQuestion] = useState('')
-  const [userExperience, setUserExperience] = useState('')
+  const [userExperience, setUserExperience] = useState(true)
+  const [userExpertice, setUserExpertice] = useState('')
   const [tutorialsAnswered, setTutorialsAnswered] = useState([])
   const [lvlUnlocked, setLvlUnlocked] = useState(
     localStorage.getItem('lvlUnlocked') === null
@@ -30,10 +32,7 @@ function Campaign() {
     localStorage.setItem('userExperience', option)
 
     const data = new FormData()
-    data.append(
-      'token',
-      cookies.get('token') !== undefined ? cookies.get('token') : null
-    )
+    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     data.append('userExperience', option)
     fetch(routes.fetchLaravel + 'setExpertise', {
       method: 'POST',
@@ -51,6 +50,7 @@ function Campaign() {
           )
         }
       })
+
     if (option === 'beginner') {
       localStorage.setItem('lvlUnlocked', 0)
     } else if (option === 'expert') {
@@ -60,11 +60,10 @@ function Campaign() {
   }
 
   const getTutorials = () => {
+    console.log('hola')
+
     const data = new FormData()
-    data.append(
-      'token',
-      cookies.get('token') !== undefined ? cookies.get('token') : null
-    )
+    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     data.append('userExperience', localStorage.getItem('userExperience'))
     fetch(routes.fetchLaravel + 'getTutorials', {
       method: 'POST',
@@ -80,12 +79,31 @@ function Campaign() {
       })
   }
 
+  const getExpertise = () => {
+    const data = new FormData()
+    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'checkExpertiseChosen', {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUserExpertice(data.chosenExpertise)
+        if (data.chosenExpertise) {
+          localStorage.setItem('userExperience', '')
+        }
+        if (localStorage.getItem('userExperience') === null) {
+          setModal(true)
+        } else {
+          getTutorials()
+        }
+      })
+  }
+
   useEffect(() => {
-    if (localStorage.getItem('userExperience') === null) {
-      setModal(true)
-    } else {
-      getTutorials()
-    }
+    getExpertise()
     if (localStorage.getItem('tutorialsAnswered') !== null) {
       setTutorialsAnswered(
         JSON.parse(localStorage.getItem('tutorialsAnswered'))
@@ -102,7 +120,9 @@ function Campaign() {
   }, [lastQuestion])
 
   return (
-    <div className="campaign">
+    <>
+    {userExpertice !== ''
+      ? <div className="campaign">
       <Modal
         style={{
           // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
@@ -196,7 +216,7 @@ function Campaign() {
               </li>
             )
           })
-          : null}
+          : <h1>HOLA</h1>}
       </ul>
       {localStorage.getItem('tutorialPassed') !== null && (
         <>
@@ -223,6 +243,8 @@ function Campaign() {
         </>
       )}
     </div>
+      : <Loading></Loading>}
+  </>
   )
 }
 

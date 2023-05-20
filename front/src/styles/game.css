@@ -1,6 +1,6 @@
 @font-face {
     font-family: monoid;
-    src: url(../fonts/Monoid/Monoid-Regular.ttf);
+    src: url('../fonts/Monoid/Monoid-Regular.ttf');
 }
 
 :root {
@@ -23,7 +23,7 @@
     display: grid;
     grid-template-columns: 0.7fr 1.6fr;
     grid-template-rows: 1fr;
-    gap: 0px 0px;
+    gap: 0 0;
     overflow: hidden;
 }
 
@@ -49,15 +49,12 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 0.7fr 1.5fr;
-    gap: 0px 0px;
-    grid-template-areas:
-        "."
-        "."
-        ".";
+    gap: 0 0;
+    grid-template-areas: "." "." ".";
 }
 
 .game--grid {
-    margin-top: 0px;
+    margin-top: 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -112,9 +109,6 @@
     position: relative;
 }
 
-.game__statement {
-    font-size: 1.2rem;
-}
 
 .game__expectedInput,
 .game__expectedOutput {
@@ -151,8 +145,15 @@
 }
 
 .game__statement {
+    font-size: 1.2rem;
     background-color: var(--statement-bg);
     border-color: black;
+}
+
+.game__statementTitle {
+    max-height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .game__statement::after {
@@ -310,15 +311,24 @@ h2 {
     box-shadow: none;
 }
 
+.result__container {
+    display: flex;
+}
+
 .game__result {
     align-self: center;
-    margin: 10px 4px 10px 2px;
-    width: 98%;
+    margin: 10px 40px 30px 1% !important;
+    width: 98% !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.game__result h1 {
+    font-size: 20px;
 }
 
 .editor__expected {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
@@ -326,7 +336,7 @@ h2 {
 .game__logo {
     transform: translate(-20px, -15px);
     display: flex;
-    margin: 0 0 0 0;
+    margin: 0;
     align-items: center;
     justify-content: center;
     align-content: flex-start;

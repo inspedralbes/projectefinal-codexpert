@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom' // Rutas
 import Carousel from 'nuka-carousel'
 import parse from 'html-react-parser'
 import introduction from '../localData/Introductions.json'
+import arrowLeft from '../img/corousel-arrowLeft.png'
+import arrowRight from '../img/corousel-arrowRight.png'
 
 function Tutorial() {
   const location = useLocation()
@@ -113,42 +115,22 @@ function Tutorial() {
           '' && (
             <>
               <Carousel
-                className='awa'
+              
+                adaptiveHeight={true}
                 defaultControlsConfig={{
-                  style: {},
                   containerClassName: 'containerCarousel',
                   nextButtonClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'nextButtonCarousel',
                   prevButtonClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'prevButtonCarousel',
                   pagingDotsContainerClassName: introduction.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'dotsCarousel',
 
+                  prevButtonText: (
+                    <img src={arrowLeft} width="50px">
+                    </img>
+                  ),
+
                   nextButtonText: (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="68"
-                      height="68"
-                      viewBox="0 0 68 68"
-                    >
-                      <g
-                        id="Group_8"
-                        data-name="Group 8"
-                        transform="translate(-1309 -621)"
-                      >
-                        <rect
-                          id="Box"
-                          width="68"
-                          height="68"
-                          transform="translate(1309 621)"
-                          fill="none"
-                        />
-                        <path
-                          id="Icon_Keyboard_Arrow_-_Up_Dark"
-                          data-name="Icon / Keyboard Arrow - Up / Dark"
-                          d="M30.033,20.967,17,7.933,3.967,20.967,0,17,17,0,34,17Z"
-                          transform="translate(1353.483 637.15) rotate(90)"
-                          fill="#fff"
-                        />
-                      </g>
-                    </svg>
+                    <img src={arrowRight} width="50px">
+                    </img>
                   ),
 
                   pagingDotsStyle: {
@@ -168,7 +150,7 @@ function Tutorial() {
       <div>
         <div className="game__statement">
           <h2>Statement:</h2>
-          <h1 className="game__statementTitle">{qst.statement}</h1>
+          <h1 className="game__statementTitle" id="scroll">{qst.statement}</h1>
         </div>
         <div className="game--grid">
           <div className="editor--div">
@@ -182,19 +164,20 @@ function Tutorial() {
                 <h2>Example output:</h2>
                 <h1>{qst.output.toString()}</h1>
               </div>
-              <div className="game__expectedOutput game__result">
-                <h2>Result:</h2>
-                <h1>{error !== '' && <div>{error}</div>}</h1>
-              </div>
             </div>
             <form className="editor" onSubmit={handleSubmit}>
               <CodeMirror code={code} setCode={setCode}></CodeMirror>
-              <button
-                className="pixel-button game__submit"
-                disabled={code === ''}
-              >
-                Submit
-              </button>
+              <div className='result__container'>
+                <div className="game__result">
+                  <h1>{error !== '' && <div>{error}</div>}</h1>
+                </div>
+                <button
+                  className="pixel-button game__submit"
+                  disabled={code === ''}
+                >
+                  Submit
+                </button>
+              </div>
             </form>
           </div>
         </div>
