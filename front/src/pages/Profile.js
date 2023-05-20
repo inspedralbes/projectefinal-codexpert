@@ -36,7 +36,6 @@ function Profile () {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.games);
         if (data.error) {
           navigate('/login')
         } else {
