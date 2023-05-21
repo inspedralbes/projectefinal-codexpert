@@ -1,3 +1,4 @@
+
 .tutorial__container {
     border: 3px solid #fff;
     background-color: #fff;
@@ -6,10 +7,18 @@
     margin: 0 auto;
     height: 100vh;
     display: grid;
-    grid-template-columns: 0.7fr 1.6fr;
+    grid-template-columns: 40% 60%;
     grid-template-rows: 1fr;
-    gap: 0 10px;
+    gap: 0 20px;
     overflow: hidden;
+}
+
+.tutorial__statement {
+    height: 300px;
+}
+
+.tutorial__statement h1 {
+    max-height: 300px;
 }
 
 .slider-container {
@@ -46,7 +55,7 @@
     color: #ffffff;
     padding: 5px !important;
     position: fixed;
-    top: 500px;
+    top: 55%;
     font-size: 100%;
     color: #ffffff;
     transition: all 0.5s;
@@ -55,10 +64,10 @@
 }
 
 .prevButtonCarousel {
-    left: 65px;
+    left: 3%;
 }
 .nextButtonCarousel {
-    left: 600px;
+    left: 33%;
 }
 
 .tutorial__container::-webkit-scrollbar-track {
@@ -107,9 +116,110 @@
     color: white;
     position: fixed;
     top: 55%;
-    left: 340px;
+    left: 20%;
 }
 
 .hiddenCarousel {
     visibility: hidden;
+}
+
+.hint__cover {
+    position: absolute;
+    top: 67.9%;
+    width: 39%;
+    height: 30%;
+    z-index: 1;
+    background-color: grey;
+    border: 1px solid black;
+    border-width: 3px 0;
+    transition: all 0.5s;
+    text-align: center;
+}
+
+.hint__cover::after {
+    background-color: transparent;
+    box-shadow: 3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    height: calc(100% - 3px);
+    position: absolute;
+    right: 0px;
+    top: 2px;
+    width: 3px;
+    transition: all 0.5s;
+}
+
+.hint__cover::before {
+    background-color: transparent;
+    box-shadow: -3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    height: calc(100% - 3px);
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    width: 3px;
+    transition: all 0.5s;
+}
+
+.hint__cover img{
+    position: absolute;
+    padding: 30px;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    background-color: rgb(95, 95, 95);
+    border-radius: 50%;
+    transition: 0.5;
+    cursor: pointer;
+    margin: -50px 0 0 -40px;
+    background-image: url(../img/closedEye.png);
+    transition: background-image 0.2s ease-in;
+    background-size: cover;
+}
+
+.hint__cover img:hover{
+    background-image: url(../img/openEye.png);
+    background-color: rgb(66, 66, 66);
+}
+
+.hint__container {
+    position: absolute;
+    top: 67.9%;
+    width: 39%;
+    border: 0px;
+}
+
+.hint__container div{
+    height: 30vh;
+    overflow-y: auto;
+    background-color: grey;
+    border: 1px solid black;
+    border-width: 3px 0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.37);
+    padding-inline-start: 0px;
+    margin: 0vh;
+}
+
+.hint__container div::after {
+    box-shadow: 3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 6px);
+    position: absolute;
+    right: 0px;
+    top: 3px;
+    width: 6px;
+}
+
+.hint__container div::before {
+    background-color: transparent;
+    box-shadow: -3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 6px);
+    position: absolute;
+    left: 0px;
+    top: 3px;
+    width: 6px;
 }

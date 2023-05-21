@@ -42,9 +42,9 @@ function LandingPage() {
         {isUserLogged === '' && (
           <button className='pixel-button loading'>LOADING<Loader /></button>
         )}
-        {isUserLogged === false && (
-          <Link to='/campaign'>
-            <button className='pixel-button landingbtn'>Get Started</button>
+        {isUserLogged !== '' && (
+          <Link to='/codeworld'>
+            <button className='pixel-button landingbtn'>PLAY NOW</button>
           </Link>
         )}
         {isUserLogged === false && (
@@ -53,11 +53,6 @@ function LandingPage() {
               Login/Register
             </Link>
           </div>
-        )}
-        {isUserLogged && (
-          <Link to='/lobbies'>
-            <button className='pixel-button landingbtn'>Lobbies</button>
-          </Link>
         )}
       </div>
     </div>

@@ -8,7 +8,7 @@ import bellSleeping from '../img/bellSleeping.gif'
 
 function Bell() {
   const [showNotification, setShowNotification] = useState(false)
-  const [notificationList, setNotificationList] = useState([''])
+  const [notificationList, setNotificationList] = useState([1, 1, 1, 1, 1, 1])
   const handleClick = () => {
     setShowNotification(!showNotification)
   }

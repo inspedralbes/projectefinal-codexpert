@@ -219,7 +219,7 @@ function AvatarMaker() {
       if (localStorage.getItem('lastPage') !== null) {
         navigate('/profile')
       } else {
-        navigate('/lobbies')
+        navigate('/codeworld')
       }
     }
   }, [save])

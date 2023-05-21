@@ -89,7 +89,15 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
     setShowModal(false)
   }
 
+  const updateHistory = () => {
+    window.addEventListener('hashchange', function (e) {
+      e.preventDefault()
+      location.reload()
+    })
+  }
+
   useEffect(() => {
+    updateHistory()
     if (!showModal) setSaveSettings(0)
   }, [showModal])
 

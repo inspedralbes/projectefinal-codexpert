@@ -29,8 +29,13 @@ function Campaign() {
 
   const handleChoiseOption = (option) => {
     setModal(false)
+    if (option === 'beginner') {
+      localStorage.setItem('lvlUnlocked', 0)
+    } else if (option === 'expert') {
+      localStorage.setItem('lvlUnlocked', 5)
+      setLvlUnlocked(localStorage.getItem('lvlUnlocked'))
+    }
     localStorage.setItem('userExperience', option)
-
     const data = new FormData()
     data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     data.append('userExperience', option)
@@ -50,18 +55,9 @@ function Campaign() {
           )
         }
       })
-
-    if (option === 'beginner') {
-      localStorage.setItem('lvlUnlocked', 0)
-    } else if (option === 'expert') {
-      localStorage.setItem('lvlUnlocked', 5)
-      setLvlUnlocked(localStorage.getItem('lvlUnlocked'))
-    }
   }
 
   const getTutorials = () => {
-    console.log('hola')
-
     const data = new FormData()
     data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     data.append('userExperience', localStorage.getItem('userExperience'))
