@@ -11,11 +11,28 @@ import OverlapPoint from '../items/OverlapPoints'
 
 const spriteAnimsCreated = []
 
+const npcDialogs = [
+  {
+    name: 'gaspa',
+    dialogs: ['Hi! (with rizz)', 'uwu'],
+    currentIndex: 0
+  }
+]
+
+const PUNTOAPARICION = {
+  x: 350,
+  y: 350
+}
+
 export default class Game extends Phaser.Scene {
   // navigate = useNavigate()
   strawberry
   cursor
   keys
+  selector
+  events = new Phaser.Events.EventEmitter()
+  interactEvent
+  canInteract = true
 
   constructor() {
     super('game')
@@ -39,7 +56,6 @@ export default class Game extends Phaser.Scene {
 
   create() {
     this.createAnims('strawberry')
-
     this.map = this.make.tilemap({ key: 'map' })
 
     this.worldMusic = this.sound.add('worldMusic')
@@ -65,7 +81,7 @@ export default class Game extends Phaser.Scene {
 
     // debugDraw(this.buildingsLayer, this)
 
-    this.strawberry = this.add.sprite(350, 350, 'strawberry')
+    this.strawberry = this.add.sprite(PUNTOAPARICION.x, PUNTOAPARICION.y, 'strawberry')
 
     this.loadObjectLayers()
 
@@ -73,7 +89,10 @@ export default class Game extends Phaser.Scene {
     this.strawberry.setDepth(1)
     this.strawberry.body.setSize(this.strawberry.width * 0.3, this.strawberry.height * 0.3)
 
+    this.createBox()
+
     this.strawberry.body.offset.y = 22
+    this.selector.body.offset.y = 6
 
     this.strawberry.anims.play('strawberry-idle-down')
 
@@ -84,7 +103,17 @@ export default class Game extends Phaser.Scene {
     // this.physics.add.collider(this.strawberry, uLayer, this.handleCollision, null, this)
 
     this.cameras.main.startFollow(this.strawberry, true)
-    // this.cameras.main.setFollowOffset(-100, -100);
+
+    this.scene.run('dialog-ui')
+  }
+
+  createBox() {
+    const box = this.add.rectangle(PUNTOAPARICION.x, PUNTOAPARICION.y, 20, 20, 0xffffff, 0)
+    this.physics.add.existing(box)
+
+    this.selector = box
+
+    this.physics.add.overlap(this.selector, this.npcGroup, this.handleOverlap, undefined, this)
   }
 
   handleCollision(colisionador, colisionado) {
@@ -101,17 +130,22 @@ export default class Game extends Phaser.Scene {
       if (overlapObjectData.get('actionType') === 'navigate') {
         this.currentNavigate = overlapObjectData.get('route')
       } else if (overlapObjectData.get('idNPC') > 0) {
-        this.currentIdNPC = overlapObjectData.get('idNPC')
-        console.log('npc con id ' + this.currentIdNPC)
+        this.npcData = {
+          character: overlapObjectData.get('sprite')
+        }
+        console.log('npc con id ' + this.npcData.message)
       }
-      this.scene.run('interact-ui')
+      if (this.canInteract) {
+        this.scene.run('interact-ui')
+      }
       this.overlapTmp = false
       setTimeout(this.checkOverlap.bind(this, () => {
         if (this.scene.isActive('interact-ui')) {
           this.scene.stop('interact-ui')
         }
         this.currentNavigate = null
-        this.currentIdNPC = null
+        this.npcData = null
+        window.postMessage({ type: 'end_interaction_with_npc' }, '*')
       }), 100)
     }
   }
@@ -120,29 +154,73 @@ export default class Game extends Phaser.Scene {
     if (this.overlap) {
       if (!this.overlapTmp) {
         this.overlap = false
-        callback();
+        callback()
       }
       this.overlapTmp = false
       setTimeout(this.checkOverlap.bind(this, callback), 100)
     }//else
 
   }
+
+  getCurrentDialog() {
+    let dialog = '...'
+    npcDialogs.forEach(npc => {
+      if (npc.name === this.npcData.character) {
+        dialog = npc.dialogs[npc.currentIndex]
+        npc.currentIndex === npc.dialogs.length - 1 ? npc.currentIndex = 0 : npc.currentIndex++
+      }
+    })
+    return dialog
+  }
+
   update(t, dt) {
     if (!this.cursors || !this.strawberry || !this.keys) {
       return
     }
 
-    if ((this.keys.interactE?.isDown || this.keys.interactEnter?.isDown) && this.overlap) {
+    if ((this.keys.interactE.isDown || this.keys.interactEnter?.isDown) && this.overlap && this.canInteract) {
       if (this.currentNavigate != null) {
         window.postMessage({
           type: 'navigate_request-msg',
           value: this.currentNavigate
         }, '*')
       }
-      if (this.currentIdNPC != null && !this.inDialogue) {
-        this.inDialogue = true;
-        console.log('interactuar con id ' + this.currentIdNPC)
+
+      if (this.npcData != null && !this.inDialogue) {
+        this.inDialogue = true
+
+        const message = this.getCurrentDialog(this.npcData)
+
+        window.postMessage({ type: 'end_interaction_with_npc' }, '*')
+        window.postMessage({ type: 'interaction_with_npc', npcData: { message } }, '*')
+        this.moveEvent = this.time.addEvent({
+          delay: 1500,
+          callback: () => {
+            this.inDialogue = false
+          },
+          loop: false
+        })
       }
+
+      if (!this.inDialogue) {
+        window.postMessage({ type: 'end_interaction_with_npc' }, '*')
+        this.inDialogue = false
+        if (this.scene.isActive('interact-ui')) {
+          this.scene.stop('interact-ui')
+        }
+
+        this.moveEvent = this.time.addEvent({
+          delay: 1500,
+          callback: () => {
+            this.canInteract = true
+          },
+          loop: false
+        })
+      }
+    }
+
+    if (this.inDialogue) {
+      return
     }
 
     let speed = 125
@@ -151,11 +229,17 @@ export default class Game extends Phaser.Scene {
       speed = 150
     }
 
+    const charX = this.strawberry.x
+    const charY = this.strawberry.y
+    const distance = 16
+
     if (this.cursors.left?.isDown || this.keys.left?.isDown) {
       this.strawberry.anims.play('strawberry-walk-left', true)
 
       this.strawberry.body.velocity.x = -speed
       this.strawberry.body.velocity.y = 0
+
+      this.selector.setPosition(charX - distance, charY)
 
       // this.strawberry.scaleX = -1
       this.strawberry.body.offset.x = 11
@@ -165,6 +249,8 @@ export default class Game extends Phaser.Scene {
       this.strawberry.body.velocity.x = speed
       this.strawberry.body.velocity.y = 0
 
+      this.selector.setPosition(charX + distance, charY)
+
       // this.strawberry.scaleX = 1
       this.strawberry.body.offset.x = 11
     } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
@@ -172,11 +258,15 @@ export default class Game extends Phaser.Scene {
 
       this.strawberry.body.velocity.x = 0
       this.strawberry.body.velocity.y = -speed
+
+      this.selector.setPosition(charX, charY - distance)
     } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
       this.strawberry.anims.play('strawberry-walk-down', true)
 
       this.strawberry.body.velocity.x = 0
       this.strawberry.body.velocity.y = speed
+
+      this.selector.setPosition(charX, charY + distance + 8)
     } else {
       const parts = this.strawberry.anims.currentAnim.key.split('-')
       parts[1] = 'idle'
@@ -225,20 +315,20 @@ export default class Game extends Phaser.Scene {
       createMultipleCallback: null
     }
 
-    const overlapGroup = this.add.group(config)
-    const npcGroup = this.add.group(config)
-    const mobGroup = this.add.group(config)
+    this.overlapGroup = this.add.group(config)
+    this.npcGroup = this.add.group(config)
+    this.mobGroup = this.add.group(config)
 
     if (!window.network.getUserLogged()) {
       notLoggedOverlapObjectLayer.objects.forEach(objct => {
-        const objData = new Map();
+        const objData = new Map()
 
         objct.properties.forEach(prop => {
-          objData.set(prop.name, prop.value);
-        });
+          objData.set(prop.name, prop.value)
+        })
         const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
         gameObj.data = objData
-        overlapGroup.add(gameObj)
+        this.overlapGroup.add(gameObj)
       })
 
       const notLoggedLayer = this.map.createLayer('Not-logged', this.tileset, 0, 0)
@@ -248,58 +338,59 @@ export default class Game extends Phaser.Scene {
       this.physics.add.collider(this.strawberry, notLoggedLayer, this.handleCollision, null, this)
     } else {
       overlapObjectLayer.objects.forEach(objct => {
-        const objData = new Map();
+        const objData = new Map()
 
         objct.properties.forEach(prop => {
-          objData.set(prop.name, prop.value);
-        });
+          objData.set(prop.name, prop.value)
+        })
         const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
         gameObj.data = objData
-        overlapGroup.add(gameObj)
+        this.overlapGroup.add(gameObj)
       })
     }
 
     NPCsObjectLayer.objects.forEach(objct => {
-      const objData = new Map();
+      const objData = new Map()
 
       objct.properties.forEach(prop => {
-        objData.set(prop.name, prop.value);
-      });
+        objData.set(prop.name, prop.value)
+      })
       this.createAnims(objData.get('sprite'))
       const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, objData.get('sprite'), undefined, true)
       gameObj.data = objData
-      npcGroup.add(gameObj)
+      this.npcGroup.add(gameObj)
     })
 
     mobsObjectLayer.objects.forEach(objct => {
-      const objData = new Map();
+      const objData = new Map()
 
       objct.properties.forEach(prop => {
-        objData.set(prop.name, prop.value);
-      });
+        objData.set(prop.name, prop.value)
+      })
       this.createMobAnims(objData.get('sprite'))
       const gameObj = puntosMobs.get(objct.x + objct.width * 0.1, objct.y - objct.height * 0.1, objData.get('sprite'), undefined, true)
       gameObj.data = objData
       // console.log(gameObj)
-      mobGroup.add(gameObj)
+      this.mobGroup.add(gameObj)
     })
 
-    this.physics.add.overlap(this.strawberry, overlapGroup, this.handleOverlap, null, this)
-    this.physics.add.overlap(this.strawberry, npcGroup, this.handleOverlap, null, this)
-    this.physics.add.collider(mobGroup, this.buildingsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(mobGroup, npcGroup, this.handleCollision, null, this)
-    this.physics.add.collider(mobGroup, this.groundLayer, this.handleCollision, null, this)
-    this.physics.add.collider(mobGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(mobGroup, this.cropsLayer, this.handleCollision, null, this)
+    this.physics.add.overlap(this.strawberry, this.overlapGroup, this.handleOverlap, null, this)
+    this.physics.add.overlap(this.strawberry, this.npcGroup, this.handleOverlap, null, this)
+    this.physics.add.collider(this.mobGroup, this.buildingsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.mobGroup, this.npcGroup, this.handleCollision, null, this)
+    this.physics.add.collider(this.mobGroup, this.groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.mobGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.mobGroup, this.cropsLayer, this.handleCollision, null, this)
 
-    this.physics.add.collider(npcGroup, this.buildingsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(npcGroup, mobGroup, this.handleCollision, null, this)
-    this.physics.add.collider(npcGroup, this.groundLayer, this.handleCollision, null, this)
-    this.physics.add.collider(npcGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(npcGroup, this.cropsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.npcGroup, this.buildingsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.npcGroup, this.mobGroup, this.handleCollision, null, this)
+    this.physics.add.collider(this.npcGroup, this.groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.npcGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.npcGroup, this.cropsLayer, this.handleCollision, null, this)
 
-    this.physics.add.collider(this.strawberry, mobGroup, this.handlePlayerNPCCollision, null, this)
-    this.physics.add.collider(mobGroup, mobGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(this.strawberry, this.mobGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(this.strawberry, this.npcGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(this.mobGroup, this.mobGroup, this.handlePlayerNPCCollision, null, this)
   }
 
   handlePlayerNPCCollision(obj1, colisionado) {

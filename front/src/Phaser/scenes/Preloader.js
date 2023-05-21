@@ -17,6 +17,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('enter2-key', 'assets/UI/enter_key_2.png')
     this.load.image('enter3-key', 'assets/UI/enter_key_3.png')
     this.load.image('enter4-key', 'assets/UI/enter_key_4.png')
+    this.load.image('skip_dialog', 'assets/UI/skip_dialog.gif')
 
     // Music
     this.load.audio('worldMusic', 'assets/music/world.mp3')
@@ -29,6 +30,10 @@ export default class Preloader extends Phaser.Scene {
     this.load.atlas('asselia', 'assets/characters/asselia/asselia.png', 'assets/characters/asselia/asselia.json')
     this.load.atlas('martin', 'assets/characters/martin/martin.png', 'assets/characters/martin/martin.json')
     this.load.atlas('amae', 'assets/characters/amae/amae.png', 'assets/characters/amae/amae.json')
+    this.load.atlas('farmer', 'assets/characters/farmer/farmer.png', 'assets/characters/farmer/farmer.json')
+    this.load.atlas('shopkeeper', 'assets/characters/shopkeeper/shopkeeper.png', 'assets/characters/shopkeeper/shopkeeper.json')
+    this.load.atlas('iris', 'assets/characters/iris/iris.png', 'assets/characters/iris/iris.json')
+    this.load.atlas('emo', 'assets/characters/emo/emo.png', 'assets/characters/emo/emo.json')
 
     // Mobs
     this.load.atlas('chicken', 'assets/mobs/chicken/chicken.png', 'assets/mobs/chicken/chicken.json')

@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router'
 
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
+import DialogBox from '../Phaser/scenes/DialogBox'
 
 const CodeWorld = () => {
   const cookies = new Cookies()
@@ -51,10 +52,10 @@ const CodeWorld = () => {
           default: 'arcade',
           arcade: {
             gravity: { y: 0 },
-            debug: false
+            debug: true
           }
         },
-        scene: [Preloader, Game, InteractUI]
+        scene: [Preloader, Game, InteractUI, DialogBox]
       }
       worldGame = new Phaser.Game(config)
     }
