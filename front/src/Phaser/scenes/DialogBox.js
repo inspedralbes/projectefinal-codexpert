@@ -3,6 +3,7 @@ import * as Phaser from 'phaser'
 export default class DialogBox extends Phaser.Scene {
   gameObject
   dialog
+  destroyText = false
 
   constructor() {
     super({ key: 'dialog-ui' })
@@ -17,12 +18,14 @@ export default class DialogBox extends Phaser.Scene {
     // Event handle
     switch (eventData.type) {
       case 'interaction_with_npc':
+        this.destroyText = false
         this.dialog = eventData.npcData.message
         this.createDialogs()
         break
 
       case 'end_interaction_with_npc':
         if (this.dialogContainer) {
+          this.destroyText = true
           this.dialogContainer.destroy()
         }
         break
@@ -55,7 +58,7 @@ export default class DialogBox extends Phaser.Scene {
     dialogBackground.fillRect(0, 0, dialogWidth, dialogHeight)
     this.dialogContainer.add(dialogBackground)
 
-    const textWidth = dialogWidth * 0.6
+    const textWidth = dialogWidth * 0.95
 
     // Crear el texto del cuadro de diálogo
     const dialogText = this.add.text(10, 10, '', {
@@ -67,7 +70,7 @@ export default class DialogBox extends Phaser.Scene {
       // stroke: '#000',
       wordWrap: { width: textWidth, useAdvancedWrap: true },
       resolution: 2,
-      align: 'center'
+      align: 'left'
     })
 
     const fullText = this.dialog
@@ -75,6 +78,9 @@ export default class DialogBox extends Phaser.Scene {
 
     // Configura una función para mostrar progresivamente el texto
     function showNextCharacter() {
+      if (this.destroyText) {
+        return
+      }
       dialogText.text += fullText[currentCharIndex]
       currentCharIndex++
 

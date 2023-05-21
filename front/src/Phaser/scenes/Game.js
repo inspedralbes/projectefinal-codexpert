@@ -14,7 +14,7 @@ const spriteAnimsCreated = []
 const npcDialogs = [
   {
     name: 'gaspa',
-    dialogs: ['Hi! (with rizz)', 'uwu'],
+    dialogs: ['Hi! (with rizz)', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut velit el consectetur necessitatibus fugiat sint ad nulla saepe, voluptatum voluptates doloremque perspiciatis asperiores, deserunt placeat reprehenderit non commodi exercitationem mollitia sapiente.'],
     currentIndex: 0
   }
 ]
