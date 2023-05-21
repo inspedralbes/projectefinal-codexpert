@@ -1,4 +1,4 @@
-import * as Phaser from 'phaser'
+import Phaser from 'phaser'
 
 import Preloader from '../Phaser/scenes/Preloader'
 import Game from '../Phaser/scenes/Game'
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router'
 
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
+import DialogBox from '../Phaser/scenes/DialogBox'
 
 const CodeWorld = () => {
   const cookies = new Cookies()
@@ -29,7 +30,7 @@ const CodeWorld = () => {
   }
 
   const parentRef = useRef(null)
-  let game = null
+  let worldGame = null
 
   useEffect(() => {
     if (parentRef.current) {
@@ -54,18 +55,18 @@ const CodeWorld = () => {
             debug: true
           }
         },
-        scene: [Preloader, Game, InteractUI]
+        scene: [Preloader, Game, InteractUI, DialogBox]
       }
-      game = new Phaser.Game(config)
+      worldGame = new Phaser.Game(config)
     }
 
     window.addEventListener('message', handleMessage)
 
     return () => {
-      if (game != null) {
+      if (worldGame != null) {
         // Realizar las tareas de limpieza de Phaser si es necesario
-        // game.destroy()
-        game = null
+        worldGame.destroy(true, false)
+        worldGame = null
       }
       window.removeEventListener('message', handleMessage)
     }

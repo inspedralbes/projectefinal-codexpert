@@ -2,7 +2,7 @@ import '../styles/normalize.css'
 import '../styles/Lobbies.css'
 import ChatLobby from '../components/ChatLobby'
 import ConnectedUsers from '../components/ConnectedUsers'
-import QuestionLibrary from '../components/QuestionLibrary'
+// import QuestionLibrary from '../components/QuestionLibrary'
 import React, { useState, useEffect } from 'react'
 import Settings from './Settings'
 import Modal from 'react-modal'
@@ -25,7 +25,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [showModal, setShowModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
   const [saveSettings, setSaveSettings] = useState(0)
-  const [questionsData, setQuestionsData] = useState([])
+  // const [questionsData, setQuestionsData] = useState([])
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -47,7 +47,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
         break
 
       case 'questions-event':
-        setQuestionsData(eventData.questionsData)
+        // setQuestionsData(eventData.questionsData)
         break
 
       case 'lobby_settings-event':
@@ -150,7 +150,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
               </button>
             </div>
           </Modal>
-          <QuestionLibrary questionsData={questionsData}></QuestionLibrary>
+          {/* <QuestionLibrary questionsData={questionsData}></QuestionLibrary> */}
         </>)
         : (<></>)}
       <ConnectedUsers></ConnectedUsers>
