@@ -1,5 +1,6 @@
 import '../styles/normalize.css'
 import '../styles/Lobbies.css'
+import '../styles/form.css'
 import ChatLobby from '../components/ChatLobby'
 import ConnectedUsers from '../components/ConnectedUsers'
 // import QuestionLibrary from '../components/QuestionLibrary'
@@ -111,7 +112,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
 
   return (
     <div id="lobbyJoined" className="lobbies__lobby lobby">
-      <button id="goBackToLobby__button" onClick={handleLeave}>
+      <button id="goBack__button" className='width' onClick={handleLeave}>
         <span className="circle" aria-hidden="true">
           <span className="icon arrow"></span>
         </span>
@@ -119,7 +120,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
       </button>
       {window.network.getShowSettings()
         ? (<>
-          <button className="noBtn" onClick={() => setShowModal(true)}><img className="settings" src={settings} alt='SETTINGS' height={'50px'}></img></button>
+          <button className="noBtn" onClick={() => setShowModal(true)}><img className="settings" src={settings} alt='SETTINGS' height={'70px'}></img></button>
           <Modal
             style={{
               // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS

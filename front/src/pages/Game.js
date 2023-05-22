@@ -11,6 +11,7 @@ import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
 import CodeMirror from '../components/CodeMirror'
 import Timer from '../components/Timer'
 import heart from '../img/corazon_roto.gif'
+import jose from '../img/jose.gif'
 import Modal from 'react-modal'
 
 function Game() {
@@ -148,18 +149,19 @@ function Game() {
 
         <div className='container__left'>
           <Modal
-            className='correctAnsw'
+            className='correctAnsw game__modal'
             isOpen={CmodalIsOpen}
             onAfterOpen={afterOpenModal}
           >
-            YOU DID IT!! :)
+            YOU DID IT ! ! :)
+            <img src={jose} alt='' height={'300px'}></img>
           </Modal>
           <Modal
-            className='incorrectAnsw animate__animated animate__tada'
+            className='incorrectAnsw game__modal animate__animated animate__tada'
             isOpen={ImodalIsOpen}
             onAfterOpen={afterOpenModal}
           >
-            TRY AGAIN :(
+            TRY AGAIN!!
             <img src={heart} alt='' height={'300px'}></img>
           </Modal>
           <div className={playable ? 'started__game' : 'ended__game'}>

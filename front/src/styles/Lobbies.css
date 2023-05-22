@@ -459,12 +459,12 @@
 }
 
 #goBackToLobby__button {
-    position: relative;
+    position: relative !important;
     display: inline-block;
     cursor: pointer;
     outline: none;
     border: 0;
-    float: right;
+    float: left;
     vertical-align: middle;
     text-decoration: none;
     background: transparent;
@@ -789,6 +789,8 @@
     position: fixed;
     display: flex;
     bottom: 0;
+    left: 30px;
+
 }
 
 .inputMsg-div {
@@ -916,16 +918,21 @@
 .settings{
     transition: all 0.5s;
     transform: rotate(0);
-    margin: 10px 10px 10px 50px;
+    margin: 5px 10px 10px 50px;
 }
 
 
 .noBtn{
     border:none;
     background: none;
+    float: right;
 }
 
 .red input, .red::after, .red::before{
     background: #ffbdbd;
     transition: all 0.2s ease-in-out;
+}
+
+lobbyback{
+    position: absolute !important;
 }

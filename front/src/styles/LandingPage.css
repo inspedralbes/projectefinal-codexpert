@@ -77,8 +77,7 @@
 }
 
 .codexpert__intro {
-    text-align: justify;
-    text-align-last: center;
+    text-align: center;
     font-size: 60%;
-    line-height: 25px;
+    line-height: 32px;
 }
