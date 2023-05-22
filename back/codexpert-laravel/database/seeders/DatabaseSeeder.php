@@ -515,42 +515,40 @@ class DatabaseSeeder extends Seeder
             //NPC 1
             {     
                 {
-                    //Dialogue 1
-                    $dialogue = (object)[
-                    "options" => ["Option 1", "Option 2", "Option 3"],
-                    "answers" => ["Answer 1", "Answer 2", "Answer 3"],
-
-                    ];
-                    $dialogue = json_encode($dialogue);
-                    
+                    //Dialogue 1                    
                     $newNPC = new npc;
                     $newNPC -> name = "Gaspar";
-                    $newNPC -> introduction = "Hi! (with rizz) My name is Gaspar. I love Node :D";
+                    $newNPC -> introduction = "Hi! (with rizz) My name is Gaspar. I love NodeJS :D";
                     $newNPC -> save();
                     
                     $newDialogueOption = new Dialogue;
                     $newDialogueOption -> npc_id = $newNPC -> id;
                     $newDialogueOption -> sentence = "Did you know you could sort arrays with array.sort?";
-                    $newDialogueOption -> dialogueOptions = $dialogue;
-                    $newDialogueOption -> save(); 
+                    $newDialogueOption -> save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption -> npc_id = $newNPC -> id;
+                    $newDialogueOption -> sentence = "You can also declare variables with \"const\", but these cannot be changed.";
+                    $newDialogueOption -> save();
                     }
                 {
                     //Dialogue 2
-                    $dialogue = (object)[
-                        "options" => [],
-                        "answers" => ["Answer Onichan 1"],
+                    $newNPC = new npc;
+                    $newNPC -> name = "Alessia";
+                    $newNPC -> introduction = "Welcome to CodeWorld! My name is Alessia, nice to meet you!";
+                    $newNPC -> save();
 
-                    ];
-                    $dialogue = json_encode($dialogue);                  
                     $newDialogueOption = new Dialogue;
                     $newDialogueOption -> npc_id = $newNPC -> id;
-                    $newDialogueOption -> sentence = "Did you know you I can scream onichan?";
-                    $newDialogueOption -> dialogueOptions = $dialogue;
-                    $newDialogueOption -> save(); 
-                }
+                    $newDialogueOption -> sentence = "You can convert string into uppercase characters with stringExample.toUpperCase()!";
+                    $newDialogueOption -> save();
 
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption -> npc_id = $newNPC -> id;
+                    $newDialogueOption -> sentence = "You can convert string into lowercase characters with stringExample.toLowerCase()!";
+                    $newDialogueOption -> save();
+                }
             }
-            
         }
     }
 }
