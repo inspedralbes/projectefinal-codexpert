@@ -93,6 +93,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/getPendingRequests', [FriendController::class, 'getPendingRequests']);  
     
     Route::post('/markNotificationsAsRead', [FriendController::class, 'markNotificationsAsRead']);  
+    
+    Route::post('/checkExpertiseChosen', [TutorialController::class, 'checkExpertiseChosen']);
 
     Route::post('/getAllNPCS', [NPCController::class, 'getAllNPCS']);  
 

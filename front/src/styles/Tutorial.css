@@ -1,14 +1,3 @@
-.tutorial {
-    background-color: white;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: flex-start;
-    align-items: center;
-}
 
 .tutorial__container {
     border: 3px solid #fff;
@@ -18,25 +7,42 @@
     margin: 0 auto;
     height: 100vh;
     display: grid;
-    grid-template-columns: 0.7fr 1.6fr;
+    grid-template-columns: 40% 60%;
     grid-template-rows: 1fr;
-    gap: 0px 0px;
+    gap: 0 20px;
     overflow: hidden;
 }
 
-.tutorial--grid {
-    margin-top: 0px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
+.tutorial__statement {
+    height: 300px;
+    
 }
 
-.tutorial__statementTitle,
-.tutorial__expectedInput h1,
-.tutorial__expectedOutput h1 {
-    font-size: 0.6em;
+.tutorial__statement h1 {
+    max-height: 200px;
+}
+
+.slider-container {
+    height: 43vh;
+    width: 100%;
+    max-height: 43vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: white;
+    border: 3px solid black;
+    padding: 10px;
+}
+
+.next-carousel:disabled, .next-carousel:disabled::after, .next-carousel:disabled::before, .next-carousel:disabled:hover::after, .next-carousel:disabled:hover::before {
+    background-color: grey;
+}
+
+.next-carousel:hover::after, .next-carousel:hover::before {
+    background-color: #027202;
+}
+
+.introduction-text p {
+    height: -10vw;
 }
 
 .introduction__container h1 {
@@ -57,105 +63,32 @@
     color: rgb(79, 79, 243);
 }
 
-
-.tutorial__statement,
-.tutorial__expectedOutput,
-.tutorial__expectedInput {
-    background: var(--pixel-bg);
-    margin: 10px;
-    padding: 10px;
-    width: 98%;
-    border-color: #000000;
-    border-style: solid;
-    border-width: 6px 0;
-    color: #000000;
-    position: relative;
-}
-
-.tutorial__statement {
-    margin-bottom: 0;
-}
-
-.tutorial__expectedInput,
-.tutorial__expectedOutput {
-    width: 47.4%;
-    margin: 2px 14px;
-}
-
-.tutorial__statement::after,
-.tutorial__expectedOutput::after,
-.tutorial__expectedInput::after,
-.userList__user::after {
-    background-color: var(--pixel-bg);
-    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
-    content: "";
-    display: block;
-    height: calc(100% - 12px);
-    position: absolute;
-    right: -6px;
-    top: 6px;
-    width: 6px;
-}
-
-.tutorial__statement::before,
-.tutorial__expectedOutput::before,
-.tutorial__expectedInput::before,
-.userList__user::before {
-    background-color: var(--pixel-bg);
-    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
-    content: "";
-    display: block;
-    height: calc(100% - 12px);
-    position: absolute;
-    left: -6px;
-    top: 6px;
-    width: 6px;
-}
-
-.tutorial__results {
-    color: black;
-    margin: 0 auto;
-    width: fit-content;
-    text-align: left;
-    height: 100vh;
-}
-
-.tutorial__result {
-    align-self: center;
-    margin: 10px 4px 10px 2px;
-    width: 98%;
-}
-
-.tutorial__submit {
-    margin: 10px auto;
-    padding: 20px;
-    float: right;
-    width: 20%;
-    height: fit-content;
-    box-shadow: none;
-}
-
-.nextButtonCarousel, .prevButtonCarousel {
-    margin-top: 330px;
-    width: 40%;
-    background-color: green;
-    border-color: #000000;
-    border-style: solid;
-    border-width: 6px 0;
+.prevButtonCarousel,
+.nextButtonCarousel {
+    width: 100px;
+    background-color: green !important;
+    border: 1px solid black !important;
+    border-width: 6px 0 !important;
     color: #ffffff;
-    display: inline-block;
-    padding: 20px;
-    position: relative;
-    font-size: 80%;
-    text-decoration: none;
-    text-transform: uppercase;
+    padding: 5px !important;
+    position: fixed;
+    top: 55%;
+    font-size: 100%;
     color: #ffffff;
     transition: all 0.5s;
     height: 90px;
-    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.37);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.37);
 }
 
-.nextButtonCarousel::after, .prevButtonCarousel::after {
+.prevButtonCarousel {
+    left: 3%;
+}
+.nextButtonCarousel {
+    left: 33%;
+}
+
+.nextButtonCarousel::after,
+.prevButtonCarousel::after {
     background-color: green;
     box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -168,7 +101,8 @@
     transition: all 0.5s;
 }
 
-.nextButtonCarousel::before, .prevButtonCarousel::before {
+.nextButtonCarousel::before,
+.prevButtonCarousel::before {
     background-color: green;
     box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
     content: "";
@@ -179,21 +113,153 @@
     top: 6px;
     width: 6px;
     transition: all 0.5s;
-}
-
-.dotsCarousel {
-    
-}
-
-.awa button {
-    background: white;
 }
 
 .containerCarousel {
     color: white;
-    height: 0px;
+    position: fixed;
+    top: 55%;
+    left: 20%;
 }
 
 .hiddenCarousel {
     visibility: hidden;
+}
+
+.hint__cover {
+    position: absolute;
+    top: 67.9%;
+    width: 39%;
+    height: 30%;
+    z-index: 1;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid black;
+    border-width: 3px 0;
+    transition: all 0.5s;
+    text-align: center;
+}
+
+.hint__cover::after {
+    background-color: transparent;
+    box-shadow: 3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    height: calc(100% - 3px);
+    position: absolute;
+    right: 0px;
+    top: 2px;
+    width: 3px;
+    transition: all 0.5s;
+}
+
+.hint__cover::before {
+    background-color: transparent;
+    box-shadow: -3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    height: calc(100% - 3px);
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    width: 3px;
+    transition: all 0.5s;
+}
+
+.hint__cover img{
+    position: absolute;
+    padding: 35px;
+    text-align: center;
+    border: 5px solid #88D34A;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    background-color: rgb(214, 214, 214);
+    border-radius: 50%;
+    transition: 0.5;
+    cursor: pointer;
+    margin: -50px 0 0 -40px;
+    background-image: url(../img/closedEye.png);
+    transition: background-image 0.2s ease-in;
+    background-size: cover;
+}
+
+.hint__cover img:hover{
+    background-image: url(../img/openEye.png);
+    background-color: rgb(233, 233, 233);
+}
+
+.hint__container {
+    position: absolute;
+    top: 67.9%;
+    width: 39%;
+    border: 0px;
+}
+
+.hint__container div{
+    padding-left: 15px;
+    padding-top: 15px;
+    height: 30vh;
+    overflow-y: auto;
+    background-color: rgb(226, 226, 226);
+    border: 1px solid black;
+    border-width: 3px 0;
+    margin: 0vh;
+}
+
+.hint__container div::after {
+    box-shadow: 3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 6px);
+    position: absolute;
+    right: 0px;
+    top: 3px;
+    width: 6px;
+}
+
+.hint__container div::before {
+    background-color: transparent;
+    box-shadow: -3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 6px);
+    position: absolute;
+    left: 0px;
+    top: 3px;
+    width: 6px;
+}
+
+.inputOutputExample {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 1fr;
+}
+.inputOutputExample ul {
+    margin-top: 0;
+    font-size: 1vw;
+    list-style: none;
+    text-align: left;
+}
+
+.goBack-button {
+    font-size: 0.6vw;
+    background-color: #88D34A;
+    padding: 0;
+    margin-left: 3%;
+    width: 15%;
+    height: 4%;
+    box-shadow: none;
+    color: black;
+}
+
+.goBack-button::after, .goBack-button::before {
+    background-color: #88D34A;
+}
+
+.goBack-button:hover, .goBack-button:hover::after, .goBack-button:hover::before {
+    background-color: #6daa3a;
+}
+
+.introduction-title {
+    display: inline-block;
+    margin-left: 13%;
 }

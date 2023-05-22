@@ -1,0 +1,6 @@
+.header__container {
+    position: absolute;
+    right: 5%;
+    top: 50px;
+    display: flex;
+}

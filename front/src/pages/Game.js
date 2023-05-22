@@ -173,12 +173,14 @@ function Game() {
           {playable && <div className='game__playing' >
             <div className='game__statement'>
               <h2>Statement:</h2>
-              <h1 className='game__statementTitle'>{qst.statement}</h1>
+              <h1 className='game__statementTitle' id="scroll">{qst.statement}</h1>
+            </div>
+            <div>
+              progres bar
             </div>
             <div className='game--grid'>
               <div className='editor--div'>
                 <div className='pixelart-to-css'></div>
-
                 <div className='editor__expected'>
                   <div className='game__expectedInput'>
                     <h2>Example input:</h2>
@@ -188,17 +190,21 @@ function Game() {
                     <h2>Example output:</h2>
                     <h1>{qst.output.toString()}</h1>
                   </div>
-                  <div className='game__expectedOutput game__result'>
-                    <h2>Result:</h2>
-                    <h1>  {error !== '' && <div>{error}</div>}</h1>
-                  </div>
                 </div>
-                <form className='editor' onSubmit={handleSubmit}>
-                  <CodeMirror code={code} setCode={setCode}></CodeMirror>
-                  <button className='pixel-button game__submit' disabled={code === ''}>
+                <form className="editor" onSubmit={handleSubmit}>
+                <CodeMirror id="codemirror" code={code} setCode={setCode}></CodeMirror>
+                <div className='result__container'>
+                  <div className="game__result">
+                    <h1>{error !== '' && <div>{error}</div>}</h1>
+                  </div>
+                  <button
+                    className="pixel-button game__submit"
+                    disabled={code === ''}
+                  >
                     Submit
                   </button>
-                </form>
+                </div>
+              </form>
               </div>
             </div>
 
