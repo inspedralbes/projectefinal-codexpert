@@ -114,8 +114,9 @@ socket.on('username', (data) => {
   window.network.setUsername(data.username)
   window.postMessage({ type: 'username-event' }, '*')
 })
-socket.on('update_characters', (data) => {
-  window.postMessage({ type: 'update_characters-msg', charactersData: data }, '*')
+
+socket.on('update_character', (data) => {
+  window.postMessage({ type: 'update_character-msg', characterData: data }, '*')
 })
 
 socket.on('YOU_ARE_ON_LOBBY', (data) => {

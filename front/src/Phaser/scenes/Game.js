@@ -35,10 +35,11 @@ export default class Game extends Phaser.Scene {
   events = new Phaser.Events.EventEmitter()
   interactEvent
   canInteract = true
-  scoreText
+  nameTagText
   username = 'guest'
   actualState = 'idle'
   lastSpeed = defaultSpeed
+  othersprites = []
 
   constructor() {
     super('game')
@@ -59,9 +60,8 @@ export default class Game extends Phaser.Scene {
         this.inDialogue = false
         break
 
-      case 'update_characters-msg':
-        // this.changeCharacters()
-        console.log(eventData.charactersData)
+      case 'update_character-msg':
+        this.changeCharacters(eventData.characterData)
         break
 
       default:
@@ -71,7 +71,23 @@ export default class Game extends Phaser.Scene {
   }
 
   changeCharacters(charactersData) {
-  
+    if (this.othersprites[0] != undefined) {
+      for (const sprite of this.othersprites) {
+        sprite.destroy(true)
+        this.othersprites = []
+      }
+      this.others = charactersData
+    }
+
+    if (this.others != null) {
+      for (let i = 0; i < others.length; i++) {
+        const newPlayer = this.physics.add.sprite(this.others[i].x, this.others[i].y, 'strawberry')
+        this.physics.add.existing(newPlayer)
+        newPlayer.setDepth(999)
+        this.othersprites.push(newPlayer)
+        console.log('entra')
+      }
+    }
   }
 
   preload() {
@@ -90,19 +106,20 @@ export default class Game extends Phaser.Scene {
 
 
   create() {
-    this.scoreBoard = this.add.container(0, 0)
-    this.scoreText = this.add.text(PUNTOAPARICION.x, PUNTOAPARICION.y, this.username, {
+    this.nameTagContainer = this.add.container(0, 0)
+    this.nameTagText = this.add.text(PUNTOAPARICION.x, PUNTOAPARICION.y, this.username, {
       fontSize: '6px',
       color: '#fff',
       align: 'center',
       backgroundColor: '#00000070',
       resolution: 2,
+      wordWrap: { useAdvancedWrap: true },
       fontFamily: 'pixel_operator',
     })
 
-    this.scoreBoard.add(this.scoreText)
-    this.scoreBoard.setDepth(100)
-    this.add.existing(this.scoreBoard)
+    this.nameTagContainer.add(this.nameTagText)
+    this.nameTagContainer.setDepth(100)
+    this.add.existing(this.nameTagContainer)
 
     this.createAnims('strawberry')
     this.map = this.make.tilemap({ key: 'map' })
@@ -242,7 +259,7 @@ export default class Game extends Phaser.Scene {
         const message = this.getCurrentDialog(this.npcData)
 
         window.postMessage({ type: 'end_interaction_with_npc' }, '*')
-        window.postMessage({ type: 'interaction_with_npc', npcData: { message } }, '*')
+        window.postMessage({ type: 'interaction_with_npc', npcData: { message, name: this.npcData.character } }, '*')
       }
 
       if (!this.inDialogue) {
@@ -340,8 +357,8 @@ export default class Game extends Phaser.Scene {
       this.strawberry.body.velocity.x = 0
       this.strawberry.body.velocity.y = 0
     }
-    this.scoreText.x = charX - 10
-    this.scoreText.y = charY - 15
+    this.nameTagText.x = charX - 10
+    this.nameTagText.y = charY - 15
 
     if (lastState === 'idle' && this.actualState === 'move' || !moved && lastState === 'move' || changedSpeed) {
       window.postMessage({ type: 'started_to_walk-emit', moveDataToSend }, '*')

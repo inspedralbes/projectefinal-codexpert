@@ -37,7 +37,10 @@ export default class Preloader extends Phaser.Scene {
 
     // Mobs
     this.load.atlas('chicken', 'assets/mobs/chicken/chicken.png', 'assets/mobs/chicken/chicken.json')
+    this.load.atlas('chicken_baby', 'assets/mobs/chicken/chicken_baby.png', 'assets/mobs/chicken/chicken_baby.json')
     this.load.atlas('bunny', 'assets/mobs/bunny/bunny.png', 'assets/mobs/bunny/bunny.json')
+    this.load.atlas('cow', 'assets/mobs/cow/cow.png', 'assets/mobs/cow/cow.json')
+    this.load.atlas('cow_baby', 'assets/mobs/cow/cow_baby.png', 'assets/mobs/cow/cow_baby.json')
   }
 
   create() {

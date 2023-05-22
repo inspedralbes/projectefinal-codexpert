@@ -4,6 +4,7 @@ export default class DialogBox extends Phaser.Scene {
   gameObject
   dialog
   destroyText = false
+  npcName
 
   constructor() {
     super({ key: 'dialog-ui' })
@@ -20,6 +21,7 @@ export default class DialogBox extends Phaser.Scene {
       case 'interaction_with_npc':
         this.destroyText = true
         this.dialog = eventData.npcData.message
+        this.npcName = eventData.npcData.name
         this.createDialogs()
         break
 
@@ -37,6 +39,10 @@ export default class DialogBox extends Phaser.Scene {
   }
 
   createDialogs() {
+    const containerInteract = this.add.container(0, window.innerHeight / 2.5)
+
+    const whoAmITalkingToTextWidth = this.sys.game.config.width * 0.95
+
     // Obtener las dimensiones del lienzo
     const canvasWidth = this.sys.game.config.width
     const canvasHeight = this.sys.game.config.height
@@ -59,6 +65,17 @@ export default class DialogBox extends Phaser.Scene {
     this.dialogContainer.add(dialogBackground)
 
     const textWidth = dialogWidth * 0.95
+
+    const whoAmITalkingTo = this.add.text(40, -40, this.npcName, {
+      color: '#FFFFFF',
+      backgroundColor: '#00000070',
+      fontSize: '16px',
+      resolution: 2,
+      fontFamily: 'pixel_operator',
+      wordWrap: { width: whoAmITalkingToTextWidth, useAdvancedWrap: true }
+    })
+    containerInteract.add(whoAmITalkingTo)
+    this.add.existing(containerInteract)
 
     // Crear el texto del cuadro de diálogo
     const dialogText = this.add.text(10, 15, '', {

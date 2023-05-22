@@ -82,9 +82,6 @@ const maxSettings = {
 };
 
 socketIO.on("connection", (socket) => {
-  socket.on("prueba_phaser", (data) => {
-    console.log(data.message);
-  });
   socket.data.current_lobby = null;
   socket.data.token = null;
 
@@ -164,6 +161,7 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("started_to_walk", (data) => {
+
     charactersWorld.forEach((character) => {
       if (character.id === socket.id) {
         character.x = data.x;
@@ -171,7 +169,8 @@ socketIO.on("connection", (socket) => {
         character.direction = data.direction;
       }
     });
-    socketIO.to("phaser_world_room").emit("update_characters", charactersWorld);
+
+    socketIO.to("phaser_world_room").emit("update_character", charactersWorld);
   });
 
   sendLobbyList();
