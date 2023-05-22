@@ -36,6 +36,13 @@
     width: 6px;
 }
 
+.addQuestionPixel__container h1{
+    font-size: 2.3vw;
+    margin-bottom: 40px;
+    font-family: karmatic;
+    text-transform: uppercase;
+}
+
 .grid-inputs__container {
   display: grid;
   grid-template-columns: 50% 50%;
@@ -50,7 +57,7 @@
     width: 90%;
     height: 100px;
     resize: none;
-    font-size: 1.4vw;
+    font-size: 1vw;
 }
 
 .statement__container p {
@@ -91,28 +98,42 @@
 
 .grid__container {
     display: grid;
-    grid-template-columns: 90% 10%;
+    grid-template-columns: 100%;
     padding: 10px;
-    margin: 30px 0px 0 0px;
+    margin: 10px 0px 0 0px;
     width: 100%;
 }
 
 .inputOutput__container {
     display: grid;
-    grid-template-columns: 43% 5% 42% 10%;
-    overflow-y: auto;
+    grid-template-columns: 38% 5% 37% 20%;
+    overflow-y:scroll;
     overflow-x: hidden;
     padding: 10px;
     width: 100%;
-    max-height: 190px;
+    max-height: 8.75vw;
 }
+
+.inputOutput__container h1 {
+    font-size: 4.3vw;
+    font-family: karmatic;
+    text-transform: uppercase;
+}
+
 .inputOutput__container input {
     font-size: 1vw;
+    width: 90%;
     margin-top: 10px;
 }
 
 .inputArrows__conainer {
     margin-top: 42px;
+}
+.inputArrows__conainer img{
+    padding: 0;
+    margin: 0;
+    width: 1.67vw;
+    height: 1.67vw;
 }
 
 .setPublic__label:hover {
@@ -129,18 +150,22 @@
     margin-left: 0px;
 }
 
-.addInputOutput-button {
-    height: 100%;
-    width: 50%;
+.addInputOutput-link {
+    text-decoration: underline;
+    user-select: none;
+    cursor: pointer;
+    color: #2cb40a;
+    font-size: 15px;
 }
 
 .removeItem__conainer {
-    margin-top: 40px;
+    margin-top: 32px;
 }
 
 .removeItem__conainer button {
-    width: 31%;
-    height: 25px;
+    width: 70%;
+    font-size: 15px;
+    height: 1.1vw;
     padding: 0;
     margin-top: 8%;
     color: white;
