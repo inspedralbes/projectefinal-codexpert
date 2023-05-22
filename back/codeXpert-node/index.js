@@ -16,6 +16,7 @@ const laravelRoute = process.env.LARAVEL_ROUTE;
 
 const lobbies = [];
 const sesiones = [];
+const charactersWorld = [];
 // ============= SOCKET ROOMS ===========
 
 const socketIO = require("socket.io")(server, {
@@ -112,6 +113,10 @@ socketIO.on("connection", (socket) => {
           socket.data.elo = response.data.elo;
           socket.data.hearts_remaining = -1;
           socket.data.question_at = -1;
+
+          socketIO.to(socket.id).emit("username", {
+            username: response.data.name
+          });
         }
       }
       )
@@ -146,6 +151,27 @@ socketIO.on("connection", (socket) => {
     } else {
       sendLobbyList();
     }
+  });
+
+  socket.on("connected_phaser_world", (data) => {
+    charactersWorld.push({ name: socket.data.name, x: data.x, y: data.y, direction: "", id: socket.id });
+    socket.join("phaser_world_room");
+    socket.data.inCodeWorld = true;
+  });
+
+  socket.on("left_phaser_world", () => {
+    leavePhaserWorld(socket);
+  });
+
+  socket.on("started_to_walk", (data) => {
+    charactersWorld.forEach((character) => {
+      if (character.id === socket.id) {
+        character.x = data.x;
+        character.y = data.y;
+        character.direction = data.direction;
+      }
+    });
+    socketIO.to("phaser_world_room").emit("update_characters", charactersWorld);
   });
 
   sendLobbyList();
@@ -495,8 +521,23 @@ socketIO.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     leaveLobby(socket);
+    if (socket.data.inCodeWorld) {
+      leavePhaserWorld(socket);
+    }
   });
 });
+
+function leavePhaserWorld(socket) {
+  if (socket.data.inCodeWorld) {
+    charactersWorld.forEach((character, index) => {
+      if (character.id === socket.id) {
+        charactersWorld.splice(index, 1);
+      }
+    });
+    socket.data.inCodeWorld = false;
+    socket.leave("phaser_world_room");
+  }
+}
 
 async function sendQuestionsToUser(socket) {
   await axios

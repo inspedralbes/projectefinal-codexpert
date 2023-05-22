@@ -24,6 +24,8 @@ const PUNTOAPARICION = {
   y: 350
 }
 
+const defaultSpeed = 125
+
 export default class Game extends Phaser.Scene {
   // navigate = useNavigate()
   strawberry
@@ -33,10 +35,15 @@ export default class Game extends Phaser.Scene {
   events = new Phaser.Events.EventEmitter()
   interactEvent
   canInteract = true
+  scoreText
+  username = 'guest'
+  actualState = 'idle'
+  lastSpeed = defaultSpeed
 
   constructor() {
     super('game')
     this.overlap = false
+    this.username = window.network.getUsername()
 
     // Window event listener for event handling
     window.addEventListener('message', this.handleMessage)
@@ -52,10 +59,19 @@ export default class Game extends Phaser.Scene {
         this.inDialogue = false
         break
 
+      case 'update_characters-msg':
+        // this.changeCharacters()
+        console.log(eventData.charactersData)
+        break
+
       default:
         // UNKNOWN EVENT
         break
     }
+  }
+
+  changeCharacters(charactersData) {
+  
   }
 
   preload() {
@@ -74,6 +90,20 @@ export default class Game extends Phaser.Scene {
 
 
   create() {
+    this.scoreBoard = this.add.container(0, 0)
+    this.scoreText = this.add.text(PUNTOAPARICION.x, PUNTOAPARICION.y, this.username, {
+      fontSize: '6px',
+      color: '#fff',
+      align: 'center',
+      backgroundColor: '#00000070',
+      resolution: 2,
+      fontFamily: 'pixel_operator',
+    })
+
+    this.scoreBoard.add(this.scoreText)
+    this.scoreBoard.setDepth(100)
+    this.add.existing(this.scoreBoard)
+
     this.createAnims('strawberry')
     this.map = this.make.tilemap({ key: 'map' })
 
@@ -140,7 +170,7 @@ export default class Game extends Phaser.Scene {
   }
 
   handleOverlap(colisionador, colisionado) {
-    const overlapObjectData = colisionado.data
+    const overlapObjectData = colisionado.properties
     this.overlapTmp = true
 
     if (!this.overlap) {
@@ -148,11 +178,12 @@ export default class Game extends Phaser.Scene {
 
       if (overlapObjectData.get('actionType') === 'navigate') {
         this.currentNavigate = overlapObjectData.get('route')
+        window.postMessage({ type: 'interaction_with_overlap_object', data: { name: this.currentNavigate, x: colisionado.x, y: colisionado.y, type: 'location' } }, '*')
       } else if (overlapObjectData.get('idNPC') > 0) {
         this.npcData = {
           character: overlapObjectData.get('sprite')
         }
-        console.log('npc con id ' + this.npcData.message)
+        window.postMessage({ type: 'interaction_with_overlap_object', data: { name: overlapObjectData.get('sprite'), x: colisionado.x, y: colisionado.y, type: 'npc' } }, '*')
       }
       if (this.canInteract) {
         this.scene.run('interact-ui')
@@ -212,13 +243,6 @@ export default class Game extends Phaser.Scene {
 
         window.postMessage({ type: 'end_interaction_with_npc' }, '*')
         window.postMessage({ type: 'interaction_with_npc', npcData: { message } }, '*')
-        // this.moveEvent = this.time.addEvent({
-        //   delay: 1500,
-        //   callback: () => {
-        //     this.inDialogue = false
-        //   },
-        //   loop: false
-        // })
       }
 
       if (!this.inDialogue) {
@@ -234,17 +258,36 @@ export default class Game extends Phaser.Scene {
       return
     }
 
+    const charX = this.strawberry.x
+    const charY = this.strawberry.y
+    const distance = 16
+
     let speed = 125
 
     if (this.keys.run?.isDown) {
       speed = 150
     }
 
-    const charX = this.strawberry.x
-    const charY = this.strawberry.y
-    const distance = 16
+    let changedSpeed = false
+
+    if (!(this.lastSpeed === speed)) {
+      changedSpeed = true
+    }
+
+    this.lastSpeed = speed
+
+    let moveDataToSend = {
+      direction: '',
+      x: charX,
+      y: charY,
+      speed: speed
+    }
+
+    let moved = false
+    let lastState = this.actualState
 
     if (this.cursors.left?.isDown || this.keys.left?.isDown) {
+      moveDataToSend.direction = 'left'
       this.strawberry.anims.play('strawberry-walk-left', true)
 
       this.strawberry.body.velocity.x = -speed
@@ -254,7 +297,10 @@ export default class Game extends Phaser.Scene {
 
       // this.strawberry.scaleX = -1
       this.strawberry.body.offset.x = 11
+      moved = true
+      this.actualState = 'move'
     } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
+      moveDataToSend.direction = 'right'
       this.strawberry.anims.play('strawberry-walk-right', true)
 
       this.strawberry.body.velocity.x = speed
@@ -264,20 +310,28 @@ export default class Game extends Phaser.Scene {
 
       // this.strawberry.scaleX = 1
       this.strawberry.body.offset.x = 11
+      moved = true
+      this.actualState = 'move'
     } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
+      moveDataToSend.direction = 'up'
       this.strawberry.anims.play('strawberry-walk-up', true)
 
       this.strawberry.body.velocity.x = 0
       this.strawberry.body.velocity.y = -speed
 
       this.selector.setPosition(charX, charY - distance)
+      moved = true
+      this.actualState = 'move'
     } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
+      moveDataToSend.direction = 'down'
       this.strawberry.anims.play('strawberry-walk-down', true)
 
       this.strawberry.body.velocity.x = 0
       this.strawberry.body.velocity.y = speed
 
       this.selector.setPosition(charX, charY + distance + 8)
+      moved = true
+      this.actualState = 'move'
     } else {
       const parts = this.strawberry.anims.currentAnim.key.split('-')
       parts[1] = 'idle'
@@ -285,6 +339,16 @@ export default class Game extends Phaser.Scene {
 
       this.strawberry.body.velocity.x = 0
       this.strawberry.body.velocity.y = 0
+    }
+    this.scoreText.x = charX - 10
+    this.scoreText.y = charY - 15
+
+    if (lastState === 'idle' && this.actualState === 'move' || !moved && lastState === 'move' || changedSpeed) {
+      window.postMessage({ type: 'started_to_walk-emit', moveDataToSend }, '*')
+    }
+
+    if (!moved) {
+      this.actualState = 'idle'
     }
   }
 
@@ -338,7 +402,7 @@ export default class Game extends Phaser.Scene {
           objData.set(prop.name, prop.value)
         })
         const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
-        gameObj.data = objData
+        gameObj.properties = objData
         this.overlapGroup.add(gameObj)
       })
 
@@ -355,7 +419,7 @@ export default class Game extends Phaser.Scene {
           objData.set(prop.name, prop.value)
         })
         const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
-        gameObj.data = objData
+        gameObj.properties = objData
         this.overlapGroup.add(gameObj)
       })
     }
@@ -368,7 +432,7 @@ export default class Game extends Phaser.Scene {
       })
       this.createAnims(objData.get('sprite'))
       const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, objData.get('sprite'), undefined, true)
-      gameObj.data = objData
+      gameObj.properties = objData
       this.npcGroup.add(gameObj)
     })
 
@@ -380,7 +444,7 @@ export default class Game extends Phaser.Scene {
       })
       this.createMobAnims(objData.get('sprite'))
       const gameObj = puntosMobs.get(objct.x + objct.width * 0.1, objct.y - objct.height * 0.1, objData.get('sprite'), undefined, true)
-      gameObj.data = objData
+      gameObj.properties = objData
       // console.log(gameObj)
       this.mobGroup.add(gameObj)
     })

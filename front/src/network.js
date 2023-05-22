@@ -19,6 +19,26 @@ const handleMessage = (event) => {
 
   // Event handle
   switch (eventData.type) {
+    case 'connected_phaser_world-emit':
+      socket.emit('connected_phaser_world', {
+        x: eventData.x,
+        y: eventData.y
+      })
+      break
+
+    case 'left_phaser_world-emit':
+      socket.emit('left_phaser_world')
+      break
+
+    case 'started_to_walk-emit':
+      socket.emit('started_to_walk', {
+        direction: eventData.moveDataToSend.direction,
+        x: eventData.moveDataToSend.x,
+        y: eventData.moveDataToSend.y,
+        speed: eventData.moveDataToSend.speed
+      })
+      break
+
     case 'send_token-emit':
       window.network.setToken(eventData.token)
       socket.emit('send_token', {
@@ -90,6 +110,14 @@ const handleMessage = (event) => {
 window.addEventListener('message', handleMessage)
 
 // Eventos socket
+socket.on('username', (data) => {
+  window.network.setUsername(data.username)
+  window.postMessage({ type: 'username-event' }, '*')
+})
+socket.on('update_characters', (data) => {
+  window.postMessage({ type: 'update_characters-msg', charactersData: data }, '*')
+})
+
 socket.on('YOU_ARE_ON_LOBBY', (data) => {
   window.network.setLobbyName(data.lobby_name)
   window.postMessage({ type: 'YOU_ARE_ON_LOBBY-event' }, '*')
