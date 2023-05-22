@@ -24,6 +24,10 @@ return new class extends Migration
             $table->integer('question_at')->default(0);
             $table->boolean('dead')->default(false);
             $table->boolean('finished')->default(false);
+            $table->integer('finished_position')->default(0);
+            $table->integer('coinsEarned')->default(0);
+            $table->integer('eloEarned')->default(0);
+            $table->integer('xpEarned')->default(0);
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');

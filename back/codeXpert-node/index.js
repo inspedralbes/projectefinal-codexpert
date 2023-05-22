@@ -370,7 +370,7 @@ socketIO.on("connection", (socket) => {
               if (willHaveOvertime) {
                 startOverTime(socket, overtimeDuration);
               } else {
-                endGame(socket);
+                endGame(socket.data.name, socket.data.current_lobby, socket.data.game_data.idGame);
               }
             } else {
               socket.data.resultMessage = "YOU FINISHED";
@@ -515,7 +515,6 @@ function startOverTime(socket, time) {
   const room = socket.data.current_lobby;
   const winnerName = socket.data.name;
   const idGame = socket.data.game_data.idGame;
-
   socketIO.to(room).emit("overtime_starts", { time: (time * 1000) });
 
   let cont = -1;

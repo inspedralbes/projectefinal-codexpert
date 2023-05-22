@@ -2,7 +2,7 @@ import '../styles/normalize.css'
 import '../styles/Lobbies.css'
 import ChatLobby from '../components/ChatLobby'
 import ConnectedUsers from '../components/ConnectedUsers'
-import QuestionLibrary from '../components/QuestionLibrary'
+// import QuestionLibrary from '../components/QuestionLibrary'
 import React, { useState, useEffect } from 'react'
 import Settings from './Settings'
 import Modal from 'react-modal'
@@ -23,10 +23,10 @@ JoinedLobby.propTypes = {
 function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const [showQuestionsModal, setShowQuestionsModal] = useState(false)
+  // const [showQuestionsModal, setShowQuestionsModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
   const [saveSettings, setSaveSettings] = useState(0)
-  const [questionsData, setQuestionsData] = useState({})
+  // const [questionsData, setQuestionsData] = useState([])
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -48,8 +48,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
         break
 
       case 'questions-event':
-        setQuestionsData(eventData.questionsData)
-        console.log(eventData)
+        // setQuestionsData(eventData.questionsData)
         break
 
       case 'lobby_settings-event':
@@ -91,7 +90,15 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
     setShowModal(false)
   }
 
+  const updateHistory = () => {
+    window.addEventListener('hashchange', function (e) {
+      e.preventDefault()
+      location.reload()
+    })
+  }
+
   useEffect(() => {
+    updateHistory()
     if (!showModal) setSaveSettings(0)
   }, [showModal])
 
@@ -152,37 +159,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
               </button>
             </div>
           </Modal>
-          <button onClick={() => setShowQuestionsModal(true)}>Questions</button>
-          <Modal
-            style={{
-              // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
-              content: {
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                marginRight: '-50%',
-                transform: 'translate(-50%, -50%)',
-                padding: '1%',
-                width: '60%',
-                height: '90%'
-              }
-            }}
-            onRequestClose={() => setShowQuestionsModal(false)}
-            shouldCloseOnOverlayClick={true}
-            isOpen={showQuestionsModal}
-          >
-            <QuestionLibrary questionsData={questionsData}></QuestionLibrary>
-            <br></br>
-            <div className="lobbyModal__buttons">
-              <button
-                className="pixel-button lobby-modalBtn"
-                onClick={() => setShowQuestionsModal(false)}
-              >
-                Close
-              </button>
-            </div>
-          </Modal>
+          {/* <QuestionLibrary questionsData={questionsData}></QuestionLibrary> */}
         </div>)
         : (<></>)}
       <ConnectedUsers></ConnectedUsers>
