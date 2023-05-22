@@ -281,7 +281,7 @@ class DatabaseSeeder extends Seeder
             //Level 1
             $tutorial_question = new Tutorial_question;
             $tutorial_question -> title = "INTRODUCTION TO VARIABLES";
-            $tutorial_question -> statement = "For this level, declare a variable (choose whatever name you like) using <b>let</b> and assign our variable input to it.";
+            $tutorial_question -> statement = "For this level, declare a variable (choose whatever name you like) using <span className='word__blue'>let</span> and assign our variable input to it.";
             $tutorial_question -> save();
             //Input 1
             $input = new Tutorial_test_input;

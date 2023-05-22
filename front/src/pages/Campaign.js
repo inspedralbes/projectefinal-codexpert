@@ -166,7 +166,7 @@ function Campaign() {
         </div>
       </Modal>
       <div className="campaignPixel__container">
-        <h1>Campaign</h1>
+        <h1>Tutorial list</h1>
       </div>
       <h2>Tutorial:</h2>
       <ul className="levels__list">

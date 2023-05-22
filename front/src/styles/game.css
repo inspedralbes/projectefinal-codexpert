@@ -48,7 +48,7 @@
 .game__playing {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 0.7fr 1.5fr;
+    grid-template-rows: 0.7fr 0.1fr 1.5fr;
     gap: 0 0;
     grid-template-areas: "." "." ".";
 }
@@ -151,7 +151,8 @@
 }
 
 .game__statementTitle {
-    max-height: 100px;
+    max-height: 160px;
+    height: 150px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -300,6 +301,7 @@ h2 {
 
 .codemirror__editor {
     width: 100%;
+    position: relative;
 }
 
 .game__submit {
@@ -328,6 +330,8 @@ h2 {
 }
 
 .editor__expected {
+    position: relative;
+    background-color: #ADE281;
     display: flex;
     justify-content: center;
     align-items: center;

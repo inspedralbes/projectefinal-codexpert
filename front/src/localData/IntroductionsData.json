@@ -1,7 +1,8 @@
 {
     "introductions": [
        { "introduction": [
-            "<p>Variables are used to store values, to declare variables we use the word let followed by the variable name and the value we want to store. For example: <b>let example = 3</b>, this would mean that example is worth 3.</p> <p>As you can see in the codexpert code editor, you will find a <b>function</b>, where your code needs to be writen. </p> <p>Remember to return the variable that you have used to solve the level. If for example we have created the variable example, we will need to write <b>return example</b> at the end of  the code.</p>"
+            "<p>Hello World!</p>",
+            "<p>Variables are used to store values, to declare them, we use the word <b>let</b> followed by the variable name and the value we want to store. For example: <b>let example = 3</b>, this would mean that example is worth 3.</p> <p>As you can see in the codexpert code editor, you will find a <b>function</b>, where your code needs to be writen. </p> <p>Remember to return the variable that you have used to solve the level. If for example we have created the variable example, we will need to write <b>return example</b> at the end of  the code.</p>"
         ]},
       { "introduction": [
             "<p>We use Arithmetic Operators to perform operations such as addition, subtraction, multiplication… Now you will learn the ones that are used the most!</p><p> Addition, Subtraction, Increment and Decrement</p><p>  - The <b>addition</b> operator is (+). For example: x + y;</p><p>  - The <b>subtraction</b> operator is (-). For example: x - y;</p><p>  - To increment a number by one we use the operator (++). For example: x++ is the same as x = x + 1;</p><p>  - To <b>decrement</b> a number by one be user the operator (--). For example: x--  is the same as x = x - 1;</p>",
@@ -21,7 +22,7 @@
             "<h3>do…while loop</h3><p>The difference between the while loop and the do while loop is that in the do while loop the code is executed once before checking if the condition is met. For example:</p><p>let i = 0;</p><p>do {</p><p>block of code to be executed</p><p>i++;</p><p>} while (i < 3)</p>"
         ]},
       { "introduction": [
-            "<p>There is no introduction for the final level. <b>:P</b></p>"
+            "<p>There is no introduction for the final level.<b>:P</b></p>"
         ]}
     ],
     "hints": [

@@ -175,6 +175,9 @@ function Game() {
               <h2>Statement:</h2>
               <h1 className='game__statementTitle' id="scroll">{qst.statement}</h1>
             </div>
+            <div>
+              progres bar
+            </div>
             <div className='game--grid'>
               <div className='editor--div'>
                 <div className='pixelart-to-css'></div>
@@ -188,17 +191,20 @@ function Game() {
                     <h1>{qst.output.toString()}</h1>
                   </div>
                 </div>
-                <div className='game__expectedOutput game__result'>
-                    <br></br>
-                    <h2>Result:</h2>
-                    <h1>  {error !== '' && <div>{error}</div>}</h1>
+                <form className="editor" onSubmit={handleSubmit}>
+                <CodeMirror id="codemirror" code={code} setCode={setCode}></CodeMirror>
+                <div className='result__container'>
+                  <div className="game__result">
+                    <h1>{error !== '' && <div>{error}</div>}</h1>
                   </div>
-                <form className='editor' onSubmit={handleSubmit}>
-                  <CodeMirror code={code} setCode={setCode}></CodeMirror>
-                  <button className='pixel-button game__submit' disabled={code === ''}>
+                  <button
+                    className="pixel-button game__submit"
+                    disabled={code === ''}
+                  >
                     Submit
                   </button>
-                </form>
+                </div>
+              </form>
               </div>
             </div>
 

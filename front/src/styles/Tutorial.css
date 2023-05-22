@@ -15,17 +15,34 @@
 
 .tutorial__statement {
     height: 300px;
+    
 }
 
 .tutorial__statement h1 {
-    max-height: 300px;
+    max-height: 200px;
 }
 
 .slider-container {
-    height: 45%;
+    height: 43vh;
     width: 100%;
+    max-height: 43vh;
     overflow-y: auto;
     overflow-x: hidden;
+    background-color: white;
+    border: 3px solid black;
+    padding: 10px;
+}
+
+.next-carousel:disabled, .next-carousel:disabled::after, .next-carousel:disabled::before, .next-carousel:disabled:hover::after, .next-carousel:disabled:hover::before {
+    background-color: grey;
+}
+
+.next-carousel:hover::after, .next-carousel:hover::before {
+    background-color: #027202;
+}
+
+.introduction-text p {
+    height: -10vw;
 }
 
 .introduction__container h1 {
@@ -68,20 +85,6 @@
 }
 .nextButtonCarousel {
     left: 33%;
-}
-
-.tutorial__container::-webkit-scrollbar-track {
-    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
-    border: 2px solid #000000;
-}
-
-.tutorial__container::-webkit-scrollbar {
-    width: 15px;
-}
-
-.tutorial__container::-webkit-scrollbar-thumb {
-    border-radius: 255px 15px 255px 15px / 15px 255px 15px 255px;
-    background-color: #104400;
 }
 
 .nextButtonCarousel::after,
@@ -129,7 +132,7 @@
     width: 39%;
     height: 30%;
     z-index: 1;
-    background-color: grey;
+    background-color: rgb(255, 255, 255);
     border: 1px solid black;
     border-width: 3px 0;
     transition: all 0.5s;
@@ -162,13 +165,14 @@
 
 .hint__cover img{
     position: absolute;
-    padding: 30px;
+    padding: 35px;
     text-align: center;
+    border: 5px solid #88D34A;
     top: 50%;
     left: 50%;
     width: 80px;
     height: 80px;
-    background-color: rgb(95, 95, 95);
+    background-color: rgb(214, 214, 214);
     border-radius: 50%;
     transition: 0.5;
     cursor: pointer;
@@ -180,7 +184,7 @@
 
 .hint__cover img:hover{
     background-image: url(../img/openEye.png);
-    background-color: rgb(66, 66, 66);
+    background-color: rgb(233, 233, 233);
 }
 
 .hint__container {
@@ -191,13 +195,13 @@
 }
 
 .hint__container div{
+    padding-left: 15px;
+    padding-top: 15px;
     height: 30vh;
     overflow-y: auto;
-    background-color: grey;
+    background-color: rgb(226, 226, 226);
     border: 1px solid black;
     border-width: 3px 0;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.37);
-    padding-inline-start: 0px;
     margin: 0vh;
 }
 
@@ -222,4 +226,40 @@
     left: 0px;
     top: 3px;
     width: 6px;
+}
+
+.inputOutputExample {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 1fr;
+}
+.inputOutputExample ul {
+    margin-top: 0;
+    font-size: 1vw;
+    list-style: none;
+    text-align: left;
+}
+
+.goBack-button {
+    font-size: 0.6vw;
+    background-color: #88D34A;
+    padding: 0;
+    margin-left: 3%;
+    width: 15%;
+    height: 4%;
+    box-shadow: none;
+    color: black;
+}
+
+.goBack-button::after, .goBack-button::before {
+    background-color: #88D34A;
+}
+
+.goBack-button:hover, .goBack-button:hover::after, .goBack-button:hover::before {
+    background-color: #6daa3a;
+}
+
+.introduction-title {
+    display: inline-block;
+    margin-left: 13%;
 }

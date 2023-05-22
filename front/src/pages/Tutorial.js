@@ -12,11 +12,16 @@ import parse from 'html-react-parser'
 import introductionData from '../localData/IntroductionsData.json'
 import arrowLeft from '../img/corousel-arrowLeft.png'
 import arrowRight from '../img/corousel-arrowRight.png'
+import closedEye from '../img/closedEye.png'
 import Modal from 'react-modal'
 
 Modal.setAppElement('body')
 
 function Tutorial() {
+  const [introductionExample, setIntroductionExample] =  useState([
+    "<p>Hello World!</p>",
+    "<p>Well done!</p>"
+  ])
   const location = useLocation()
   const cookies = new Cookies()
   const navigate = useNavigate()
@@ -24,24 +29,32 @@ function Tutorial() {
     'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
   const [error, setError] = useState('')
-  const [modal, setModal] = useState({
-    hello: true,
+  const [enableIntroductionNextButton, setEnableIntroductionNextButton] = useState({
     introduction: true,
-    hint: true,
-    statement: true,
-    inputOutput: true,
-    codeEditor: true,
-    submit: true,
+    hint: true
+  })
+  const [modal, setModal] = useState({
+    hello: false,
+    introduction: false,
+    hint: false,
+    statement: false,
+    inputOutput: false,
+    codeEditor: false,
+    submit: false,
   })
   const [qst, setQst] = useState({
     statement: '',
     inputs: [''],
     output: ''
   })
+
   useEffect(() => {
     if (location.state === null) {
       navigate('/campaign')
     } else {
+      if(location.state.id === 1) {
+        setModal(prev => ({ ...prev, hello: true }))
+      }
       let scroll = document.getElementsByClassName('slider-container')
       scroll[0].id = "scroll"
       const tutorialData = new FormData()
@@ -65,6 +78,7 @@ function Tutorial() {
 
   const handleHint = () => {
     document.getElementById('hint').style.display = 'none'
+    setEnableIntroductionNextButton(prev => ({ ...prev, hint: false }))
   }
 
   const handleSubmit = (e) => {
@@ -79,7 +93,7 @@ function Tutorial() {
         try {
           const res = eval(code)
           resultsEvalRecieved.push(res)
-          setError('')
+          setError('Result: ' + res)
         } catch (e) {
           setError(e.message)
           evalPassedBoolean = false
@@ -130,9 +144,9 @@ function Tutorial() {
     return (
       <div className="tutorial__container">
         
-        {location.state.id - 1 === 0 && ( // INTERFACE TUTORIAL
+        {location.state.id - 1 === 0 && ( // Interface tutorial
           <>
-          <Modal
+          <Modal // Welcome Modal
             style={{
               overlay: {
                 backgroundColor: 'rgba(0, 0, 0, 0.75)',
@@ -145,11 +159,16 @@ function Tutorial() {
             >
               <div>
                 <h1>Hello to your first Tutorial!</h1>
-                <p>This is your <b>first tutorial</b>, so let us show you how the interface works so you can learn <b>better</b>.</p>
-                <button className='pixel-button' onClick={() => setModal(prev => ({ ...prev, hello: false }))}>START</button>
+                <p style={{padding: 30}}>Let us show you how the interface works.</p>
+                <button className='pixel-button' onClick={() => {
+                  setModal(prev => ({ ...prev, hello: false }))
+                  setModal(prev => ({ ...prev, introduction: true }))
+                  document.querySelectorAll('.slider-container')[0].style.zIndex = 3
+                  document.querySelectorAll('.slider-container')[0].style.border = "10px solid black"
+                  }}>START</button>
               </div>
             </Modal>
-          <Modal
+          <Modal // Introduction Modal
             style={{
               overlay: {
                 backgroundColor: 'rgba(0, 0, 0, 0.75)',
@@ -157,35 +176,207 @@ function Tutorial() {
               },
               content: {
                 position: 'absolute',
-                top: '-400px',
-                left: '635px',
-                right: '0px',
-                
+                top: '-43%',
+                left: '40%',
               }
             }}
               onRequestClose={() => setModal(prev => ({ ...prev, introduction: false }))}
+              shouldCloseOnOverlayClick={false}
               isOpen={modal.introduction}
             >
               <div>
                 <h1>Introduction</h1>
-                <p>This is your <b>first tutorial</b>, so let us show you how the interface works so you can learn <b>better</b>.</p>
-                <button className='pixel-button'>START</button>
+                <p>This section only appears in the tutorial and serves to teach you everything you need to learn how to program. <b>Use its arrows <img src={arrowRight} width={30} height={30}  style={{backgroundColor:'#008000'}}></img> to switch pages.</b></p>
+                <button className='pixel-button next-carousel' disabled={enableIntroductionNextButton.introduction} onClick={() => {
+                  setModal(prev => ({ ...prev, introduction: false }))
+                  setModal(prev => ({ ...prev, hint: true }))
+                  setIntroductionExample(introductionData.introductions[location.state.id - 1].introduction)
+                  document.querySelectorAll('.slider-container')[0].style.zIndex = 1
+                  document.querySelectorAll('.slider-container')[0].style.border = "3px solid black"
+                  setTimeout(() => {
+                    document.querySelectorAll('.hint__container')[0].style.zIndex = 3
+                    document.querySelectorAll('.hint__container')[0].style.border = "3px solid black"
+                  }, 500)
+                  document.querySelectorAll('.hint__cover')[0].style.zIndex = 4
+                  document.querySelectorAll('.hint__cover')[0].style.border = "10px solid black"
+                  
+                  }}>NEXT</button>
+              </div>
+            </Modal>
+          <Modal // Hint Modal
+            style={{
+              overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                zIndex: 2
+              },
+              content: {
+                position: 'absolute',
+                top: '58%',
+                left: '40%',                
+              }
+            }}
+              onRequestClose={() => setModal(prev => ({ ...prev, hint: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.hint}
+            >
+              <div>
+                <h1>hint</h1>
+                <p>A little help never hurts! 
+                  <b>Click on the eye 
+                    <img src={closedEye} width={30} height={30}  style={{borderRadius: '50%', backgroundColor: 'rgb(214, 214, 214)', border: '2px solid #88D34A'}}></img> to see the hint 
+                  </b>
+                </p>
+                <br></br>
+                <p style={{fontSize: '15px'}}>(we recommend its use only if necessary ;D)</p>
+                <button className='pixel-button next-carousel' id="next" disabled={enableIntroductionNextButton.hint} onClick={() => {
+                  setModal(prev => ({ ...prev, hint: false }))
+                  setModal(prev => ({ ...prev, statement: true }))
+                  document.querySelectorAll('.hint__cover')[0].style.zIndex = 1
+                  document.querySelectorAll('.hint__cover')[0].style.border = "1px solid black"
+                  document.querySelectorAll('.hint__container')[0].style.zIndex = 1
+                  document.querySelectorAll('.hint__container')[0].style.border = "1px solid black"
+                  document.querySelectorAll('.tutorial__statement')[0].style.zIndex = 3
+                  document.querySelectorAll('.tutorial__statement')[0].style.border = "10px solid black"
+                  }}>NEXT</button>
+              </div>
+            </Modal>
+          <Modal // Statement Modal
+            style={{
+              overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                zIndex: 2
+              },
+              content: {
+                position: 'absolute',
+                top: '-55%',
+                left: '-57%',
+                width: '40%'
+              }
+            }}
+              onRequestClose={() => setModal(prev => ({ ...prev, statement: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.statement}
+            >
+              <div>
+                <h1>Statement</h1>
+                <p>You will find it in every game, <b>read it well if you want to have a perfect result!</b></p>
+                <button className='pixel-button next-carousel' id="next" disabled={enableIntroductionNextButton.hint} onClick={() => {
+                  setModal(prev => ({ ...prev, statement: false }))
+                  setModal(prev => ({ ...prev, inputOutput: true }))
+                  document.querySelectorAll('.tutorial__statement')[0].style.zIndex = 1
+                  document.querySelectorAll('.tutorial__statement')[0].style.border = "6px solid black"
+                  document.querySelectorAll('.tutorial__statement')[0].style.borderWidth = "6px 0"
+                  document.querySelectorAll('.editor__expected')[0].style.zIndex = 3
+                  document.querySelectorAll('.editor__expected')[0].style.border = "10px solid black"
+                  
+                  }}>NEXT</button>
+              </div>
+            </Modal>
+          <Modal // Input and Output Modal
+            style={{
+              overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                zIndex: 2
+              },
+              content: {
+                position: 'absolute',
+                top: '-5%',
+                left: '-57%',
+                width: '43%'
+              }
+            }}
+              onRequestClose={() => setModal(prev => ({ ...prev, inputOutput: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.inputOutput}
+            >
+              <div>
+                <h1>Input and Output</h1>
+                <p>The input is the variable we are going to give you, and the output is what we want to receive. <b>Be careful! there is not only one output check!</b></p>
+                <button className='pixel-button next-carousel' id="next" onClick={() => {
+                  setModal(prev => ({ ...prev, inputOutput: false }))
+                  setModal(prev => ({ ...prev, codeEditor: true }))
+                  document.querySelectorAll('.editor__expected')[0].style.zIndex = 1
+                  document.querySelectorAll('.editor__expected')[0].style.border = "0px solid black"
+                  document.querySelectorAll('.codemirror__editor')[0].style.zIndex = 3
+                  document.querySelectorAll('.codemirror__editor')[0].style.border = "10px solid black"
+                  }}>NEXT</button>
+              </div>
+            </Modal>
+          <Modal // CodeEditor Modal
+            style={{
+              overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                zIndex: 2
+              },
+              content: {
+                position: 'absolute',
+                top: '42%',
+                left: '-57%',
+                width: '40%'
+              }
+            }}
+              onRequestClose={() => setModal(prev => ({ ...prev, codeEditor: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.codeEditor}
+            >
+              <div>
+                <h1>Code editor</h1>
+                <p>Here is where you are going to <b>be the protagonist</b>, and where you are going to write your code and show the program that <b>you can</b>.</p>
+                <br></br>
+                <p style={{fontSize: '15px'}}>(We always recommend to return the input variable and start writing where it says "//code here")</p>
+                <button className='pixel-button next-carousel' id="next" onClick={() => {
+                  setModal(prev => ({ ...prev, codeEditor: false }))
+                  setModal(prev => ({ ...prev, submit: true }))
+                  document.querySelectorAll('.codemirror__editor')[0].style.zIndex = 1
+                  document.querySelectorAll('.codemirror__editor')[0].style.border = "0px solid black"
+                  document.querySelectorAll('.game__submit')[0].style.zIndex = 3
+                  document.querySelectorAll('.game__submit')[0].style.border = "10px solid black"
+                  }}>NEXT</button>
+              </div>
+            </Modal>
+          <Modal // Submit Modal
+            style={{
+              overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                zIndex: 2
+              },
+              content: {
+                position: 'absolute',
+                top: '42%',
+                left: '58.5%',
+                width: '40%'
+              }
+            }}
+              onRequestClose={() => setModal(prev => ({ ...prev, submit: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.submit}
+            >
+              <div>
+                <h1>Submit</h1>
+                <p>When you are sure you have done everything right, be sure to click this button to check that everything went well!</p>
+                <button className='pixel-button next-carousel' id="next" onClick={() => {
+                  setModal(prev => ({ ...prev, submit: false }))
+                  document.querySelectorAll('.game__submit')[0].style.zIndex = 1
+                  document.querySelectorAll('.game__submit')[0].style.border = "6px solid black"
+                  document.querySelectorAll('.game__submit')[0].style.borderWidth = "6px 0"
+                  }}>FINISH</button>
               </div>
             </Modal>
           </>
         )}
         <div className="introduction__container">
-          <h1>Introduction:</h1>
+          <button className='pixel-button goBack-button' onClick={() => navigate('/campaign')}>go back</button>
+          <h1 className='introduction-title'>Introduction:</h1>
           {introductionData.introductions[location.state.id - 1].introduction[0] !==
             '' && (
               <>
                 <Carousel
-                  adaptiveHeight={true}
                   defaultControlsConfig={{
                     containerClassName: 'containerCarousel',
-                    nextButtonClassName: introductionData.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'nextButtonCarousel',
-                    prevButtonClassName: introductionData.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'prevButtonCarousel',
+                    nextButtonClassName: 'nextButtonCarousel',
+                    prevButtonClassName: 'prevButtonCarousel',
                     pagingDotsContainerClassName: introductionData.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'dotsCarousel',
+                    nextButtonOnClick: () => setEnableIntroductionNextButton(prev => ({ ...prev, introduction: false })),
   
                     prevButtonText: (
                       <img src={arrowLeft} width="50px">
@@ -202,12 +393,18 @@ function Tutorial() {
                     }
                   }}
                 >
-                  {introductionData.introductions[
-                    location.state.id - 1
-                  ].introduction.map((element, index) => {
-                    return <div key={index}>{parse(element)}</div>
-                  })}
+                  {!enableIntroductionNextButton || location.state.id !== 1
+                    ? introductionData.introductions[
+                      location.state.id - 1
+                    ].introduction.map((element, index) => {
+                      return <div key={index}>{parse(element)}</div>
+                    })
+                    : introductionExample.map((element, index) => {
+                      return <div key={index}>{parse(element)}</div>
+                    })
+                  }
                 </Carousel>
+                
                 {introductionData.hints[location.state.id - 1] !== "" && (
                   <>
                     <div className='hint__cover' id="hint">
@@ -228,7 +425,7 @@ function Tutorial() {
         <div>
           <div className="game__statement tutorial__statement">
             <h2>Statement:</h2>
-            <h1 className="game__statementTitle" id="scroll">{qst.statement}</h1>
+            <h1 className="game__statementTitle" id="scroll">{parse(qst.statement)}</h1>
           </div>
           <div className="game--grid">
             <div className="editor--div">
@@ -244,7 +441,7 @@ function Tutorial() {
                 </div>
               </div>
               <form className="editor" onSubmit={handleSubmit}>
-                <CodeMirror code={code} setCode={setCode}></CodeMirror>
+                <CodeMirror id="codemirror" code={code} setCode={setCode}></CodeMirror>
                 <div className='result__container'>
                   <div className="game__result">
                     <h1>{error !== '' && <div>{error}</div>}</h1>
