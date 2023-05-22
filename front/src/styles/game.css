@@ -62,6 +62,13 @@
     align-content: center;
 }
 
+.connectedUsers__addFriend {
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin: 0 auto;
+}
+
 .connectedUsers_title {
     color: #000000;
 }

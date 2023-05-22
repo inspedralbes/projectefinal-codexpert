@@ -1,7 +1,9 @@
 import '../styles/normalize.css'
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function ConnectedUsers() {
+  const navigate = useNavigate()
   const [userList, setUserList] = useState([])
   const [firstTime, setFirstTime] = useState(true)
 
@@ -49,17 +51,23 @@ function ConnectedUsers() {
                   width="150px"
                   className="item__image"
                   alt={user.name + "'s avatar"}
+                  onClick={() => navigate(`/profile?id=${user.id}`)}
                 ></img>
               </div>
 
               <div className="item__name">
                 <p>{user.name}</p>
               </div>
+
+              <div className="connectedUsers__addFriend">
+                <button className='send__button' onClick={console.log(user.id)}>{user.id}</button>
+              </div>
+
             </li>
           )
         })}
       </ul>
-    </div>
+    </div >
   )
 }
 

@@ -14,7 +14,14 @@ import { Loading } from '../components/Loading'
 
 Modal.setAppElement('body')
 
-function Profile () {
+function Profile() {
+
+  function getCurrentURL() {
+    return window.location.href
+  }
+
+  const url = new URL(getCurrentURL())
+  const userId = url.searchParams.get('id')
   const navigate = useNavigate()
   const cookies = new Cookies()
   const [userData, setUserData] = useState()
@@ -28,20 +35,41 @@ function Profile () {
   const getUserData = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-    fetch(routes.fetchLaravel + 'getUserData', {
-      method: 'POST',
-      mode: 'cors',
-      body: token,
-      credentials: 'include'
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          navigate('/login')
-        } else {
-          setUserData(data)
-        }
+
+    if (userId === null) {
+      fetch(routes.fetchLaravel + 'getUserData', {
+        method: 'POST',
+        mode: 'cors',
+        body: token,
+        credentials: 'include'
       })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            navigate('/login')
+          } else {
+            setUserData(data)
+          }
+        })
+    } else {
+      const dataFromUser = new FormData()
+      dataFromUser.append('userId', userId)
+      fetch(routes.fetchLaravel + 'getUserDataFromId', {
+        method: 'POST',
+        mode: 'cors',
+        body: dataFromUser,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            navigate('/login')
+          } else {
+            setUserData(data)
+          }
+        })
+    }
+
   }
 
   useEffect(() => {

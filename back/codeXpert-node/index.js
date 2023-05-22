@@ -789,6 +789,7 @@ async function sendUserList(room) {
 
   sockets.forEach((socket) => {
     userList.push({
+      id: socket.data.userId,
       name: socket.data.name,
       avatar: socket.data.avatar,
       hearts_remaining: socket.data.hearts_remaining,
