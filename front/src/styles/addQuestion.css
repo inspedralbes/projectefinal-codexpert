@@ -36,14 +36,59 @@
     width: 6px;
 }
 
+.addQuestion-back {
+    font-size: 0.6vw;
+    background-color: #88D34A;
+    padding: 10px;
+    margin-left: 0%;
+    width: 15%;
+    height: 100%;
+    box-shadow: none;
+    color: black;
+}
+
+.addQuestion-back::before {
+    background-color: #88D34A;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100%);
+    position: absolute;
+    left: -6px;
+    top: 0px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.addQuestion-back::after {
+    background-color: #88D34A;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100%);
+    position: absolute;
+    right: -6px;
+    top: 0px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.addQuestion-back:hover::after, .addQuestion-back:hover::before, .addQuestion-back:hover {
+    background-color: #88D34A;
+}
+
 .addQuestionPixel__container h1{
     font-size: 2.3vw;
-    margin-bottom: 40px;
+    margin-left: 13%;
+    margin-right: 27%;
     font-family: karmatic;
+    text-align: center;
     text-transform: uppercase;
+    display: inline;
 }
 
 .grid-inputs__container {
+    margin-top: 40px;
   display: grid;
   grid-template-columns: 50% 50%;
   padding: 10px;
@@ -160,6 +205,11 @@
 
 .removeItem__conainer {
     margin-top: 32px;
+}
+
+.addQuestionError {
+    font-size: 0.8vw;
+    color: red;
 }
 
 .removeItem__conainer button {

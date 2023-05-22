@@ -764,16 +764,11 @@ class GameController extends Controller
         $inputs = json_decode($request -> inputs);
         $public = json_decode($request -> public);
 
-        $validateTitleStatement = (object) [
-            'title' => $request -> title,
-            'statement' => $request -> statement
-        ];
-
         if ($userId != null) {
             //If logged in we run all the validations
             $correctTitleStatement = $this->checkTitleStatement($request);
             $correctInputsAndOutputs = $this->checkInputsAndOutputs($inputs, $outputs);
-            if ($correctTitleStatement && $correctInputsAndOutputs -> correct) {
+            if ($correctTitleStatement -> correct && $correctInputsAndOutputs -> correct) {
                 $createdQuestion = $this->createNewQuestion($request -> title, $request -> statement, $userId, $public);
                 $this->addInputsToQuestion($createdQuestion -> id, $inputs);
                 $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      

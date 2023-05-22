@@ -23,6 +23,7 @@ import SharedRanking from './pages/SharedRanking'
 import Ranking from './pages/Ranking'
 import CodeWorld from './pages/CodeWorld'
 import AddQuestion from './pages/AddQuestion'
+import Library from './pages/Library'
 
 const cookies = new Cookies()
 
@@ -52,6 +53,7 @@ root.render(
         <Route path='campaign' element={<Campaign />}></Route>
         <Route path='ranking' element={<Ranking />}></Route>
         <Route path='addQuestion' element={<AddQuestion />}></Route>
+        <Route path='library' element={<Library />}></Route>
         <Route path='sharedRanking' element={<SharedRanking />}></Route>
         <Route path='codeworld' element={<CodeWorld />}></Route>
         <Route path='404' element={<Error404 />}></Route>

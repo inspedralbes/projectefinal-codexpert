@@ -95,7 +95,7 @@ function IconUser() {
                 </li>
                 <li
                   className="iconUser-list__item"
-                  onClick={() => handleLogOut()}
+                  onClick={() => navigate('/library')}
                 >
                   {' '}
                   <button className="iconUser__button">My Library</button>
