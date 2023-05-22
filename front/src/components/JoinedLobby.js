@@ -3,6 +3,7 @@ import '../styles/Lobbies.css'
 import ChatLobby from '../components/ChatLobby'
 import ConnectedUsers from '../components/ConnectedUsers'
 // import QuestionLibrary from '../components/QuestionLibrary'
+import Header from './Header.js'
 import React, { useState, useEffect } from 'react'
 import Settings from './Settings'
 import Modal from 'react-modal'
@@ -111,6 +112,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
 
   return (
     <div id="lobbyJoined" className="lobbies__lobby lobby">
+      <Header></Header>
       <button id="goBackToLobby__button" onClick={handleLeave}>
         <span className="circle" aria-hidden="true">
           <span className="icon arrow"></span>

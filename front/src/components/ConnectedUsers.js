@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react'
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import { useNavigate } from 'react-router-dom'
-
+// import { Loading } from './Loading'
 function ConnectedUsers() {
   const cookies = new Cookies()
   const navigate = useNavigate()
+
+  const [myId, setMyId] = useState(-1)
   const [userList, setUserList] = useState([])
   const [firstTime, setFirstTime] = useState(true)
   const [friendNotification, setfriendNotification] = useState(false)
@@ -48,7 +50,23 @@ function ConnectedUsers() {
     }
   }
 
+  const checkMyId = () => {
+    const userInfo = new FormData()
+    userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'getUserInfo', {
+      method: 'POST',
+      mode: 'cors',
+      body: userInfo,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setMyId(data.id)
+      })
+  }
+
   useEffect(() => {
+    checkMyId()
     if (firstTime) {
       window.postMessage(
         {
@@ -87,10 +105,12 @@ function ConnectedUsers() {
                 <p>{user.name}</p>
               </div>
 
-              <div className="connectedUsers__addFriend">
-                <button className='send__button'
-                  onClick={() => handleClick(`${user.id}`)}>Add Friend</button>
-              </div>
+              {myId !== user.id || (
+                <div className="connectedUsers__addFriend">
+                  <button className='send__button'
+                    onClick={() => handleClick(`${user.id}`)}>Add Friend</button>
+                </div>
+              )}
 
             </li>
           )

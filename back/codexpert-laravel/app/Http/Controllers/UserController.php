@@ -39,8 +39,33 @@ class UserController extends Controller
 
 
         return $userId;
-    }     
+    }      
 
+    /**
+     * This function checks with the token recieved if the token is valid on the database, if it is it will return the user id
+     * @param string $checkToken is the session token
+     * @return int $userId is the user id found linked to the token in the database
+     */     
+    private function getUserIdPublic($checkToken)
+    {
+        $userId = null;
+        //Check if we have recieved a token
+        if ( !($checkToken == null || $checkToken == "" || $checkToken == "null") ) {
+            
+            //Return if the user is logged in or not from the token
+            [$id, $token] = explode('|', $checkToken, 2);
+            $accessToken = PersonalAccessToken::find($id);
+
+            if ($accessToken != null) {
+                if (hash_equals($accessToken->token, hash('sha256', $token))) {
+                    $userId = $accessToken->tokenable_id;
+                }
+            }
+
+        }
+
+        return $userId;
+    }   
     /**
      * This function will recieve the userId from the user token and will send the url from the user's avatar found in the database
      * @param string $token is the session token

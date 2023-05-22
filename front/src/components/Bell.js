@@ -13,7 +13,7 @@ function Bell() {
   const cookies = new Cookies()
   const [showNotification, setShowNotification] = useState(false)
   const [notificationList, setNotificationList] = useState([''])
-  const [unreadNotification, setunreadNotification] = useState(false)
+  const [unreadNotification, setUnreadNotification] = useState(false)
   const getNotifications = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
@@ -25,7 +25,7 @@ function Bell() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setunreadNotification(data.unread)
+        setUnreadNotification(data.unread)
         setNotificationList(data.list)
       })
   }
@@ -43,7 +43,7 @@ function Bell() {
       })
         .then((response) => response.json())
         .then((data) => {
-          setunreadNotification(false)
+          setUnreadNotification(false)
           getNotifications()
         })
     }
@@ -90,7 +90,7 @@ function Bell() {
     switch (eventData.type) {
       case 'requests-event':
         setNotificationList(eventData.notificationsData)
-        setunreadNotification(eventData.notificationUnread)
+        setUnreadNotification(eventData.notificationUnread)
         break
     }
   }
