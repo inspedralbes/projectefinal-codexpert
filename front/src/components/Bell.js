@@ -44,7 +44,7 @@ function Bell() {
         .then((response) => response.json())
         .then((data) => {
           setunreadNotification(false)
-          setNotificationList(data.list)
+          getNotifications()
         })
     }
     console.log(notificationList)
