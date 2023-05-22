@@ -500,7 +500,7 @@ socketIO.on("connection", (socket) => {
 
 async function sendQuestionsToUser(socket) {
   await axios
-    .post(laravelRoute + "getMyQuestions", {
+    .post(laravelRoute + "getAllQuestions", {
       token: socket.data.token
     })
     .then(function (response) {
