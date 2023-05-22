@@ -120,6 +120,26 @@ socketIO.on("connection", (socket) => {
       });
   });
 
+  socket.on("friend_notification", (data) => {
+    sendNotificationToUser(data.userId);
+  });
+
+  async function sendNotificationToUser(userId) {
+    const sockets = await socketIO.fetchSockets();
+    sockets.forEach((socket) => {
+      console.log("id" + userId);
+      console.log("socketid" + socket.data.userId);
+      if (socket.data.userId === userId) {
+        sendUserNotifications(socket);
+      }
+    });
+  }
+
+  socket.on("lobby_data_pls", () => {
+    sendUserList(socket.data.current_lobby);
+    sendMessagesToLobby(socket.data.current_lobby);
+  });
+
   socket.on("hello_firstTime", () => {
     if (socket.data.current_lobby != null) {
       socket.emit("YOU_ARE_ON_LOBBY", {
@@ -497,6 +517,22 @@ socketIO.on("connection", (socket) => {
     leaveLobby(socket);
   });
 });
+
+async function sendUserNotifications(socket) {
+  await axios
+    .post(laravelRoute + "getPendingRequests", {
+      token: socket.data.token
+    })
+    .then(function (response) {
+      socketIO.to(socket.id).emit("requests", {
+        notifications: response.data.list,
+        showBell: response.data.unread
+      });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 
 async function sendQuestionsToUser(socket) {
   await axios

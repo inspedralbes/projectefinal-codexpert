@@ -1,12 +1,40 @@
 import '../styles/normalize.css'
 import React, { useState, useEffect } from 'react'
+import Cookies from 'universal-cookie'
+import routes from '../conn_routes'
 import { useNavigate } from 'react-router-dom'
 
 function ConnectedUsers() {
+  const cookies = new Cookies()
   const navigate = useNavigate()
   const [userList, setUserList] = useState([])
   const [firstTime, setFirstTime] = useState(true)
+  const [friendNotification, setfriendNotification] = useState(false)
+  const handleClick = (userId) => {
+    setfriendNotification(!friendNotification)
+    window.postMessage(
+      {
+        type: 'send_friend_notification-emit',
+        data: {
+          userId
+        }
+      },
+      '*'
+    )
+    const userInfo = new FormData()
+    userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    userInfo.append('otherUserId', userId)
+    fetch(routes.fetchLaravel + 'addFriend', {
+      method: 'POST',
+      mode: 'cors',
+      body: userInfo,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
 
+      })
+  }
   const handleMessage = (event) => {
     const eventData = event.data
 
@@ -60,7 +88,8 @@ function ConnectedUsers() {
               </div>
 
               <div className="connectedUsers__addFriend">
-                <button className='send__button' onClick={console.log(user.id)}>{user.id}</button>
+                <button className='send__button'
+                  onClick={() => handleClick(`${user.id}`)}>Add Friend</button>
               </div>
 
             </li>

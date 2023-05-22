@@ -2,30 +2,84 @@ import React, { useState, useEffect } from 'react'
 import '../styles/normalize.css'
 import '../styles/Bell.css'
 import campana from '../img/campana.png'
+import campanaNoti from '../img/CampanaNoti.png'
 import success from '../img/campaign/success.png'
 import deny from '../img/campaign/deny.png'
+import Cookies from 'universal-cookie'
+import routes from '../conn_routes'
 import bellSleeping from '../img/bellSleeping.gif'
 
 function Bell() {
+  const cookies = new Cookies()
   const [showNotification, setShowNotification] = useState(false)
-  const [notificationList, setNotificationList] = useState([1, 1, 1, 1, 1, 1])
+  const [notificationList, setNotificationList] = useState([''])
+  const [unreadNotification, setunreadNotification] = useState(false)
+  const getNotifications = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'getPendingRequests', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setunreadNotification(data.unread)
+        setNotificationList(data.list)
+      })
+  }
+
   const handleClick = () => {
     setShowNotification(!showNotification)
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    if (unreadNotification) {
+      fetch(routes.fetchLaravel + 'markNotificationsAsRead', {
+        method: 'POST',
+        mode: 'cors',
+        body: token,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setunreadNotification(false)
+          setNotificationList(data.list)
+        })
+    }
+    console.log(notificationList)
+  }
+
+  const handleMessage = (event) => {
+    const eventData = event.data
+
+    switch (eventData.type) {
+      case 'requests-event':
+        setNotificationList(eventData.notificationsData)
+        setunreadNotification(eventData.notificationUnread)
+        break
+    }
   }
 
   useEffect(() => {
+    getNotifications()
     window.addEventListener('click', function (e) {
       if (document.getElementById('bell__container') !== null && !document.getElementById('bell__container').contains(e.target)) {
         setShowNotification(false)
       }
     })
+    window.addEventListener('message', handleMessage)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+    }
   }, [])
 
   return (
     <div className="bell__container" id="bell__container">
       <button className="bell__buttonIcon">
         <img
-          src={campana}
+          src={!unreadNotification ? campana : campanaNoti}
           className="bell__image"
           onClick={() => handleClick()}
         ></img>
@@ -36,9 +90,9 @@ function Bell() {
             {!notificationList.includes('')
               ? notificationList.map((element, index) => {
                 return <li key={index} className="bell-list__item">
-                  <div className="bell__button" onClick={() => setNotificationList(notificationList)}>
-                    <img className='itemIcon' src='https://api.dicebear.com/5.x/pixel-art/svg?seed=&backgroundColor=FFFFFF&clothing=variant12&clothingColor=ff6f69&hair=short19&hairColor=6E260E&skinColor=ffdbac&glasses=dark01&glassesColor=4b4b4b&glassesProbability=0&accessories=variant01&accessoriesColor=a9a9a9&accessoriesProbability=0&mouth=happy09&mouthColor=c98276&eyes=variant01&eyesColor=5b7c8b'></img>
-                    <p>Alex send you a friend request</p>
+                  <div className="bell__button">
+                    <img className='itemIcon' src={element.avatar}></img>
+                    <p>{element.name} send you a friend request</p>
                     <img className='bell-accept' src={success}></img>
                     <img className='bell-deny' src={deny}></img>
                   </div>

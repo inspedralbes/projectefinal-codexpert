@@ -45,6 +45,12 @@ const handleMessage = (event) => {
       socket.emit('lobby_data_pls')
       break
 
+    case 'send_friend_notification-emit':
+      socket.emit('friend_notification', {
+        userId: parseInt(eventData.data.userId)
+      })
+      break
+
     case 'chat_message-emit':
       socket.emit('chat_message', {
         message: eventData.message
@@ -97,6 +103,10 @@ socket.on('YOU_ARE_ON_LOBBY', (data) => {
 
 socket.on('questions', (data) => {
   window.postMessage({ type: 'questions-event', questionsData: data }, '*')
+})
+
+socket.on('requests', (data) => {
+  window.postMessage({ type: 'requests-event', notificationsData: data.notifications, notificationUnread: data.showBell }, '*')
 })
 
 socket.on('lobby_name', (data) => {

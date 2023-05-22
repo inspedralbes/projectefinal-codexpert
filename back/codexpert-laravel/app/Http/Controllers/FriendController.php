@@ -235,11 +235,15 @@ class FriendController extends Controller
     /**
      * This function given the token from the logged in user returns the pending friend requests
      * @param string $token is the session token
-     * @return array $friendlist is the list of friend requests
+     * @return object $returnFriendRequests is the list of friend requests
      */        
     public function getPendingRequests(Request $request)
     {
         $friendlist = [];
+        $friendNotification = (object)[];
+        $allFriendNotifications = [];
+        $notificationUnread = false;
+        $otherUserId = -1;
         $currentUserId = $this->getUserId($request->token);
 
         if ($currentUserId != null) {
@@ -252,7 +256,43 @@ class FriendController extends Controller
             }) -> get();
         }
 
-        return response() -> json($friendlist);
+        for ($i=0; $i < count($friendlist); $i++) { 
+            if ( ($friendlist[$i] -> sender_id) != $currentUserId) {
+                $otherUserId = $friendlist[$i] -> sender_id;
+            } else {
+                $otherUserId = $friendlist[$i] -> receiver_id;
+            }
+            $otherUserInfo = User::where("id", $otherUserId) -> first();
+            $friendNotification = (object) [
+                "id" => $friendlist[$i] -> id,
+                "name" => $otherUserInfo -> name,
+                "avatar" => $otherUserInfo -> avatar,
+                "status" => $friendlist[$i] -> id,
+                "showNotification" => $friendlist[$i] -> id,
+            ];
+            array_push($allFriendNotifications, $friendNotification);
+        }
+
+        $unreadCount = DB::table('friends')
+            ->where('sender_id', $currentUserId) 
+            ->where('status', 'pending')
+            ->where('showNotification', true)
+            ->orWhere( function ($query) use ($currentUserId) {
+                $query->where('receiver_id', $currentUserId)
+                      ->where('status', 'pending')
+                      ->where('showNotification', true);
+            }) -> count();
+
+        if ($unreadCount > 0) {
+            $notificationUnread = true;
+        }
+
+        $returnFriendRequests = (object) [
+            'unread' => $notificationUnread,
+            'list' => $allFriendNotifications
+        ];
+
+        return response() -> json($returnFriendRequests);
     }     
     
     /**
