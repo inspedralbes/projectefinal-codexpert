@@ -50,6 +50,40 @@ function Bell() {
     console.log(notificationList)
   }
 
+  const handleAcceptFriend = (otherUserId) => {
+    const acceptFriendInfo = new FormData()
+    acceptFriendInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    acceptFriendInfo.append('otherUserId', otherUserId)
+
+    fetch(routes.fetchLaravel + 'acceptFriend', {
+      method: 'POST',
+      mode: 'cors',
+      body: acceptFriendInfo,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getNotifications()
+      })
+  }
+
+  const handleDenyFriend = (otherUserId) => {
+    const declinetFriendInfo = new FormData()
+    declinetFriendInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    declinetFriendInfo.append('otherUserId', otherUserId)
+
+    fetch(routes.fetchLaravel + 'declineFriend', {
+      method: 'POST',
+      mode: 'cors',
+      body: declinetFriendInfo,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        getNotifications()
+      })
+  }
+
   const handleMessage = (event) => {
     const eventData = event.data
 
@@ -87,14 +121,14 @@ function Bell() {
       {showNotification && (
         <div className="bell-dropdown">
           <ul className="bell-dropdown__list" id="bell-scroll">
-            {!notificationList.includes('')
+            {notificationList.length > 0
               ? notificationList.map((element, index) => {
                 return <li key={index} className="bell-list__item">
                   <div className="bell__button">
                     <img className='itemIcon' src={element.avatar}></img>
                     <p>{element.name} send you a friend request</p>
-                    <img className='bell-accept' src={success}></img>
-                    <img className='bell-deny' src={deny}></img>
+                    <img className='bell-accept' src={success} onClick={() => handleAcceptFriend(`${element.userId}`)}></img>
+                    <img className='bell-deny' src={deny} onClick={() => handleDenyFriend(`${element.userId}`)}></img>
                   </div>
                 </li>
               })

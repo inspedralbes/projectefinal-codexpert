@@ -264,7 +264,7 @@ class FriendController extends Controller
             }
             $otherUserInfo = User::where("id", $otherUserId) -> first();
             $friendNotification = (object) [
-                "id" => $friendlist[$i] -> id,
+                "userId" => $otherUserInfo -> id,
                 "name" => $otherUserInfo -> name,
                 "avatar" => $otherUserInfo -> avatar,
                 "status" => $friendlist[$i] -> id,
