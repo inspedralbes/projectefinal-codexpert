@@ -37,6 +37,25 @@ export default class Game extends Phaser.Scene {
   constructor() {
     super('game')
     this.overlap = false
+
+    // Window event listener for event handling
+    window.addEventListener('message', this.handleMessage)
+  }
+
+  handleMessage = (event) => {
+    const eventData = event.data
+
+    // Event handle
+    switch (eventData.type) {
+      case 'dialog_end-msg':
+        this.canInteract = true
+        this.inDialogue = false
+        break
+
+      default:
+        // UNKNOWN EVENT
+        break
+    }
   }
 
   preload() {
@@ -193,13 +212,13 @@ export default class Game extends Phaser.Scene {
 
         window.postMessage({ type: 'end_interaction_with_npc' }, '*')
         window.postMessage({ type: 'interaction_with_npc', npcData: { message } }, '*')
-        this.moveEvent = this.time.addEvent({
-          delay: 1500,
-          callback: () => {
-            this.inDialogue = false
-          },
-          loop: false
-        })
+        // this.moveEvent = this.time.addEvent({
+        //   delay: 1500,
+        //   callback: () => {
+        //     this.inDialogue = false
+        //   },
+        //   loop: false
+        // })
       }
 
       if (!this.inDialogue) {
@@ -208,14 +227,6 @@ export default class Game extends Phaser.Scene {
         if (this.scene.isActive('interact-ui')) {
           this.scene.stop('interact-ui')
         }
-
-        this.moveEvent = this.time.addEvent({
-          delay: 1500,
-          callback: () => {
-            this.canInteract = true
-          },
-          loop: false
-        })
       }
     }
 

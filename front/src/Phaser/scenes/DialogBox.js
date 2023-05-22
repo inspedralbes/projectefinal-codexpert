@@ -18,7 +18,7 @@ export default class DialogBox extends Phaser.Scene {
     // Event handle
     switch (eventData.type) {
       case 'interaction_with_npc':
-        this.destroyText = false
+        this.destroyText = true
         this.dialog = eventData.npcData.message
         this.createDialogs()
         break
@@ -61,7 +61,7 @@ export default class DialogBox extends Phaser.Scene {
     const textWidth = dialogWidth * 0.95
 
     // Crear el texto del cuadro de diálogo
-    const dialogText = this.add.text(10, 10, '', {
+    const dialogText = this.add.text(10, 15, '', {
       fontFamily: 'pixel_operator',
       fontSize: 8,
       // fontStyle: 'bold',
@@ -75,6 +75,7 @@ export default class DialogBox extends Phaser.Scene {
 
     const fullText = this.dialog
     let currentCharIndex = 0
+    this.destroyText = false
 
     // Configura una función para mostrar progresivamente el texto
     function showNextCharacter() {
@@ -88,6 +89,10 @@ export default class DialogBox extends Phaser.Scene {
       if (currentCharIndex < fullText.length) {
         // Agrega un retardo antes de mostrar el siguiente carácter
         this.time.delayedCall(50, showNextCharacter, null, this)
+      }
+
+      if (currentCharIndex >= fullText.length) {
+        window.postMessage({ type: 'dialog_end-msg' }, '*')
       }
     }
 
