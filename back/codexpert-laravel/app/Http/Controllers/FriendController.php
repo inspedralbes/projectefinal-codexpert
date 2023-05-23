@@ -328,7 +328,7 @@ class FriendController extends Controller
     /**
      * This function will return the ids from the users that are added or with a pending requsts, therefore, the users we cannot add
      * @param string $token is the session token
-     * @return object $returnFriendRequests is the list of friend requests
+     * @return array $friendsIds is the list of ids that the user cannot add
      */        
     public function getNotAddFriend(Request $request)
     {
