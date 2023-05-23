@@ -143,7 +143,6 @@ socketIO.on("connection", (socket) => {
 
   socket.on("connected_phaser_world", (data) => {
     const character = { name: socket.data.name, x: data.x, y: data.y, speed: data.speed, direction: "", id: currentPhaserId };
-    // console.log(character)
     currentPhaserId++;
     socket.data.phaserCharacterId = character.id;
     charactersWorld.push(character);

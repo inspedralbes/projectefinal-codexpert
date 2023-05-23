@@ -121,7 +121,6 @@ function Campaign() {
         ? <div className="campaign">
           <Modal
             style={{
-              // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
               content: {
                 top: '50%',
                 left: '50%',

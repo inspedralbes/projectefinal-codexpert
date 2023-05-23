@@ -29,6 +29,7 @@ export default class DialogBox extends Phaser.Scene {
         if (this.dialogContainer) {
           this.destroyText = true
           this.dialogContainer.destroy()
+          this.whoAmITalkingToTextWidth.destroy()
         }
         break
 
@@ -41,7 +42,7 @@ export default class DialogBox extends Phaser.Scene {
   createDialogs() {
     const containerInteract = this.add.container(0, window.innerHeight / 2.5)
 
-    const whoAmITalkingToTextWidth = this.sys.game.config.width * 0.95
+    this.whoAmITalkingToTextWidth = this.sys.game.config.width * 0.95
 
     // Obtener las dimensiones del lienzo
     const canvasWidth = this.sys.game.config.width
@@ -72,19 +73,15 @@ export default class DialogBox extends Phaser.Scene {
       fontSize: '16px',
       resolution: 2,
       fontFamily: 'pixel_operator',
-      wordWrap: { width: whoAmITalkingToTextWidth, useAdvancedWrap: true }
+      wordWrap: { width: this.whoAmITalkingToTextWidth, useAdvancedWrap: true }
     })
     containerInteract.add(whoAmITalkingTo)
-    this.add.existing(containerInteract)
 
     // Crear el texto del cuadro de diálogo
     const dialogText = this.add.text(10, 15, '', {
       fontFamily: 'pixel_operator',
       fontSize: 8,
-      // fontStyle: 'bold',
       color: '#ffffff',
-      // strokeThickness: 2,
-      // stroke: '#000',
       wordWrap: { width: textWidth, useAdvancedWrap: true },
       resolution: 2,
       align: 'left'
@@ -124,9 +121,6 @@ export default class DialogBox extends Phaser.Scene {
 
     const skipGif = this.add.image(dialogText.x + textWidth * 1.5, dialogHeight - 15, 'skip_dialog')
 
-    // skipGif.displayWidth = 25
-    // skipGif.displayHeight = 20
-
     this.dialogContainer.add(dialogText)
     this.dialogContainer.add(skipGif)
 
@@ -135,5 +129,6 @@ export default class DialogBox extends Phaser.Scene {
     this.dialogContainer.setScale(containerScale)
 
     this.add.existing(this.dialogContainer)
+    this.add.existing(containerInteract)
   }
 }

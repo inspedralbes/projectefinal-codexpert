@@ -33,14 +33,14 @@ export default class InteractUI extends Phaser.Scene {
 
     let whereToGo
     if (this.interactData.type === 'npc') {
-      // whereToGo = this.add.text(40, -40, this.interactData.name, {
-      //   color: '#FFFFFF',
-      //   backgroundColor: '#00000070',
-      //   fontSize: '16px',
-      //   resolution: 2,
-      //   fontFamily: 'pixel_operator',
-      //   wordWrap: { width: textWidth, useAdvancedWrap: true }
-      // })
+      whereToGo = this.add.text(40, -40, this.interactData.name, {
+        color: '#FFFFFF',
+        backgroundColor: '#00000070',
+        fontSize: '16px',
+        resolution: 2,
+        fontFamily: 'pixel_operator',
+        wordWrap: { width: textWidth, useAdvancedWrap: true }
+      })
     } else if (this.interactData.type === 'location') {
       whereToGo = this.add.text(40, -40, 'Navigate to ' + this.interactData.name, {
         color: '#FFFFFF',

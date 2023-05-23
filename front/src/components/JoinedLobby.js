@@ -2,7 +2,6 @@ import '../styles/normalize.css'
 import '../styles/Lobbies.css'
 import ChatLobby from '../components/ChatLobby'
 import ConnectedUsers from '../components/ConnectedUsers'
-// import QuestionLibrary from '../components/QuestionLibrary'
 import React, { useState, useEffect } from 'react'
 import Settings from './Settings'
 import Modal from 'react-modal'
@@ -23,10 +22,8 @@ JoinedLobby.propTypes = {
 function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  // const [showQuestionsModal, setShowQuestionsModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
   const [saveSettings, setSaveSettings] = useState(0)
-  // const [questionsData, setQuestionsData] = useState([])
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -45,10 +42,6 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
           }
           setSent(true)
         }
-        break
-
-      case 'questions-event':
-        // setQuestionsData(eventData.questionsData)
         break
 
       case 'lobby_settings-event':
@@ -123,7 +116,6 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
           <button className="noBtn" onClick={() => setShowModal(true)}><img className="settings" src={settings} alt='SETTINGS' height={'50px'}></img></button>
           <Modal
             style={{
-              // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
               content: {
                 top: '50%',
                 left: '50%',

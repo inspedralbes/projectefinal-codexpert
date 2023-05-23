@@ -105,8 +105,6 @@ const handleMessage = (event) => {
       break
   }
 }
-// window.network.setSocketId(socket.id)
-// console.log(window.network.getSocketId())
 
 // Window event listener for event handling
 window.addEventListener('message', handleMessage)

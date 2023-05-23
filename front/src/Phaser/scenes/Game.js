@@ -4,10 +4,7 @@ import NPC from '../Characters/NPC'
 import Mob from '../Mobs/Mob'
 
 import { debugDraw } from '../utils/debug'
-// import strawberry from '../Characters/strawberry'
-// import createCharacterAnims from '../anims/CharacterAnims'
 import OverlapPoint from '../items/OverlapPoints'
-// import { useNavigate } from 'react-router'
 
 const spriteAnimsCreated = []
 
@@ -29,7 +26,6 @@ const movimientos = ['up', 'down', 'left', 'right']
 const defaultSpeed = 125
 
 export default class Game extends Phaser.Scene {
-  // navigate = useNavigate()
   strawberry
   cursor
   keys
@@ -106,7 +102,6 @@ export default class Game extends Phaser.Scene {
   }
 
   changeCharacters(characterData) {
-    // console.log(this.othersprites.getChildren())
     if (!this.othersprites.getChildren().some((sprite) => sprite.properties.id == characterData.id)) {
       this.addCharacter(characterData)
     }
@@ -176,8 +171,6 @@ export default class Game extends Phaser.Scene {
     this.aboveBuildingsLayer.setDepth(3)
     this.aboveGroundLayer.setDepth(2)
 
-    // debugDraw(this.buildingsLayer, this)
-
     this.strawberry = this.add.sprite(PUNTOAPARICION.x, PUNTOAPARICION.y, 'strawberry')
 
     this.loadObjectLayers()
@@ -197,7 +190,6 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.strawberry, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.strawberry, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.strawberry, this.cropsLayer, this.handleCollision, null, this)
-    // this.physics.add.collider(this.strawberry, uLayer, this.handleCollision, null, this)
 
     this.cameras.main.startFollow(this.strawberry, true)
 
@@ -206,7 +198,7 @@ export default class Game extends Phaser.Scene {
 
   update(t, dt) {
     if (!this.cursors || !this.strawberry || !this.keys || !this.othersprites) {
-      // return
+      return
     }
 
     if ((this.keys.interactE.isDown || this.keys.interactEnter?.isDown) && this.overlap && this.canInteract) {
@@ -238,7 +230,6 @@ export default class Game extends Phaser.Scene {
     this.othersprites.getChildren().forEach(sprite => {
 
       const speed = sprite.properties.speed
-      // console.log(sprite.body.velocity)
       if (sprite.properties.direction == 'left') {
         console.log('left ' + sprite.properties.id)
         sprite.anims.play('Strawberry-walk-left', true)
@@ -271,9 +262,6 @@ export default class Game extends Phaser.Scene {
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = speed
       } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
-        // sprite.anims.play('Strawberry-walk-down', true)
-        // console.log('idle ' + sprite.properties.id)
-
         const parts = sprite.anims.currentAnim.key.split('-')
         parts[1] = 'idle'
         sprite.play(parts.join('-'))
@@ -324,7 +312,6 @@ export default class Game extends Phaser.Scene {
 
       this.selector.setPosition(charX - distance, charY)
 
-      // this.strawberry.scaleX = -1
       this.strawberry.body.offset.x = 11
       moved = true
       this.actualState = 'left'
@@ -337,7 +324,6 @@ export default class Game extends Phaser.Scene {
 
       this.selector.setPosition(charX + distance, charY)
 
-      // this.strawberry.scaleX = 1
       this.strawberry.body.offset.x = 11
       moved = true
       this.actualState = 'right'
@@ -382,7 +368,7 @@ export default class Game extends Phaser.Scene {
   }
 
   handleCollision(colisionador, colisionado) {
-    // console.log('collide')
+    // COLISIONA
   }
 
   handleOverlap(colisionador, colisionado) {
@@ -424,8 +410,7 @@ export default class Game extends Phaser.Scene {
       }
       this.overlapTmp = false
       setTimeout(this.checkOverlap.bind(this, callback), 100)
-    }//else
-
+    }
   }
 
   getCurrentDialog() {
@@ -542,7 +527,6 @@ export default class Game extends Phaser.Scene {
       this.createMobAnims(objData.get('sprite'))
       const gameObj = puntosMobs.get(objct.x + objct.width * 0.1, objct.y - objct.height * 0.1, objData.get('sprite'), undefined, true)
       gameObj.properties = objData
-      // console.log(gameObj)
       this.mobGroup.add(gameObj)
     })
 

@@ -75,8 +75,6 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     this.body.velocity.x = dir.x
     this.body.velocity.y = dir.y
 
-    // this.setTint(0xff0000)
-
     this.state = STATE[1]
     this.damageTime = 0
   }
@@ -146,7 +144,6 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
           this.body.velocity.x = 0
           this.body.velocity.y = 0
 
-          // this.body.offset.x = 0
           this.moveEvent.delay = 5000
           this.canSleep = false
           this.timeWithoutSleeping = 0

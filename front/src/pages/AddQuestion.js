@@ -14,10 +14,6 @@ function AddQuestion() {
     public: false
   })
   const [inputsOutputs, setInputsOutputs] = useState(['', '', ''])
-  // const placeholder = {
-  //   input: ['1, 2, 3', 'Hello World!', '[1, 2, 1, 5]'],
-  //   output: ['3, 2, 1', 'HELLO WORLD!', '2']
-  // }
   const cookies = new Cookies()
 
   const handleAddInputOutput = () => {

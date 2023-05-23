@@ -6,7 +6,6 @@ import InteractUI from '../Phaser/scenes/InteractUI'
 
 import '../styles/normalize.css'
 import React, { useEffect, useRef } from 'react'
-// import '../PhaserGame'
 import { useNavigate } from 'react-router'
 
 import Cookies from 'universal-cookie'
@@ -40,7 +39,6 @@ const CodeWorld = () => {
         parent: parentRef.current,
         backgroundColor: '#60A0A8',
         scale: {
-          // mode: Phaser.Scale.ScaleModes.RESIZE,
           width: window.innerWidth / 2.5,
           height: window.innerHeight / 2.5,
           zoom: 2.5
