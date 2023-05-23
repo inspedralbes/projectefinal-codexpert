@@ -54,7 +54,6 @@ function ConnectedUsers() {
     let userNotFound = true
     let canAdd = true
 
-    console.log('userlist' + userList)
     if (userList !== undefined) {
       while (index < userList.length && userNotFound) {
         if (userList[index].id === myId && userList[index].not_add_ids !== undefined) {
@@ -62,7 +61,6 @@ function ConnectedUsers() {
             canAdd = false
           }
           userNotFound = false
-          console.log('not add' + userList[index].not_add_ids)
         }
         index++
       }
