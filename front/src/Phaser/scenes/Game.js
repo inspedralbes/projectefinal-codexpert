@@ -79,7 +79,9 @@ export default class Game extends Phaser.Scene {
   }
 
   addCharacter(characterData) {
-    if (!this.othersprites.some((sprite) => sprite.properties.id == characterData.id)) {
+    const sprites = this.othersprites.getChildren()
+    
+    if (!sprites.some((sprite) => sprite.properties.id == characterData.id)) {
       const newPlayer = this.physics.add.sprite(characterData.x, characterData.y, 'Strawberry')
       newPlayer.setDepth(1)
       newPlayer.properties = characterData
@@ -87,16 +89,16 @@ export default class Game extends Phaser.Scene {
       newPlayer.anims.play('Strawberry-idle-down')
       this.physics.add.existing(newPlayer)
 
-      this.othersprites.push(newPlayer)
+      this.othersprites.add(newPlayer)
     }
   }
 
   changeCharacters(characterData) {
-    if (!this.othersprites.some((sprite) => sprite.properties.id == characterData.id)) {
+    if (!this.othersprites.getChildren().some((sprite) => sprite.properties.id == characterData.id)) {
       this.addCharacter(characterData)
     }
 
-    this.othersprites.forEach(sprite => {
+    this.othersprites.getChildren().forEach(sprite => {
       if (sprite.properties.id === characterData.id) {
         sprite.properties = characterData
       }
@@ -105,6 +107,7 @@ export default class Game extends Phaser.Scene {
 
   preload() {
     this.createAnims('Strawberry')
+    this.othersprites = this.physics.add.staticGroup()
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
       'up': Phaser.Input.Keyboard.KeyCodes.W,
@@ -215,7 +218,7 @@ export default class Game extends Phaser.Scene {
       }
     }
 
-    this.othersprites.forEach(sprite => {
+    this.othersprites.getChildren().forEach(sprite => {
       sprite.x = sprite.properties.x
       sprite.y = sprite.properties.y
 
@@ -252,12 +255,12 @@ export default class Game extends Phaser.Scene {
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = speed
       } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
-        sprite.anims.play('Strawberry-walk-down', true)
+        // sprite.anims.play('Strawberry-walk-down', true)
         // console.log('idle ' + sprite.properties.id)
 
-        // const parts = sprite.anims?.currentAnim.key.split('-')
-        // parts[1] = 'idle'
-        // sprite.play(parts.join('-'))
+        const parts = sprite.anims?.currentAnim.key.split('-')
+        parts[1] = 'idle'
+        sprite.play(parts.join('-'))
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = 0
@@ -360,8 +363,6 @@ export default class Game extends Phaser.Scene {
     if (!moved) {
       this.actualState = 'idle'
     }
-    // window.worldGame.update();
-    window.worldGame.renderer.render(window.worldGame.stage);
   }
 
   handleCollision(colisionador, colisionado) {
