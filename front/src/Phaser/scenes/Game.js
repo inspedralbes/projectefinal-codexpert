@@ -106,7 +106,7 @@ export default class Game extends Phaser.Scene {
     const tags = this.nametags.getChildren()
 
     if (!tags.some((tag) => tag.properties.name == characterData.name)) {
-      const newTag = this.add.text(characterData.x, characterData.y, tags.properties.name, {
+      const newTag = this.add.text(characterData.x, characterData.y, characterData.name, {
         fontSize: '6px',
         color: '#fff',
         align: 'center',
