@@ -121,12 +121,21 @@ export default class Game extends Phaser.Scene {
 
       this.physics.add.existing(newTag)
 
+      if (tags.some((tag) => tag.properties.id == characterData.id)) {
+        this.nametags.getChildren().forEach((tag, index) => {
+          if (tag.id === characterData.id) {
+            tag.destroy()
+            // this.nametags.getChildren().splice(index, 1);
+          }
+        });
+      }
+
       this.nametags.add(newTag)
     }
   }
 
   changeCharacters(characterData) {
-    if (!this.othersprites.getChildren().some((sprite) => sprite.properties.id == characterData.id) || !this.nametags.getChildren().some((tag) => tag.properties.name == characterData.name)) {
+    if (!this.othersprites.getChildren().some((sprite) => sprite.properties.id == characterData.id) || !this.nametags.getChildren().some((tag) => tag.properties.name == characterData.name || tag.properties.id != characterData.id)) {
       this.addCharacter(characterData)
     }
 
