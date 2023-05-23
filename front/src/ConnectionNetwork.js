@@ -14,12 +14,21 @@ class ConnectionNetwork {
   result = ''
   rewards = {}
   showSettings = false
+  socketId = ''
   settings = {
     heartAmount: 0,
     overtimeDuration: 0,
     questionAmount: 0,
     unlimitedHearts: false,
     willHaveOvertime: true
+  }
+
+  setSocketId(socketId) {
+    this.socketId = socketId
+  }
+
+  getSocketId() {
+    return this.socketId
   }
 
   setUsername(username) {

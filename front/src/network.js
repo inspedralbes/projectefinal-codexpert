@@ -105,6 +105,8 @@ const handleMessage = (event) => {
       break
   }
 }
+// window.network.setSocketId(socket.id)
+// console.log(window.network.getSocketId())
 
 // Window event listener for event handling
 window.addEventListener('message', handleMessage)
@@ -117,6 +119,10 @@ socket.on('username', (data) => {
 
 socket.on('update_character', (data) => {
   window.postMessage({ type: 'update_character-msg', characterData: data }, '*')
+})
+
+socket.on('new_character', (data) => {
+  window.postMessage({ type: 'new_character-msg', characterData: data }, '*')
 })
 
 socket.on('YOU_ARE_ON_LOBBY', (data) => {

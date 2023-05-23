@@ -25,15 +25,15 @@ export default class Preloader extends Phaser.Scene {
     // Dialogs
 
     // Characters
-    this.load.atlas('strawberry', 'assets/characters/strawberry/strawberry.png', 'assets/characters/strawberry/strawberry.json')
-    this.load.atlas('gaspa', 'assets/characters/gaspa/gaspa.png', 'assets/characters/gaspa/gaspa.json')
-    this.load.atlas('asselia', 'assets/characters/asselia/asselia.png', 'assets/characters/asselia/asselia.json')
-    this.load.atlas('martin', 'assets/characters/martin/martin.png', 'assets/characters/martin/martin.json')
-    this.load.atlas('amae', 'assets/characters/amae/amae.png', 'assets/characters/amae/amae.json')
-    this.load.atlas('farmer', 'assets/characters/farmer/farmer.png', 'assets/characters/farmer/farmer.json')
-    this.load.atlas('shopkeeper', 'assets/characters/shopkeeper/shopkeeper.png', 'assets/characters/shopkeeper/shopkeeper.json')
-    this.load.atlas('iris', 'assets/characters/iris/iris.png', 'assets/characters/iris/iris.json')
-    this.load.atlas('emo', 'assets/characters/emo/emo.png', 'assets/characters/emo/emo.json')
+    this.load.atlas('Strawberry', 'assets/characters/strawberry/strawberry.png', 'assets/characters/strawberry/strawberry.json')
+    this.load.atlas('Gaspa', 'assets/characters/gaspa/gaspa.png', 'assets/characters/gaspa/gaspa.json')
+    this.load.atlas('Asselia', 'assets/characters/asselia/asselia.png', 'assets/characters/asselia/asselia.json')
+    this.load.atlas('Martin', 'assets/characters/martin/martin.png', 'assets/characters/martin/martin.json')
+    this.load.atlas('Amae', 'assets/characters/amae/amae.png', 'assets/characters/amae/amae.json')
+    this.load.atlas('Farmer', 'assets/characters/farmer/farmer.png', 'assets/characters/farmer/farmer.json')
+    this.load.atlas('Shopkeeper', 'assets/characters/shopkeeper/shopkeeper.png', 'assets/characters/shopkeeper/shopkeeper.json')
+    this.load.atlas('Iris', 'assets/characters/iris/iris.png', 'assets/characters/iris/iris.json')
+    this.load.atlas('Emo', 'assets/characters/emo/emo.png', 'assets/characters/emo/emo.json')
 
     // Mobs
     this.load.atlas('chicken', 'assets/mobs/chicken/chicken.png', 'assets/mobs/chicken/chicken.json')
