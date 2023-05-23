@@ -403,6 +403,8 @@ h2 {
 }
 
 .game__modal {
+    position: relative;
+    z-index: 100 !important;
     font-size: 5rem;
     letter-spacing: -1px;
     font-family: tempesta !important;

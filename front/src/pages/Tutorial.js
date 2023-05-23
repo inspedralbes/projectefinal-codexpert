@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import '../styles/Tutorial.css'
+import '../styles/game.css'
 import routes from '../conn_routes'
 import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
@@ -11,6 +12,8 @@ import Carousel from 'nuka-carousel'
 import parse from 'html-react-parser'
 import introductionData from '../localData/IntroductionsData.json'
 import arrowLeft from '../img/corousel-arrowLeft.png'
+import heart from '../img/corazon_roto.gif'
+import jose from '../img/jose.gif'
 import arrowRight from '../img/corousel-arrowRight.png'
 import closedEye from '../img/closedEye.png'
 import Modal from 'react-modal'
@@ -29,6 +32,8 @@ function Tutorial() {
     'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
   const [error, setError] = useState('')
+  const [CmodalIsOpen, setCIsOpen] = useState(false)
+  const [ImodalIsOpen, setIIsOpen] = useState(false)
   const [enableIntroductionNextButton, setEnableIntroductionNextButton] = useState({
     introduction: true,
     hint: true
@@ -47,6 +52,8 @@ function Tutorial() {
     inputs: [''],
     output: ''
   })
+
+
 
   useEffect(() => {
     if (location.state === null) {
@@ -74,7 +81,16 @@ function Tutorial() {
           setQst(data)
         })
     }
+
+
   }, [])
+
+  function afterOpenModal() {
+    setTimeout(() => {
+      setCIsOpen(false)
+      setIIsOpen(false)
+    }, 5000)
+  }
 
   const handleHint = () => {
     document.getElementById('hint').style.display = 'none'
@@ -131,8 +147,10 @@ function Tutorial() {
               JSON.stringify(tutorialsId)
             )
             tutorialsId.sort()
-
+            setCIsOpen(true)
             navigate('/campaign')
+          } else {
+            setIIsOpen(true)
           }
         })
     }
@@ -199,6 +217,7 @@ function Tutorial() {
                   }, 500)
                   document.querySelectorAll('.hint__cover')[0].style.zIndex = 4
                   document.querySelectorAll('.hint__cover')[0].style.border = "10px solid black"
+                  document.querySelectorAll('.game__modal')[0].style.zIndex = 10
 
                 }}>NEXT</button>
               </div>
@@ -404,7 +423,27 @@ function Tutorial() {
                     })
                   }
                 </Carousel>
-
+                <Modal
+              className='correctAnsw game__modal'
+              isOpen={CmodalIsOpen}
+              onAfterOpen={afterOpenModal}
+              style={{
+                content: {
+                  zIndex: 4
+                }
+              }}
+            >
+              YOU DID IT ! ! :)
+              <img src={jose} alt='' height={'300px'}></img>
+            </Modal>
+            <Modal
+              className='incorrectAnsw game__modal animate__animated animate__tada'
+              isOpen={ImodalIsOpen}
+              onAfterOpen={afterOpenModal}
+            >
+              TRY AGAIN!!
+              <img src={heart} alt='' height={'300px'}></img>
+            </Modal> 
                 {introductionData.hints[location.state.id - 1] !== "" && (
                   <>
                     <div className='hint__cover' id="hint">

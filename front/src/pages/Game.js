@@ -23,8 +23,8 @@ function Game() {
   const [playable, setPlayable] = useState(true)
   const [counter, setCounter] = useState(0)
   const [roundResult, setRoundResult] = useState(null)
-  const [CmodalIsOpen, setCIsOpen] = useState(false);
-  const [ImodalIsOpen, setIIsOpen] = useState(false);
+  const [CmodalIsOpen, setCIsOpen] = useState(false)
+  const [ImodalIsOpen, setIIsOpen] = useState(false)
 
   const [qst, setQst] = useState({
     statement: '',
