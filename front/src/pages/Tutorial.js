@@ -250,7 +250,7 @@ function Tutorial() {
                   position: 'absolute',
                   top: '-55%',
                   left: '-57%',
-                  width: '40%'
+                  width: '40%',
                 }
               }}
               onRequestClose={() => setModal(prev => ({ ...prev, statement: false }))}
