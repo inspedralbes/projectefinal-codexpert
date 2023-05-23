@@ -74,8 +74,8 @@ export default class Game extends Phaser.Scene {
         this.username = window.network.getUsername()
         break
 
-      case 'connected_to_phaser-event':
-        this.phaserUserId = window.network.getPhaserId()
+        case 'connected_to_phaser-event':
+          this.phaserUserId = window.network.getPhaserId()
         break
 
       default:
@@ -92,7 +92,7 @@ export default class Game extends Phaser.Scene {
       this.othersprites = this.physics.add.staticGroup()
     }
     const sprites = this.othersprites.getChildren()
-
+    
     if (!sprites.some((sprite) => sprite.properties.id == characterData.id)) {
       const newPlayer = this.physics.add.sprite(characterData.x, characterData.y, 'Strawberry')
       newPlayer.setDepth(1)
@@ -240,6 +240,7 @@ export default class Game extends Phaser.Scene {
       const speed = sprite.properties.speed
       // console.log(sprite.body.velocity)
       if (sprite.properties.direction == 'left') {
+        console.log('left ' + sprite.properties.id)
         sprite.anims.play('Strawberry-walk-left', true)
 
         sprite.body.velocity.x = -speed
@@ -247,6 +248,8 @@ export default class Game extends Phaser.Scene {
 
         sprite.body.offset.x = 11
       } else if (sprite.properties.direction == 'right') {
+        console.log('right ' + sprite.properties.id)
+
         sprite.anims.play('Strawberry-walk-right', true)
 
         sprite.body.velocity.x = speed
@@ -254,16 +257,23 @@ export default class Game extends Phaser.Scene {
 
         sprite.body.offset.x = 11
       } else if (sprite.properties.direction == 'up') {
+        console.log('up ' + sprite.properties.id)
+
         sprite.anims.play('Strawberry-walk-up', true)
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = -speed
       } else if (sprite.properties.direction == 'down') {
+        console.log('down ' + sprite.properties.id)
+
         sprite.anims.play('Strawberry-walk-down', true)
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = speed
       } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
+        // sprite.anims.play('Strawberry-walk-down', true)
+        // console.log('idle ' + sprite.properties.id)
+
         const parts = sprite.anims.currentAnim.key.split('-')
         parts[1] = 'idle'
         sprite.play(parts.join('-'))
@@ -361,8 +371,8 @@ export default class Game extends Phaser.Scene {
     }
     this.nameTagText.x = charX - 10
     this.nameTagText.y = charY - 15
-
-    if (lastState === 'idle' && movimientos.some((mov) => this.actualState === mov) || !moved && movimientos.some((mov) => lastState === mov) || changedSpeed) {
+    
+    if (lastState !== this.actualState || !moved && movimientos.some((mov) => lastState === mov) || changedSpeed) {
       window.postMessage({ type: 'started_to_walk-emit', moveDataToSend }, '*')
     }
 
