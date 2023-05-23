@@ -106,8 +106,8 @@ export default class Game extends Phaser.Scene {
   }
 
   preload() {
-    this.createAnims('Strawberry')
     this.othersprites = this.physics.add.staticGroup()
+    this.createAnims('Strawberry')
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
       'up': Phaser.Input.Keyboard.KeyCodes.W,
