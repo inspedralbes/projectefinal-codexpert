@@ -98,7 +98,6 @@ export default class Game extends Phaser.Scene {
 
     this.othersprites.forEach(sprite => {
       if (sprite.properties.id === characterData.id) {
-        characterData.printed = false
         sprite.properties = characterData
       }
     });
@@ -217,50 +216,41 @@ export default class Game extends Phaser.Scene {
     }
 
     this.othersprites.forEach(sprite => {
-      let printed = false
+      sprite.x = sprite.properties.x
+      sprite.y = sprite.properties.y
 
-      if (!sprite.properties.printed) {
-        sprite.x = sprite.properties.x
-        sprite.y = sprite.properties.y
+      const speed = sprite.properties.speed
+      if (sprite.properties.direction == 'left') {
+        sprite.anims.play('Strawberry-walk-left', true)
 
-        const speed = sprite.properties.speed
-        if (sprite.properties.direction == 'left') {
-          sprite.anims.play('Strawberry-walk-left', true)
+        sprite.body.velocity.x = -speed
+        sprite.body.velocity.y = 0
 
-          sprite.body.velocity.x = -speed
-          sprite.body.velocity.y = 0
+        sprite.body.offset.x = 11
+      } else if (sprite.properties.direction == 'right') {
+        sprite.anims.play('Strawberry-walk-right', true)
 
-          sprite.body.offset.x = 11
-          !printed
-        } else if (sprite.properties.direction == 'right') {
-          sprite.anims.play('Strawberry-walk-right', true)
+        sprite.body.velocity.x = speed
+        sprite.body.velocity.y = 0
 
-          sprite.body.velocity.x = speed
-          sprite.body.velocity.y = 0
+        sprite.body.offset.x = 11
+      } else if (sprite.properties.direction == 'up') {
+        sprite.anims.play('Strawberry-walk-up', true)
 
-          sprite.body.offset.x = 11
-          !printed
-        } else if (sprite.properties.direction == 'up') {
-          sprite.anims.play('Strawberry-walk-up', true)
+        sprite.body.velocity.x = 0
+        sprite.body.velocity.y = -speed
+      } else if (sprite.properties.direction == 'down') {
+        sprite.anims.play('Strawberry-walk-down', true)
 
-          sprite.body.velocity.x = 0
-          sprite.body.velocity.y = -speed
-        } else if (sprite.properties.direction == 'down') {
-          sprite.anims.play('Strawberry-walk-down', true)
+        sprite.body.velocity.x = 0
+        sprite.body.velocity.y = speed
+      } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
+        const parts = sprite.anims?.currentAnim.key.split('-')
+        parts[1] = 'idle'
+        sprite.play(parts.join('-'))
 
-          sprite.body.velocity.x = 0
-          sprite.body.velocity.y = speed
-          !printed
-        } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
-          const parts = sprite.anims?.currentAnim.key.split('-')
-          parts[1] = 'idle'
-          sprite.play(parts.join('-'))
-
-          sprite.body.velocity.x = 0
-          sprite.body.velocity.y = 0
-          !printed
-        }
-        sprite.properties.printed = printed
+        sprite.body.velocity.x = 0
+        sprite.body.velocity.y = 0
       }
     });
 
