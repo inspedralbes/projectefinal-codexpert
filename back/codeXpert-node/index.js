@@ -169,6 +169,7 @@ socketIO.on("connection", (socket) => {
         character.y = data.y;
         character.speed = data.speed
         character.direction = data.direction;
+        character.name = socket.data.name 
         characterSend = character;
       }
     });

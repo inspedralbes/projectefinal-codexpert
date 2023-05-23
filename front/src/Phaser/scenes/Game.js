@@ -266,16 +266,12 @@ export default class Game extends Phaser.Scene {
 
       const speed = sprite.properties.speed
       if (sprite.properties.direction == 'left') {
-        console.log('left ' + sprite.properties.id)
         sprite.anims.play('Strawberry-walk-left', true)
-
         sprite.body.velocity.x = -speed
         sprite.body.velocity.y = 0
 
         sprite.body.offset.x = 11
       } else if (sprite.properties.direction == 'right') {
-        console.log('right ' + sprite.properties.id)
-
         sprite.anims.play('Strawberry-walk-right', true)
 
         sprite.body.velocity.x = speed
@@ -283,15 +279,11 @@ export default class Game extends Phaser.Scene {
 
         sprite.body.offset.x = 11
       } else if (sprite.properties.direction == 'up') {
-        console.log('up ' + sprite.properties.id)
-
         sprite.anims.play('Strawberry-walk-up', true)
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = -speed
       } else if (sprite.properties.direction == 'down') {
-        console.log('down ' + sprite.properties.id)
-
         sprite.anims.play('Strawberry-walk-down', true)
 
         sprite.body.velocity.x = 0
@@ -588,6 +580,11 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.strawberry, this.mobGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.strawberry, this.npcGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.mobGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(this.othersprites, this.buildingsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.othersprites, this.npcGroup, this.handleCollision, null, this)
+    this.physics.add.collider(this.othersprites, this.groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.othersprites, this.groundCollisionsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.othersprites, this.cropsLayer, this.handleCollision, null, this)
   }
 
   handlePlayerNPCCollision(obj1, colisionado) {
