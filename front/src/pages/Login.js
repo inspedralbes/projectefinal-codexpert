@@ -70,7 +70,7 @@ function Login() {
 
             sendTutorialLocalStorageData(data.token)
             localStorage.clear()
-            navigate('/lobbies')
+            navigate('/codeworld')
           } else {
             setErrorText(data.message)
           }

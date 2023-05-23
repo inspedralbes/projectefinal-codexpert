@@ -298,6 +298,37 @@ class GameController extends Controller
     }    
 
     /**
+     * This function given a game id and user id returns the position from the player in the game ranking.
+     * @param int $game_id is the game id of the game that we want to get their position
+     * @param int $user_id is the id from the user that we want to get their position.
+     * @return int $userPosition is the position of the user in the ranking from that game.
+     */      
+    private function getPlayerPosition($game_id, $user_id)
+    {
+        $ranking = $this -> getRankingPrivate($game_id);
+        $playerFound = false;
+        $userPosition = -1;
+
+        $i = 0;
+        while( ($i < count($ranking)) && (!$playerFound) ) {
+            if ( ($ranking[$i] -> id) == ($user_id) ) {
+                $i += 1;
+                $userPosition = $i;
+                $playerFound = true;
+            } 
+            $i++;
+        }        
+
+        $updateUser = User_game::where('game_id', $game_id) 
+        -> where('user_id', $user_id)
+        -> first();
+        $updateUser -> finished_position = $userPosition;
+        $updateUser -> save();
+
+        return $userPosition;
+    }  
+
+    /**
      * This function updates elo, coins and level experience of the users, depending on their question_at position and if they're the winner
      * @param array $users is an array made of objects, each object represents a user from the lobby, contains their id.
      * @param int $idGame is the id from the game that the members of the lobby are playing
@@ -321,6 +352,8 @@ class GameController extends Controller
                     -> where('user_id', $members[$i]['idUser'])
                     -> first();
 
+                    $playerPosition = $this -> getPlayerPosition($request -> idGame, $members[$i]['idUser']);
+
                     $myProfile = User::where('id', $members[$i]['idUser']) -> first();
 
                     if ($game -> winner_id == $members[$i]['idUser']) {
@@ -330,6 +363,11 @@ class GameController extends Controller
                     $newXp = ($myGame -> question_at) * $multiplier;
                     $newCoins = ($myGame -> question_at) * $multiplier;
                     $newElo = (($myGame -> question_at) * 2) * $multiplier;
+
+                    $myGame -> coinsEarned = $newCoins;
+                    $myGame -> eloEarned = $newElo;
+                    $myGame -> xpEarned = $newXp;
+                    $myGame -> finished_position = $playerPosition;
 
                     $myProfile -> xp += $newXp;
                     $myProfile -> coins += $newCoins;
@@ -345,6 +383,7 @@ class GameController extends Controller
                     $updatedProfiles[$i] = $updatedStats;
                     
                     $myProfile -> save();
+                    $myGame -> save();
                 }
             }
         }
@@ -352,6 +391,88 @@ class GameController extends Controller
         return response() -> json($updatedProfiles);
     }   
 
+    /**
+     * This function given a game id, returns the ranking from that game
+     * @param int $id is the game id from the database.
+     * @return array $ranking contains an ordered list of players that have played the game.
+     */      
+    private function getRankingPrivate($id)
+    {
+        $ranking = [];
+        $player = (object) [
+            'id' => 0,
+            'avatar' => '',
+            'name' => '',
+            'elo' => 0,
+            'xp' => 0,
+            'heartsRemaining' => 0,
+            'perksUsed' => 0,
+            'questionAt' => 0,
+            'winner' => false,
+            'dead' => false
+        ];
+        $game = Game::where('id', $id) -> first();
+
+        if ($game -> winner_id != null) {
+            $winner = User::where('id', $game -> winner_id) -> first();
+            $winnerGameData = User_game::where('game_id', $id) 
+            -> where ('user_id', $game -> winner_id)
+            -> first();
+            $player -> id = $winner -> id;
+            $player -> avatar = $winner -> avatar;
+            $player -> name = $winner -> name;
+            $player -> elo = $winner -> elo;
+            $player -> xp = $winner -> xp;
+            $player -> heartsRemaining = $winnerGameData -> hearts_remaining;
+            $player -> perksUsed = $winnerGameData -> perks_used;
+            $player -> questionAt = $winnerGameData -> question_at;
+            $player -> winner = true;
+            $player -> dead = ($winnerGameData -> dead == 0) ? false : true;
+            
+            array_push($ranking, $player);
+
+            $allPlayers = User_game::where('game_id', $id) 
+            -> where ('user_id', '!=', $game -> winner_id)
+            -> orderBy ('question_at', 'DESC')
+            -> get();
+
+        } else {
+            $allPlayers = User_game::where('game_id', $id) 
+            -> orderBy ('question_at', 'DESC')
+            -> get();
+        }
+        
+        for ($i = 0; $i < count($allPlayers); $i++) { 
+            $playerData = User::where('id', $allPlayers[$i] -> user_id) -> first();
+            $player = (object) [
+                'id' => 0,
+                'avatar' => '',
+                'name' => '',
+                'elo' => 0,
+                'xp' => 0,
+                'heartsRemaining' => 0,
+                'perksUsed' => 0,
+                'questionAt' => 0,
+                'winner' => false,
+                'dead' => false
+
+            ];
+            $player -> id = $playerData -> id;
+            $player -> avatar = $playerData -> avatar;
+            $player -> name = $playerData -> name;
+            $player -> elo = $playerData -> elo;
+            $player -> xp = $playerData -> xp;
+            $player -> heartsRemaining = $allPlayers[$i] -> hearts_remaining;
+            $player -> perksUsed = $winnerGameData -> perks_used;
+            $player -> questionAt = $allPlayers[$i] -> question_at;
+            $player -> winner = false;
+            $player -> dead = ($allPlayers[$i] -> dead == 0) ? false : true;
+
+            array_push($ranking, $player);
+        }
+        
+        return $ranking;
+    }     
     /**
      * This function given a game id, returns the ranking from that game
      * @param int $id is the game id from the database.
@@ -652,16 +773,11 @@ class GameController extends Controller
         $inputs = json_decode($request -> inputs);
         $public = json_decode($request -> public);
 
-        $validateTitleStatement = (object) [
-            'title' => $request -> title,
-            'statement' => $request -> statement
-        ];
-
         if ($userId != null) {
             //If logged in we run all the validations
             $correctTitleStatement = $this->checkTitleStatement($request);
             $correctInputsAndOutputs = $this->checkInputsAndOutputs($inputs, $outputs);
-            if ($correctTitleStatement && $correctInputsAndOutputs -> correct) {
+            if ($correctTitleStatement -> correct && $correctInputsAndOutputs -> correct) {
                 $createdQuestion = $this->createNewQuestion($request -> title, $request -> statement, $userId, $public);
                 $this->addInputsToQuestion($createdQuestion -> id, $inputs);
                 $this->addOutputsToQuestion($createdQuestion -> id, $outputs);      

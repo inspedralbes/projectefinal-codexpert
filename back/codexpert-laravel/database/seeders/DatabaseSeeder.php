@@ -12,6 +12,8 @@ use App\Models\Test_output;
 use App\Models\Game_question;
 use App\Models\User_game;
 use App\Models\User;
+use App\Models\Npc;
+use App\Models\Dialogue;
 use App\Models\Tutorial_question;
 use App\Models\Tutorial_test_input;
 use App\Models\Tutorial_test_output;
@@ -30,6 +32,7 @@ class DatabaseSeeder extends Seeder
         {
             //Example 1
             $question = new Question;
+            $question -> title = "Array sort";
             $question -> statement = "Sort Array in ASCENDING order";
             $question -> public = true;
             $question -> save();
@@ -67,6 +70,7 @@ class DatabaseSeeder extends Seeder
             
             //Example 2
             $question = new Question;
+            $question -> title = "String reverse";
             $question -> statement = "Reverse the String";
             $question -> public = true;
             $question -> save();
@@ -104,6 +108,7 @@ class DatabaseSeeder extends Seeder
             
             //Example 3
             $question = new Question;
+            $question -> title = "Array reverse";
             $question -> statement = "Reverse the given Array";
             $question -> public = true;
             $question -> save();
@@ -141,6 +146,7 @@ class DatabaseSeeder extends Seeder
 
             //Example 4
             $question = new Question;
+            $question -> title = "Count odd numbers";
             $question -> statement = "Count number of odd numers in the Array";
             $question -> public = true;
             $question -> save();
@@ -178,6 +184,7 @@ class DatabaseSeeder extends Seeder
 
             //Example 5
             $question = new Question;
+            $question -> title = "Array sort";
             $question -> statement = "Sort Array in ASCENDING order";
             $question -> public = true;
             $question -> save();
@@ -281,7 +288,7 @@ class DatabaseSeeder extends Seeder
             //Level 1
             $tutorial_question = new Tutorial_question;
             $tutorial_question -> title = "INTRODUCTION TO VARIABLES";
-            $tutorial_question -> statement = "For this level, declare a variable (choose whatever name you like) using <b>let</b> and assign our variable input to it.";
+            $tutorial_question -> statement = "For this level, declare a variable (choose whatever name you like) using <span className='word__blue'>let</span> and assign our variable input to it.";
             $tutorial_question -> save();
             //Input 1
             $input = new Tutorial_test_input;
@@ -501,6 +508,47 @@ class DatabaseSeeder extends Seeder
             $output -> question_id = 6;
             $output -> output = serialize(1);
             $output -> save();            
+        }
+
+        //Migrations for NPcs
+        {
+            //NPC 1
+            {     
+                {
+                    //Dialogue 1                    
+                    $newNPC = new npc;
+                    $newNPC -> name = "Gaspar";
+                    $newNPC -> introduction = "Hi! (with rizz) My name is Gaspar. I love NodeJS :D";
+                    $newNPC -> save();
+                    
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption -> npc_id = $newNPC -> id;
+                    $newDialogueOption -> sentence = "Did you know you could sort arrays with array.sort?";
+                    $newDialogueOption -> save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption -> npc_id = $newNPC -> id;
+                    $newDialogueOption -> sentence = "You can also declare variables with \"const\", but these cannot be changed.";
+                    $newDialogueOption -> save();
+                    }
+                {
+                    //Dialogue 2
+                    $newNPC = new npc;
+                    $newNPC -> name = "Alessia";
+                    $newNPC -> introduction = "Welcome to CodeWorld! My name is Alessia, nice to meet you!";
+                    $newNPC -> save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption -> npc_id = $newNPC -> id;
+                    $newDialogueOption -> sentence = "You can convert string into uppercase characters with stringExample.toUpperCase()!";
+                    $newDialogueOption -> save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption -> npc_id = $newNPC -> id;
+                    $newDialogueOption -> sentence = "You can convert string into lowercase characters with stringExample.toLowerCase()!";
+                    $newDialogueOption -> save();
+                }
+            }
         }
     }
 }

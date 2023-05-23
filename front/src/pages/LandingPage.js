@@ -6,7 +6,7 @@ import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import logo from '../img/logo.gif'
 import { Loader } from '../components/Loading'
-import IconUser from '../components/IconUser'
+import Header from '../components/Header'
 import '../styles/responsive.css'
 
 function LandingPage() {
@@ -32,7 +32,7 @@ function LandingPage() {
   return (
     <div>
       {isUserLogged && (
-        <IconUser />
+        <Header />
       )}
       <div className='landingPage'>
         <Loader />
@@ -42,9 +42,9 @@ function LandingPage() {
         {isUserLogged === '' && (
           <button className='pixel-button loading'>LOADING<Loader /></button>
         )}
-        {isUserLogged === false && (
-          <Link to='/campaign'>
-            <button className='pixel-button landingbtn'>Get Started</button>
+        {isUserLogged !== '' && (
+          <Link to='/codeworld'>
+            <button className='pixel-button landingbtn'>PLAY NOW</button>
           </Link>
         )}
         {isUserLogged === false && (
@@ -53,11 +53,6 @@ function LandingPage() {
               Login/Register
             </Link>
           </div>
-        )}
-        {isUserLogged && (
-          <Link to='/lobbies'>
-            <button className='pixel-button landingbtn'>Lobbies</button>
-          </Link>
         )}
       </div>
     </div>

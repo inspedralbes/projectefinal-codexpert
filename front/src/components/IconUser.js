@@ -31,6 +31,12 @@ function IconUser() {
       .then((data) => {
         setAvatarURL(data.url)
       })
+
+    window.addEventListener('click', function (e) {
+      if (document.getElementById('iconUser__button') !== null && !document.getElementById('iconUser__button').contains(e.target)) {
+        setState(state)
+      }
+    })
   }, [])
 
   const handleLogOut = () => {
@@ -60,33 +66,46 @@ function IconUser() {
   return (
     <>
       {avatarURL !== '' && (
-        <div className="container">
+        <div className="iconUser__container">
           {avatarURL !== null
-            ? (
-              <button
-                type="button"
-                className="button"
-                onClick={handleButtonClick}
-              >
-                <img
-                  className="button__image"
-                  alt="avatar"
-                  src={avatarURL}
-                  height="50"
-                  width="50"
-                ></img>
-              </button>)
+            ? (<button
+              type="button"
+              id="iconUser__button"
+              className="iconUser__button"
+              onClick={handleButtonClick}
+            >
+              <img
+                className="iconUser-boton__image"
+                alt="avatar"
+                src={avatarURL}
+                height="50"
+                width="50"
+              ></img>
+            </button>)
             : (
               <Loader className="loader" />)}
           {state && (
-            <div className="dropdown">
-              <ul className="dropdown__list list">
-                <li className="list__item" onClick={() => navigate('/profile')}>
-                  <button className="button">Profile</button>
+            <div className="iconUser-dropdown">
+              <ul className="iconUser-dropdown__list">
+                <li
+                  className="iconUser-list__item"
+                  onClick={() => navigate('/profile')}
+                >
+                  <button className="iconUser__button">Profile</button>
                 </li>
-                <li className="list__item" onClick={() => handleLogOut()}>
+                <li
+                  className="iconUser-list__item"
+                  onClick={() => navigate('/library')}
+                >
                   {' '}
-                  <button className="button">Log Out</button>
+                  <button className="iconUser__button">My Library</button>
+                </li>
+                <li
+                  className="iconUser-list__item"
+                  onClick={() => handleLogOut()}
+                >
+                  {' '}
+                  <button className="iconUser__button">Log Out</button>
                 </li>
               </ul>
             </div>

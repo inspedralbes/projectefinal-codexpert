@@ -297,7 +297,7 @@ socketIO.on("connection", (socket) => {
         socketIO.to(lobby.lobby_name).emit("game_started");
         lobby.started = true;
         sendLobbyList();
-        startGame(lobby.lobby_name, lobby.settings.questionAmount);
+        startGame(lobby.lobby_name, lobby.settings.questionAmount, lobby.questions);
       }
     });
   });
@@ -370,7 +370,7 @@ socketIO.on("connection", (socket) => {
               if (willHaveOvertime) {
                 startOverTime(socket, overtimeDuration);
               } else {
-                endGame(socket);
+                endGame(socket.data.name, socket.data.current_lobby, socket.data.game_data.idGame);
               }
             } else {
               socket.data.resultMessage = "YOU FINISHED";
@@ -500,7 +500,7 @@ socketIO.on("connection", (socket) => {
 
 async function sendQuestionsToUser(socket) {
   await axios
-    .post(laravelRoute + "getQuestions", {
+    .post(laravelRoute + "getAllQuestions", {
       token: socket.data.token
     })
     .then(function (response) {
@@ -515,7 +515,6 @@ function startOverTime(socket, time) {
   const room = socket.data.current_lobby;
   const winnerName = socket.data.name;
   const idGame = socket.data.game_data.idGame;
-
   socketIO.to(room).emit("overtime_starts", { time: (time * 1000) });
 
   let cont = -1;
@@ -582,10 +581,11 @@ function addMessage(msgData, room) {
   sendMessagesToLobby(room);
 }
 
-async function startGame(room, amount) {
+async function startGame(room, amount, chosenQuestions) {
   await axios
     .post(laravelRoute + "startGame", {
-      numQuestions: amount
+      numQuestions: amount,
+      chosenQuestions
     })
     .then(function (response) {
       lobbies.forEach((lobby) => {

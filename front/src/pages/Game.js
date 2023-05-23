@@ -8,8 +8,11 @@ import persiana from '../img/persiana.png'
 import { useNavigate } from 'react-router-dom'
 import ChatGame from '../components/ChatGame'
 import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
+import { Loading } from '../components/Loading'
 import CodeMirror from '../components/CodeMirror'
 import Timer from '../components/Timer'
+import routes from '../conn_routes'
+import Cookies from 'universal-cookie'
 import heart from '../img/corazon_roto.gif'
 import Modal from 'react-modal'
 
@@ -22,8 +25,11 @@ function Game() {
   const [playable, setPlayable] = useState(true)
   const [counter, setCounter] = useState(0)
   const [roundResult, setRoundResult] = useState(null)
-  const [CmodalIsOpen, setCIsOpen] = useState(false);
-  const [ImodalIsOpen, setIIsOpen] = useState(false);
+  const [CmodalIsOpen, setCIsOpen] = useState(false)
+  const [ImodalIsOpen, setIIsOpen] = useState(false)
+  const [userLogged, setUserLogged] = useState(false)
+
+  const cookies = new Cookies()
 
   const [qst, setQst] = useState({
     statement: '',
@@ -128,7 +134,27 @@ function Game() {
     setRoundResult(null)
   }, [roundResult])
 
+  const isUserLogged = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'isUserLogged', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.correct) {
+          navigate('/login')
+        }else {
+          setUserLogged(true)
+        }
+      })
+  }
+
   useEffect(() => {
+    isUserLogged()
     window.addEventListener('message', handleMessage)
 
     return () => {
@@ -137,84 +163,96 @@ function Game() {
   }, [])
 
   return (
-    <div className='game'>
-      {overtimeDuration > 0 && playable
-        && <img src={persiana}
-          id='persiana'
-          className='persiana'
-          style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
-          alt=""></img>}
-      <div className='game__container '>
+    <>
+    {userLogged
+    ? <div className='game'>
+      
+    {overtimeDuration > 0 && playable
+      && <img src={persiana}
+        id='persiana'
+        className='persiana'
+        style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
+        alt=""></img>}
+    <div className='game__container '>
 
-        <div className='container__left'>
-          <Modal
-            className='correctAnsw'
-            isOpen={CmodalIsOpen}
-            onAfterOpen={afterOpenModal}
-          >
-            YOU DID IT!! :)
-          </Modal>
-          <Modal
-            className='incorrectAnsw animate__animated animate__tada'
-            isOpen={ImodalIsOpen}
-            onAfterOpen={afterOpenModal}
-          >
-            TRY AGAIN :(
-            <img src={heart} alt='' height={'300px'}></img>
-          </Modal>
-          <div className={playable ? 'started__game' : 'ended__game'}>
-            {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
-          </div>
-          <ConnectedUsersInGame></ConnectedUsersInGame>
-          <ChatGame className='chatGame__chatbox'></ChatGame>
+      <div className='container__left'>
+        <Modal
+          className='correctAnsw'
+          isOpen={CmodalIsOpen}
+          onAfterOpen={afterOpenModal}
+        >
+          YOU DID IT!! :)
+        </Modal>
+        <Modal
+          className='incorrectAnsw animate__animated animate__tada'
+          isOpen={ImodalIsOpen}
+          onAfterOpen={afterOpenModal}
+        >
+          TRY AGAIN :(
+          <img src={heart} alt='' height={'300px'}></img>
+        </Modal>
+        <div className={playable ? 'started__game' : 'ended__game'}>
+          {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
         </div>
-
-        <div className='container__right'>
-          {playable && <div className='game__playing' >
-            <div className='game__statement'>
-              <h2>Statement:</h2>
-              <h1 className='game__statementTitle'>{qst.statement}</h1>
-            </div>
-            <div className='game--grid'>
-              <div className='editor--div'>
-                <div className='pixelart-to-css'></div>
-
-                <div className='editor__expected'>
-                  <div className='game__expectedInput'>
-                    <h2>Example input:</h2>
-                    <h1>{qst.inputs[0].toString()}</h1>
-                  </div>
-                  <div className='game__expectedOutput'>
-                    <h2>Example output:</h2>
-                    <h1>{qst.output.toString()}</h1>
-                  </div>
-                  <div className='game__expectedOutput game__result'>
-                    <h2>Result:</h2>
-                    <h1>  {error !== '' && <div>{error}</div>}</h1>
-                  </div>
-                </div>
-                <form className='editor' onSubmit={handleSubmit}>
-                  <CodeMirror code={code} setCode={setCode}></CodeMirror>
-                  <button className='pixel-button game__submit' disabled={code === ''}>
-                    Submit
-                  </button>
-                </form>
-              </div>
-            </div>
-
-          </div>}
-          {!playable && <div className='game__results'>
-            <h1 className='game__yourResult'>{result}</h1>
-            <h2>{winnerMessage}</h2>
-            <p className='game__buttons'>
-              <button className='pixel-button game__button' onClick={goBackToLobby}>GO BACK TO LOBBY</button>
-
-              <button className='pixel-button game__button' onClick={leaveLobby}>LOBBY LIST</button>
-            </p>
-          </div>}
-        </div>
+        <ConnectedUsersInGame></ConnectedUsersInGame>
+        <ChatGame className='chatGame__chatbox'></ChatGame>
       </div>
-    </div >
+
+      <div className='container__right'>
+        {playable && <div className='game__playing' >
+          <div className='game__statement'>
+            <h2>Statement:</h2>
+            <h1 className='game__statementTitle' id="scroll">{qst.statement}</h1>
+          </div>
+          <div>
+            progres bar
+          </div>
+          <div className='game--grid'>
+            <div className='editor--div'>
+              <div className='pixelart-to-css'></div>
+              <div className='editor__expected'>
+                <div className='game__expectedInput'>
+                  <h2>Example input:</h2>
+                  <h1>{qst.inputs[0].toString()}</h1>
+                </div>
+                <div className='game__expectedOutput'>
+                  <h2>Example output:</h2>
+                  <h1>{qst.output.toString()}</h1>
+                </div>
+              </div>
+              <form className="editor" onSubmit={handleSubmit}>
+              <CodeMirror id="codemirror" code={code} setCode={setCode}></CodeMirror>
+              <div className='result__container'>
+                <div className="game__result">
+                  <h1>{error !== '' && <div>{error}</div>}</h1>
+                </div>
+                <button
+                  className="pixel-button game__submit"
+                  disabled={code === ''}
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+            </div>
+          </div>
+
+        </div>}
+        {!playable && <div className='game__results'>
+          <h1 className='game__yourResult'>{result}</h1>
+          <h2>{winnerMessage}</h2>
+          <p className='game__buttons'>
+            <button className='pixel-button game__button' onClick={goBackToLobby}>GO BACK TO LOBBY</button>
+
+            <button className='pixel-button game__button' onClick={leaveLobby}>LOBBY LIST</button>
+          </p>
+        </div>}
+      </div>
+    </div>
+  </div >
+    :<Loading></Loading>
+  }
+  </>
 
   )
 }
