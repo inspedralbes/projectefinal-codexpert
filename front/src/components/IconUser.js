@@ -46,6 +46,7 @@ function IconUser() {
       cookies.get('token') !== undefined ? cookies.get('token') : null
     )
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+    document.cookie = 'userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
     localStorage.clear()
     fetch(routes.fetchLaravel + 'logout', {
       method: 'POST',
@@ -83,7 +84,7 @@ function IconUser() {
               ></img>
             </button>)
             : (
-            <Loader className="loader" />)}
+              <Loader className="loader" />)}
           {state && (
             <div className="iconUser-dropdown">
               <ul className="iconUser-dropdown__list">
