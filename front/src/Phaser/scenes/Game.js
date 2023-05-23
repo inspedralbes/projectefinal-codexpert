@@ -252,11 +252,12 @@ export default class Game extends Phaser.Scene {
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = speed
       } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
-        console.log('idle ' + sprite.properties.id)
+        sprite.anims.play('Strawberry-walk-down', true)
+        // console.log('idle ' + sprite.properties.id)
 
-        const parts = sprite.anims?.currentAnim.key.split('-')
-        parts[1] = 'idle'
-        sprite.play(parts.join('-'))
+        // const parts = sprite.anims?.currentAnim.key.split('-')
+        // parts[1] = 'idle'
+        // sprite.play(parts.join('-'))
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = 0
