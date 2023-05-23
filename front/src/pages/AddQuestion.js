@@ -3,6 +3,7 @@ import '../styles/normalize.css'
 import '../styles/addQuestion.css'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
+import arrow from '../img/InputOutputArrow.png'
 
 function AddQuestion() {
   const [questionData, setQuestionData] = useState({
@@ -13,6 +14,10 @@ function AddQuestion() {
     public: false
   })
   const [inputsOutputs, setInputsOutputs] = useState(['', '', ''])
+  // const placeholder = {
+  //   input: ['1, 2, 3', 'Hello World!', '[1, 2, 1, 5]'],
+  //   output: ['3, 2, 1', 'HELLO WORLD!', '2']
+  // }
   const cookies = new Cookies()
 
   const handleAddInputOutput = () => {
@@ -67,40 +72,40 @@ function AddQuestion() {
               <label>Title:</label>
             </div>
             <div className="input__container">
-              <input type="text" onChange={(e) => { setQuestionData({ ...questionData, title: e.value }) }}></input>
+              <input tabIndex="1" type="text" onChange={(e) => { setQuestionData({ ...questionData, title: e.value }) }}></input>
             </div>
           </div>
           <div>
 
           </div>
           <label className='setPublic__label'>
-            <input type='checkbox' onChange={(e) => { setQuestionData({ ...questionData, public: e.value }) }}></input><p>Set your question public to everyone</p>
+            <input tabIndex="3" type='checkbox' onChange={(e) => { setQuestionData({ ...questionData, public: e.value }) }}></input><p>Set your question public to everyone</p>
           </label>
         </div>
         <div className='statement__container'>
           <p>Statement:</p>
-          <textarea onChange={(e) => { setQuestionData({ ...questionData, statement: e.value }) }}></textarea>
+          <textarea tabIndex="2" onChange={(e) => { setQuestionData({ ...questionData, statement: e.value }) }}></textarea>
         </div>
       </div>
       <div className='addQuestionPixel__container grid__container'>
         <div className='inputOutput__container' id='scroll'>
           <div>
             <h2>INPUTS</h2>
-            {inputsOutputs.map((element, index) => { return <input onChange={(e) => { setQuestionData({ ...questionData, inputs: e.value }) }} key={index} type="text"></input> })}
+            {inputsOutputs.map((element, index) => { return <input onChange={(e) => { setQuestionData({ ...questionData, inputs: e.value }) }} tabIndex={index + index + 3} key={index} type="text"></input> })}
           </div>
           <div className='inputArrows__conainer'>
-            {inputsOutputs.map((element, index) => { return <div key={index}> → </div> })}
+            {inputsOutputs.map((element, index) => { return <div key={index}><img src={arrow}></img></div> })}
           </div>
           <div>
             <h2>OUTPUTS</h2>
-            {inputsOutputs.map((element, index) => { return <input key={index} type="text"></input> })}
+            {inputsOutputs.map((element, index) => { return <input tabIndex={index + +index + 4} key={index} type="text"></input> })}
           </div>
           <div className='removeItem__conainer'>
-            {inputsOutputs.map((element, index) => { return <div key={index}><button onClick={() => handleRemoveInputOutput(index)} disabled={inputsOutputs.length <= 3}>-</button><br></br></div> })}
+            {inputsOutputs.map((element, index) => { return <div key={index}><button onClick={() => handleRemoveInputOutput(index)} disabled={inputsOutputs.length <= 3}>delete</button><br></br></div> })}
           </div>
         </div>
         <div>
-          <button className='pixel-button addInputOutput-button' onClick={() => handleAddInputOutput()}>+</button>
+          <a className='addInputOutput-link' onClick={() => handleAddInputOutput()}>Add new input & output line</a>
         </div>
       </div>
       <br></br>

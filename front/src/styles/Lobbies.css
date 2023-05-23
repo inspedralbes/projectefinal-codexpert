@@ -58,7 +58,7 @@
     width: 6px;
 }
 
-#inputName:focus{
+#inputName:focus {
     transition: all 1s;
     background-color: #daffc1;
 }
@@ -908,24 +908,41 @@
     font-size: 80%;
 }
 
-.settings:hover{
+.settings:hover {
     transform: rotate(30deg);
 }
 
 
-.settings{
+.settings {
     transition: all 0.5s;
     transform: rotate(0);
     margin: 10px 10px 10px 50px;
 }
 
 
-.noBtn{
-    border:none;
+.noBtn {
+    border: none;
     background: none;
 }
 
-.red input, .red::after, .red::before{
+.red input, .red::after, .red::before {
     background: #ffbdbd;
     transition: all 0.2s ease-in-out;
+}
+
+.list__container_li {
+    max-height: 16vh;
+    width: 100%;
+    overflow: auto;
+    font-size: medium;
+}
+
+.list__container__text {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.checkList {
+    width: 65%;
 }

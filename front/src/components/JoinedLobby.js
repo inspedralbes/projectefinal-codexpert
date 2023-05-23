@@ -23,6 +23,7 @@ JoinedLobby.propTypes = {
 function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  // const [showQuestionsModal, setShowQuestionsModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
   const [saveSettings, setSaveSettings] = useState(0)
   // const [questionsData, setQuestionsData] = useState([])
@@ -110,7 +111,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   }, [])
 
   return (
-    <div id="lobbyJoined" className="lobbies__lobby lobby">
+    <main id="lobbyJoined" className="lobbies__lobby lobby">
       <button id="goBackToLobby__button" onClick={handleLeave}>
         <span className="circle" aria-hidden="true">
           <span className="icon arrow"></span>
@@ -118,7 +119,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
         <span className="button-text">LEAVE CURRENT LOBBY</span>
       </button>
       {window.network.getShowSettings()
-        ? (<>
+        ? (<div>
           <button className="noBtn" onClick={() => setShowModal(true)}><img className="settings" src={settings} alt='SETTINGS' height={'50px'}></img></button>
           <Modal
             style={{
@@ -159,7 +160,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
             </div>
           </Modal>
           {/* <QuestionLibrary questionsData={questionsData}></QuestionLibrary> */}
-        </>)
+        </div>)
         : (<></>)}
       <ConnectedUsers></ConnectedUsers>
       {window.network.getShowSettings() && (
@@ -177,7 +178,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
         <h2 className="lobbies__error">{errorMessage}</h2>
       )}
       <ChatLobby className="chat__chatbox"></ChatLobby>
-    </div>
+    </main>
   )
 }
 
