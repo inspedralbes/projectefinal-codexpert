@@ -72,6 +72,10 @@ export default class Game extends Phaser.Scene {
         this.username = window.network.getUsername()
         break
 
+        case 'connected_to_phaser-event':
+          this.phaserUserId = window.network.getPhaserId()
+        break
+
       default:
         // UNKNOWN EVENT
         break
@@ -79,6 +83,9 @@ export default class Game extends Phaser.Scene {
   }
 
   addCharacter(characterData) {
+    if (characterData.id === this.phaserUserId) {
+      return
+    }
     if (!this.othersprites) {
       this.othersprites = this.physics.add.staticGroup()
     }

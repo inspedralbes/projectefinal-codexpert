@@ -15,12 +15,21 @@ class ConnectionNetwork {
   rewards = {}
   showSettings = false
   socketId = ''
+  phaserId
   settings = {
     heartAmount: 0,
     overtimeDuration: 0,
     questionAmount: 0,
     unlimitedHearts: false,
     willHaveOvertime: true
+  }
+
+  setPhaserId(phaserId) {
+    this.phaserId = phaserId
+  }
+
+  getPhaserId() {
+    return this.phaserId
   }
 
   setSocketId(socketId) {

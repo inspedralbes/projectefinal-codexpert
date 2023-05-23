@@ -117,6 +117,11 @@ socket.on('username', (data) => {
   window.postMessage({ type: 'username-event' }, '*')
 })
 
+socket.on('connected_to_phaser', (data) => {
+  window.network.setPhaserId(data.id)
+  window.postMessage({ type: 'connected_to_phaser-event' }, '*')
+})
+
 socket.on('update_character', (data) => {
   window.postMessage({ type: 'update_character-msg', characterData: data }, '*')
 })

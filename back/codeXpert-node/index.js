@@ -148,6 +148,9 @@ socketIO.on("connection", (socket) => {
     socket.data.phaserCharacterId = character.id;
     charactersWorld.push(character);
     socket.join("phaser_world_room");
+    socketIO.to(socket.id).emit("connected_to_phaser", {
+      id: character.id
+    });
     socket.data.inCodeWorld = true;
 
     socketIO.to("phaser_world_room").emit("new_character", character);
