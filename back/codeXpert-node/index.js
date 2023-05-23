@@ -84,6 +84,7 @@ const maxSettings = {
 socketIO.on("connection", (socket) => {
   socket.data.current_lobby = null;
   socket.data.token = null;
+  socket.data.name = "guest"
 
   socket.on("send_token", (data) => {
     const userToken = data.token;

@@ -38,6 +38,7 @@ export default class Game extends Phaser.Scene {
   actualState = 'idle'
   lastSpeed = defaultSpeed
   othersprites
+  nametags
   username
 
   constructor() {
@@ -70,8 +71,8 @@ export default class Game extends Phaser.Scene {
         this.username = window.network.getUsername()
         break
 
-        case 'connected_to_phaser-event':
-          this.phaserUserId = window.network.getPhaserId()
+      case 'connected_to_phaser-event':
+        this.phaserUserId = window.network.getPhaserId()
         break
 
       default:
@@ -84,11 +85,13 @@ export default class Game extends Phaser.Scene {
     if (characterData.id === this.phaserUserId) {
       return
     }
-    if (!this.othersprites) {
-      this.othersprites = this.physics.add.staticGroup()
-    }
+
+    if (!this.othersprites) { this.othersprites = this.physics.add.staticGroup() }
+
+    if (!this.nametags) { this.nametags = this.physics.add.staticGroup() }
+
     const sprites = this.othersprites.getChildren()
-    
+
     if (!sprites.some((sprite) => sprite.properties.id == characterData.id)) {
       const newPlayer = this.physics.add.sprite(characterData.x, characterData.y, 'Strawberry')
       newPlayer.setDepth(1)
@@ -99,10 +102,31 @@ export default class Game extends Phaser.Scene {
 
       this.othersprites.add(newPlayer)
     }
+
+    const tags = this.nametags.getChildren()
+
+    if (!tags.some((tag) => tag.properties.name == characterData.name)) {
+      const newTag = this.add.text(characterData.x, characterData.y, this.username, {
+        fontSize: '6px',
+        color: '#fff',
+        align: 'center',
+        backgroundColor: '#00000070',
+        resolution: 2,
+        wordWrap: { useAdvancedWrap: true },
+        fontFamily: 'pixel_operator',
+      })
+
+      newTag.setDepth(999)
+      newTag.properties = characterData
+
+      this.physics.add.existing(newTag)
+
+      this.nametags.add(newTag)
+    }
   }
 
   changeCharacters(characterData) {
-    if (!this.othersprites.getChildren().some((sprite) => sprite.properties.id == characterData.id)) {
+    if (!this.othersprites.getChildren().some((sprite) => sprite.properties.id == characterData.id) || !this.nametags.getChildren().some((tag) => tag.properties.name == characterData.name)) {
       this.addCharacter(characterData)
     }
 
@@ -113,12 +137,21 @@ export default class Game extends Phaser.Scene {
         sprite.y = sprite.properties.y
       }
     });
+
+    this.nametags.getChildren().forEach(tag => {
+      if (tag.properties.id === characterData.id) {
+        tag.properties = characterData
+        tag.x = tag.properties.x
+        tag.y = tag.properties.y
+      }
+    });
   }
 
   preload() {
-    if (!this.othersprites) {
-      this.othersprites = this.physics.add.staticGroup()
-    }
+    if (!this.othersprites) { this.othersprites = this.physics.add.staticGroup() }
+
+    if (!this.nametags) { this.nametags = this.physics.add.staticGroup() }
+
     this.createAnims('Strawberry')
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
@@ -228,6 +261,8 @@ export default class Game extends Phaser.Scene {
     }
 
     this.othersprites.getChildren().forEach(sprite => {
+      const charX = sprite.x
+      const charY = sprite.y
 
       const speed = sprite.properties.speed
       if (sprite.properties.direction == 'left') {
@@ -269,6 +304,13 @@ export default class Game extends Phaser.Scene {
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = 0
       }
+
+      this.nametags.getChildren().forEach(tag => {
+        if (tag.properties.id === tag.properties.id) {
+          tag.x = charX - 10
+          tag.y = charY - 15
+        }
+      });
     });
 
     if (this.inDialogue) {
@@ -357,7 +399,7 @@ export default class Game extends Phaser.Scene {
     }
     this.nameTagText.x = charX - 10
     this.nameTagText.y = charY - 15
-    
+
     if (lastState !== this.actualState || !moved && movimientos.some((mov) => lastState === mov) || changedSpeed) {
       window.postMessage({ type: 'started_to_walk-emit', moveDataToSend }, '*')
     }
@@ -539,7 +581,6 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.mobGroup, this.cropsLayer, this.handleCollision, null, this)
 
     this.physics.add.collider(this.npcGroup, this.buildingsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.npcGroup, this.mobGroup, this.handleCollision, null, this)
     this.physics.add.collider(this.npcGroup, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.npcGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.npcGroup, this.cropsLayer, this.handleCollision, null, this)
