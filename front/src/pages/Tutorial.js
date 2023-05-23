@@ -217,7 +217,6 @@ function Tutorial() {
                   }, 500)
                   document.querySelectorAll('.hint__cover')[0].style.zIndex = 4
                   document.querySelectorAll('.hint__cover')[0].style.border = "10px solid black"
-                  document.querySelectorAll('.game__modal')[0].style.zIndex = 10
 
                 }}>NEXT</button>
               </div>
@@ -361,7 +360,7 @@ function Tutorial() {
                 },
                 content: {
                   position: 'absolute',
-                  top: '42%',
+                  top: '35%',
                   left: '58.5%',
                   width: '40%'
                 }

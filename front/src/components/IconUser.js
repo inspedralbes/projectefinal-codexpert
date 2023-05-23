@@ -83,7 +83,7 @@ function IconUser() {
               ></img>
             </button>)
             : (
-            <Loader className="loader" />)}
+              <Loader className="loader" />)}
           {state && (
             <div className="iconUser-dropdown">
               <ul className="iconUser-dropdown__list">
@@ -92,6 +92,13 @@ function IconUser() {
                   onClick={() => navigate('/profile')}
                 >
                   <button className="iconUser__button">Profile</button>
+                </li>
+                <li
+                  className="iconUser-list__item"
+                  onClick={() => handleLogOut()}
+                >
+                  {' '}
+                  <button className="iconUser__button">My Library</button>
                 </li>
                 <li
                   className="iconUser-list__item"
