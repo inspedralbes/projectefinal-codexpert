@@ -89,7 +89,7 @@ function Tutorial() {
     setTimeout(() => {
       setCIsOpen(false)
       setIIsOpen(false)
-    }, 5000)
+    }, 4000)
   }
 
   const handleHint = () => {
@@ -148,7 +148,9 @@ function Tutorial() {
             )
             tutorialsId.sort()
             setCIsOpen(true)
-            navigate('/campaign')
+            setTimeout(() => {
+              navigate('/campaign')
+            }, 4000)
           } else {
             setIIsOpen(true)
           }
@@ -169,6 +171,9 @@ function Tutorial() {
                 overlay: {
                   backgroundColor: 'rgba(0, 0, 0, 0.75)',
                   zIndex: 2
+                },
+                content: {
+                  backgroundColor: '#d3ffcd'
                 }
               }}
               onRequestClose={() => setModal(prev => ({ ...prev, hello: false }))}
@@ -196,6 +201,7 @@ function Tutorial() {
                   position: 'absolute',
                   top: '-43%',
                   left: '40%',
+                  backgroundColor: '#d3ffcd'
                 }
               }}
               onRequestClose={() => setModal(prev => ({ ...prev, introduction: false }))}
@@ -217,7 +223,6 @@ function Tutorial() {
                   }, 500)
                   document.querySelectorAll('.hint__cover')[0].style.zIndex = 4
                   document.querySelectorAll('.hint__cover')[0].style.border = "10px solid black"
-                  document.querySelectorAll('.game__modal')[0].style.zIndex = 10
 
                 }}>NEXT</button>
               </div>
@@ -232,6 +237,7 @@ function Tutorial() {
                   position: 'absolute',
                   top: '58%',
                   left: '40%',
+                  backgroundColor: '#d3ffcd'
                 }
               }}
               onRequestClose={() => setModal(prev => ({ ...prev, hint: false }))}
@@ -269,7 +275,8 @@ function Tutorial() {
                   position: 'absolute',
                   top: '-55%',
                   left: '-57%',
-                  width: '40%'
+                  width: '40%',
+                  backgroundColor: '#d3ffcd'
                 }
               }}
               onRequestClose={() => setModal(prev => ({ ...prev, statement: false }))}
@@ -301,7 +308,8 @@ function Tutorial() {
                   position: 'absolute',
                   top: '-5%',
                   left: '-57%',
-                  width: '43%'
+                  width: '43%',
+                  backgroundColor: '#d3ffcd'
                 }
               }}
               onRequestClose={() => setModal(prev => ({ ...prev, inputOutput: false }))}
@@ -331,7 +339,8 @@ function Tutorial() {
                   position: 'absolute',
                   top: '42%',
                   left: '-57%',
-                  width: '40%'
+                  width: '40%',
+                  backgroundColor: '#d3ffcd'
                 }
               }}
               onRequestClose={() => setModal(prev => ({ ...prev, codeEditor: false }))}
@@ -361,9 +370,10 @@ function Tutorial() {
                 },
                 content: {
                   position: 'absolute',
-                  top: '42%',
+                  top: '35%',
                   left: '58.5%',
-                  width: '40%'
+                  width: '40%',
+                  backgroundColor: '#d3ffcd'
                 }
               }}
               onRequestClose={() => setModal(prev => ({ ...prev, submit: false }))}
@@ -424,26 +434,48 @@ function Tutorial() {
                   }
                 </Carousel>
                 <Modal
-              className='correctAnsw game__modal'
-              isOpen={CmodalIsOpen}
-              onAfterOpen={afterOpenModal}
-              style={{
-                content: {
-                  zIndex: 4
-                }
-              }}
-            >
-              YOU DID IT ! ! :)
-              <img src={jose} alt='' height={'300px'}></img>
-            </Modal>
-            <Modal
-              className='incorrectAnsw game__modal animate__animated animate__tada'
-              isOpen={ImodalIsOpen}
-              onAfterOpen={afterOpenModal}
-            >
-              TRY AGAIN!!
-              <img src={heart} alt='' height={'300px'}></img>
-            </Modal> 
+                  className='correctAnsw game__modal'
+                  style={{
+                    overlay: {
+                      zIndex: 2
+                    },
+                    content: {
+                      position: 'absolute',
+                      top: '0%',
+                      left: '30%',
+                      width: '40%',
+                      height: '40%',
+                    }
+                  }}
+                  isOpen={CmodalIsOpen}
+                  onAfterOpen={afterOpenModal}
+                >
+                  YOU DID IT ! ! :)
+                  <img src={jose} alt='' height={'300px'}></img>
+                </Modal>
+                <Modal
+                  className='incorrectAnsw game__modal animate__animated animate__tada'
+                  style={{
+                    overlay: {
+                      zIndex: 2
+                    },
+                    content: {
+                      position: 'absolute',
+                      top: '0%',
+                      left: '30%',
+                      width: '40%',
+                      height: '40%',
+                    }
+                  }}
+                  shouldCloseOnOverlayClick={false}
+                  isOpen={ImodalIsOpen}
+                  onAfterOpen={afterOpenModal}
+                >
+                  <div>
+                    <p>TRY AGAIN!!</p>
+                    <img src={heart} alt='' height={'300px'}></img>
+                  </div>
+                </Modal>
                 {introductionData.hints[location.state.id - 1] !== "" && (
                   <>
                     <div className='hint__cover' id="hint">
