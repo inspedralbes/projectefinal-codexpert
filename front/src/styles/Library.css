@@ -45,6 +45,7 @@
 
 .library table {
     border-collapse: collapse;
+    width: 100%;
 }
 
 .library th, td {
@@ -52,4 +53,22 @@
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
+    padding: 10px;
+    max-width: 200px;
+}
+
+.library tr {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.library button {
+    margin-top: 5%;
+}
+
+.tableList__container {
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

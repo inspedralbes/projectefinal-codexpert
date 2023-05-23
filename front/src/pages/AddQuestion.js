@@ -28,7 +28,7 @@ function AddQuestion() {
   const handleAddInputOutput = () => {
     if (inputsOutputs.length <= 10) {
       setInputsOutputs([...inputsOutputs, ''])
-      setQuestionData({ ...questionData, outputs: [...questionData.inputs, ''], inputs: [...questionData.inputs, ''] })
+      setQuestionData({ ...questionData, outputs: [...questionData.outputs, ''], inputs: [...questionData.inputs, ''] })
     }
   }
   const handleRemoveInputOutput = (i) => {
@@ -64,7 +64,11 @@ function AddQuestion() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setError(data.error)
+        if (data.created) {
+          navigate('/library')
+        } else {
+          setError(data.error)
+        }
       })
   }
 
@@ -159,7 +163,6 @@ function AddQuestion() {
   </div>
       : <Loading/>
     }
-
     </>
   )
 }

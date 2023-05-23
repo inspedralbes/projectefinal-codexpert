@@ -3,6 +3,7 @@ import Phaser from 'phaser'
 import Preloader from '../Phaser/scenes/Preloader'
 import Game from '../Phaser/scenes/Game'
 import InteractUI from '../Phaser/scenes/InteractUI'
+import Header from '../components/Header'
 
 import '../styles/normalize.css'
 import React, { useEffect, useRef } from 'react'
@@ -88,7 +89,9 @@ const CodeWorld = () => {
   }, [])
 
   return (
-    <div ref={parentRef}></div>
+    <div ref={parentRef}>
+      <Header></Header>
+    </div>
   )
 }
 
