@@ -243,6 +243,8 @@ class GameController extends Controller
     {
         $returnObject = (object) [
             'correct'=> true,
+            'testsPassed' => 0,
+            'numberOfTests' => 0,
             'user_game'=> null,
             'game' => null
         ];
@@ -253,8 +255,10 @@ class GameController extends Controller
         for ($i = 0; $i < count($getOutputs); $i++) { 
             $outputs[$i] = unserialize($getOutputs[$i] -> output);
         }
-        $correct = $this->checkEval($request -> evalPassed, $outputs, $request -> evalRes);
-        $returnObject -> correct = $correct;
+        $evalCheck = $this->checkEval($request -> evalPassed, $outputs, $request -> evalRes);
+        $returnObject -> correct = $evalCheck -> correct;
+        $returnObject -> testsPassed = $evalCheck -> testsPassed;
+        $returnObject -> numberOfTests = $evalCheck -> numberOfTests;
 
         //Get the game being played and update accordingly
         $game = Game::where('id', $request -> idGame) -> first();
@@ -495,29 +499,34 @@ class GameController extends Controller
     /**
      * This function recievs the inputs and if the eval has been passed, outputs, inputs and the result from the evals. It will check if there are enough tests, if the tests are valid and if the tests are repeated it will return which.
      * @param bool $evalPassed returns if the eval has been passed on frontend
-     * @param array $outputs is the array of the outputs that the user wrote
+     * @param array $outputs are the tests that we will use
      * @param array $evalRes is the array containing the results of each eval
-     * @return bool $correct will compare the evals to the outputs, check if the amount of outputs and testspassed are the same
+     * @return object $returnObject contains if the answer is correct, how many tests it has passed and the number of total tests.
      */     
     private function checkEval($evalPassed, $outputs, $evalRes)
     {
-        $correct = false;
-        $testsPassed = 0;
-
+        $returnObject = (object) [
+            "correct" => false,
+            "testsPassed" => 0,
+            "numberOfTests" => 0
+        ];
+        
         //If any of the tests doesn't pass we return that it's not a correct answer.
         if ($evalPassed) {
             foreach($outputs as $index => $outputValue) {
                 if ($outputValue == $evalRes[$index]) {
-                    $testsPassed++;
+                    $returnObject -> testsPassed++;
                 }
             }
         }
 
-        if ($testsPassed >= count($outputs)) {
-            $correct = true;
+        if ($returnObject -> testsPassed == count($outputs)) {
+            $returnObject -> correct = true;
         }
 
-        return $correct;
+        $returnObject -> numberOfTests = count($outputs);
+
+        return $returnObject;
     }     
 
     /**

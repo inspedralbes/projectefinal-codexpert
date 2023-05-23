@@ -279,6 +279,7 @@ class TutorialController extends Controller
         $returnObject = (object) [
             'correct'=> true,
             'testsPassed' => 0,
+            'numberOfTests' => 0,
             'finishedTutorial' => false,
         ];
         $results = [];
@@ -295,7 +296,9 @@ class TutorialController extends Controller
                 $outputs[$i] = unserialize($getOutputs[$i] -> output);
             }
 
-            for ($i=0; $i < count($outputs) ; $i++) { 
+            $returnObject -> numberOfTests = count($outputs);
+            
+            for ($i=0; $i < count($outputs); $i++) { 
                 if ($outputs[$i] == $results[$i]) {
                     $returnObject -> testsPassed++;
                 } else {
