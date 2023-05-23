@@ -96,7 +96,7 @@ function ConnectedUsers() {
       <ul id="userList" className="connectedUsers__userList userList">
         {userList.map((user, index) => {
           return (
-            <li id="bgColor" className="userList__item item" key={index}>
+            <li className="userList__item item" key={index}>
               <div className="item__imgDiv">
                 <img
                   src={user.avatar}
@@ -113,10 +113,10 @@ function ConnectedUsers() {
 
               {myId !== user.id && checkIfCanAdd(user.id) && (
                 <div className="connectedUsers__addFriend">
-                  <button className='send__button'
+                  <button className='send__button' id={'userId' + index}
                     onClick={() => {
                       handleClick(`${user.id}`)
-                      handleMessage()
+                      document.getElementById('userId' + index).style.display = 'none'
                     }}>Add Friend</button>
                 </div>
               )
