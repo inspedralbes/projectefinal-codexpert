@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import { useNavigate } from 'react-router-dom'
-// import { Loading } from './Loading'
 function ConnectedUsers() {
   const cookies = new Cookies()
   const navigate = useNavigate()

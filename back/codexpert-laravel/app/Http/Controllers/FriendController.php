@@ -295,7 +295,7 @@ class FriendController extends Controller
         ];
 
         return response() -> json($returnFriendRequests);
-    }     
+    }         
     
     /**
      * This function given the token from the logged in user returns the pending friend requests
@@ -324,4 +324,41 @@ class FriendController extends Controller
         }
         
     }    
+
+    /**
+     * This function will return the ids from the users that are added or with a pending requsts, therefore, the users we cannot add
+     * @param string $token is the session token
+     * @return object $returnFriendRequests is the list of friend requests
+     */        
+    public function getNotAddFriend(Request $request)
+    {
+        $currentUserId = $this->getUserId($request->token);
+        $friendsIds = [];
+        $friendlist = [];
+
+        if ($currentUserId != null) {
+            $friendlist = DB::table('friends')
+                ->where('sender_id', $currentUserId) 
+                ->where('status', 'accepted')
+                ->orWhere( function ($query) use ($currentUserId) {
+                    $query->where('sender_id', $currentUserId)
+                        ->where('status', 'pending');
+                }) -> get();
+
+            for ($i=0; $i < count($friendlist); $i++) { 
+                array_push($friendsIds, $friendlist[$i] -> receiver_id);
+            }
+
+            $friendlist = DB::table('friends')
+                ->where('receiver_id', $currentUserId) 
+                ->where('status', 'accepted')
+                ->get();
+
+            for ($i=0; $i < count($friendlist); $i++) { 
+                array_push($friendsIds, $friendlist[$i] -> sender_id);
+            }
+        }
+        
+        return response() -> json($friendsIds);
+    }  
 }

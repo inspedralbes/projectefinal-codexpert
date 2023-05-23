@@ -112,6 +112,7 @@ socketIO.on("connection", (socket) => {
           socket.data.elo = response.data.elo;
           socket.data.hearts_remaining = -1;
           socket.data.question_at = -1;
+          socket.data.friend_not_add = response.data.friendNotAdd;
         }
       }
       )

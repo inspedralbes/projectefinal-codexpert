@@ -65,6 +65,7 @@ function Bell() {
       .then((data) => {
         getNotifications()
       })
+    // hacer emit al node para actualizar el listado de amigos/peticiones
   }
 
   const handleDenyFriend = (otherUserId) => {
@@ -82,6 +83,7 @@ function Bell() {
       .then((data) => {
         getNotifications()
       })
+    // hacer emit al node para actualizar el listado de amigos/peticiones
   }
 
   const handleMessage = (event) => {
