@@ -97,18 +97,20 @@ class FriendController extends Controller
 
         //Check if the user id is null, if not, we continue
         if ($currentUserId != null) {
-            $notificationAlreadyReceived = $this -> validateIfAdded($currentUserId, $request -> otherUserId);
-            if ($notificationAlreadyReceived > 0) {
-                $friendshipAccepted = $this -> acceptFriend($request);
-                $returnObject -> friendName = $friendshipAccepted -> friendAdded;
-            } elseif ($notificationAlreadyReceived == 0) {
-                //It will mean we need to create the relationship since it doesn't exist yet
-                $createFriendship = new Friend;
-                $createFriendship -> sender_id = $currentUserId;
-                $createFriendship -> receiver_id = $request -> otherUserId;
-                $createFriendship -> save();
+            if ($currentUserId != $request -> otherUserId) {
+                $notificationAlreadyReceived = $this -> validateIfAdded($currentUserId, $request -> otherUserId);
+                if ($notificationAlreadyReceived > 0) {
+                    $friendshipAccepted = $this -> acceptFriend($request);
+                    $returnObject -> friendName = $friendshipAccepted -> friendAdded;
+                } elseif ($notificationAlreadyReceived == 0) {
+                    //It will mean we need to create the relationship since it doesn't exist yet
+                    $createFriendship = new Friend;
+                    $createFriendship -> sender_id = $currentUserId;
+                    $createFriendship -> receiver_id = $request -> otherUserId;
+                    $createFriendship -> save();
 
-                $returnObject -> notificationSent = true;
+                    $returnObject -> notificationSent = true;
+                }
             }
             
         } 

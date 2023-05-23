@@ -8,8 +8,7 @@ function ConnectedUsers() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
-  const myId = cookies.get('userId') !== undefined ? cookies.get('userId') : null
-  console.log(myId)
+  const myId = parseInt(cookies.get('userId') !== undefined ? cookies.get('userId') : -1)
   const [userList, setUserList] = useState([])
   const [firstTime, setFirstTime] = useState(true)
   const [friendNotification, setfriendNotification] = useState(false)
