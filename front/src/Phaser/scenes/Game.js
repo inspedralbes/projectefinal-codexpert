@@ -39,7 +39,7 @@ export default class Game extends Phaser.Scene {
   username = 'guest'
   actualState = 'idle'
   lastSpeed = defaultSpeed
-  othersprites = []
+  othersprites
   username
 
   constructor() {
@@ -79,6 +79,9 @@ export default class Game extends Phaser.Scene {
   }
 
   addCharacter(characterData) {
+    if (!this.othersprites) {
+      this.othersprites = this.physics.add.staticGroup()
+    }
     const sprites = this.othersprites.getChildren()
     
     if (!sprites.some((sprite) => sprite.properties.id == characterData.id)) {
@@ -106,7 +109,9 @@ export default class Game extends Phaser.Scene {
   }
 
   preload() {
-    this.othersprites = this.physics.add.staticGroup()
+    if (!this.othersprites) {
+      this.othersprites = this.physics.add.staticGroup()
+    }
     this.createAnims('Strawberry')
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
