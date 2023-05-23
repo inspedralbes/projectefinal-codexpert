@@ -240,7 +240,6 @@ export default class Game extends Phaser.Scene {
       const speed = sprite.properties.speed
       // console.log(sprite.body.velocity)
       if (sprite.properties.direction == 'left') {
-        console.log('left ' + sprite.properties.id)
         sprite.anims.play('Strawberry-walk-left', true)
 
         sprite.body.velocity.x = -speed
@@ -248,8 +247,6 @@ export default class Game extends Phaser.Scene {
 
         sprite.body.offset.x = 11
       } else if (sprite.properties.direction == 'right') {
-        console.log('right ' + sprite.properties.id)
-
         sprite.anims.play('Strawberry-walk-right', true)
 
         sprite.body.velocity.x = speed
@@ -257,23 +254,16 @@ export default class Game extends Phaser.Scene {
 
         sprite.body.offset.x = 11
       } else if (sprite.properties.direction == 'up') {
-        console.log('up ' + sprite.properties.id)
-
         sprite.anims.play('Strawberry-walk-up', true)
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = -speed
       } else if (sprite.properties.direction == 'down') {
-        console.log('down ' + sprite.properties.id)
-
         sprite.anims.play('Strawberry-walk-down', true)
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = speed
       } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
-        // sprite.anims.play('Strawberry-walk-down', true)
-        // console.log('idle ' + sprite.properties.id)
-
         const parts = sprite.anims.currentAnim.key.split('-')
         parts[1] = 'idle'
         sprite.play(parts.join('-'))
