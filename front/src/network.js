@@ -30,6 +30,10 @@ const handleMessage = (event) => {
       socket.emit('hello_firstTime')
       break
 
+    case 'check_friend_list-emit':
+      socket.emit('check_friend_list')
+      break
+
     case 'new_lobby-emit':
       socket.emit('new_lobby', eventData.lobby_name)
       break

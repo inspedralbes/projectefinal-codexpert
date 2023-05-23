@@ -89,6 +89,21 @@ socketIO.on("connection", (socket) => {
 
   socket.join("chat-general");
 
+  async function getIdsThatCantBeAdded(socket) {
+    axios
+      .post(laravelRoute + "getNotAddFriend", {
+        token: socket.data.token
+      })
+      .then(function (response) {
+        socket.data.not_add_ids = response.data;
+        console.log("entra" + socket.data.not_add_ids);
+      }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
   socket.on("send_token", (data) => {
     const userToken = data.token;
     socket.data.token = userToken;
@@ -112,7 +127,7 @@ socketIO.on("connection", (socket) => {
           socket.data.elo = response.data.elo;
           socket.data.hearts_remaining = -1;
           socket.data.question_at = -1;
-          socket.data.friend_not_add = response.data.friendNotAdd;
+          getIdsThatCantBeAdded(socket);
         }
       }
       )
@@ -139,6 +154,10 @@ socketIO.on("connection", (socket) => {
   socket.on("lobby_data_pls", () => {
     sendUserList(socket.data.current_lobby);
     sendMessagesToLobby(socket.data.current_lobby);
+  });
+
+  socket.on("check_friend_list", () => {
+    getIdsThatCantBeAdded(socket);
   });
 
   socket.on("hello_firstTime", () => {
@@ -831,7 +850,8 @@ async function sendUserList(room) {
       avatar: socket.data.avatar,
       hearts_remaining: socket.data.hearts_remaining,
       question_at: socket.data.question_at,
-      unlimitedHearts: unlimitedHeartsOption
+      unlimitedHearts: unlimitedHeartsOption,
+      not_add_ids: socket.data.not_add_ids
     });
   });
 

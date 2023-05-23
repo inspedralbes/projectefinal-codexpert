@@ -25,9 +25,16 @@ function Bell() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setUnreadNotification(data.unread)
         setNotificationList(data.list)
       })
+  }
+
+  const updateFriends = () => {
+    window.postMessage({
+      type: 'check_friend_list-emit'
+    }, '*')
   }
 
   const handleClick = () => {
@@ -64,8 +71,8 @@ function Bell() {
       .then((response) => response.json())
       .then((data) => {
         getNotifications()
+        updateFriends()
       })
-    // hacer emit al node para actualizar el listado de amigos/peticiones
   }
 
   const handleDenyFriend = (otherUserId) => {
@@ -82,8 +89,8 @@ function Bell() {
       .then((response) => response.json())
       .then((data) => {
         getNotifications()
+        updateFriends()
       })
-    // hacer emit al node para actualizar el listado de amigos/peticiones
   }
 
   const handleMessage = (event) => {

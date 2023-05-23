@@ -323,6 +323,7 @@ class FriendController extends Controller
             $friendship -> save();
         }
         
+        return response() -> json($currentUserId);
     }    
 
     /**

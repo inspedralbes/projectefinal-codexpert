@@ -49,6 +49,29 @@ function ConnectedUsers() {
     }
   }
 
+  const checkIfCanAdd = (currentUserId) => {
+    let index = 0
+    let userNotFound = true
+    let canAdd = true
+
+    console.log('userlist' + userList)
+    if (userList !== undefined) {
+      while (index < userList.length && userNotFound) {
+        if (userList[index].id === myId && userList[index].not_add_ids !== undefined) {
+          if (userList[index].not_add_ids.includes(currentUserId)) {
+            canAdd = false
+          }
+          userNotFound = false
+          console.log('not add' + userList[index].not_add_ids)
+        }
+        index++
+      }
+      return canAdd
+    }
+
+    return userNotFound
+  }
+
   useEffect(() => {
     if (firstTime) {
       window.postMessage(
@@ -88,12 +111,16 @@ function ConnectedUsers() {
                 <p>{user.name}</p>
               </div>
 
-              {myId !== user.id && (
+              {myId !== user.id && checkIfCanAdd(user.id) && (
                 <div className="connectedUsers__addFriend">
                   <button className='send__button'
-                    onClick={() => handleClick(`${user.id}`)}>Add Friend</button>
+                    onClick={() => {
+                      handleClick(`${user.id}`)
+                      handleMessage()
+                    }}>Add Friend</button>
                 </div>
-              )}
+              )
+              }
 
             </li>
           )
