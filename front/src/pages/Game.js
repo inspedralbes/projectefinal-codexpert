@@ -139,11 +139,16 @@ function Game() {
   return (
     <div className='game'>
       {overtimeDuration > 0 && playable
-        && <img src={persiana}
-          id='persiana'
-          className='persiana'
-          style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
-          alt=""></img>
+        && <>
+          <img src={persiana}
+            id='persiana'
+            className='persiana'
+            style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
+            alt=""></img>
+          <div className='game__timer'>
+            {overtimeDuration != 0 ? <h1>TIME LEFT: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
+          </div>
+        </>
       }
       <div className='game__container '>
 
@@ -165,7 +170,6 @@ function Game() {
             <img src={heart} alt='' height={'300px'}></img>
           </Modal>
           <div className={playable ? 'started__game' : 'ended__game'}>
-            {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
           </div>
           <ConnectedUsersInGame></ConnectedUsersInGame>
           <ChatGame className='chatGame__chatbox'></ChatGame>

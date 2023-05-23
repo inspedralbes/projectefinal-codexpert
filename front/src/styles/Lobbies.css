@@ -464,7 +464,6 @@
     cursor: pointer;
     outline: none;
     border: 0;
-    float: left;
     vertical-align: middle;
     text-decoration: none;
     background: transparent;
@@ -910,7 +909,12 @@
     font-size: 80%;
 }
 
+.lobbyJoined__goBackButton--width {
+    width: 18% !important;
+}
+
 .settings:hover {
+    cursor: pointer;
     transform: rotate(30deg);
 }
 
@@ -921,21 +925,22 @@
     margin: 5px 10px 10px 50px;
 }
 
-
 .noBtn {
+    top: 2.4%;
+    position: absolute;
     border: none;
     background: none;
     float: right;
+    right: 3%;
 }
 
-.red input, .red::after, .red::before {
+.red input,
+.red::after,
+.red::before {
     background: #ffbdbd;
     transition: all 0.2s ease-in-out;
 }
 
-lobbyback{
-    position: absolute !important;
-}
 
 .list__container_li {
     max-height: 16vh;

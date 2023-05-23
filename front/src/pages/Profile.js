@@ -14,10 +14,11 @@ import { Loading } from '../components/Loading'
 
 Modal.setAppElement('body')
 
-function Profile () {
+function Profile() {
   const navigate = useNavigate()
   const cookies = new Cookies()
   const [userData, setUserData] = useState()
+  const [friendList, setFriendList] = useState()
   const [editUser, setEditUser] = useState({})
   const [modals, setModals] = useState({
     name: false,
@@ -44,8 +45,28 @@ function Profile () {
       })
   }
 
+  const getuserFriendList = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'getFriendlist', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          navigate('/login')
+        } else {
+          setFriendList(data)
+        }
+      })
+  }
+
   useEffect(() => {
     getUserData()
+    getuserFriendList()
     setEditUser(userData)
   }, [])
 
@@ -121,30 +142,21 @@ function Profile () {
                 <button className='pixel-button modalBtn' onClick={() => saveChanges('newName')}>Save</button>
               </div>
             </Modal>
-            <div className='profile__settings'>
-              <div className='profile__email--div'>
-                <p className='profile__email'>{userData.email}</p>
-                <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
-                <Modal
-                  onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
-                  shouldCloseOnOverlayClick={true}
-                  isOpen={modals.email}
-                >
-                  <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
+            <Modal
+              onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
+              shouldCloseOnOverlayClick={true}
+              isOpen={modals.email}
+            >
+              <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
 
-                  <h1>Change your email</h1>
-                  <input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
-                  <input className='profile__input' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
-                  <div className='profile__buttons'>
-                    <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
-                    <button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save</button>
-                  </div>
-                </Modal>
+              <h1>Change your email</h1>
+              <input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+              <input className='profile__input' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+              <div className='profile__buttons'>
+                <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
+                <button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save</button>
               </div>
-              <div className='profile__password--grid'>
-                <button className='profile__pswd pixel-button' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
-              </div>
-            </div>
+            </Modal>
 
             <Modal
               style={{ // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
@@ -181,9 +193,15 @@ function Profile () {
             </Modal >
           </div >
           <div className='profile__right'>
-            <div className='profile__name--div'>
-              <p className='profile__name'>{userData.name}</p>
-              <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, name: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+            <div>
+              <div className='profile__name--div'>
+                <p className='profile__name'>{userData.name}</p>
+                <button className='editBtn--name' onClick={() => setModals(prev => ({ ...prev, name: true }))}><img height='35px' className='edit--name' src={Edit} alt='EDIT'></img></button>
+              </div>
+              <div className='profile__email--div'>
+                <p className='profile__email'>{userData.email}</p>
+                <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+              </div>
             </div>
             <div className='profile__editAvatar'>
               <div className='profile__img'>
@@ -191,6 +209,8 @@ function Profile () {
               </div>
 
               <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
+              <button className='pixel-button profileBtn' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
+
             </div>
 
           </div>

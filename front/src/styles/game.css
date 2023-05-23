@@ -398,14 +398,65 @@ h2 {
     background-color: #4bbd5a !important;
 }
 
-.width {
-    width: 18% !important;
-}
-
 .game__modal {
     position: relative;
     z-index: 100 !important;
     font-size: 5rem;
     letter-spacing: -1px;
     font-family: tempesta !important;
+}
+
+.game__timer {
+    font-family: tempesta;
+    position: absolute;
+    width: fit-content;
+    border-color: #000000;
+    border-style: solid;
+    left: 3%;
+    padding: 0px 20px;
+    border-width: 6px 0;
+    animation: colorbg 2s infinite linear;
+    color: #000000;
+    top: 3%;
+    z-index: 2;
+}
+
+.game__timer h1{
+    font-size: 2rem;
+}
+
+.game__timer::after {
+    background-color: inherit;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__timer::before {
+    background-color: inherit;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+@keyframes colorbg {
+    0%{
+        background-color: white;
+    }
+    50%{
+        background-color: #f17373;
+    }
+    100%{
+        background-color: white;
+    }
 }

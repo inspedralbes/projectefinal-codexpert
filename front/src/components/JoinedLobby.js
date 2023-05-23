@@ -113,7 +113,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
 
   return (
     <main id="lobbyJoined" className="lobbies__lobby lobby">
-      <button id="goBackToLobby__button" className='width' onClick={handleLeave}>
+      <button id="goBack__button" className='lobbyJoined__goBackButton--width' onClick={handleLeave}>
         <span className="circle" aria-hidden="true">
           <span className="icon arrow"></span>
         </span>
