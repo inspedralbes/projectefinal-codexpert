@@ -117,7 +117,7 @@ function Campaign() {
 
   return (
     <>
-      {userExpertice !== ''
+      {userExpertice !== '' && tutorialList.length > 0
         ? <div className="campaign">
           <Modal
             style={{

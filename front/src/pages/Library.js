@@ -29,6 +29,7 @@ function Library() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setQuestionData(data)
         console.log(data)
       })
@@ -60,33 +61,33 @@ function Library() {
   return (
     <>
       <Header></Header>
-      {userLogged && questionData.title !== ''
+      {userLogged && (questionData[0].title !== undefined ? questionData[0].title !== '' : questionData.length === 0)
         ? <div className='library'>
-      <h1>Library</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Statement</th>
-            <th>Public</th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-        {questionData.map((element, index) => {
-          return <tr key={index}>
-              <td>{element.title}</td>
-              <td>{element.statement}</td>
-              <td>{element.public}</td>
-              <td><button>Edit</button></td>
-              <td><button>Delete</button></td>
-            </tr>
-        })}
-        </tbody>
-      </table>
-      <button className='pixel-button' onClick={() => navigate('/addQuestion')}>Add question</button>
-    </div>
+          <h1>Library</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Statement</th>
+                <th>Public</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {questionData.map((element, index) => {
+                return <tr key={index}>
+                  <td>{element.title}</td>
+                  <td>{element.statement}</td>
+                  <td>{element.public}</td>
+                  <td><button>Edit</button></td>
+                  <td><button>Delete</button></td>
+                </tr>
+              })}
+            </tbody>
+          </table>
+          <button className='pixel-button' onClick={() => navigate('/addQuestion')}>Add question</button>
+        </div>
         : <Loading></Loading>
       }
     </>
