@@ -13,7 +13,7 @@ const spriteAnimsCreated = []
 
 const npcDialogs = [
   {
-    name: 'gaspa',
+    name: 'Gaspa',
     dialogs: ['Hi! (with rizz)', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut velit el consectetur necessitatibus fugiat sint ad nulla saepe, voluptatum voluptates doloremque perspiciatis asperiores, deserunt placeat reprehenderit non commodi exercitationem mollitia sapiente.'],
     currentIndex: 0
   }
@@ -23,6 +23,8 @@ const PUNTOAPARICION = {
   x: 350,
   y: 350
 }
+
+const movimientos = ['up', 'down', 'left', 'right']
 
 const defaultSpeed = 125
 
@@ -72,8 +74,8 @@ export default class Game extends Phaser.Scene {
         this.username = window.network.getUsername()
         break
 
-        case 'connected_to_phaser-event':
-          this.phaserUserId = window.network.getPhaserId()
+      case 'connected_to_phaser-event':
+        this.phaserUserId = window.network.getPhaserId()
         break
 
       default:
@@ -90,7 +92,7 @@ export default class Game extends Phaser.Scene {
       this.othersprites = this.physics.add.staticGroup()
     }
     const sprites = this.othersprites.getChildren()
-    
+
     if (!sprites.some((sprite) => sprite.properties.id == characterData.id)) {
       const newPlayer = this.physics.add.sprite(characterData.x, characterData.y, 'Strawberry')
       newPlayer.setDepth(1)
@@ -325,7 +327,7 @@ export default class Game extends Phaser.Scene {
       // this.strawberry.scaleX = -1
       this.strawberry.body.offset.x = 11
       moved = true
-      this.actualState = 'move'
+      this.actualState = 'left'
     } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
       moveDataToSend.direction = 'right'
       this.strawberry.anims.play('Strawberry-walk-right', true)
@@ -338,7 +340,7 @@ export default class Game extends Phaser.Scene {
       // this.strawberry.scaleX = 1
       this.strawberry.body.offset.x = 11
       moved = true
-      this.actualState = 'move'
+      this.actualState = 'right'
     } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
       moveDataToSend.direction = 'up'
       this.strawberry.anims.play('Strawberry-walk-up', true)
@@ -348,7 +350,7 @@ export default class Game extends Phaser.Scene {
 
       this.selector.setPosition(charX, charY - distance)
       moved = true
-      this.actualState = 'move'
+      this.actualState = 'up'
     } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
       moveDataToSend.direction = 'down'
       this.strawberry.anims.play('Strawberry-walk-down', true)
@@ -358,7 +360,7 @@ export default class Game extends Phaser.Scene {
 
       this.selector.setPosition(charX, charY + distance + 8)
       moved = true
-      this.actualState = 'move'
+      this.actualState = 'down'
     } else {
       const parts = this.strawberry.anims.currentAnim.key.split('-')
       parts[1] = 'idle'
@@ -370,7 +372,7 @@ export default class Game extends Phaser.Scene {
     this.nameTagText.x = charX - 10
     this.nameTagText.y = charY - 15
 
-    if (lastState === 'idle' && this.actualState === 'move' || !moved && lastState === 'move' || changedSpeed) {
+    if (lastState === 'idle' && movimientos.some((mov) => this.actualState === mov) || !moved && movimientos.some((mov) => lastState === mov) || changedSpeed) {
       window.postMessage({ type: 'started_to_walk-emit', moveDataToSend }, '*')
     }
 
