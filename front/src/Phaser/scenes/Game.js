@@ -97,6 +97,7 @@ export default class Game extends Phaser.Scene {
   }
 
   changeCharacters(characterData) {
+    // console.log(this.othersprites.getChildren())
     if (!this.othersprites.getChildren().some((sprite) => sprite.properties.id == characterData.id)) {
       this.addCharacter(characterData)
     }
@@ -104,6 +105,8 @@ export default class Game extends Phaser.Scene {
     this.othersprites.getChildren().forEach(sprite => {
       if (sprite.properties.id === characterData.id) {
         sprite.properties = characterData
+        sprite.x = sprite.properties.x
+        sprite.y = sprite.properties.y
       }
     });
   }
@@ -224,10 +227,9 @@ export default class Game extends Phaser.Scene {
     }
 
     this.othersprites.getChildren().forEach(sprite => {
-      sprite.x = sprite.properties.x
-      sprite.y = sprite.properties.y
 
       const speed = sprite.properties.speed
+      // console.log(sprite.body.velocity)
       if (sprite.properties.direction == 'left') {
         console.log('left ' + sprite.properties.id)
         sprite.anims.play('Strawberry-walk-left', true)
@@ -263,7 +265,7 @@ export default class Game extends Phaser.Scene {
         // sprite.anims.play('Strawberry-walk-down', true)
         // console.log('idle ' + sprite.properties.id)
 
-        const parts = sprite.anims?.currentAnim.key.split('-')
+        const parts = sprite.anims.currentAnim.key.split('-')
         parts[1] = 'idle'
         sprite.play(parts.join('-'))
 

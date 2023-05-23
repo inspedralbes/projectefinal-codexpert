@@ -142,7 +142,8 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("connected_phaser_world", (data) => {
-    const character = { name: socket.data.name, x: data.x, y: data.y, direction: "", id: currentPhaserId };
+    const character = { name: socket.data.name, x: data.x, y: data.y, speed: data.speed, direction: "", id: currentPhaserId };
+    // console.log(character)
     currentPhaserId++;
     socket.data.phaserCharacterId = character.id;
     charactersWorld.push(character);
@@ -163,6 +164,7 @@ socketIO.on("connection", (socket) => {
       if (character.id === socket.data.phaserCharacterId) {
         character.x = data.x;
         character.y = data.y;
+        character.speed = data.speed
         character.direction = data.direction;
         characterSend = character;
       }
