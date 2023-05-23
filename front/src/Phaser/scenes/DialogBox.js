@@ -4,6 +4,7 @@ export default class DialogBox extends Phaser.Scene {
   gameObject
   dialog
   destroyText = false
+  npcName
 
   constructor() {
     super({ key: 'dialog-ui' })
@@ -18,8 +19,9 @@ export default class DialogBox extends Phaser.Scene {
     // Event handle
     switch (eventData.type) {
       case 'interaction_with_npc':
-        this.destroyText = false
+        this.destroyText = true
         this.dialog = eventData.npcData.message
+        this.npcName = eventData.npcData.name
         this.createDialogs()
         break
 
@@ -37,6 +39,10 @@ export default class DialogBox extends Phaser.Scene {
   }
 
   createDialogs() {
+    const containerInteract = this.add.container(0, window.innerHeight / 2.5)
+
+    const whoAmITalkingToTextWidth = this.sys.game.config.width * 0.95
+
     // Obtener las dimensiones del lienzo
     const canvasWidth = this.sys.game.config.width
     const canvasHeight = this.sys.game.config.height
@@ -60,8 +66,19 @@ export default class DialogBox extends Phaser.Scene {
 
     const textWidth = dialogWidth * 0.95
 
+    const whoAmITalkingTo = this.add.text(40, -40, this.npcName, {
+      color: '#FFFFFF',
+      backgroundColor: '#00000070',
+      fontSize: '16px',
+      resolution: 2,
+      fontFamily: 'pixel_operator',
+      wordWrap: { width: whoAmITalkingToTextWidth, useAdvancedWrap: true }
+    })
+    containerInteract.add(whoAmITalkingTo)
+    this.add.existing(containerInteract)
+
     // Crear el texto del cuadro de diálogo
-    const dialogText = this.add.text(10, 10, '', {
+    const dialogText = this.add.text(10, 15, '', {
       fontFamily: 'pixel_operator',
       fontSize: 8,
       // fontStyle: 'bold',
@@ -75,6 +92,7 @@ export default class DialogBox extends Phaser.Scene {
 
     const fullText = this.dialog
     let currentCharIndex = 0
+    this.destroyText = false
 
     // Configura una función para mostrar progresivamente el texto
     function showNextCharacter() {
@@ -88,6 +106,10 @@ export default class DialogBox extends Phaser.Scene {
       if (currentCharIndex < fullText.length) {
         // Agrega un retardo antes de mostrar el siguiente carácter
         this.time.delayedCall(50, showNextCharacter, null, this)
+      }
+
+      if (currentCharIndex >= fullText.length) {
+        window.postMessage({ type: 'dialog_end-msg' }, '*')
       }
     }
 

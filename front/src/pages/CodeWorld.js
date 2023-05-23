@@ -24,7 +24,7 @@ const CodeWorld = () => {
     // Event handle
     switch (eventData.type) {
       case 'navigate_request-msg':
-        console.log(eventData.value)
+        window.postMessage({ type: 'left_phaser_world-emit' }, '*')
         navigate('/' + eventData.value)
         break
     }
@@ -53,12 +53,18 @@ const CodeWorld = () => {
           default: 'arcade',
           arcade: {
             gravity: { y: 0 },
-            debug: true
+            debug: false
           }
         },
         scene: [Preloader, Game, InteractUI, DialogBox]
       }
       worldGame = new Phaser.Game(config)
+
+      window.postMessage({
+        type: 'connected_phaser_world-emit',
+        x: 350,
+        y: 350
+      }, '*')
     }
 
     window.addEventListener('message', handleMessage)

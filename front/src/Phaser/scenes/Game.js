@@ -13,7 +13,7 @@ const spriteAnimsCreated = []
 
 const npcDialogs = [
   {
-    name: 'gaspa',
+    name: 'Gaspa',
     dialogs: ['Hi! (with rizz)', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut velit el consectetur necessitatibus fugiat sint ad nulla saepe, voluptatum voluptates doloremque perspiciatis asperiores, deserunt placeat reprehenderit non commodi exercitationem mollitia sapiente.'],
     currentIndex: 0
   }
@@ -24,6 +24,10 @@ const PUNTOAPARICION = {
   y: 350
 }
 
+const movimientos = ['up', 'down', 'left', 'right']
+
+const defaultSpeed = 125
+
 export default class Game extends Phaser.Scene {
   // navigate = useNavigate()
   strawberry
@@ -33,13 +37,94 @@ export default class Game extends Phaser.Scene {
   events = new Phaser.Events.EventEmitter()
   interactEvent
   canInteract = true
+  nameTagText
+  username = 'guest'
+  actualState = 'idle'
+  lastSpeed = defaultSpeed
+  othersprites
+  username
 
   constructor() {
     super('game')
     this.overlap = false
+
+    // Window event listener for event handling
+    window.addEventListener('message', this.handleMessage)
+  }
+
+  handleMessage = (event) => {
+    const eventData = event.data
+
+    // Event handle
+    switch (eventData.type) {
+      case 'dialog_end-msg':
+        this.canInteract = true
+        this.inDialogue = false
+        break
+
+      case 'update_character-msg':
+        this.changeCharacters(eventData.characterData)
+        break
+
+      case 'new_character-msg':
+        this.addCharacter(eventData.characterData)
+        break
+
+      case 'username-event':
+        this.username = window.network.getUsername()
+        break
+
+      case 'connected_to_phaser-event':
+        this.phaserUserId = window.network.getPhaserId()
+        break
+
+      default:
+        // UNKNOWN EVENT
+        break
+    }
+  }
+
+  addCharacter(characterData) {
+    if (characterData.id === this.phaserUserId) {
+      return
+    }
+    if (!this.othersprites) {
+      this.othersprites = this.physics.add.staticGroup()
+    }
+    const sprites = this.othersprites.getChildren()
+
+    if (!sprites.some((sprite) => sprite.properties.id == characterData.id)) {
+      const newPlayer = this.physics.add.sprite(characterData.x, characterData.y, 'Strawberry')
+      newPlayer.setDepth(1)
+      newPlayer.properties = characterData
+
+      newPlayer.anims.play('Strawberry-idle-down')
+      this.physics.add.existing(newPlayer)
+
+      this.othersprites.add(newPlayer)
+    }
+  }
+
+  changeCharacters(characterData) {
+    // console.log(this.othersprites.getChildren())
+    if (!this.othersprites.getChildren().some((sprite) => sprite.properties.id == characterData.id)) {
+      this.addCharacter(characterData)
+    }
+
+    this.othersprites.getChildren().forEach(sprite => {
+      if (sprite.properties.id === characterData.id) {
+        sprite.properties = characterData
+        sprite.x = sprite.properties.x
+        sprite.y = sprite.properties.y
+      }
+    });
   }
 
   preload() {
+    if (!this.othersprites) {
+      this.othersprites = this.physics.add.staticGroup()
+    }
+    this.createAnims('Strawberry')
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
       'up': Phaser.Input.Keyboard.KeyCodes.W,
@@ -52,10 +137,22 @@ export default class Game extends Phaser.Scene {
     })
   }
 
-
-
   create() {
-    this.createAnims('strawberry')
+    this.nameTagContainer = this.add.container(0, 0)
+    this.nameTagText = this.add.text(PUNTOAPARICION.x, PUNTOAPARICION.y, this.username, {
+      fontSize: '6px',
+      color: '#fff',
+      align: 'center',
+      backgroundColor: '#00000070',
+      resolution: 2,
+      wordWrap: { useAdvancedWrap: true },
+      fontFamily: 'pixel_operator',
+    })
+
+    this.nameTagContainer.add(this.nameTagText)
+    this.nameTagContainer.setDepth(100)
+    this.add.existing(this.nameTagContainer)
+
     this.map = this.make.tilemap({ key: 'map' })
 
     this.worldMusic = this.sound.add('worldMusic')
@@ -94,7 +191,7 @@ export default class Game extends Phaser.Scene {
     this.strawberry.body.offset.y = 22
     this.selector.body.offset.y = 6
 
-    this.strawberry.anims.play('strawberry-idle-down')
+    this.strawberry.anims.play('Strawberry-idle-down')
 
     this.physics.add.collider(this.strawberry, this.buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.strawberry, this.groundLayer, this.handleCollision, null, this)
@@ -107,13 +204,171 @@ export default class Game extends Phaser.Scene {
     this.scene.run('dialog-ui')
   }
 
-  createBox() {
-    const box = this.add.rectangle(PUNTOAPARICION.x, PUNTOAPARICION.y, 20, 20, 0xffffff, 0)
-    this.physics.add.existing(box)
+  update(t, dt) {
+    if (!this.cursors || !this.strawberry || !this.keys || !this.othersprites) {
+      // return
+    }
 
-    this.selector = box
+    if ((this.keys.interactE.isDown || this.keys.interactEnter?.isDown) && this.overlap && this.canInteract) {
+      if (this.currentNavigate != null) {
+        window.postMessage({
+          type: 'navigate_request-msg',
+          value: this.currentNavigate
+        }, '*')
+      }
 
-    this.physics.add.overlap(this.selector, this.npcGroup, this.handleOverlap, undefined, this)
+      if (this.npcData != null && !this.inDialogue) {
+        this.inDialogue = true
+
+        const message = this.getCurrentDialog(this.npcData)
+
+        window.postMessage({ type: 'end_interaction_with_npc' }, '*')
+        window.postMessage({ type: 'interaction_with_npc', npcData: { message, name: this.npcData.character } }, '*')
+      }
+
+      if (!this.inDialogue) {
+        window.postMessage({ type: 'end_interaction_with_npc' }, '*')
+        this.inDialogue = false
+        if (this.scene.isActive('interact-ui')) {
+          this.scene.stop('interact-ui')
+        }
+      }
+    }
+
+    this.othersprites.getChildren().forEach(sprite => {
+
+      const speed = sprite.properties.speed
+      // console.log(sprite.body.velocity)
+      if (sprite.properties.direction == 'left') {
+        sprite.anims.play('Strawberry-walk-left', true)
+
+        sprite.body.velocity.x = -speed
+        sprite.body.velocity.y = 0
+
+        sprite.body.offset.x = 11
+      } else if (sprite.properties.direction == 'right') {
+        sprite.anims.play('Strawberry-walk-right', true)
+
+        sprite.body.velocity.x = speed
+        sprite.body.velocity.y = 0
+
+        sprite.body.offset.x = 11
+      } else if (sprite.properties.direction == 'up') {
+        sprite.anims.play('Strawberry-walk-up', true)
+
+        sprite.body.velocity.x = 0
+        sprite.body.velocity.y = -speed
+      } else if (sprite.properties.direction == 'down') {
+        sprite.anims.play('Strawberry-walk-down', true)
+
+        sprite.body.velocity.x = 0
+        sprite.body.velocity.y = speed
+      } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
+        const parts = sprite.anims.currentAnim.key.split('-')
+        parts[1] = 'idle'
+        sprite.play(parts.join('-'))
+
+        sprite.body.velocity.x = 0
+        sprite.body.velocity.y = 0
+      }
+    });
+
+    if (this.inDialogue) {
+      return
+    }
+
+    const charX = this.strawberry.x
+    const charY = this.strawberry.y
+    const distance = 16
+
+    let speed = 125
+
+    if (this.keys.run?.isDown) {
+      speed = 150
+    }
+
+    let changedSpeed = false
+
+    if (!(this.lastSpeed === speed)) {
+      changedSpeed = true
+    }
+
+    this.lastSpeed = speed
+
+    let moveDataToSend = {
+      direction: '',
+      x: charX,
+      y: charY,
+      speed: speed
+    }
+
+    let moved = false
+    let lastState = this.actualState
+
+    if (this.cursors.left?.isDown || this.keys.left?.isDown) {
+      moveDataToSend.direction = 'left'
+      this.strawberry.anims.play('Strawberry-walk-left', true)
+
+      this.strawberry.body.velocity.x = -speed
+      this.strawberry.body.velocity.y = 0
+
+      this.selector.setPosition(charX - distance, charY)
+
+      // this.strawberry.scaleX = -1
+      this.strawberry.body.offset.x = 11
+      moved = true
+      this.actualState = 'left'
+    } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
+      moveDataToSend.direction = 'right'
+      this.strawberry.anims.play('Strawberry-walk-right', true)
+
+      this.strawberry.body.velocity.x = speed
+      this.strawberry.body.velocity.y = 0
+
+      this.selector.setPosition(charX + distance, charY)
+
+      // this.strawberry.scaleX = 1
+      this.strawberry.body.offset.x = 11
+      moved = true
+      this.actualState = 'right'
+    } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
+      moveDataToSend.direction = 'up'
+      this.strawberry.anims.play('Strawberry-walk-up', true)
+
+      this.strawberry.body.velocity.x = 0
+      this.strawberry.body.velocity.y = -speed
+
+      this.selector.setPosition(charX, charY - distance)
+      moved = true
+      this.actualState = 'up'
+    } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
+      moveDataToSend.direction = 'down'
+      this.strawberry.anims.play('Strawberry-walk-down', true)
+
+      this.strawberry.body.velocity.x = 0
+      this.strawberry.body.velocity.y = speed
+
+      this.selector.setPosition(charX, charY + distance + 8)
+      moved = true
+      this.actualState = 'down'
+    } else {
+      const parts = this.strawberry.anims.currentAnim.key.split('-')
+      parts[1] = 'idle'
+      this.strawberry.play(parts.join('-'))
+
+      this.strawberry.body.velocity.x = 0
+      this.strawberry.body.velocity.y = 0
+    }
+    this.nameTagText.x = charX - 10
+    this.nameTagText.y = charY - 15
+
+    if (lastState === 'idle' && movimientos.some((mov) => this.actualState === mov) || !moved && movimientos.some((mov) => lastState === mov) || changedSpeed) {
+      window.postMessage({ type: 'started_to_walk-emit', moveDataToSend }, '*')
+    }
+
+    if (!moved) {
+      this.actualState = 'idle'
+    }
   }
 
   handleCollision(colisionador, colisionado) {
@@ -121,7 +376,7 @@ export default class Game extends Phaser.Scene {
   }
 
   handleOverlap(colisionador, colisionado) {
-    const overlapObjectData = colisionado.data
+    const overlapObjectData = colisionado.properties
     this.overlapTmp = true
 
     if (!this.overlap) {
@@ -129,11 +384,12 @@ export default class Game extends Phaser.Scene {
 
       if (overlapObjectData.get('actionType') === 'navigate') {
         this.currentNavigate = overlapObjectData.get('route')
+        window.postMessage({ type: 'interaction_with_overlap_object', data: { name: this.currentNavigate, x: colisionado.x, y: colisionado.y, type: 'location' } }, '*')
       } else if (overlapObjectData.get('idNPC') > 0) {
         this.npcData = {
           character: overlapObjectData.get('sprite')
         }
-        console.log('npc con id ' + this.npcData.message)
+        window.postMessage({ type: 'interaction_with_overlap_object', data: { name: overlapObjectData.get('sprite'), x: colisionado.x, y: colisionado.y, type: 'npc' } }, '*')
       }
       if (this.canInteract) {
         this.scene.run('interact-ui')
@@ -173,108 +429,13 @@ export default class Game extends Phaser.Scene {
     return dialog
   }
 
-  update(t, dt) {
-    if (!this.cursors || !this.strawberry || !this.keys) {
-      return
-    }
+  createBox() {
+    const box = this.add.rectangle(PUNTOAPARICION.x, PUNTOAPARICION.y, 20, 20, 0xffffff, 0)
+    this.physics.add.existing(box)
 
-    if ((this.keys.interactE.isDown || this.keys.interactEnter?.isDown) && this.overlap && this.canInteract) {
-      if (this.currentNavigate != null) {
-        window.postMessage({
-          type: 'navigate_request-msg',
-          value: this.currentNavigate
-        }, '*')
-      }
+    this.selector = box
 
-      if (this.npcData != null && !this.inDialogue) {
-        this.inDialogue = true
-
-        const message = this.getCurrentDialog(this.npcData)
-
-        window.postMessage({ type: 'end_interaction_with_npc' }, '*')
-        window.postMessage({ type: 'interaction_with_npc', npcData: { message } }, '*')
-        this.moveEvent = this.time.addEvent({
-          delay: 1500,
-          callback: () => {
-            this.inDialogue = false
-          },
-          loop: false
-        })
-      }
-
-      if (!this.inDialogue) {
-        window.postMessage({ type: 'end_interaction_with_npc' }, '*')
-        this.inDialogue = false
-        if (this.scene.isActive('interact-ui')) {
-          this.scene.stop('interact-ui')
-        }
-
-        this.moveEvent = this.time.addEvent({
-          delay: 1500,
-          callback: () => {
-            this.canInteract = true
-          },
-          loop: false
-        })
-      }
-    }
-
-    if (this.inDialogue) {
-      return
-    }
-
-    let speed = 125
-
-    if (this.keys.run?.isDown) {
-      speed = 150
-    }
-
-    const charX = this.strawberry.x
-    const charY = this.strawberry.y
-    const distance = 16
-
-    if (this.cursors.left?.isDown || this.keys.left?.isDown) {
-      this.strawberry.anims.play('strawberry-walk-left', true)
-
-      this.strawberry.body.velocity.x = -speed
-      this.strawberry.body.velocity.y = 0
-
-      this.selector.setPosition(charX - distance, charY)
-
-      // this.strawberry.scaleX = -1
-      this.strawberry.body.offset.x = 11
-    } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
-      this.strawberry.anims.play('strawberry-walk-right', true)
-
-      this.strawberry.body.velocity.x = speed
-      this.strawberry.body.velocity.y = 0
-
-      this.selector.setPosition(charX + distance, charY)
-
-      // this.strawberry.scaleX = 1
-      this.strawberry.body.offset.x = 11
-    } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
-      this.strawberry.anims.play('strawberry-walk-up', true)
-
-      this.strawberry.body.velocity.x = 0
-      this.strawberry.body.velocity.y = -speed
-
-      this.selector.setPosition(charX, charY - distance)
-    } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
-      this.strawberry.anims.play('strawberry-walk-down', true)
-
-      this.strawberry.body.velocity.x = 0
-      this.strawberry.body.velocity.y = speed
-
-      this.selector.setPosition(charX, charY + distance + 8)
-    } else {
-      const parts = this.strawberry.anims.currentAnim.key.split('-')
-      parts[1] = 'idle'
-      this.strawberry.play(parts.join('-'))
-
-      this.strawberry.body.velocity.x = 0
-      this.strawberry.body.velocity.y = 0
-    }
+    this.physics.add.overlap(this.selector, this.npcGroup, this.handleOverlap, undefined, this)
   }
 
   loadObjectLayers() {
@@ -326,8 +487,8 @@ export default class Game extends Phaser.Scene {
         objct.properties.forEach(prop => {
           objData.set(prop.name, prop.value)
         })
-        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
-        gameObj.data = objData
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'Strawberry', undefined, false)
+        gameObj.properties = objData
         this.overlapGroup.add(gameObj)
       })
 
@@ -337,14 +498,15 @@ export default class Game extends Phaser.Scene {
       notLoggedBuildingsLayer.setCollisionByProperty({ collides: true })
       this.physics.add.collider(this.strawberry, notLoggedLayer, this.handleCollision, null, this)
     } else {
+      this.username = window.network.getUsername()
       overlapObjectLayer.objects.forEach(objct => {
         const objData = new Map()
 
         objct.properties.forEach(prop => {
           objData.set(prop.name, prop.value)
         })
-        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'strawberry', undefined, false)
-        gameObj.data = objData
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'Strawberry', undefined, false)
+        gameObj.properties = objData
         this.overlapGroup.add(gameObj)
       })
     }
@@ -357,7 +519,7 @@ export default class Game extends Phaser.Scene {
       })
       this.createAnims(objData.get('sprite'))
       const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, objData.get('sprite'), undefined, true)
-      gameObj.data = objData
+      gameObj.properties = objData
       this.npcGroup.add(gameObj)
     })
 
@@ -369,7 +531,7 @@ export default class Game extends Phaser.Scene {
       })
       this.createMobAnims(objData.get('sprite'))
       const gameObj = puntosMobs.get(objct.x + objct.width * 0.1, objct.y - objct.height * 0.1, objData.get('sprite'), undefined, true)
-      gameObj.data = objData
+      gameObj.properties = objData
       // console.log(gameObj)
       this.mobGroup.add(gameObj)
     })

@@ -1,6 +1,7 @@
 class ConnectionNetwork {
   message = ''
   userLogged = false
+  username = 'Guest'
   winnerMessage = ''
   errorMessage = ''
   token = ''
@@ -13,12 +14,38 @@ class ConnectionNetwork {
   result = ''
   rewards = {}
   showSettings = false
+  socketId = ''
+  phaserId
   settings = {
     heartAmount: 0,
     overtimeDuration: 0,
     questionAmount: 0,
     unlimitedHearts: false,
     willHaveOvertime: true
+  }
+
+  setPhaserId(phaserId) {
+    this.phaserId = phaserId
+  }
+
+  getPhaserId() {
+    return this.phaserId
+  }
+
+  setSocketId(socketId) {
+    this.socketId = socketId
+  }
+
+  getSocketId() {
+    return this.socketId
+  }
+
+  setUsername(username) {
+    this.username = username
+  }
+
+  getUsername() {
+    return this.username
   }
 
   setUserLogged(isUserLogged) {

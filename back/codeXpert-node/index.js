@@ -15,7 +15,8 @@ const maxLobbyNameLength = 16;
 const laravelRoute = process.env.LARAVEL_ROUTE;
 
 const lobbies = [];
-const sesiones = [];
+const charactersWorld = [];
+let currentPhaserId = 0;
 // ============= SOCKET ROOMS ===========
 
 const socketIO = require("socket.io")(server, {
@@ -81,13 +82,8 @@ const maxSettings = {
 };
 
 socketIO.on("connection", (socket) => {
-  socket.on("prueba_phaser", (data) => {
-    console.log(data.message);
-  });
   socket.data.current_lobby = null;
   socket.data.token = null;
-
-  socket.join("chat-general");
 
   socket.on("send_token", (data) => {
     const userToken = data.token;
@@ -99,19 +95,16 @@ socketIO.on("connection", (socket) => {
       })
       .then(function (response) {
         if (!response.data.error) {
-          const user = {
-            token: userToken,
-            userId: response.data.id,
-            userName: response.data.name
-          };
-          sesiones.push(user);
-
           socket.data.userId = response.data.id;
           socket.data.name = response.data.name;
           socket.data.avatar = response.data.avatar;
           socket.data.elo = response.data.elo;
           socket.data.hearts_remaining = -1;
           socket.data.question_at = -1;
+
+          socketIO.to(socket.id).emit("username", {
+            username: response.data.name
+          });
         }
       }
       )
@@ -146,6 +139,41 @@ socketIO.on("connection", (socket) => {
     } else {
       sendLobbyList();
     }
+  });
+
+  socket.on("connected_phaser_world", (data) => {
+    const character = { name: socket.data.name, x: data.x, y: data.y, speed: data.speed, direction: "", id: currentPhaserId };
+    // console.log(character)
+    currentPhaserId++;
+    socket.data.phaserCharacterId = character.id;
+    charactersWorld.push(character);
+    socket.join("phaser_world_room");
+    socketIO.to(socket.id).emit("connected_to_phaser", {
+      id: character.id
+    });
+    socket.data.inCodeWorld = true;
+
+    socketIO.to("phaser_world_room").emit("new_character", character);
+  });
+
+  socket.on("left_phaser_world", () => {
+    leavePhaserWorld(socket);
+  });
+
+  socket.on("started_to_walk", (data) => {
+    let characterSend = null;
+
+    charactersWorld.forEach((character) => {
+      if (character.id === socket.data.phaserCharacterId) {
+        character.x = data.x;
+        character.y = data.y;
+        character.speed = data.speed
+        character.direction = data.direction;
+        characterSend = character;
+      }
+    });
+
+    socketIO.to("phaser_world_room").emit("update_character", characterSend);
   });
 
   sendLobbyList();
@@ -495,8 +523,20 @@ socketIO.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     leaveLobby(socket);
+    leavePhaserWorld(socket);
   });
 });
+
+function leavePhaserWorld(socket) {
+  charactersWorld.forEach((character, index) => {
+    if (character.id === socket.id) {
+      charactersWorld.splice(index, 1);
+    }
+  });
+  socket.data.inCodeWorld = false;
+  socket.data.phaserCharacterId = null;
+  socket.leave("phaser_world_room");
+}
 
 async function sendQuestionsToUser(socket) {
   await axios

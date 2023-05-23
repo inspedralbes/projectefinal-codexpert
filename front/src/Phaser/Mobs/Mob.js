@@ -114,12 +114,14 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
         this.anims.play(`${this.mobTexture}-walk-back`, true)
         this.body.velocity.x = 0
         this.body.velocity.y = -speed
+        this.body.offset.y = 6
         break
 
       case movements[1]:
         this.anims.play(`${this.mobTexture}-walk-front`, true)
         this.body.velocity.x = 0
         this.body.velocity.y = speed
+        this.body.offset.y = 6
         break
 
       case movements[2]:
