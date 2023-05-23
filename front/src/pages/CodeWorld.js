@@ -57,7 +57,7 @@ const CodeWorld = () => {
         },
         scene: [Preloader, Game, InteractUI, DialogBox]
       }
-      worldGame = new Phaser.Game(config)
+      window.worldGame = new Phaser.Game(config)
 
       window.postMessage({
         type: 'connected_phaser_world-emit',

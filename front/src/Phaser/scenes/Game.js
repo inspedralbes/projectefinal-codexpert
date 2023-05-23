@@ -360,6 +360,8 @@ export default class Game extends Phaser.Scene {
     if (!moved) {
       this.actualState = 'idle'
     }
+    window.worldGame.update();
+    window.worldGame.renderer.render(window.worldGame.stage);
   }
 
   handleCollision(colisionador, colisionado) {
