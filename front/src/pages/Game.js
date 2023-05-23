@@ -112,12 +112,11 @@ function Game() {
     }, '*')
   }
 
-
   function afterOpenModal() {
     setTimeout(() => {
       setCIsOpen(false)
       setIIsOpen(false)
-    }, 5000)
+    }, 4000)
   }
 
   useEffect(() => {
@@ -144,7 +143,8 @@ function Game() {
           id='persiana'
           className='persiana'
           style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
-          alt=""></img>}
+          alt=""></img>
+      }
       <div className='game__container '>
 
         <div className='container__left'>
@@ -194,19 +194,19 @@ function Game() {
                   </div>
                 </div>
                 <form className="editor" onSubmit={handleSubmit}>
-                <CodeMirror id="codemirror" code={code} setCode={setCode}></CodeMirror>
-                <div className='result__container'>
-                  <div className="game__result">
-                    <h1>{error !== '' && <div>{error}</div>}</h1>
+                  <CodeMirror id="codemirror" code={code} setCode={setCode}></CodeMirror>
+                  <div className='result__container'>
+                    <div className="game__result">
+                      <h1>{error !== '' && <div>{error}</div>}</h1>
+                    </div>
+                    <button
+                      className="pixel-button game__submit"
+                      disabled={code === ''}
+                    >
+                      Submit
+                    </button>
                   </div>
-                  <button
-                    className="pixel-button game__submit"
-                    disabled={code === ''}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
+                </form>
               </div>
             </div>
 
