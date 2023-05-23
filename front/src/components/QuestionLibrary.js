@@ -3,8 +3,15 @@ import '../styles/Lobbies.css'
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
+import Tippy from '@tippyjs/react' // Tooltip
+import 'tippy.js/dist/tippy.css' // Tooltip styles
+import 'tippy.js/themes/light-border.css' // Tooltip theme
+import 'tippy.js/animations/shift-away-extreme.css' // Tooltip animation
+
+import informationIcon from '../img/information_icon.gif'
+
 QuestionLibrary.propTypes = {
-  questionsData: PropTypes.array
+  questionsData: PropTypes.object
 }
 
 function QuestionLibrary({ questionsData }) {
@@ -31,126 +38,110 @@ function QuestionLibrary({ questionsData }) {
   }, [checked])
 
   return (
-    <div className='checkList'>
+    <main className='checkList'>
       <div className='list__container default'>
-        <h3 className='title'>Default</h3>
-        <div id='list__container_li'>
+        <h3 className='title'>System questions</h3>
+        <div id='scroll' className='list__container_li'>
           {Array.isArray(questionsData.default)
             ? questionsData.default.map((item, index) => (
-              <div key={index} className='list__container__text'>
+              <p key={index} className='list__container__text'>
                 <input
-                  value={item.questionId}
+                  value={item.id}
                   type='checkbox'
-                  id={item.questionId}
+                  id={item.id}
                   className='check'
                   onChange={handleCheck}
                 />
                 <label
-                  htmlFor={item.questionId}
+                  htmlFor={item.id}
                   className='list__container__text__label'
                 >
                   <span
-                    htmlFor={item.questionId}
-                  >{`${item.title}`}</span>
+                    htmlFor={item.id}
+                  >{`${item.title}`}
+                    <Tippy
+                      theme={'light-border'}
+                      content={`Created By: ${item.createdBy}`}
+                      placement={'right'}
+                      animation={'shift-away-extreme'}
+                    >
+                      <img src={informationIcon} alt="" height="20px" />
+                    </Tippy>
+                  </span>
                 </label>
-              </div>
+              </p>
             ))
             : null}
         </div>
       </div>
       <div className='list__container public'>
         <h3 className='title'>Public</h3>
-        <div id='list__container_li'>
-          {Array.isArray(questionsData.public) && questionsData.public !== []
+        <div id='scroll' className='list__container_li'>
+          {Array.isArray(questionsData.public) && questionsData.public !== [] && questionsData.public.length > 0
             ? questionsData.public.map((item, index) => (
               <div key={index} className='list__container__text'>
                 <input
-                  value={item.questionId}
+                  value={item.id}
                   type='checkbox'
-                  id={item.questionId}
+                  id={item.id}
                   className='check'
                   onChange={handleCheck}
                 />
                 <label
-                  htmlFor={item.questionId}
+                  htmlFor={item.id}
                   className='list__container__text__label'
                 >
-                  <span htmlFor={item.questionId} >
+                  <span htmlFor={item.id} >
                     {`${item.title}`}
                     <i className='icon-info-circle'>
                       <div className='icon-info-circle__content'>
-                        Create By: {item.createdBy.name}
-                        <br />
-                        Nº Words: {item.numberOfWords}
-                        <br />
-                        Words:{' '}
-                        {
-                          Array.isArray(item.words)
-                            ? (item.words.map((word, index) => (<li key={index}>{word.name}</li>)))
-                            : (<></>)}
+                        Create By: {item.createdBy}
                       </div>
                     </i>
                   </span>
                 </label>
               </div>
             ))
-            : null}
+            : <p>No questions available!</p>}
         </div>
       </div>
 
       <div className='list__container private'>
-        <h3 className='title'>My categories</h3>
-        {Array.isArray(questionsData.myCategories) &&
-          questionsData.myCategories !== []
-          ? questionsData.myCategories.map((item, index) => (
-            <div key={index} className='list__container__text'>
-              <input
-                value={item.questionId}
-                type='checkbox'
-                id={item.questionId}
-                className='check'
-                onChange={handleCheck}
-              />
-              <label
-                htmlFor={item.questionId}
-                className='list__container__text__label'
-              >
-                <svg width='300' height='50' viewBox='0 0 500 100'>
-                  <rect
-                    x='0'
-                    y='15'
-                    width='50'
-                    height='50'
-                    stroke='black'
-                    fill='none'
-                    className='list__container__checkbox'
-                  />
-                  <g transform='translate(-10,-962.36218)'>
-                    <path
-                      d='m 13,983 c 33,6 40,26 55,48 '
-                      stroke='black'
-                      strokeWidth='3'
-                      className='path1'
-                      fill='none'
-                    />
-                    <path
-                      d='M 75,970 C 51,981 34,1014 25,1031 '
-                      stroke='black'
-                      strokeWidth='3'
-                      className='path1'
-                      fill='none'
-                    />
-                  </g>
-                </svg>
-                <span
-                  htmlFor={item.questionId}
-                >{`${item.title}`}</span>
-              </label>
-            </div>
-          ))
-          : null}
+        <h3 className='title'>My questions</h3>
+        <div id='scroll' className='list__container_li'>
+          {Array.isArray(questionsData.myQuestions) &&
+            questionsData.myQuestions !== [] && questionsData.myQuestions.length > 0
+            ? questionsData.myQuestions.map((item, index) => (
+              <p key={index} className='list__container__text'>
+                <input
+                  value={item.id}
+                  type='checkbox'
+                  id={item.id}
+                  className='check'
+                  onChange={handleCheck}
+                />
+                <label
+                  htmlFor={item.id}
+                  className='list__container__text__label'
+                >
+                  <span htmlFor={item.id} >
+                    {`${item.title}`}
+                    <Tippy
+                      theme={'light-border'}
+                      content={`Created By: ${item.createdBy}`}
+                      placement={'right'}
+                      animation={'shift-away-extreme'}
+                    >
+                      <img src={informationIcon} alt="" height="20px" />
+                    </Tippy>
+                  </span>
+                </label>
+              </p>
+            ))
+            : <p>No questions available!</p>}
+        </div>
       </div>
-    </div>
+    </main>
   )
 }
 

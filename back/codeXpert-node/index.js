@@ -297,7 +297,7 @@ socketIO.on("connection", (socket) => {
         socketIO.to(lobby.lobby_name).emit("game_started");
         lobby.started = true;
         sendLobbyList();
-        startGame(lobby.lobby_name, lobby.settings.questionAmount);
+        startGame(lobby.lobby_name, lobby.settings.questionAmount, lobby.questions);
       }
     });
   });
@@ -500,7 +500,7 @@ socketIO.on("connection", (socket) => {
 
 async function sendQuestionsToUser(socket) {
   await axios
-    .post(laravelRoute + "getMyQuestions", {
+    .post(laravelRoute + "getAllQuestions", {
       token: socket.data.token
     })
     .then(function (response) {
@@ -581,10 +581,11 @@ function addMessage(msgData, room) {
   sendMessagesToLobby(room);
 }
 
-async function startGame(room, amount) {
+async function startGame(room, amount, chosenQuestions) {
   await axios
     .post(laravelRoute + "startGame", {
-      numQuestions: amount
+      numQuestions: amount,
+      chosenQuestions
     })
     .then(function (response) {
       lobbies.forEach((lobby) => {
