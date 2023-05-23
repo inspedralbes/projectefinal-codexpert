@@ -93,7 +93,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const updateHistory = () => {
     window.addEventListener('hashchange', function (e) {
       e.preventDefault()
-      location.reload()
+      // location.reload()
     })
   }
 
