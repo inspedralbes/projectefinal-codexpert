@@ -8,7 +8,8 @@ function ConnectedUsers() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
-  const [myId, setMyId] = useState(-1)
+  const myId = cookies.get('userId') !== undefined ? cookies.get('userId') : null
+  console.log(myId)
   const [userList, setUserList] = useState([])
   const [firstTime, setFirstTime] = useState(true)
   const [friendNotification, setfriendNotification] = useState(false)
@@ -50,23 +51,7 @@ function ConnectedUsers() {
     }
   }
 
-  const checkMyId = () => {
-    const userInfo = new FormData()
-    userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-    fetch(routes.fetchLaravel + 'getUserInfo', {
-      method: 'POST',
-      mode: 'cors',
-      body: userInfo,
-      credentials: 'include'
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setMyId(data.id)
-      })
-  }
-
   useEffect(() => {
-    checkMyId()
     if (firstTime) {
       window.postMessage(
         {
@@ -105,7 +90,7 @@ function ConnectedUsers() {
                 <p>{user.name}</p>
               </div>
 
-              {myId !== user.id || (
+              {myId !== user.id && (
                 <div className="connectedUsers__addFriend">
                   <button className='send__button'
                     onClick={() => handleClick(`${user.id}`)}>Add Friend</button>
