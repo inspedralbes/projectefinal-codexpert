@@ -10,7 +10,9 @@ import Modal from 'react-modal'
 import Edit from '../img/Edit.png'
 import cross from '../img/cross.png'
 import Eye from '../components/Eye'
+import Header from '../components/Header'
 import { Loading } from '../components/Loading'
+import { ColorRing } from 'react-loader-spinner'
 
 Modal.setAppElement('body')
 
@@ -19,11 +21,12 @@ function Profile() {
   function getCurrentURL() {
     return window.location.href
   }
-
-  const url = new URL(getCurrentURL())
-  const userId = url.searchParams.get('id')
-  const navigate = useNavigate()
   const cookies = new Cookies()
+  const url = new URL(getCurrentURL())
+  const myId = parseInt(cookies.get('userId') !== undefined ? cookies.get('userId') : -1)
+  const userId = url.searchParams.get('id') !== null ? parseInt(url.searchParams.get('id')) : myId
+  const navigate = useNavigate()
+  const [cannotAdd, setCannotAdd] = useState()
   const [userData, setUserData] = useState()
   const [editUser, setEditUser] = useState({})
   const [modals, setModals] = useState({
@@ -32,11 +35,28 @@ function Profile() {
     password: false
   })
 
-  const getUserData = () => {
+
+  const getCannotAdd = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
 
-    if (userId === null) {
+      fetch(routes.fetchLaravel + 'getNotAddFriend', {
+        method: 'POST',
+        mode: 'cors',
+        body: token,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setCannotAdd(data)
+      })
+  }
+
+  const getUserData = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    console.log(userId)
+    if (userId === -1) {
       fetch(routes.fetchLaravel + 'getUserData', {
         method: 'POST',
         mode: 'cors',
@@ -72,7 +92,32 @@ function Profile() {
 
   }
 
+  const handleClick = (userId) => {
+    window.postMessage(
+      {
+        type: 'send_friend_notification-emit',
+        data: {
+          userId
+        }
+      },
+      '*'
+    )
+    const userInfo = new FormData()
+    userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    userInfo.append('otherUserId', userId)
+    fetch(routes.fetchLaravel + 'addFriend', {
+      method: 'POST',
+      mode: 'cors',
+      body: userInfo,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
+
+      })
+  }
   useEffect(() => {
+    getCannotAdd()
     getUserData()
     setEditUser(userData)
   }, [])
@@ -99,8 +144,17 @@ function Profile() {
     setUserData(prev => ({ ...prev, name: editUser.name, email: editUser.email }))
   }
 
+  const checkIfCanAdd = (currentUserId) => {
+    let canAdd = true
+
+    if (cannotAdd.includes(currentUserId)) {
+      canAdd = false
+    }
+
+    return canAdd
+  }
+
   const savePassword = () => {
-    // currentPassword, newPassword, newPassword_confirmation
     const password = new FormData()
     password.append('currentPassword', editUser.password)
     password.append('newPassword', editUser.newPassword)
@@ -120,8 +174,10 @@ function Profile() {
 
   if (userData !== undefined) {
     return (
+      <>
       <div className='profile'>
         <div className='profile--grid'>
+        <Header></Header>
           <div className='profile__left'>
             <div className='profile__button'>
               <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/lobbies')} id='goBack__button'>
@@ -132,14 +188,14 @@ function Profile() {
               </button>
               <div></div>
             </div>
+
             <Modal
               onRequestClose={() => setModals(prev => ({ ...prev, name: false }))}
               shouldCloseOnOverlayClick={true}
               isOpen={modals.name}
             >
               <button className='cross' onClick={() => setModals(prev => ({ ...prev, name: false }))}><img src={cross} alt='X' height={'30px'}></img></button>
-
-              <h1>Change your username</h1>
+                
               <input className='profile__input' placeholder='username' onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
               <input className='profile__input' type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
               <Eye id={"passwordUsername"}></Eye>
@@ -150,9 +206,10 @@ function Profile() {
               </div>
             </Modal>
             <div className='profile__settings'>
+            {myId === userId && (
               <div className='profile__email--div'>
                 <p className='profile__email'>{userData.email}</p>
-                <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+                  <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
                 <Modal
                   onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
                   shouldCloseOnOverlayClick={true}
@@ -169,9 +226,12 @@ function Profile() {
                   </div>
                 </Modal>
               </div>
-              <div className='profile__password--grid'>
-                <button className='profile__pswd pixel-button' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
-              </div>
+              )}
+              {myId === userId && (
+                <div className='profile__password--grid'>
+                  <button className='profile__pswd pixel-button' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
+                </div>
+              )}
             </div>
 
             <Modal
@@ -211,19 +271,28 @@ function Profile() {
           <div className='profile__right'>
             <div className='profile__name--div'>
               <p className='profile__name'>{userData.name}</p>
-              <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, name: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
-            </div>
-            <div className='profile__editAvatar'>
-              <div className='profile__img'>
-                <img className='profile__avatar' src={userData.avatar}></img>
+              {myId === userId && (
+                <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, name: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+                )}
               </div>
-
-              <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
-            </div>
-
+            
+              <div id='editAvatar' className='profile__editAvatar'>
+                <div className='profile__img'>
+                  <img className='profile__avatar' src={userData.avatar}></img>
+                </div>
+                {myId === userId
+                ? <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
+                : checkIfCanAdd(userId) ? <button id={'userId' + userId} className='pixel-button profileBtn'                     
+                onClick={() => {
+                  handleClick(`${userId}`)
+                  document.getElementById('userId' + userId).style.display = 'none'
+                }}>Add Friend</button>:null
+                }
+              </div>
           </div>
         </div >
       </div >
+    </>
     )
   } else {
     return (
