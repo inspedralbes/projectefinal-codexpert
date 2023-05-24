@@ -148,9 +148,6 @@ function Login() {
           </div>
         </div>
         <div className="form__links link">
-          <Link className="link__ForgotPass" to="/forgotPassword">
-            <p>Forgot your password?</p>
-          </Link>
           <Link className="link__CreateAcc" to="/register">
             <p>Create account</p>
           </Link>

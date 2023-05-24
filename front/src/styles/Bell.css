@@ -21,12 +21,14 @@
 
 .bell__image {
     padding: 0;
-    width: 45px;
-    height: 45px;
+    margin-top: 6px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
 }
 
 .bell-dropdown {
+    margin-right: 40px;
     position: absolute;
     top: 100%;
     right: 80px;

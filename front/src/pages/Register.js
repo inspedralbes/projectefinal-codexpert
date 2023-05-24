@@ -191,17 +191,21 @@ function Register() {
           ></input>
           <span className="form__inputBar"></span>
           <Eye id={'password'}></Eye>
-          <label htmlFor="passwd1" className="form__inputlabel">
-            Password
-            <Tippy
+          <Tippy
+              className='form__tooltip'
               theme={'light-border'}
-              content={'Password must'}
+              content={'Password must be at least 6 characters long, contain an uppercase and lowercase letter, number and a special character (@$!%*#?&.)'}
               placement={'right'}
               animation={'shift-away-extreme'}
             >
-              <img src={informationIcon} alt="" height="20px" />
-            </Tippy>
+          <label htmlFor="passwd1" className="form__inputlabel" onClick={() => {
+            console.log('focus')
+            document.getElementById('password').focus()
+          }}>
+            Password
+            <img src={informationIcon} alt="information-tooltip" className='form__tooltip' height="20px" />
           </label>
+          </Tippy>
         </div>
         <div className="form__inputGroup">
           <input

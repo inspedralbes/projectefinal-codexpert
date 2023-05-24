@@ -79,8 +79,8 @@ function IconUser() {
                 className="iconUser-boton__image"
                 alt="avatar"
                 src={avatarURL}
-                height="50"
-                width="50"
+                height="60"
+                width="60"
               ></img>
             </button>)
             : (
@@ -93,6 +93,13 @@ function IconUser() {
                   onClick={() => navigate('/profile')}
                 >
                   <button className="iconUser__button">Profile</button>
+                </li>
+                <li
+                  className="iconUser-list__item"
+                  onClick={() => navigate('/codeworld')}
+                >
+                  {' '}
+                  <button className="iconUser__button">Code World</button>
                 </li>
                 <li
                   className="iconUser-list__item"

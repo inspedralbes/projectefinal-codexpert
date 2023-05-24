@@ -12,7 +12,9 @@
 }
 
 .iconUser-boton__image {
+    margin-top: 5px;
     border-radius: 50%;
+    border: 4px solid #01d151;
 }
 
 .loader {
@@ -21,6 +23,7 @@
 }
 
 .iconUser-dropdown {
+    margin-right: 40px;
     position: absolute;
     top: 100%;
     right: 0px;

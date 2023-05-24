@@ -1,6 +1,25 @@
 .header__container {
     position: absolute;
-    right: 5%;
+    right: 0%;
     top: 50px;
     display: flex;
+    padding-right: 40px;
+    padding-left: 15px;
+    background-color: rgba(255, 255, 255, 0.568);
+    text-align: center;
+    border-color: #00bd48;
+    border-style: solid;
+    border-width: 6px 0;
+}
+
+.header__container::before {
+    background-color: rgba(255, 255, 255, 0.568);
+    box-shadow: -6px 0 0 #00bd48, 0 -6px #00bd48, 0 6px #00bd48;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
 }
