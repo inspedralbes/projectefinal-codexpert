@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import RankingPodium from '../components/RankingPodium'
 import RankingTable from '../components/RankingTable'
 import ShareRanking from '../components/ShareRanking'
+import Header from '../components/Header'
 import Rewards from '../components/Rewards'
 import { Loading } from '../components/Loading'
 import '../styles/normalize.css'
@@ -50,6 +51,7 @@ function RankingPage() {
 
   return (
     <>
+    <Header></Header>
       <button id='goBackToLobby__button' onClick={goBackToLobby}>
         <span className='circle' aria-hidden='true'>
           <span className='icon arrow'></span>
