@@ -1,12 +1,14 @@
 import React from 'react'
 import '../styles/normalize.css'
 import PropTypes from 'prop-types'
+import { useNavigate } from 'react-router-dom'
 
 RankingTable.propTypes = {
   rankingData: PropTypes.array
 }
 
 function RankingTable({ rankingData }) {
+  const navigate = useNavigate()
   return (
     <div className='rankingTable__content'>
       <table className='ranking__table' >
@@ -28,7 +30,9 @@ function RankingTable({ rankingData }) {
                       src={element.avatar}
                       width='50px'
                       className='user__image'
-                      alt={element.name + '\'s avatar'} />
+                      alt={element.name + '\'s avatar'}
+                      onClick={() => navigate(`/profile?id=${element.id}`)}
+                      />
                     <h1>{element.name}</h1>
                   </td>
                 </tr>

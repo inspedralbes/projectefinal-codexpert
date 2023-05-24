@@ -1,12 +1,14 @@
 import React from 'react'
 import '../styles/normalize.css'
 import PropTypes from 'prop-types'
+import { useNavigate } from 'react-router-dom'
 
 RankingPodium.propTypes = {
   rankingData: PropTypes.array
 }
 
 function RankingPodium({ rankingData }) {
+  const navigate = useNavigate()
   return (
     <div className='rankingPodium__content'>
       {Array.isArray(rankingData) && rankingData.map((element, index) => {
@@ -21,6 +23,7 @@ function RankingPodium({ rankingData }) {
                       width='50px'
                       className='user__image'
                       alt={element.name + '\'s avatar'}
+                      onClick={() => navigate(`/profile?id=${element.id}`)}
                     />
                     <h1>{element.name}</h1>
                   </div>
@@ -39,7 +42,8 @@ function RankingPodium({ rankingData }) {
                       src={element.avatar}
                       width='50px'
                       className='user__image'
-                      alt={element.name + '\'s avatar'} />
+                      alt={element.name + '\'s avatar'}
+                      onClick={() => navigate(`/profile?id=${element.id}`)} />
                     <h1>{element.name}</h1>
                   </div>
                   <div className='second__medal'>
@@ -57,7 +61,8 @@ function RankingPodium({ rankingData }) {
                       src={element.avatar}
                       width='50px'
                       className='user__image'
-                      alt={element.name + '\'s avatar'} />
+                      alt={element.name + '\'s avatar'}
+                      onClick={() => navigate(`/profile?id=${element.id}`)} />
                     <h1>{element.name}</h1>
                   </div>
                   <div className='third__medal'>
