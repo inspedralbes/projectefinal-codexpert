@@ -49,6 +49,7 @@ function Tutorial() {
   })
 
   useEffect(() => {
+    
     if (location.state === null) {
       navigate('/campaign')
     } else {
@@ -81,15 +82,17 @@ function Tutorial() {
     setEnableIntroductionNextButton(prev => ({ ...prev, hint: false }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     let tutorialsId = []
     e.preventDefault()
     if (code !== '') {
       const resultsEvalRecieved = []
       let evalPassedBoolean = true
-      console.log(qst)
       qst.inputs.forEach((inp) => {
         let input = inp
+        let example = Function("input", 'return function yourCode(input){ \n  //code here\n  \n  return input + 3\n}')(input)
+        console.log(Function(example.toString() + '\nyourCode(' + input + ')')())
+
         try {
           const res = eval(code)
           resultsEvalRecieved.push(res)
