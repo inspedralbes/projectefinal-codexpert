@@ -118,6 +118,7 @@ function Register() {
         .then((data) => {
           if (data.valid) {
             cookies.set('token', data.token, { path: '/' })
+            cookies.set('userId', data.userId, { path: '/' })
             window.postMessage(
               {
                 type: 'send_token-emit',

@@ -85,6 +85,23 @@ socketIO.on("connection", (socket) => {
   socket.data.current_lobby = null;
   socket.data.token = null;
 
+  socket.join("chat-general");
+
+  async function getIdsThatCantBeAdded(socket) {
+    axios
+      .post(laravelRoute + "getNotAddFriend", {
+        token: socket.data.token
+      })
+      .then(function (response) {
+        socket.data.not_add_ids = response.data;
+        console.log("entra" + socket.data.not_add_ids);
+      }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
   socket.on("send_token", (data) => {
     const userToken = data.token;
     socket.data.token = userToken;
@@ -105,12 +122,37 @@ socketIO.on("connection", (socket) => {
           socketIO.to(socket.id).emit("username", {
             username: response.data.name
           });
+          getIdsThatCantBeAdded(socket);
         }
       }
       )
       .catch(function (error) {
         console.log(error);
       });
+  });
+
+  socket.on("friend_notification", (data) => {
+    sendNotificationToUser(data.userId);
+  });
+
+  async function sendNotificationToUser(userId) {
+    const sockets = await socketIO.fetchSockets();
+    sockets.forEach((socket) => {
+      console.log("id" + userId);
+      console.log("socketid" + socket.data.userId);
+      if (socket.data.userId === userId) {
+        sendUserNotifications(socket);
+      }
+    });
+  }
+
+  socket.on("lobby_data_pls", () => {
+    sendUserList(socket.data.current_lobby);
+    sendMessagesToLobby(socket.data.current_lobby);
+  });
+
+  socket.on("check_friend_list", () => {
+    getIdsThatCantBeAdded(socket);
   });
 
   socket.on("hello_firstTime", () => {
@@ -538,6 +580,22 @@ function leavePhaserWorld(socket) {
   socket.leave("phaser_world_room");
 }
 
+async function sendUserNotifications(socket) {
+  await axios
+    .post(laravelRoute + "getPendingRequests", {
+      token: socket.data.token
+    })
+    .then(function (response) {
+      socketIO.to(socket.id).emit("requests", {
+        notifications: response.data.list,
+        showBell: response.data.unread
+      });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
 async function sendQuestionsToUser(socket) {
   await axios
     .post(laravelRoute + "getAllQuestions", {
@@ -830,11 +888,13 @@ async function sendUserList(room) {
 
   sockets.forEach((socket) => {
     userList.push({
+      id: socket.data.userId,
       name: socket.data.name,
       avatar: socket.data.avatar,
       hearts_remaining: socket.data.hearts_remaining,
       question_at: socket.data.question_at,
-      unlimitedHearts: unlimitedHeartsOption
+      unlimitedHearts: unlimitedHeartsOption,
+      not_add_ids: socket.data.not_add_ids
     });
   });
 

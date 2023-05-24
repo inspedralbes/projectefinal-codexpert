@@ -59,6 +59,7 @@ function Login() {
           if (data.valid) {
             // Si se ha logueado
             cookies.set('token', data.token, { path: '/' })
+            cookies.set('userId', data.userId, { path: '/' })
             window.postMessage(
               {
                 type: 'send_token-emit',

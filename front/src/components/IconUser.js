@@ -14,7 +14,6 @@ function IconUser() {
   const handleButtonClick = () => {
     setState(!state)
   }
-
   useEffect(() => {
     const token = new FormData()
     token.append(
@@ -90,7 +89,10 @@ function IconUser() {
               <ul className="iconUser-dropdown__list">
                 <li
                   className="iconUser-list__item"
-                  onClick={() => navigate('/profile')}
+                  onClick={() => {
+                    navigate(`/profile?id=${cookies.get('userId')}`)
+                    window.location.reload()
+                  }}
                 >
                   <button className="iconUser__button">Profile</button>
                 </li>

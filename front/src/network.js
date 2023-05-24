@@ -50,6 +50,10 @@ const handleMessage = (event) => {
       socket.emit('hello_firstTime')
       break
 
+    case 'check_friend_list-emit':
+      socket.emit('check_friend_list')
+      break
+
     case 'new_lobby-emit':
       socket.emit('new_lobby', eventData.lobby_name)
       break
@@ -63,6 +67,12 @@ const handleMessage = (event) => {
 
     case 'lobby_data_pls-emit':
       socket.emit('lobby_data_pls')
+      break
+
+    case 'send_friend_notification-emit':
+      socket.emit('friend_notification', {
+        userId: parseInt(eventData.data.userId)
+      })
       break
 
     case 'chat_message-emit':
@@ -137,6 +147,10 @@ socket.on('YOU_ARE_ON_LOBBY', (data) => {
 
 socket.on('questions', (data) => {
   window.postMessage({ type: 'questions-event', questionsData: data }, '*')
+})
+
+socket.on('requests', (data) => {
+  window.postMessage({ type: 'requests-event', notificationsData: data.notifications, notificationUnread: data.showBell }, '*')
 })
 
 socket.on('lobby_name', (data) => {

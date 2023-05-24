@@ -100,7 +100,7 @@ class AuthController extends Controller
                 
                 $sendUser = (object) [
                     'valid' => true,
-                    'message' => $userId,
+                    'userId' => $userId,
                     'token' => $token
                 ];
             } else {
@@ -149,6 +149,7 @@ class AuthController extends Controller
                 $sendUser = (object) [
                     'valid' => true,
                     'message' => "Logged in successfully",
+                    'userId' => $userFound -> id,
                     'token' => $token
                 ];
 
