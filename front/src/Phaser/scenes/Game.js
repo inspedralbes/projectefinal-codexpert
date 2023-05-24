@@ -6,15 +6,12 @@ import Mob from '../Mobs/Mob'
 import { debugDraw } from '../utils/debug'
 import OverlapPoint from '../items/OverlapPoints'
 
-const spriteAnimsCreated = []
+import Cookies from 'universal-cookie'
+import routes from '../../conn_routes'
 
-const npcDialogs = [
-  {
-    name: 'Gaspa',
-    dialogs: ['Hi! (with rizz)', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut velit el consectetur necessitatibus fugiat sint ad nulla saepe, voluptatum voluptates doloremque perspiciatis asperiores, deserunt placeat reprehenderit non commodi exercitationem mollitia sapiente.'],
-    currentIndex: 0
-  }
-]
+const cookies = new Cookies()
+
+const spriteAnimsCreated = []
 
 const PUNTOAPARICION = {
   x: 350,
@@ -40,6 +37,7 @@ export default class Game extends Phaser.Scene {
   othersprites
   nametags
   username
+  npcDialogs
 
   constructor() {
     super('game')
@@ -172,9 +170,29 @@ export default class Game extends Phaser.Scene {
       'interactEnter': Phaser.Input.Keyboard.KeyCodes.ENTER,
       'run': Phaser.Input.Keyboard.KeyCodes.SHIFT
     })
+    this.startGame = true;
   }
 
-  create() {
+  async create() {
+    // Dialogs
+    const token = new FormData()
+    token.append(
+      'token',
+      cookies.get('token') !== undefined ? cookies.get('token') : null
+    )
+
+    await fetch(routes.fetchLaravel + 'getAllNPCS', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        this.npcDialogs = data
+      })
+
     this.nameTagContainer = this.add.container(0, 0)
     this.nameTagText = this.add.text(PUNTOAPARICION.x, PUNTOAPARICION.y, this.username, {
       fontSize: '6px',
@@ -239,7 +257,7 @@ export default class Game extends Phaser.Scene {
   }
 
   update(t, dt) {
-    if (!this.cursors || !this.strawberry || !this.keys || !this.othersprites) {
+    if (!this.cursors || !this.strawberry || !this.keys || !this.othersprites || !this.startGame) {
       return
     }
 
@@ -426,7 +444,8 @@ export default class Game extends Phaser.Scene {
         window.postMessage({ type: 'interaction_with_overlap_object', data: { name: this.currentNavigate, x: colisionado.x, y: colisionado.y, type: 'location' } }, '*')
       } else if (overlapObjectData.get('idNPC') > 0) {
         this.npcData = {
-          character: overlapObjectData.get('sprite')
+          character: overlapObjectData.get('sprite'),
+          id: overlapObjectData.get('idNPC')
         }
         window.postMessage({ type: 'interaction_with_overlap_object', data: { name: overlapObjectData.get('sprite'), x: colisionado.x, y: colisionado.y, type: 'npc' } }, '*')
       }
@@ -458,12 +477,34 @@ export default class Game extends Phaser.Scene {
 
   getCurrentDialog() {
     let dialog = '...'
-    npcDialogs.forEach(npc => {
-      if (npc.name === this.npcData.character) {
-        dialog = npc.dialogs[npc.currentIndex]
-        npc.currentIndex === npc.dialogs.length - 1 ? npc.currentIndex = 0 : npc.currentIndex++
+
+    this.npcDialogs?.forEach(npc => {
+      if (npc.id === this.npcData.id) {
+        if (!npc.haveMet) {
+          dialog = npc.introduction
+
+          const bodyData = new FormData()
+          bodyData.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+          bodyData.append('npcId', npc.id)
+
+          fetch(routes.fetchLaravel + 'setSpokenToNPC', {
+            method: 'POST',
+            mode: 'cors',
+            body: bodyData,
+            credentials: 'include'
+          })
+          npc.haveMet = true
+          npc.currentIndex = 0
+        } else {
+          if (!npc.currentIndex)
+            npc.currentIndex = 0
+
+          dialog = npc.dialogues[npc.currentIndex]
+          npc.currentIndex === npc.dialogues.length - 1 ? npc.currentIndex = 0 : npc.currentIndex++
+        }
       }
     })
+
     return dialog
   }
 
@@ -576,7 +617,6 @@ export default class Game extends Phaser.Scene {
     this.physics.add.overlap(this.strawberry, this.overlapGroup, this.handleOverlap, null, this)
     this.physics.add.overlap(this.strawberry, this.npcGroup, this.handleOverlap, null, this)
     this.physics.add.collider(this.mobGroup, this.buildingsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.mobGroup, this.npcGroup, this.handleCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.cropsLayer, this.handleCollision, null, this)

@@ -891,6 +891,70 @@
                  "width":0,
                  "x":760.181818181818,
                  "y":712.909090909091
+                }, 
+                {
+                 "height":0,
+                 "id":124,
+                 "name":"Aitor",
+                 "properties":[
+                        {
+                         "name":"idNPC",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"interactuable",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"moves",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"Aitor"
+                        }],
+                 "rotation":0,
+                 "type":"NPC",
+                 "visible":true,
+                 "width":0,
+                 "x":697.636363636364,
+                 "y":303.636363636364
+                }, 
+                {
+                 "height":0,
+                 "id":126,
+                 "name":"Iris",
+                 "properties":[
+                        {
+                         "name":"idNPC",
+                         "type":"int",
+                         "value":11
+                        }, 
+                        {
+                         "name":"interactuable",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"moves",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"sprite",
+                         "type":"string",
+                         "value":"Paul"
+                        }],
+                 "rotation":0,
+                 "type":"NPC",
+                 "visible":true,
+                 "width":0,
+                 "x":696.583333333333,
+                 "y":479.166666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1180,7 +1244,7 @@
          "y":0
         }],
  "nextlayerid":15,
- "nextobjectid":124,
+ "nextobjectid":128,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",

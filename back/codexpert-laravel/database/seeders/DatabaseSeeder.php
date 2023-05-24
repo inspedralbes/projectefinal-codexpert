@@ -528,7 +528,7 @@ class DatabaseSeeder extends Seeder
 
                     $newDialogueOption = new Dialogue;
                     $newDialogueOption -> npc_id = $newNPC -> id;
-                    $newDialogueOption -> sentence = "You can also declare variables with \"const\", but these cannot be changed.";
+                    $newDialogueOption -> sentence = "You can also declare variables with \"const\", but be careful! These cannot be changed!";
                     $newDialogueOption -> save();
                     }
                 {

@@ -76,15 +76,7 @@ class NPCController extends Controller
             if ($getNpcDialogues != null) {
                 for ($j=0; $j < count($getNpcDialogues); $j++) { 
                     $currentSentence = $getNpcDialogues[$j] -> sentence;
-                    $dialogueOption = $getNpcDialogues[$j] -> dialogueOptions;
-                    $dialogueOption = json_decode($dialogueOption);
-
-                    $currentDialogue = (object) [
-                        'dialogueStart' => $currentSentence,
-                        'dialogueOptions' => $dialogueOption
-                    ];
-
-                    array_push($allDialogues, $currentDialogue);
+                    array_push($allDialogues, $currentSentence);
                 }
             }
 
