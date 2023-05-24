@@ -91,11 +91,11 @@ export default class Game extends Phaser.Scene {
     const sprites = this.othersprites.getChildren()
 
     if (!sprites.some((sprite) => sprite.properties.id == characterData.id)) {
-      const newPlayer = this.physics.add.sprite(characterData.x, characterData.y, 'Strawberry')
+      const newPlayer = this.physics.add.sprite(characterData.x, characterData.y, 'bunny')
       newPlayer.setDepth(1)
       newPlayer.properties = characterData
 
-      newPlayer.anims.play('Strawberry-idle-down')
+      newPlayer.anims.play('bunny-sleep')
       this.physics.add.existing(newPlayer)
 
       this.othersprites.add(newPlayer)
@@ -160,6 +160,7 @@ export default class Game extends Phaser.Scene {
     if (!this.nametags) { this.nametags = this.physics.add.staticGroup() }
 
     this.createAnims('Strawberry')
+    this.createMobAnims('bunny')
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
       'up': Phaser.Input.Keyboard.KeyCodes.W,
@@ -293,32 +294,30 @@ export default class Game extends Phaser.Scene {
 
       const speed = sprite.properties.speed
       if (sprite.properties.direction == 'left') {
-        sprite.anims.play('Strawberry-walk-left', true)
+        sprite.anims.play('bunny-walk-left', true)
         sprite.body.velocity.x = -speed
         sprite.body.velocity.y = 0
 
         sprite.body.offset.x = 11
       } else if (sprite.properties.direction == 'right') {
-        sprite.anims.play('Strawberry-walk-right', true)
+        sprite.anims.play('bunny-walk-right', true)
 
         sprite.body.velocity.x = speed
         sprite.body.velocity.y = 0
 
         sprite.body.offset.x = 11
       } else if (sprite.properties.direction == 'up') {
-        sprite.anims.play('Strawberry-walk-up', true)
+        sprite.anims.play('bunny-walk-back', true)
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = -speed
       } else if (sprite.properties.direction == 'down') {
-        sprite.anims.play('Strawberry-walk-down', true)
+        sprite.anims.play('bunny-walk-front', true)
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = speed
       } else if (sprite.properties.direction == '' && sprite.anims.currentAnim) {
-        const parts = sprite.anims.currentAnim.key.split('-')
-        parts[1] = 'idle'
-        sprite.play(parts.join('-'))
+        sprite.anims.play('bunny-sleep', true)
 
         sprite.body.velocity.x = 0
         sprite.body.velocity.y = 0
@@ -480,6 +479,7 @@ export default class Game extends Phaser.Scene {
 
     this.npcDialogs?.forEach(npc => {
       if (npc.id === this.npcData.id) {
+        console.log(npc)
         if (!npc.haveMet) {
           dialog = npc.introduction
 
