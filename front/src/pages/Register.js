@@ -11,7 +11,8 @@ import Eye from '../components/Eye'
 import '../styles/form.css'
 
 function Register() {
-  const [registro, setRegistro] = useState(0)
+  const [errorText, setErrorText] = useState('')
+  const [error, setError] = useState('')
 
   const [userData, setUserData] = useState({
     username: '',
@@ -31,7 +32,7 @@ function Register() {
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      setRegistro(registro + 1)
+      handleSubmit()
     }
   }
 
@@ -61,6 +62,7 @@ function Register() {
       setColor({ ...color, username: 'green' })
     } else {
       setColor({ ...color, username: 'red' })
+      setError('Incorrect username length')
     }
   }, [userData.username])
 
@@ -74,6 +76,7 @@ function Register() {
       setColor({ ...color, email: 'green' })
     } else {
       setColor({ ...color, email: 'red' })
+      setError('Incorrect email format')
     }
   }, [userData.email])
 
@@ -84,6 +87,7 @@ function Register() {
       setColor({ ...color, password: 'green' })
     } else {
       setColor({ ...color, password: 'red' })
+      setError('Password not correct')
     }
   }, [userData.password])
 
@@ -100,49 +104,49 @@ function Register() {
     }
   }, [userData.passwordValidation])
 
-  useEffect(() => {
-    if (registro !== 0) {
-      const user = new FormData()
-      user.append('name', userData.username)
-      user.append('email', userData.email)
-      user.append('password', userData.password)
-      user.append('password_confirmation', userData.passwordValidation)
+  const handleSubmit = () => {
+    const user = new FormData()
+    user.append('name', userData.username)
+    user.append('email', userData.email)
+    user.append('password', userData.password)
+    user.append('password_confirmation', userData.passwordValidation)
 
-      fetch(routes.fetchLaravel + 'register', {
-        method: 'POST',
-        mode: 'cors',
-        body: user,
-        credentials: 'include'
+    fetch(routes.fetchLaravel + 'register', {
+      method: 'POST',
+      mode: 'cors',
+      body: user,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.valid) {
+          cookies.set('token', data.token, { path: '/' })
+          cookies.set('userId', data.userId, { path: '/' })
+          window.postMessage(
+            {
+              type: 'send_token-emit',
+              token: cookies.get('token')
+            },
+            '*'
+          )
+          window.network.setUserLogged(true)
+
+          sendTutorialLocalStorageData(data.token)
+          localStorage.clear()
+          navigate('/avatarMaker')
+        } else {
+          setErrorText(data.message)
+          setErrorText(error)
+        }
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.valid) {
-            cookies.set('token', data.token, { path: '/' })
-            cookies.set('userId', data.userId, { path: '/' })
-            window.postMessage(
-              {
-                type: 'send_token-emit',
-                token: cookies.get('token')
-              },
-              '*'
-            )
-            window.network.setUserLogged(true)
-
-            sendTutorialLocalStorageData(data.token)
-            localStorage.clear()
-            navigate('/avatarMaker')
-          } else {
-            console.log(data)
-          }
-        })
-    }
-  }, [registro])
+  }
 
   return (
     <div className="form register">
       <h1>REGISTER</h1>
       <br />
       <div className="form__form">
+        <p>{errorText}</p>
         <div className="form__inputGroup">
           <input
             id="username"
@@ -246,7 +250,7 @@ function Register() {
 
           <div className="form__submit submit">
             <button
-              onClick={() => setRegistro(registro + 1)}
+              onClick={() => handleSubmit()}
               id="submit__button"
             >
               <span className="circle2" aria-hidden="true">
