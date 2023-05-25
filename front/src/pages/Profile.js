@@ -12,7 +12,6 @@ import cross from '../img/cross.png'
 import Eye from '../components/Eye'
 import Header from '../components/Header'
 import { Loading } from '../components/Loading'
-import { ColorRing } from 'react-loader-spinner'
 
 Modal.setAppElement('body')
 
@@ -133,14 +132,13 @@ function Profile() {
           navigate('/login')
         } else {
           setFriendList(data)
-          console.log(data);
         }
       })
   }
 
-  const getUserDataFromId = () => {
+  const getUserDataFromId = (id, friendId) => {
     const userId = new FormData()
-    userId.append('userId', cookies.get('userId') !== undefined ? cookies.get('userId') : null)
+    userId.append('userId', id)
     fetch(routes.fetchLaravel + 'getUserDataFromId', {
       method: 'POST',
       mode: 'cors',
@@ -150,7 +148,9 @@ function Profile() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
-        return data
+        document.getElementById('friendId' + friendId).innerHTML = `
+        <td><img src="${data.avatar}"></img></td>
+        <td>${data.name}</td>`
       })
   }
 
@@ -230,17 +230,13 @@ function Profile() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Title</th>
-                      <th>Statement</th>
-                      <th>Public</th>
-                      <th>Edit</th>
-                      <th>Delete</th>
+                      <th>Friends:</th>
                     </tr>
                   </thead>
                   <tbody>
                     {friendList.map((element, index) => {
-                      return <tr id={'questionId' + index} key={index}>
-                        <td>{() => console.log(setuserDataFromId(element.receiver_id))}</td>
+                      {getUserDataFromId(element.receiver_id, index)}
+                      return <tr id={'friendId' + index} key={index}>
                         <td></td>
                         <td></td>
                       </tr>
