@@ -28,7 +28,8 @@ function Profile() {
   const navigate = useNavigate()
   const [cannotAdd, setCannotAdd] = useState()
   const [userData, setUserData] = useState()
-  const [friendList, setFriendList] = useState()
+  const [friendList, setFriendList] = useState([])
+  const [userDataFromId, setuserDataFromId] = useState()
   const [editUser, setEditUser] = useState({})
   const [modals, setModals] = useState({
     name: false,
@@ -41,15 +42,15 @@ function Profile() {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
 
-      fetch(routes.fetchLaravel + 'getNotAddFriend', {
-        method: 'POST',
-        mode: 'cors',
-        body: token,
-        credentials: 'include'
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setCannotAdd(data)
+    fetch(routes.fetchLaravel + 'getNotAddFriend', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setCannotAdd(data)
       })
   }
 
@@ -132,7 +133,24 @@ function Profile() {
           navigate('/login')
         } else {
           setFriendList(data)
+          console.log(data);
         }
+      })
+  }
+
+  const getUserDataFromId = () => {
+    const userId = new FormData()
+    userId.append('userId', cookies.get('userId') !== undefined ? cookies.get('userId') : null)
+    fetch(routes.fetchLaravel + 'getUserDataFromId', {
+      method: 'POST',
+      mode: 'cors',
+      body: userId,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        return data
       })
   }
 
@@ -196,125 +214,143 @@ function Profile() {
   if (userData !== undefined) {
     return (
       <>
-      <Header></Header>
-      <div className='profile'>
-        <div className='profile--grid'>
-          <div className='profile__left'>
-            <div className='profile__button'>
-              <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/lobbies')} id='goBack__button'>
-                <span className='circle' aria-hidden='true'>
-                  <span className='icon arrow'></span>
-                </span>
-                <span className='button-text'>BACK</span>
-              </button>
-              <div></div>
-            </div>
+        <Header></Header>
+        <div className='profile'>
+          <div className='profile--grid'>
+            <div className='profile__left'>
+              <div className='profile__button'>
+                <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/lobbies')} id='goBack__button'>
+                  <span className='circle' aria-hidden='true'>
+                    <span className='icon arrow'></span>
+                  </span>
+                  <span className='button-text'>BACK</span>
+                </button>
+              </div>
+              <div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Statement</th>
+                      <th>Public</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {friendList.map((element, index) => {
+                      return <tr id={'questionId' + index} key={index}>
+                        <td>{() => console.log(setuserDataFromId(element.receiver_id))}</td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <Modal
+                onRequestClose={() => setModals(prev => ({ ...prev, name: false }))}
+                shouldCloseOnOverlayClick={true}
+                isOpen={modals.name}
+              >
+                <button className='cross' onClick={() => setModals(prev => ({ ...prev, name: false }))}><img src={cross} alt='X' height={'30px'}></img></button>
 
-            <Modal
-              onRequestClose={() => setModals(prev => ({ ...prev, name: false }))}
-              shouldCloseOnOverlayClick={true}
-              isOpen={modals.name}
-            >
-              <button className='cross' onClick={() => setModals(prev => ({ ...prev, name: false }))}><img src={cross} alt='X' height={'30px'}></img></button>
-                
-              <input className='profile__input' placeholder='username' onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
-              <input className='profile__input' type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
-              <Eye id={"passwordUsername"}></Eye>
-              <br></br>
-              <div className='profile__buttons'>
-                <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, name: false }))}>Close</button>
-                <button className='pixel-button modalBtn' onClick={() => saveChanges('newName')}>Save</button>
-              </div>
-            </Modal>
-            <div className='profile__settings'>
-            {myId === userId && (
-              <div className='profile__email--div'>
-                <p className='profile__email'>{userData.email}</p>
-                  <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
-                <Modal
-                  onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
-                  shouldCloseOnOverlayClick={true}
-                  isOpen={modals.email}
-                >
-                  <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
-
-              <h1>Change your email</h1>
-              <input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
-              <input className='profile__input' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
-              <div className='profile__buttons'>
-                <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
-                <button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save</button>
-              </div>
-              </Modal>
-              </div>
-              )}
-              {myId === userId && (
-                <div className='profile__password--grid'>
-                  <button className='profile__pswd pixel-button' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
+                <input className='profile__input' placeholder='username' onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
+                <input className='profile__input' type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
+                <Eye id={"passwordUsername"}></Eye>
+                <br></br>
+                <div className='profile__buttons'>
+                  <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, name: false }))}>Close</button>
+                  <button className='pixel-button modalBtn' onClick={() => saveChanges('newName')}>Save</button>
                 </div>
-                
-              )}
-            </div>
+              </Modal>
+              <div className='profile__settings'>
+                {myId === userId && (
+                  <Modal
+                    onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
+                    shouldCloseOnOverlayClick={true}
+                    isOpen={modals.email}
+                  >
+                    <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
 
-            <Modal
-              style={{
-                content: {
-                  top: '50%',
-                  left: '50%',
-                  right: 'auto',
-                  bottom: 'auto',
-                  marginRight: '-50%',
-                  transform: 'translate(-50%, -50%)'
-                }
-              }}
-              onRequestClose={() => setModals(prev => ({ ...prev, password: false }))}
-              shouldCloseOnOverlayClick={true}
-              isOpen={modals.password}
-            >
-              <button className='cross' onClick={() => setModals(prev => ({ ...prev, password: false }))}><img src={cross} alt='X' height={'30px'}></img></button>
-
-              <h1>Update password</h1>
-              <input className='profile__input' id="passwordUpdate" type='password' placeholder='Current password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
-              <Eye id={"passwordUpdate"}></Eye>
-              <br></br>
-              <input className='profile__input' id="passwordNew" type='password' placeholder='New password' onChange={(e) => setEditUser(prev => ({ ...prev, newPassword: e.target.value }))}></input>
-              <Eye id={"passwordNew"}></Eye>
-              <br></br>
-              <input className='profile__input' id="passwordConfirm" type='password' placeholder='Repeat new password' onChange={(e) => setEditUser(prev => ({ ...prev, rNewPassword: e.target.value }))}></input>
-              <Eye id={"passwordConfirm"}></Eye>
-              <br></br>
-              <div className='profile__buttons'>
-                <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, password: false }))}>Close</button>
-                <button className='pixel-button modalBtn' onClick={() => savePassword('newPassword')}>Save</button>
-              </div>
-
-            </Modal >
-          </div >
-          <div className='profile__right'>
-            <div className='profile__name--div'>
-              <p className='profile__name'>{userData.name}</p>
-              {myId === userId && (
-                <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, name: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+                    <h1>Change your email</h1>
+                    <input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+                    <input className='profile__input' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                    <div className='profile__buttons'>
+                      <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
+                      <button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save</button>
+                    </div>
+                  </Modal>
                 )}
               </div>
-            
+
+              <Modal
+                style={{
+                  content: {
+                    top: '50%',
+                    left: '50%',
+                    right: 'auto',
+                    bottom: 'auto',
+                    marginRight: '-50%',
+                    transform: 'translate(-50%, -50%)'
+                  }
+                }}
+                onRequestClose={() => setModals(prev => ({ ...prev, password: false }))}
+                shouldCloseOnOverlayClick={true}
+                isOpen={modals.password}
+              >
+                <button className='cross' onClick={() => setModals(prev => ({ ...prev, password: false }))}><img src={cross} alt='X' height={'30px'}></img></button>
+
+                <h1>Update password</h1>
+                <input className='profile__input' id="passwordUpdate" type='password' placeholder='Current password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
+                <Eye id={"passwordUpdate"}></Eye>
+                <br></br>
+                <input className='profile__input' id="passwordNew" type='password' placeholder='New password' onChange={(e) => setEditUser(prev => ({ ...prev, newPassword: e.target.value }))}></input>
+                <Eye id={"passwordNew"}></Eye>
+                <br></br>
+                <input className='profile__input' id="passwordConfirm" type='password' placeholder='Repeat new password' onChange={(e) => setEditUser(prev => ({ ...prev, rNewPassword: e.target.value }))}></input>
+                <Eye id={"passwordConfirm"}></Eye>
+                <br></br>
+                <div className='profile__buttons'>
+                  <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, password: false }))}>Close</button>
+                  <button className='pixel-button modalBtn' onClick={() => savePassword('newPassword')}>Save</button>
+                </div>
+
+              </Modal >
+            </div >
+            <div className='profile__right'>
+              <div>
+                <div className='profile__name--div'>
+                  <p className='profile__name'>{userData.name}</p>
+                  {myId === userId && (
+                    <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, name: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+                  )}
+                </div>
+                <div className='profile__email--div'>
+                  <p className='profile__email'>{userData.email}</p>
+                  <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+                </div>
+              </div>
+
               <div id='editAvatar' className='profile__editAvatar'>
                 <div className='profile__img'>
                   <img className='profile__avatar' src={userData.avatar}></img>
                 </div>
                 {myId === userId
-                ? <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
-                : checkIfCanAdd(userId) ? <button id={'userId' + userId} className='pixel-button profileBtn'                     
-                onClick={() => {
-                  handleClick(`${userId}`)
-                  document.getElementById('userId' + userId).style.display = 'none'
-                }}>Add Friend</button>:null
+                  ? <><button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
+                    <button className='pixel-button profileBtn' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button></>
+
+                  : checkIfCanAdd(userId) ? <button id={'userId' + userId} className='pixel-button profileBtn'
+                    onClick={() => {
+                      handleClick(`${userId}`)
+                      document.getElementById('userId' + userId).style.display = 'none'
+                    }}>Add Friend</button> : null
                 }
               </div>
-          </div>
+            </div>
+          </div >
         </div >
-      </div >
-    </>
+      </>
     )
   } else {
     return (

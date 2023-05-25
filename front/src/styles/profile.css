@@ -51,6 +51,7 @@
     justify-content: center;
     justify-items: center;
     align-content: space-between;
+    margin: 10vh 0 0 0;
 }
 
 
@@ -80,7 +81,6 @@
 }
 
 .profile__name {
-    margin: 5vh 0 0 0;
     font-family: karmatic;
     text-align: center;
     text-transform: uppercase;
@@ -137,14 +137,14 @@
     height: fit-content;
 }
 
-.editBtn--name{
+.editBtn--name {
     border: none;
     background: none;
     height: fit-content;
     float: right;
 }
 
-.edit--name{
+.edit--name {
     transform: translate(0, 10px);
     transition: all 0.5s;
 }
@@ -160,7 +160,7 @@
     opacity: 0.5;
 }
 
-.edit--name:hover{
+.edit--name:hover {
     cursor: pointer;
     transform: translate(0, 15px);
     opacity: 0.5;
