@@ -28,7 +28,7 @@ function Profile() {
   const [cannotAdd, setCannotAdd] = useState()
   const [userData, setUserData] = useState()
   const [friendList, setFriendList] = useState([])
-  const [userDataFromId, setuserDataFromId] = useState()
+  const [gameHistory, setGameHistory] = useState([])
   const [editUser, setEditUser] = useState({})
   const [modals, setModals] = useState({
     name: false,
@@ -136,6 +136,22 @@ function Profile() {
       })
   }
 
+  const getGameHistory = () => {
+    const userId = new FormData()
+    userId.append('userId', myId)
+    fetch(routes.fetchLaravel + 'getUserDataFromId', {
+      method: 'POST',
+      mode: 'cors',
+      body: userId,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        setGameHistory(data.games.original)
+      })
+  }
+
   const getUserDataFromId = (id, friendId) => {
     const userId = new FormData()
     userId.append('userId', id)
@@ -147,7 +163,6 @@ function Profile() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         document.getElementById('friendId' + friendId).innerHTML = `
         <td><img src="${data.avatar}"></img></td>
         <td>${data.name}</td>`
@@ -159,6 +174,7 @@ function Profile() {
     getUserData()
     getuserFriendList()
     setEditUser(userData)
+    getGameHistory()
   }, [])
 
   const saveChanges = (type) => {
@@ -239,6 +255,28 @@ function Profile() {
                       return <tr id={'friendId' + index} key={index}>
                         <td></td>
                         <td></td>
+                      </tr>
+                    })}
+                  </tbody>
+                </table>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Finished position</th>
+                      <th>Hearts remaining</th>
+                      <th>Elo earned</th>
+                      <th>Completed all questions</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {gameHistory.map((element, index) => {
+                      return <tr key={index}>
+                        <td>{element.finished_position}</td>
+                        <td>{element.hearts_remaining}</td>
+                        <td>{element.eloEarned}</td>
+                        <td>{element.completedAllQuestions}</td>
+                        <td>{element.date}</td>
                       </tr>
                     })}
                   </tbody>
