@@ -84,17 +84,17 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/acceptFriend', [FriendController::class, 'acceptFriend']);
     
-    Route::post('/declineFriend', [FriendController::class, 'declineFriend']);    
+    Route::post('/declineFriend', [FriendController::class, 'declineFriend']);
 
-    Route::post('/removeFriend', [FriendController::class, 'removeFriend']);  
+    Route::post('/removeFriend', [FriendController::class, 'removeFriend']);
     
-    Route::post('/getFriendlist', [FriendController::class, 'getFriendlist']);  
+    Route::post('/getFriendlist', [FriendController::class, 'getFriendlist']);
 
-    Route::post('/getPendingRequests', [FriendController::class, 'getPendingRequests']);  
+    Route::post('/getPendingRequests', [FriendController::class, 'getPendingRequests']);
     
-    Route::post('/getNotAddFriend', [FriendController::class, 'getNotAddFriend']); 
+    Route::post('/getNotAddFriend', [FriendController::class, 'getNotAddFriend']);
 
-    Route::post('/markNotificationsAsRead', [FriendController::class, 'markNotificationsAsRead']);  
+    Route::post('/markNotificationsAsRead', [FriendController::class, 'markNotificationsAsRead']);
     
     Route::post('/checkExpertiseChosen', [TutorialController::class, 'checkExpertiseChosen']);
 

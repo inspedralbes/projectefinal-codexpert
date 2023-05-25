@@ -8,11 +8,11 @@ import 'tippy.js/themes/light-border.css' // Tooltip theme
 import 'tippy.js/animations/shift-away-extreme.css' // Tooltip animation
 import informationIcon from '../img/information_icon.gif'
 import Eye from '../components/Eye'
+import parse from 'html-react-parser'
 import '../styles/form.css'
 
 function Register() {
   const [errorText, setErrorText] = useState('')
-  const [error, setError] = useState('')
 
   const [userData, setUserData] = useState({
     username: '',
@@ -52,7 +52,6 @@ function Register() {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
         })
     }
   }
@@ -62,12 +61,10 @@ function Register() {
       setColor({ ...color, username: 'green' })
     } else {
       setColor({ ...color, username: 'red' })
-      setError('Incorrect username length')
     }
   }, [userData.username])
 
   useEffect(() => {
-    console.log()
     if (
       userData.email.length <= 255 &&
       userData.email.includes('@') &&
@@ -76,7 +73,6 @@ function Register() {
       setColor({ ...color, email: 'green' })
     } else {
       setColor({ ...color, email: 'red' })
-      setError('Incorrect email format')
     }
   }, [userData.email])
 
@@ -87,7 +83,6 @@ function Register() {
       setColor({ ...color, password: 'green' })
     } else {
       setColor({ ...color, password: 'red' })
-      setError('Password not correct')
     }
   }, [userData.password])
 
@@ -136,7 +131,28 @@ function Register() {
           navigate('/avatarMaker')
         } else {
           setErrorText(data.message)
-          setErrorText(error)
+          let regex =
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/
+          if (
+            !userData.passwordValidation === userData.password ||
+            !regex.test(userData.passwordValidation)
+          ) {
+            setErrorText('Password don\'t match')
+          }
+          regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&.])[a-zA-Z0-9@$!%*#?&.]{6,255}$/
+          if (!regex.test(userData.password)) {
+            setErrorText('Password not correct')
+          }
+          if (
+            userData.email.length > 255 ||
+            !userData.email.includes('@') ||
+            !userData.email.includes('.')
+          ) {
+            setErrorText('Incorrect email format')
+          }
+          if (userData.username.length < 3 || userData.username.length > 20) {
+            setErrorText('Incorrect username length')
+          }
         }
       })
   }
@@ -146,7 +162,6 @@ function Register() {
       <h1>REGISTER</h1>
       <br />
       <div className="form__form">
-        <p>{errorText}</p>
         <div className="form__inputGroup">
           <input
             id="username"
@@ -199,7 +214,7 @@ function Register() {
           <Tippy
               className='form__tooltip'
               theme={'light-border'}
-              content={'Password must be at least 6 characters long, contain an uppercase and lowercase letter, number and a special character (@$!%*#?&.)'}
+              content={parse('Password must be: <br> · At least 6 characters long.<br> · Contain an uppercase and lowercase letter.<br> · Number and a special character (@$!%*#?&.).')}
               placement={'right'}
               animation={'shift-away-extreme'}
             >
@@ -232,6 +247,7 @@ function Register() {
           </label>
         </div>
       </div>
+      <p className='error-text'>{errorText}</p>
 
       <div className="form__buttonsLinks">
         <div className="form__buttons">

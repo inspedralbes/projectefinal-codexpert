@@ -171,7 +171,7 @@ function Game() {
           id='persiana'
           className='persiana'
           style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
-          alt=""></img>}
+          alt=""></img>
           <div className='game__timer'>
             {overtimeDuration != 0 ? <h1>TIME LEFT: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
           </div>
@@ -185,7 +185,7 @@ function Game() {
             isOpen={CmodalIsOpen}
             onAfterOpen={afterOpenModal}
           >
-            YOU DID IT!! :)
+            YOU DID IT!! :&#42;
             <img src={jose} alt='' height={'300px'}></img>
           </Modal>
           <Modal

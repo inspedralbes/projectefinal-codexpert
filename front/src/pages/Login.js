@@ -89,8 +89,6 @@ function Login() {
       <h1>LOGIN</h1>
       <br />
       <div className="form__form">
-        <p>{errorText}</p>
-
         <div className="form__inputGroup">
           <input
             id="email"
@@ -122,6 +120,7 @@ function Login() {
             Password
           </label>
           <br />
+          <p className='error-text'>{errorText}</p>
         </div>
       </div>
       <div className="form__buttonsLinks">
