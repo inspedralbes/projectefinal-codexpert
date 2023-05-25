@@ -50,10 +50,9 @@ class NPCController extends Controller
             'name' => '',
             'introduction' => '',
             'haveMet' => false,
-            'dialogueOptions' => [],
+            'dialogues' => [],
         ];
         $allDialogues = [];
-        $allDialogueOptions = [];
 
         //Get the id from the logged in user.
         $userId = $this -> getUserId($request -> token);
@@ -62,6 +61,7 @@ class NPCController extends Controller
         $getNPCS = NPC::all();
         //For each NPC get id, name, introductionSentence, if they have already met and the dialogue options.
         for ($i=0; $i < count($getNPCS); $i++) { 
+            $allDialogues = [];
             $haveMet = false;
             if ($userId != null) {
                 $userNPC = User_npc::where('npc_id', $getNPCS[$i] -> id) 
@@ -76,15 +76,7 @@ class NPCController extends Controller
             if ($getNpcDialogues != null) {
                 for ($j=0; $j < count($getNpcDialogues); $j++) { 
                     $currentSentence = $getNpcDialogues[$j] -> sentence;
-                    $dialogueOption = $getNpcDialogues[$j] -> dialogueOptions;
-                    $dialogueOption = json_decode($dialogueOption);
-
-                    $currentDialogue = (object) [
-                        'dialogueStart' => $currentSentence,
-                        'dialogueOptions' => $dialogueOption
-                    ];
-
-                    array_push($allDialogues, $currentDialogue);
+                    array_push($allDialogues, $currentSentence);
                 }
             }
 

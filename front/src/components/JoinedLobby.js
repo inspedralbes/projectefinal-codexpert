@@ -25,10 +25,8 @@ JoinedLobby.propTypes = {
 function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  // const [showQuestionsModal, setShowQuestionsModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
   const [saveSettings, setSaveSettings] = useState(0)
-  // const [questionsData, setQuestionsData] = useState([])
 
   const handleMessage = (event) => {
     const eventData = event.data
@@ -47,10 +45,6 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
           }
           setSent(true)
         }
-        break
-
-      case 'questions-event':
-        // setQuestionsData(eventData.questionsData)
         break
 
       case 'lobby_settings-event':
@@ -126,7 +120,6 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
           <button className="noBtn" onClick={() => setShowModal(true)}><img className="settings" src={settings} alt='SETTINGS' height={'70px'}></img></button>
           <Modal
             style={{
-              // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
               content: {
                 top: '50%',
                 left: '50%',

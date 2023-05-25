@@ -84,6 +84,7 @@ const maxSettings = {
 socketIO.on("connection", (socket) => {
   socket.data.current_lobby = null;
   socket.data.token = null;
+  socket.data.name = "guest"
 
   socket.join("chat-general");
 
@@ -185,7 +186,6 @@ socketIO.on("connection", (socket) => {
 
   socket.on("connected_phaser_world", (data) => {
     const character = { name: socket.data.name, x: data.x, y: data.y, speed: data.speed, direction: "", id: currentPhaserId };
-    // console.log(character)
     currentPhaserId++;
     socket.data.phaserCharacterId = character.id;
     charactersWorld.push(character);
@@ -211,6 +211,7 @@ socketIO.on("connection", (socket) => {
         character.y = data.y;
         character.speed = data.speed
         character.direction = data.direction;
+        character.name = socket.data.name 
         characterSend = character;
       }
     });

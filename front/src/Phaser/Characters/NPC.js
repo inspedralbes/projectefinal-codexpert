@@ -16,7 +16,6 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     this.npcTexture = texture
 
     this.scene.physics.add.existing(this)
-    // scene.physics.world.on(Phaser.Physics.Arcade.Events.TILE_COLLIDE, this.handleTileColission, this)
     this.body.setSize(this.width * 0.3, this.height * 0.3)
     this.body.offset.y = 22
 
@@ -30,8 +29,6 @@ export default class NPC extends Phaser.Physics.Arcade.Sprite {
     }
     this.body.velocity.x = dir.x
     this.body.velocity.y = dir.y
-
-    // this.setTint(0xff0000)
 
     this.state = STATE[1]
     this.damageTime = 0

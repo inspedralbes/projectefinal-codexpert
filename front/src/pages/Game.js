@@ -76,7 +76,6 @@ function Game() {
         break
 
       default:
-        //
         break
     }
   }

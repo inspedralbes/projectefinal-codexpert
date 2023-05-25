@@ -22,8 +22,6 @@ export default class Preloader extends Phaser.Scene {
     // Music
     this.load.audio('worldMusic', 'assets/music/world.mp3')
 
-    // Dialogs
-
     // Characters
     this.load.atlas('Strawberry', 'assets/characters/strawberry/strawberry.png', 'assets/characters/strawberry/strawberry.json')
     this.load.atlas('Gaspa', 'assets/characters/gaspa/gaspa.png', 'assets/characters/gaspa/gaspa.json')
@@ -34,6 +32,8 @@ export default class Preloader extends Phaser.Scene {
     this.load.atlas('Shopkeeper', 'assets/characters/shopkeeper/shopkeeper.png', 'assets/characters/shopkeeper/shopkeeper.json')
     this.load.atlas('Iris', 'assets/characters/iris/iris.png', 'assets/characters/iris/iris.json')
     this.load.atlas('Emo', 'assets/characters/emo/emo.png', 'assets/characters/emo/emo.json')
+    this.load.atlas('Aitor', 'assets/characters/aitor/aitor.png', 'assets/characters/aitor/aitor.json')
+    this.load.atlas('Paul', 'assets/characters/paul/paul.png', 'assets/characters/paul/paul.json')
 
     // Mobs
     this.load.atlas('chicken', 'assets/mobs/chicken/chicken.png', 'assets/mobs/chicken/chicken.json')
@@ -43,7 +43,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.atlas('cow_baby', 'assets/mobs/cow/cow_baby.png', 'assets/mobs/cow/cow_baby.json')
   }
 
-  create() {
+  async create() {
     this.scene.start('game')
   }
 }

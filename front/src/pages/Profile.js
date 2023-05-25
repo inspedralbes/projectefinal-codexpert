@@ -257,7 +257,7 @@ function Profile() {
             </div>
 
             <Modal
-              style={{ // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
+              style={{
                 content: {
                   top: '50%',
                   left: '50%',
