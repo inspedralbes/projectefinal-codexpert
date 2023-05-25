@@ -922,7 +922,7 @@
 .settings {
     transition: all 0.5s;
     transform: rotate(0);
-    margin: 5px 10px 10px 50px;
+    margin: 33px 10vw 10px 50px;
 }
 
 .noBtn {

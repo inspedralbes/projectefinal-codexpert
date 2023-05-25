@@ -251,7 +251,7 @@ function Profile() {
                   </thead>
                   <tbody>
                     {friendList.map((element, index) => {
-                      {getUserDataFromId(element.receiver_id, index)}
+                      { getUserDataFromId(element.receiver_id, index) }
                       return <tr id={'friendId' + index} key={index}>
                         <td></td>
                         <td></td>
