@@ -256,15 +256,16 @@
 }
 
 .chat__body{
+    display: block !important;
+    position: absolute;
     margin: 0;
     max-width: 100%;
-    width: 100%;
+    width: 28%;
     overflow: auto;
-    height: 25vh;
+    height: 20vh;
     margin: 0 0 30px 0;
     padding: 0;
-    bottom: 0;
-    display: none;
+    bottom: 10%;
 }
 
 #chat__body::-webkit-scrollbar-track {

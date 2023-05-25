@@ -459,12 +459,11 @@
 }
 
 #goBackToLobby__button {
-    position: relative;
+    position: relative !important;
     display: inline-block;
     cursor: pointer;
     outline: none;
     border: 0;
-    float: right;
     vertical-align: middle;
     text-decoration: none;
     background: transparent;
@@ -789,6 +788,8 @@
     position: fixed;
     display: flex;
     bottom: 0;
+    left: 30px;
+
 }
 
 .inputMsg-div {
@@ -908,7 +909,12 @@
     font-size: 80%;
 }
 
+.lobbyJoined__goBackButton--width {
+    width: 18% !important;
+}
+
 .settings:hover {
+    cursor: pointer;
     transform: rotate(30deg);
 }
 
@@ -916,19 +922,25 @@
 .settings {
     transition: all 0.5s;
     transform: rotate(0);
-    margin: 10px 10px 10px 50px;
+    margin: 5px 10px 10px 50px;
 }
-
 
 .noBtn {
+    top: 2.4%;
+    position: absolute;
     border: none;
     background: none;
+    float: right;
+    right: 3%;
 }
 
-.red input, .red::after, .red::before {
+.red input,
+.red::after,
+.red::before {
     background: #ffbdbd;
     transition: all 0.2s ease-in-out;
 }
+
 
 .list__container_li {
     max-height: 16vh;

@@ -42,7 +42,7 @@ function ConnectedUsersInGame() {
                 {user.hearts_remaining > 0 && (
                   <img
                     src={user.avatar}
-                    width="70px"
+                    width="60px"
                     className="user__image"
                     alt={user.name + "'s avatar"}
                   ></img>
@@ -63,7 +63,7 @@ function ConnectedUsersInGame() {
                     <h1 className="hearts__remaining">
                       <img
                         src={require('../img/hearts/one_heart_normal.png')}
-                        width="50px"
+                        width="30px"
                         className="user__health"
                         alt={user.hearts_remaining + ' hearts remaining'}
                       />
@@ -71,7 +71,7 @@ function ConnectedUsersInGame() {
                         ? (
                         <img
                           src={require('../img/hearts/infinito.png')}
-                          width="50px"
+                          width="30px"
                           className="user__health"
                           alt="infinity"
                         />)
@@ -84,7 +84,7 @@ function ConnectedUsersInGame() {
                 {user.hearts_remaining === 3 && (
                   <img
                     src={require('../img/hearts/three_hearts.png')}
-                    height="50px"
+                    height="30px"
                     className="user__health"
                     alt={user.hearts_remaining + ' hearts remaining'}
                   />
@@ -93,7 +93,7 @@ function ConnectedUsersInGame() {
                 {user.hearts_remaining === 2 && (
                   <img
                     src={require('../img/hearts/two_hearts.gif')}
-                    height="50px"
+                    height="30px"
                     className="user__health"
                     alt={user.hearts_remaining + ' hearts remaining'}
                   />

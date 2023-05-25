@@ -16,6 +16,16 @@
     src: url(../fonts/karmatic-arcade.regular.ttf);
 }
 
+@font-face {
+    font-family: pheist;
+    src: url(../fonts/Fipps-Regular.otf);
+}
+
+@font-face {
+    font-family: tempesta;
+    src: url(../fonts/pixel_operator/PixelOperator-Bold.ttf);
+}
+
 * {
     box-sizing: border-box;
 }

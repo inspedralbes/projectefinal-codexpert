@@ -123,9 +123,21 @@
     margin: 2px 14px;
 }
 
-.game__expectedOutput::after,
-.game__expectedInput::after,
+
 .userList__user::after {
+    background-color: inherit;
+    box-shadow: 6px 0 0 #000, 0 -6px #000, 0 6px #000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__expectedOutput::after,
+.game__expectedInput::after {
     background-color: inherit;
     box-shadow: 6px 0 0 #63A32D, 0 -6px #63A32D, 0 6px #63A32D;
     content: "";
@@ -138,10 +150,21 @@
 }
 
 .game__expectedOutput::before,
-.game__expectedInput::before,
-.userList__user::before {
+.game__expectedInput::before {
     background-color: inherit;
     box-shadow: -6px 0 0 #63A32D, 0 -6px #63A32D, 0 6px #63A32D;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.userList__user::before {
+    background-color: inherit;
+    box-shadow: -6px 0 0 #000, 0 -6px #000, 0 6px #000;
     content: "";
     display: block;
     height: calc(100% - 12px);
@@ -301,11 +324,6 @@ h2 {
     overflow-y: auto;
 }
 
-.user__health {
-    height: 30px;
-    width: 30px;
-}
-
 .codemirror__editor {
     width: 100%;
     position: relative;
@@ -378,11 +396,74 @@ h2 {
 }
 
 .incorrectAnsw {
-    margin: 30vh auto !important;
+    margin: 25vh auto !important;
     background-color: #f16c6c !important;
 }
 
 .correctAnsw {
-    margin: 45vh auto !important;
+    margin: 25vh auto !important;
     background-color: #4bbd5a !important;
+}
+
+.game__modal {
+    position: relative;
+    z-index: 100 !important;
+    font-size: 5rem;
+    letter-spacing: -1px;
+    font-family: tempesta !important;
+}
+
+.game__timer {
+    font-family: tempesta;
+    position: absolute;
+    width: fit-content;
+    border-color: #000000;
+    border-style: solid;
+    left: 3%;
+    padding: 0px 20px;
+    border-width: 6px 0;
+    animation: colorbg 2s infinite linear;
+    color: #000000;
+    top: 3%;
+    z-index: 2;
+}
+
+.game__timer h1{
+    font-size: 2rem;
+}
+
+.game__timer::after {
+    background-color: inherit;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__timer::before {
+    background-color: inherit;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+@keyframes colorbg {
+    0%{
+        background-color: white;
+    }
+    50%{
+        background-color: #f17373;
+    }
+    100%{
+        background-color: white;
+    }
 }

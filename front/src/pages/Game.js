@@ -14,6 +14,7 @@ import Timer from '../components/Timer'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import heart from '../img/corazon_roto.gif'
+import jose from '../img/jose.gif'
 import Modal from 'react-modal'
 
 function Game() {
@@ -117,12 +118,11 @@ function Game() {
     }, '*')
   }
 
-
   function afterOpenModal() {
     setTimeout(() => {
       setCIsOpen(false)
       setIIsOpen(false)
-    }, 5000)
+    }, 4000)
   }
 
   useEffect(() => {
@@ -165,77 +165,83 @@ function Game() {
   return (
     <>
     {userLogged
-    ? <div className='game'>
-      
-    {overtimeDuration > 0 && playable
-      && <img src={persiana}
-        id='persiana'
-        className='persiana'
-        style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
-        alt=""></img>}
-    <div className='game__container '>
+      ? <div className='game'>
+      {overtimeDuration > 0 && playable
+        && <>
+        <img src={persiana}
+          id='persiana'
+          className='persiana'
+          style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
+          alt=""></img>}
+          <div className='game__timer'>
+            {overtimeDuration != 0 ? <h1>TIME LEFT: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
+          </div>
+        </>
+      }
+      <div className='game__container '>
 
-      <div className='container__left'>
-        <Modal
-          className='correctAnsw'
-          isOpen={CmodalIsOpen}
-          onAfterOpen={afterOpenModal}
-        >
-          YOU DID IT!! :)
-        </Modal>
-        <Modal
-          className='incorrectAnsw animate__animated animate__tada'
-          isOpen={ImodalIsOpen}
-          onAfterOpen={afterOpenModal}
-        >
-          TRY AGAIN :(
-          <img src={heart} alt='' height={'300px'}></img>
-        </Modal>
-        <div className={playable ? 'started__game' : 'ended__game'}>
-          {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
+        <div className='container__left'>
+          <Modal
+            className='correctAnsw game__modal'
+            isOpen={CmodalIsOpen}
+            onAfterOpen={afterOpenModal}
+          >
+            YOU DID IT!! :)
+            <img src={jose} alt='' height={'300px'}></img>
+          </Modal>
+          <Modal
+            className='incorrectAnsw game__modal animate__animated animate__tada'
+            isOpen={ImodalIsOpen}
+            onAfterOpen={afterOpenModal}
+          >
+            TRY AGAIN!!
+            <img src={heart} alt='' height={'300px'}></img>
+          </Modal>
+          <div className={playable ? 'started__game' : 'ended__game'}>
+            {overtimeDuration != 0 ? <h1>Overtime duration left: <Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}></Timer></h1> : <></>}
+          </div>
+          <ConnectedUsersInGame></ConnectedUsersInGame>
+          <ChatGame className='chatGame__chatbox'></ChatGame>
         </div>
-        <ConnectedUsersInGame></ConnectedUsersInGame>
-        <ChatGame className='chatGame__chatbox'></ChatGame>
-      </div>
 
-      <div className='container__right'>
-        {playable && <div className='game__playing' >
-          <div className='game__statement'>
-            <h2>Statement:</h2>
-            <h1 className='game__statementTitle' id="scroll">{qst.statement}</h1>
-          </div>
-          <div>
-            progres bar
-          </div>
-          <div className='game--grid'>
-            <div className='editor--div'>
-              <div className='pixelart-to-css'></div>
-              <div className='editor__expected'>
-                <div className='game__expectedInput'>
-                  <h2>Example input:</h2>
-                  <h1>{qst.inputs[0].toString()}</h1>
-                </div>
-                <div className='game__expectedOutput'>
-                  <h2>Example output:</h2>
-                  <h1>{qst.output.toString()}</h1>
-                </div>
-              </div>
-              <form className="editor" onSubmit={handleSubmit}>
-              <CodeMirror id="codemirror" code={code} setCode={setCode}></CodeMirror>
-              <div className='result__container'>
-                <div className="game__result">
-                  <h1>{error !== '' && <div>{error}</div>}</h1>
-                </div>
-                <button
-                  className="pixel-button game__submit"
-                  disabled={code === ''}
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
+        <div className='container__right'>
+          {playable && <div className='game__playing' >
+            <div className='game__statement'>
+              <h2>Statement:</h2>
+              <h1 className='game__statementTitle' id="scroll">{qst.statement}</h1>
             </div>
-          </div>
+            <div>
+              progres bar
+            </div>
+            <div className='game--grid'>
+              <div className='editor--div'>
+                <div className='pixelart-to-css'></div>
+                <div className='editor__expected'>
+                  <div className='game__expectedInput'>
+                    <h2>Example input:</h2>
+                    <h1>{qst.inputs[0].toString()}</h1>
+                  </div>
+                  <div className='game__expectedOutput'>
+                    <h2>Example output:</h2>
+                    <h1>{qst.output.toString()}</h1>
+                  </div>
+                </div>
+                <form className="editor" onSubmit={handleSubmit}>
+                <CodeMirror id="codemirror" code={code} setCode={setCode}></CodeMirror>
+                <div className='result__container'>
+                  <div className="game__result">
+                    <h1>{error !== '' && <div>{error}</div>}</h1>
+                  </div>
+                  <button
+                    className="pixel-button game__submit"
+                    disabled={code === ''}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+              </div>
+            </div>
 
         </div>}
         {!playable && <div className='game__results'>

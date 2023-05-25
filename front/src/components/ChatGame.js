@@ -35,18 +35,7 @@ function ChatGame() {
   }
 
   useEffect(() => {
-    if (document.getElementById('input_message') === document.click) {
-      document.getElementById('game__chatBody').style.display = 'block'
-      document.getElementById('game__chatBody').style.transition =
-        'all 2s ease-in'
-    }
-
-    if (!document.getElementById('input_message') === document.click) {
-      document.getElementById('game__chatBody').style.display = 'none'
-    }
-
-    document.getElementById('game__chatBody').scrollTop =
-      document.getElementById('game__chatBody').scrollHeight
+    document.getElementById('game__chatBody').scrollTop = document.getElementById('game__chatBody').scrollHeight
 
     window.addEventListener('message', handleMessage)
 
@@ -64,24 +53,24 @@ function ChatGame() {
               ? messages.map((element, index) => {
                 if (element.nickname !== 'ingame_events') {
                   return (
-                      <li className="game__chatMessage" key={index}>
-                        <img
-                          src={element.avatar}
-                          width="50px"
-                          className="game__userImage"
-                          alt={element.nickname + "'s avatar"}
-                        ></img>
-                        {element.nickname + ': ' + element.message}
-                      </li>
+                    <li className="game__chatMessage" key={index}>
+                      <img
+                        src={element.avatar}
+                        width="50px"
+                        className="game__userImage"
+                        alt={element.nickname + "'s avatar"}
+                      ></img>
+                      {element.nickname + ': ' + element.message}
+                    </li>
                   )
                 } else {
                   return (
-                      <li
-                        className="game__chatMessage game__chatMessage--event"
-                        key={index}
-                      >
-                        <strong>{element.message}</strong>
-                      </li>
+                    <li
+                      className="game__chatMessage game__chatMessage--event"
+                      key={index}
+                    >
+                      <strong>{element.message}</strong>
+                    </li>
                   )
                 }
               })

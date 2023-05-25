@@ -74,7 +74,7 @@ const defaultSettings = {
 
 const maxSettings = {
   minOvertimeDuration: 10,
-  maxOvertimeDuration: 999,
+  maxOvertimeDuration: 90,
   minHeartAmount: 1,
   maxHeartAmount: 99,
   minQuestionAmount: 1,
