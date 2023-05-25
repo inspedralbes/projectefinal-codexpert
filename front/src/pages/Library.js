@@ -86,7 +86,7 @@ function Library() {
       {userLogged && (questionData[0].title !== undefined ? questionData[0].title !== '' : questionData.length === 0)
         ? <div className='library'>
           <h1>Library</h1>
-          <div className='tableList__container' id='scroll'>
+          <div className='library__tableList' id='scroll'>
             <table>
               <thead>
                 <tr>

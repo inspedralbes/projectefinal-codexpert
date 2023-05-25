@@ -240,7 +240,7 @@ function Profile() {
                   <tbody>
                     {friendList.map((element, index) => {
                       return <tr id={'questionId' + index} key={index}>
-                        <td>{() => console.log(setuserDataFromId(element.receiver_id))}</td>
+                        <td>{() => console.log(getUserDataFromId(element.receiver_id))}</td>
                         <td></td>
                         <td></td>
                       </tr>

@@ -97,72 +97,72 @@ function AddQuestion() {
 
   return (
     <>
-    {userLogged
-      ? <div className='addQuestionPixel__container'>
-        <button className='pixel-button addQuestion-back' onClick={() => localStorage.getItem('lastPage') !== null ? navigate('/' + localStorage.getItem('lastPage')) : navigate('/')}>← Go back</button>
-        <h1>Add question</h1>
+      {userLogged
+        ? <div className='addQuestionPixel'>
+          <button className='pixel-button addQuestion-back' onClick={() => localStorage.getItem('lastPage') !== null ? navigate('/' + localStorage.getItem('lastPage')) : navigate('/')}>← Go back</button>
+          <h1>Add question</h1>
 
-    <div className='grid-inputs__container'>
-      <div className='titleCheckbox__container'>
-        <div className="row">
-          <div className="title__container">
-            <label>Title:</label>
-          </div>
-          <div className="input__container">
-            <input tabIndex="1" placeholder='Uppercase' type="text" onChange={(e) => setQuestionData({ ...questionData, title: e.target.value })}></input>
-          </div>
-        </div>
-        <div>
+          <div className='addQuestionPixel__container'>
+            <div className='addQuestionPixel__titleCheckbox'>
+              <div className="row">
+                <div className="addQuestionPixel__title">
+                  <label>Title:</label>
+                </div>
+                <div className="addQuestionPixel__input">
+                  <input tabIndex="1" placeholder='Uppercase' type="text" onChange={(e) => setQuestionData({ ...questionData, title: e.target.value })}></input>
+                </div>
+              </div>
+              <div>
 
+              </div>
+              <label className='setPublic__label'>
+                <input tabIndex="3" type='checkbox' onChange={(e) => { setQuestionData({ ...questionData, public: e.target.value }) }}></input><p>Set your question public to everyone</p>
+              </label>
+            </div>
+            <div className='statement__container'>
+              <p>Statement:</p>
+              <textarea tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' onChange={(e) => { setQuestionData({ ...questionData, statement: e.target.value }) }}></textarea>
+            </div>
+          </div>
+          <div className='addQuestionPixel__container grid__container'>
+            <div className='inputOutput__container' id='scroll'>
+              <div>
+                <h2>INPUTS</h2>
+                {inputsOutputs.map((element, index) => {
+                  return <input onChange={(e) => {
+                    const input = questionData.inputs
+                    input[index] = e.target.value
+                    setQuestionData({ ...questionData, inputs: input })
+                  }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} key={index} id={'input' + index} type="text"></input>
+                })}
+              </div>
+              <div className='inputArrows__conainer'>
+                {inputsOutputs.map((element, index) => { return <div key={index}><img src={arrow}></img></div> })}
+              </div>
+              <div>
+                <h2>OUTPUTS</h2>
+                {inputsOutputs.map((element, index) => {
+                  return <input onChange={(e) => {
+                    const output = questionData.outputs
+                    output[index] = e.target.value
+                    setQuestionData({ ...questionData, outputs: output })
+                  }} tabIndex={index + index + 4} id={'output' + index} placeholder={placeholder.output[index]} key={index} type="text"></input>
+                })}
+              </div>
+              <div className='removeItem__conainer'>
+                {inputsOutputs.map((element, index) => { return <div key={index}><button onClick={() => handleRemoveInputOutput(index)} disabled={inputsOutputs.length <= 3}>delete</button><br></br></div> })}
+              </div>
+            </div>
+            <div>
+              <a className='addInputOutput-link' onClick={() => handleAddInputOutput()}>Add new input & output line</a>
+            </div>
+          </div>
+          <br></br>
+          <p className='addQuestionError'>{error}</p>
+          <button className='pixel-button' onClick={() => handleAddQuestion()}>Add</button>
         </div>
-        <label className='setPublic__label'>
-          <input tabIndex="3" type='checkbox' onChange={(e) => { setQuestionData({ ...questionData, public: e.target.value }) }}></input><p>Set your question public to everyone</p>
-        </label>
-      </div>
-      <div className='statement__container'>
-        <p>Statement:</p>
-        <textarea tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' onChange={(e) => { setQuestionData({ ...questionData, statement: e.target.value }) }}></textarea>
-      </div>
-    </div>
-    <div className='addQuestionPixel__container grid__container'>
-      <div className='inputOutput__container' id='scroll'>
-        <div>
-          <h2>INPUTS</h2>
-          {inputsOutputs.map((element, index) => {
-            return <input onChange={(e) => {
-              const input = questionData.inputs
-              input[index] = e.target.value
-              setQuestionData({ ...questionData, inputs: input })
-            }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} key={index} id={'input' + index} type="text"></input>
-          })}
-        </div>
-        <div className='inputArrows__conainer'>
-          {inputsOutputs.map((element, index) => { return <div key={index}><img src={arrow}></img></div> })}
-        </div>
-        <div>
-          <h2>OUTPUTS</h2>
-          {inputsOutputs.map((element, index) => {
-            return <input onChange={(e) => {
-              const output = questionData.outputs
-              output[index] = e.target.value
-              setQuestionData({ ...questionData, outputs: output })
-            }} tabIndex={index + index + 4} id={'output' + index} placeholder={placeholder.output[index]} key={index} type="text"></input>
-          })}
-        </div>
-        <div className='removeItem__conainer'>
-          {inputsOutputs.map((element, index) => { return <div key={index}><button onClick={() => handleRemoveInputOutput(index)} disabled={inputsOutputs.length <= 3}>delete</button><br></br></div> })}
-        </div>
-      </div>
-      <div>
-        <a className='addInputOutput-link' onClick={() => handleAddInputOutput()}>Add new input & output line</a>
-      </div>
-    </div>
-    <br></br>
-    <p className='addQuestionError'>{error}</p>
-    <button className='pixel-button' onClick={() => handleAddQuestion()}>Add</button>
-  </div>
-      : <Loading/>
-    }
+        : <Loading />
+      }
     </>
   )
 }
