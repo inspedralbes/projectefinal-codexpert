@@ -164,8 +164,8 @@ function Profile() {
       .then((response) => response.json())
       .then((data) => {
         document.getElementById('friendId' + friendId).innerHTML = `
-        <td><img src="${data.avatar}"></img></td>
-        <td>${data.name}</td>`
+        <td><p class='center'>${data.name}</p></td>
+        <td><img class='center' width='50px' src="${data.avatar}"></img></td>`
       })
   }
 
@@ -243,22 +243,6 @@ function Profile() {
                 </button>
               </div>
               <div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Friends:</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {friendList.map((element, index) => {
-                      { getUserDataFromId(element.receiver_id, index) }
-                      return <tr id={'friendId' + index} key={index}>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    })}
-                  </tbody>
-                </table>
                 <table>
                   <thead>
                     <tr>
@@ -371,8 +355,22 @@ function Profile() {
                   <img className='profile__avatar' src={userData.avatar}></img>
                 </div>
                 {myId === userId
-                  ? <><button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
-                    <button className='pixel-button profileBtn' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button></>
+                  ? <>
+                    <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
+                    <button className='pixel-button profileBtn' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
+                    <h1>FRIENDS</h1>
+                    <div className='profile__friends--div' id='scroll'>
+                      <table className='profile__friends'>
+                        <tbody>
+                          {friendList.map((element, index) => {
+                            { getUserDataFromId(element.receiver_id, index) }
+                            return <tr id={'friendId' + index} key={index}>
+                            </tr>
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
 
                   : checkIfCanAdd(userId) ? <button id={'userId' + userId} className='pixel-button profileBtn'
                     onClick={() => {
