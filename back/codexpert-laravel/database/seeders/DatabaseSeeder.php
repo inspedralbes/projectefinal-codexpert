@@ -533,7 +533,7 @@ class DatabaseSeeder extends Seeder
                     //Dialogue 2
                     $newNPC = new npc;
                     $newNPC->name = "Asselia";
-                    $newNPC->introduction = "Welcome to CodeWorld3! My name is Asselia, nice to meet you!";
+                    $newNPC->introduction = "Welcome to CodeWorld! My name is Asselia, nice to meet you!";
                     $newNPC->save();
 
                     $newDialogueOption = new Dialogue;
@@ -600,7 +600,7 @@ class DatabaseSeeder extends Seeder
 
                     $newDialogueOption = new Dialogue;
                     $newDialogueOption->npc_id = $newNPC->id;
-                    $newDialogueOption->sentence = "The old man down there tried to get us to create a tournament, but he didn't get his way!";
+                    $newDialogueOption->sentence = "The old man down there tried to create a tournament all by himself, but he didn't get away with it!";
                     $newDialogueOption->save();
                 }
             }
