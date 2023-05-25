@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import '../../styles/normalize.css'
-import { TwitterPicker } from 'react-color'
+import { TwitterPicker } from 'react-color' // Importamos el 'TwitterPicker' de react-color, es un input de colores
 
 function Accessories({ currentColor, handleChangeComplete, setChanges, ArrayColors, changes }) {
   return (
@@ -26,11 +26,11 @@ function Accessories({ currentColor, handleChangeComplete, setChanges, ArrayColo
         </button>
       </div>
       <div className='avatar__colorPicker' id='scroll'>
-        <TwitterPicker
-          color={currentColor}
+        <TwitterPicker // Llamamos al color picker y le pasamos los parametros que creamos necesarios
+          color={currentColor} // Guardamos el color escogido
           onChangeComplete={handleChangeComplete}
           onChange={(color) =>
-            setChanges({ ...changes, aC: color.hex.replace('#', '') })
+            setChanges({ ...changes, aC: color.hex.replace('#', '') })// Apliccamos el color a aC que es el accesories Color
           }
           colors={ArrayColors}
         />
