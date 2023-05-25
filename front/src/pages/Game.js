@@ -254,11 +254,11 @@ function Game() {
           </p>
         </div>}
       </div>
-    </div>
-  </div >
-    :<Loading></Loading>
-  }
-  </>
+      </div>
+      </div>
+      :<Loading></Loading>
+    }
+    </>
 
   )
 }

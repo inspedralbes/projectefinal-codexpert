@@ -196,9 +196,9 @@ function Profile() {
   if (userData !== undefined) {
     return (
       <>
+      <Header></Header>
       <div className='profile'>
         <div className='profile--grid'>
-        <Header></Header>
           <div className='profile__left'>
             <div className='profile__button'>
               <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/lobbies')} id='goBack__button'>
@@ -229,32 +229,33 @@ function Profile() {
             <div className='profile__settings'>
             {myId === userId && (
               <div className='profile__email--div'>
-                  <p className='profile__email'>{userData.email}</p>
-                    <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
-                  <Modal
-                    onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
-                    shouldCloseOnOverlayClick={true}
-                    isOpen={modals.email}
-                  >
-                    <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
+                <p className='profile__email'>{userData.email}</p>
+                  <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+                <Modal
+                  onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
+                  shouldCloseOnOverlayClick={true}
+                  isOpen={modals.email}
+                >
+                  <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
 
-                <h1>Change your email</h1>
-                <input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
-                <input className='profile__input' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
-                <div className='profile__buttons'>
-                  <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
-                  <button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save</button>
-                </div>
-                </Modal>
+              <h1>Change your email</h1>
+              <input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+              <input className='profile__input' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+              <div className='profile__buttons'>
+                <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
+                <button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save</button>
+              </div>
+              </Modal>
               </div>
               )}
               {myId === userId && (
                 <div className='profile__password--grid'>
                   <button className='profile__pswd pixel-button' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
                 </div>
+                
               )}
             </div>
-            </div>
+
             <Modal
               style={{ // QUITAR Y PERSONALIZAR ESTILOS CUANDO SE APLIQUE CSS
                 content: {
@@ -312,6 +313,7 @@ function Profile() {
               </div>
           </div>
         </div >
+      </div >
     </>
     )
   } else {
