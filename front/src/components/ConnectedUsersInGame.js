@@ -20,6 +20,7 @@ function ConnectedUsersInGame() {
     switch (eventData.type) {
       case 'lobby_user_list-event':
         setUserList(window.network.getLobbyUserList())
+        // console.log(window.network.getLobbyUserList())
         break
 
       default:
@@ -29,6 +30,7 @@ function ConnectedUsersInGame() {
 
   useEffect(() => {
     window.addEventListener('message', handleMessage)
+    setUserList(window.network.getLobbyUserList())
 
     return () => {
       window.removeEventListener('message', handleMessage)

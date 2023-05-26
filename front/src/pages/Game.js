@@ -238,7 +238,7 @@ function Game() {
               <h1 className='game__statementTitle' id="scroll">{qst.statement}</h1>
             </div>
             <div>
-              progres bar
+              {/* progres bar */}
             </div>
             <div className='game--grid'>
               <div className='editor--div'>
