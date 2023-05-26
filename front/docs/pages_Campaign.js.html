@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Campaign.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Campaign.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import '../styles/normalize.css'
+import '../styles/campaign.css'
+import routes from '../conn_routes'
+import Modal from 'react-modal'
+import unlocked from '../img/campaign/unlocked.png'
+import locked from '../img/campaign/locked.png'
+import success from '../img/campaign/success.png'
+import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import Cookies from 'universal-cookie'
+import { Loading } from '../components/Loading'
+
+Modal.setAppElement('body')
+
+/**
+ * Pagina que sirve como tutorial del juego de nuestra pagina web.
+ * @function Campaign
+ */
+function Campaign() {
+  const [modal, setModal] = useState(false)
+  const [tutorialList, setTutorialList] = useState([])
+  const [lastQuestion, setLastQuestion] = useState('')
+  const [userExperience, setUserExperience] = useState(true)
+  const [userExpertice, setUserExpertice] = useState('')
+  const [tutorialsAnswered, setTutorialsAnswered] = useState([])
+  const [lvlUnlocked, setLvlUnlocked] = useState(
+    localStorage.getItem('lvlUnlocked') === null
+      ? 0
+      : localStorage.getItem('lvlUnlocked')
+  )
+  const cookies = new Cookies()
+  const navigate = useNavigate()
+
+  /**
+ * Al clicar seleccionas si eres experto o novato para que se te desbloqueen más o menos niveles.
+ * @function handleChoiseOption
+ */
+  const handleChoiseOption = (option) => {
+    setModal(false)
+    if (option === 'beginner') {
+      localStorage.setItem('lvlUnlocked', 0)
+    } else if (option === 'expert') {
+      localStorage.setItem('lvlUnlocked', 5)
+      setLvlUnlocked(localStorage.getItem('lvlUnlocked'))
+    }
+    localStorage.setItem('userExperience', option)
+    const data = new FormData()
+    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    data.append('userExperience', option)
+    fetch(routes.fetchLaravel + 'setExpertise', {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setUserExperience(option)
+        getTutorials()
+        if (localStorage.getItem('tutorialsAnswered') !== null) {
+          setTutorialsAnswered(
+            JSON.parse(localStorage.getItem('tutorialsAnswered'))
+          )
+        }
+      })
+  }
+
+  /**
+ * Funcion que recibe
+ * @function getTutorials
+ */
+  const getTutorials = () => {
+    const data = new FormData()
+    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    data.append('userExperience', localStorage.getItem('userExperience'))
+    fetch(routes.fetchLaravel + 'getTutorials', {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTutorialList(data)
+        setUserExperience(localStorage.getItem('lvlUnlocked'))
+        setLastQuestion(data[data.length - 1].id)
+      })
+  }
+
+  const getExpertise = () => {
+    const data = new FormData()
+    data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'checkExpertiseChosen', {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUserExpertice(data.chosenExpertise)
+        if (data.chosenExpertise) {
+          localStorage.setItem('userExperience', '')
+        }
+        if (localStorage.getItem('userExperience') === null) {
+          setModal(true)
+        } else {
+          getTutorials()
+        }
+      })
+  }
+
+  useEffect(() => {
+    getExpertise()
+    if (localStorage.getItem('tutorialsAnswered') !== null) {
+      setTutorialsAnswered(
+        JSON.parse(localStorage.getItem('tutorialsAnswered'))
+      )
+    }
+  }, [])
+
+  useEffect(() => {
+    if (localStorage.getItem('tutorialsAnswered') !== []) {
+      if (tutorialsAnswered.includes(lastQuestion)) {
+        localStorage.setItem('tutorialPassed', JSON.stringify(true))
+      }
+    }
+  }, [lastQuestion])
+
+  return (
+    &lt;>
+      {userExpertice !== '' &amp;&amp; tutorialList.length > 0
+        ? &lt;div className="campaign">
+          &lt;Modal
+            style={{
+              content: {
+                top: '50%',
+                left: '50%',
+                right: 'auto',
+                bottom: 'auto',
+                marginRight: '-50%',
+                transform: 'translate(-50%, -50%)'
+              },
+              overlay: {
+                backgroundColor: 'white'
+              }
+            }}
+            isOpen={modal}
+          >
+            &lt;div className="modal__content">
+              &lt;h1>What are you?&lt;/h1>
+              &lt;p>
+                If you choose &lt;b>beginner&lt;/b>, the first level will be unlocked and
+                you will have to complete all of them to finish the tutorial. If you
+                choose &lt;b>expert&lt;/b>, all levels will be unlocked, you can complete
+                them all if you want, but you only need to complete the last one to
+                pass the tutorial. Once you have completed the tutorial, you will
+                have access to the multiplayer mode! To save which levels you have
+                completed remember to create an account, you can do it after
+                completing the tutorial or before :)
+              &lt;/p>
+              &lt;br>&lt;/br>
+              &lt;div className="profile__buttons">
+                &lt;button
+                  className="pixel-button modalBtn"
+                  onClick={() => handleChoiseOption('beginner')}
+                >
+                  Beginner
+                &lt;/button>
+                &lt;button
+                  className="pixel-button modalBtn"
+                  onClick={() => handleChoiseOption('expert')}
+                >
+                  Expert
+                &lt;/button>
+              &lt;/div>
+            &lt;/div>
+          &lt;/Modal>
+          &lt;div className="campaignPixel__container">
+            &lt;h1>Tutorial list&lt;/h1>
+          &lt;/div>
+          &lt;h2>Tutorial:&lt;/h2>
+          &lt;ul className="levels__list">
+            {userExperience !== ''
+              ? tutorialList.map((element, index) => {
+                return (
+                  &lt;li key={element.id}>
+                    &lt;div className="levels-title__container">
+                      &lt;h3>{element.title}&lt;/h3>
+                    &lt;/div>
+                    &lt;div className="campaignPixel__container level__container">
+                      {lvlUnlocked >= index ||
+                        element.locked === 0 ||
+                        tutorialsAnswered.includes(element.id - 1)
+                        ? (
+                          &lt;>
+                            {element.passed || tutorialsAnswered.includes(element.id)
+                              ? (
+                                &lt;>
+                                  &lt;img src={success}>&lt;/img>
+                                &lt;/>)
+                              : (
+                                &lt;>
+                                  &lt;img src={unlocked}>&lt;/img>
+                                &lt;/>)}
+                            &lt;br>&lt;/br>
+                            &lt;button
+                              className="pixel-button"
+                              onClick={() => navigate('/tutorial', { state: { id: element.id } })}
+                            >
+                              Play
+                            &lt;/button>
+                          &lt;/>)
+                        : (
+                          &lt;>
+                            &lt;img src={locked}>&lt;/img>
+                            &lt;br>&lt;/br>
+                            &lt;button className="pixel-button locked">locked&lt;/button>
+                          &lt;/>)}
+                    &lt;/div>
+                  &lt;/li>
+                )
+              })
+              : &lt;h1>HOLA&lt;/h1>}
+          &lt;/ul>
+          {localStorage.getItem('tutorialPassed') !== null &amp;&amp; (
+            &lt;>
+              {cookies.get('token') !== undefined &amp;&amp; (
+                &lt;div className="lobbies-button">
+                  &lt;button
+                    className="pixel-button"
+                    onClick={() => navigate('/lobbies')}
+                  >
+                    GO LOBBIES
+                  &lt;/button>
+                &lt;/div>
+              )}
+              {cookies.get('token') === undefined &amp;&amp; (
+                &lt;div className="lobbies__button">
+                  &lt;button
+                    className="pixel-button"
+                    onClick={() => navigate('/login')}
+                  >
+                    LOGIN/REGISTER
+                  &lt;/button>
+                &lt;/div>
+              )}
+            &lt;/>
+          )}
+        &lt;/div>
+        : &lt;Loading>&lt;/Loading>}
+    &lt;/>
+  )
+}
+
+export default Campaign
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

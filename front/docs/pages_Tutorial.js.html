@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Tutorial.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Tutorial.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* eslint-disable */
+
+import '../styles/Tutorial.css'
+import '../styles/game.css'
+import routes from '../conn_routes'
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import CodeMirror from '../components/CodeMirror'
+import Cookies from 'universal-cookie'
+import { useNavigate } from 'react-router-dom' // Rutas
+import Carousel from 'nuka-carousel'
+import parse from 'html-react-parser'
+import introductionData from '../localData/IntroductionsData.json'
+import arrowLeft from '../img/corousel-arrowLeft.png'
+import heart from '../img/corazon_roto.gif'
+import jose from '../img/jose.gif'
+import arrowRight from '../img/corousel-arrowRight.png'
+import closedEye from '../img/closedEye.png'
+import Modal from 'react-modal'
+
+Modal.setAppElement('body')
+
+/**
+ * Pagina que varia segun la id de pregunta que se le pase por la ruta, el objetivo de esta es enseñar al usuario a programar en JavaScript.
+ * @function Tutorial
+ */
+function Tutorial() {
+  const [introductionExample, setIntroductionExample] = useState([
+    "&lt;p>Hello World!&lt;/p>",
+    "&lt;p>Well done!&lt;/p>"
+  ])
+  const location = useLocation()
+  const cookies = new Cookies()
+  const navigate = useNavigate()
+  const defaultCode =
+    'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
+  const [code, setCode] = useState(defaultCode)
+  const [error, setError] = useState('')
+  const [CmodalIsOpen, setCIsOpen] = useState(false)
+  const [ImodalIsOpen, setIIsOpen] = useState(false)
+  const [enableIntroductionNextButton, setEnableIntroductionNextButton] = useState({
+    introduction: true,
+    hint: true
+  })
+  const [modal, setModal] = useState({
+    hello: false,
+    introduction: false,
+    hint: false,
+    statement: false,
+    inputOutput: false,
+    codeEditor: false,
+    submit: false,
+  })
+  const [qst, setQst] = useState({
+    statement: '',
+    inputs: [''],
+    output: ''
+  })
+
+
+
+  useEffect(() => {
+    if (location.state === null) {
+      navigate('/campaign')
+    } else {
+      if (location.state.id === 1) {
+        setModal(prev => ({ ...prev, hello: true }))
+      }
+      let scroll = document.getElementsByClassName('slider-container')
+      scroll[0].id = "scroll"
+      const tutorialData = new FormData()
+      tutorialData.append('id', location.state.id)
+      tutorialData.append(
+        'token',
+        cookies.get('token') !== undefined ? cookies.get('token') : null
+      )
+      fetch(routes.fetchLaravel + 'getTutorialFromId', {
+        method: 'POST',
+        mode: 'cors',
+        body: tutorialData,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setQst(data)
+        })
+    }
+
+  }, [])
+
+  /**
+ * Duración del modal de correcto e incorrecto al submitear una pregunta.
+ * @function afterOpenModal
+ */
+  function afterOpenModal() {
+    setTimeout(() => {
+      setCIsOpen(false)
+      setIIsOpen(false)
+    }, 4000)
+  }
+
+  /**
+ * Al clicar el icono de la pista se desbloqueara visualmente esta.
+ * @function handleHint
+ */
+  const handleHint = () => {
+    document.getElementById('hint').style.display = 'none'
+    setEnableIntroductionNextButton(prev => ({ ...prev, hint: false }))
+  }
+
+  /**
+ * Al clicar en el boton de submit esta función evalua el codigo del usuario con los tests y comprueba si esta bien o si esta mal.
+ * @function sendTutorialLocalStorageData
+ */
+  const handleSubmit = async (e) => {
+    let tutorialsId = []
+    e.preventDefault()
+    if (code !== '') {
+      const resultsEvalRecieved = []
+      let evalPassedBoolean = true
+      qst.inputs.forEach((inp) => {
+        let input = inp
+        try {
+          const res = eval(code)
+          resultsEvalRecieved.push(res)
+          setError('Result: ' + res)
+        } catch (e) {
+          setError(e.message)
+          evalPassedBoolean = false
+        }
+      })
+
+      const checkAnswer = new FormData()
+      checkAnswer.append('idQuestion', location.state.id)
+      checkAnswer.append('evalRes', JSON.stringify(resultsEvalRecieved))
+      checkAnswer.append('evalPassed', JSON.stringify(evalPassedBoolean))
+      checkAnswer.append(
+        'token',
+        cookies.get('token') !== undefined ? cookies.get('token') : null
+      )
+      fetch(routes.fetchLaravel + 'checkTutorialAnswer', {
+        method: 'POST',
+        mode: 'cors',
+        body: checkAnswer,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.correct) {
+            if (localStorage.getItem('tutorialsAnswered') !== null) {
+              tutorialsId = JSON.parse(
+                localStorage.getItem('tutorialsAnswered')
+              )
+            }
+            if (!tutorialsId.includes(location.state.id)) {
+              tutorialsId.push(location.state.id)
+            }
+            tutorialsId.sort()
+            localStorage.setItem(
+              'tutorialsAnswered',
+              JSON.stringify(tutorialsId)
+            )
+            tutorialsId.sort()
+            setCIsOpen(true)
+            setTimeout(() => {
+              navigate('/campaign')
+            }, 4000)
+          } else {
+            setIIsOpen(true)
+          }
+        })
+    }
+  }
+
+  if (location.state === null) {
+    return (null)
+  } else {
+    return (
+      &lt;div className="tutorial__container">
+
+        {location.state.id - 1 === 0 &amp;&amp; ( // Interface tutorial
+          &lt;>
+            &lt;Modal // Welcome Modal
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                  zIndex: 2
+                },
+                content: {
+                  backgroundColor: '#d3ffcd'
+                }
+              }}
+              onRequestClose={() => setModal(prev => ({ ...prev, hello: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.hello}
+            >
+              &lt;div>
+                &lt;h1>Hello to your first Tutorial!&lt;/h1>
+                &lt;p style={{ padding: 30 }}>Let us show you how the interface works.&lt;/p>
+                &lt;button className='pixel-button' onClick={() => {
+                  setModal(prev => ({ ...prev, hello: false }))
+                  setModal(prev => ({ ...prev, introduction: true }))
+                  document.querySelectorAll('.slider-container')[0].style.zIndex = 3
+                  document.querySelectorAll('.slider-container')[0].style.border = "10px solid black"
+                }}>START&lt;/button>
+              &lt;/div>
+            &lt;/Modal>
+            &lt;Modal // Introduction Modal
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                  zIndex: 2
+                },
+                content: {
+                  position: 'absolute',
+                  top: '-43%',
+                  left: '40%',
+                  backgroundColor: '#d3ffcd'
+                }
+              }}
+              onRequestClose={() => setModal(prev => ({ ...prev, introduction: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.introduction}
+            >
+              &lt;div>
+                &lt;h1>Introduction&lt;/h1>
+                &lt;p>This section only appears in the tutorial and serves to teach you everything you need to learn how to program. &lt;b>Use its arrows &lt;img src={arrowRight} width={30} height={30} style={{ backgroundColor: '#008000' }}>&lt;/img> to switch pages.&lt;/b>&lt;/p>
+                &lt;button className='pixel-button next-carousel' disabled={enableIntroductionNextButton.introduction} onClick={() => {
+                  setModal(prev => ({ ...prev, introduction: false }))
+                  setModal(prev => ({ ...prev, hint: true }))
+                  setIntroductionExample(introductionData.introductions[location.state.id - 1].introduction)
+                  document.querySelectorAll('.slider-container')[0].style.zIndex = 1
+                  document.querySelectorAll('.slider-container')[0].style.border = "3px solid black"
+                  setTimeout(() => {
+                    document.querySelectorAll('.hint__container')[0].style.zIndex = 3
+                    document.querySelectorAll('.hint__container')[0].style.border = "3px solid black"
+                  }, 500)
+                  document.querySelectorAll('.hint__cover')[0].style.zIndex = 4
+                  document.querySelectorAll('.hint__cover')[0].style.border = "10px solid black"
+
+                }}>NEXT&lt;/button>
+              &lt;/div>
+            &lt;/Modal>
+            &lt;Modal // Hint Modal
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                  zIndex: 2
+                },
+                content: {
+                  position: 'absolute',
+                  top: '58%',
+                  left: '40%',
+                  backgroundColor: '#d3ffcd'
+                }
+              }}
+              onRequestClose={() => setModal(prev => ({ ...prev, hint: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.hint}
+            >
+              &lt;div>
+                &lt;h1>hint&lt;/h1>
+                &lt;p>A little help never hurts!
+                  &lt;b>Click on the eye
+                    &lt;img src={closedEye} width={30} height={30} style={{ borderRadius: '50%', backgroundColor: 'rgb(214, 214, 214)', border: '2px solid #88D34A' }}>&lt;/img> to see the hint
+                  &lt;/b>
+                &lt;/p>
+                &lt;br>&lt;/br>
+                &lt;p style={{ fontSize: '15px' }}>(we recommend its use only if necessary ;D)&lt;/p>
+                &lt;button className='pixel-button next-carousel' id="next" disabled={enableIntroductionNextButton.hint} onClick={() => {
+                  setModal(prev => ({ ...prev, hint: false }))
+                  setModal(prev => ({ ...prev, statement: true }))
+                  document.querySelectorAll('.hint__cover')[0].style.zIndex = 1
+                  document.querySelectorAll('.hint__cover')[0].style.border = "1px solid black"
+                  document.querySelectorAll('.hint__container')[0].style.zIndex = 1
+                  document.querySelectorAll('.hint__container')[0].style.border = "1px solid black"
+                  document.querySelectorAll('.tutorial__statement')[0].style.zIndex = 3
+                  document.querySelectorAll('.tutorial__statement')[0].style.border = "10px solid black"
+                }}>NEXT&lt;/button>
+              &lt;/div>
+            &lt;/Modal>
+            &lt;Modal // Statement Modal
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                  zIndex: 2
+                },
+                content: {
+                  position: 'absolute',
+                  top: '-55%',
+                  left: '-57%',
+                  width: '40%',
+                  backgroundColor: '#d3ffcd'
+                }
+              }}
+              onRequestClose={() => setModal(prev => ({ ...prev, statement: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.statement}
+            >
+              &lt;div>
+                &lt;h1>Statement&lt;/h1>
+                &lt;p>You will find it in every game, &lt;b>read it well if you want to have a perfect result!&lt;/b>&lt;/p>
+                &lt;button className='pixel-button next-carousel' id="next" disabled={enableIntroductionNextButton.hint} onClick={() => {
+                  setModal(prev => ({ ...prev, statement: false }))
+                  setModal(prev => ({ ...prev, inputOutput: true }))
+                  document.querySelectorAll('.tutorial__statement')[0].style.zIndex = 1
+                  document.querySelectorAll('.tutorial__statement')[0].style.border = "6px solid black"
+                  document.querySelectorAll('.tutorial__statement')[0].style.borderWidth = "6px 0"
+                  document.querySelectorAll('.editor__expected')[0].style.zIndex = 3
+                  document.querySelectorAll('.editor__expected')[0].style.border = "10px solid black"
+
+                }}>NEXT&lt;/button>
+              &lt;/div>
+            &lt;/Modal>
+            &lt;Modal // Input and Output Modal
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                  zIndex: 2
+                },
+                content: {
+                  position: 'absolute',
+                  top: '-5%',
+                  left: '-57%',
+                  width: '43%',
+                  backgroundColor: '#d3ffcd'
+                }
+              }}
+              onRequestClose={() => setModal(prev => ({ ...prev, inputOutput: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.inputOutput}
+            >
+              &lt;div>
+                &lt;h1>Input and Output&lt;/h1>
+                &lt;p>The input is the variable we are going to give you, and the output is what we want to receive. &lt;b>Be careful! there is not only one output check!&lt;/b>&lt;/p>
+                &lt;button className='pixel-button next-carousel' id="next" onClick={() => {
+                  setModal(prev => ({ ...prev, inputOutput: false }))
+                  setModal(prev => ({ ...prev, codeEditor: true }))
+                  document.querySelectorAll('.editor__expected')[0].style.zIndex = 1
+                  document.querySelectorAll('.editor__expected')[0].style.border = "0px solid black"
+                  document.querySelectorAll('.codemirror__editor')[0].style.zIndex = 3
+                  document.querySelectorAll('.codemirror__editor')[0].style.border = "10px solid black"
+                }}>NEXT&lt;/button>
+              &lt;/div>
+            &lt;/Modal>
+            &lt;Modal // CodeEditor Modal
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                  zIndex: 2
+                },
+                content: {
+                  position: 'absolute',
+                  top: '42%',
+                  left: '-57%',
+                  width: '40%',
+                  backgroundColor: '#d3ffcd'
+                }
+              }}
+              onRequestClose={() => setModal(prev => ({ ...prev, codeEditor: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.codeEditor}
+            >
+              &lt;div>
+                &lt;h1>Code editor&lt;/h1>
+                &lt;p>Here is where you are going to &lt;b>be the protagonist&lt;/b>, and where you are going to write your code and show the program that &lt;b>you can&lt;/b>.&lt;/p>
+                &lt;br>&lt;/br>
+                &lt;p style={{ fontSize: '15px' }}>(We always recommend to return the input variable and start writing where it says "//code here")&lt;/p>
+                &lt;button className='pixel-button next-carousel' id="next" onClick={() => {
+                  setModal(prev => ({ ...prev, codeEditor: false }))
+                  setModal(prev => ({ ...prev, submit: true }))
+                  document.querySelectorAll('.codemirror__editor')[0].style.zIndex = 1
+                  document.querySelectorAll('.codemirror__editor')[0].style.border = "0px solid black"
+                  document.querySelectorAll('.game__submit')[0].style.zIndex = 3
+                  document.querySelectorAll('.game__submit')[0].style.border = "10px solid black"
+                }}>NEXT&lt;/button>
+              &lt;/div>
+            &lt;/Modal>
+            &lt;Modal // Submit Modal
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                  zIndex: 2
+                },
+                content: {
+                  position: 'absolute',
+                  top: '35%',
+                  left: '58.5%',
+                  width: '40%',
+                  backgroundColor: '#d3ffcd'
+                }
+              }}
+              onRequestClose={() => setModal(prev => ({ ...prev, submit: false }))}
+              shouldCloseOnOverlayClick={false}
+              isOpen={modal.submit}
+            >
+              &lt;div>
+                &lt;h1>Submit&lt;/h1>
+                &lt;p>When you are sure you have done everything right, be sure to click this button to check that everything went well!&lt;/p>
+                &lt;button className='pixel-button next-carousel' id="next" onClick={() => {
+                  setModal(prev => ({ ...prev, submit: false }))
+                  document.querySelectorAll('.game__submit')[0].style.zIndex = 1
+                  document.querySelectorAll('.game__submit')[0].style.border = "6px solid black"
+                  document.querySelectorAll('.game__submit')[0].style.borderWidth = "6px 0"
+                }}>FINISH&lt;/button>
+              &lt;/div>
+            &lt;/Modal>
+          &lt;/>
+        )}
+        &lt;div className="introduction__container">
+          &lt;button className='pixel-button goBack-button' onClick={() => navigate('/campaign')}>go back&lt;/button>
+          &lt;h1 className='introduction-title'>Introduction:&lt;/h1>
+          {introductionData.introductions[location.state.id - 1].introduction[0] !==
+            '' &amp;&amp; (
+              &lt;>
+                &lt;Carousel
+                  defaultControlsConfig={{
+                    containerClassName: 'containerCarousel',
+                    nextButtonClassName: 'nextButtonCarousel',
+                    prevButtonClassName: 'prevButtonCarousel',
+                    pagingDotsContainerClassName: introductionData.introductions[location.state.id - 1].introduction.length === 1 ? 'hiddenCarousel' : 'dotsCarousel',
+                    nextButtonOnClick: () => setEnableIntroductionNextButton(prev => ({ ...prev, introduction: false })),
+
+                    prevButtonText: (
+                      &lt;img src={arrowLeft} width="50px">
+                      &lt;/img>
+                    ),
+
+                    nextButtonText: (
+                      &lt;img src={arrowRight} width="50px">
+                      &lt;/img>
+                    ),
+
+                    pagingDotsStyle: {
+                      fill: "green"
+                    }
+                  }}
+                >
+                  {!enableIntroductionNextButton || location.state.id !== 1
+                    ? introductionData.introductions[
+                      location.state.id - 1
+                    ].introduction.map((element, index) => {
+                      return &lt;div key={index}>{parse(element)}&lt;/div>
+                    })
+                    : introductionExample.map((element, index) => {
+                      return &lt;div key={index}>{parse(element)}&lt;/div>
+                    })
+                  }
+                &lt;/Carousel>
+                &lt;Modal
+                  className='correctAnsw game__modal'
+                  style={{
+                    overlay: {
+                      zIndex: 2
+                    },
+                    content: {
+                      position: 'absolute',
+                      top: '0%',
+                      left: '30%',
+                      width: '40%',
+                      height: '40%',
+                    }
+                  }}
+                  isOpen={CmodalIsOpen}
+                  onAfterOpen={afterOpenModal}
+                >
+                  YOU DID IT ! ! :)
+                  &lt;img src={jose} alt='' height={'300px'}>&lt;/img>
+                &lt;/Modal>
+                &lt;Modal
+                  className='incorrectAnsw game__modal animate__animated animate__tada'
+                  style={{
+                    overlay: {
+                      zIndex: 2
+                    },
+                    content: {
+                      position: 'absolute',
+                      top: '0%',
+                      left: '30%',
+                      width: '40%',
+                      height: '40%',
+                    }
+                  }}
+                  shouldCloseOnOverlayClick={false}
+                  isOpen={ImodalIsOpen}
+                  onAfterOpen={afterOpenModal}
+                >
+                  &lt;div>
+                    &lt;p>TRY AGAIN!!&lt;/p>
+                    &lt;img src={heart} alt='' height={'300px'}>&lt;/img>
+                  &lt;/div>
+                &lt;/Modal>
+                {introductionData.hints[location.state.id - 1] !== "" &amp;&amp; (
+                  &lt;>
+                    &lt;div className='hint__cover' id="hint">
+                      &lt;h1>Hint&lt;/h1>
+                      &lt;img onClick={() => handleHint()}>&lt;/img>
+                    &lt;/div>
+                    &lt;div className='hint__container'>
+                      &lt;div id="scroll">
+                        {parse(introductionData.hints[location.state.id - 1])}
+                      &lt;/div>
+                    &lt;/div>
+                  &lt;/>
+                )}
+
+              &lt;/>
+            )}
+        &lt;/div>
+        &lt;div>
+          &lt;div className="game__statement tutorial__statement">
+            &lt;h2>Statement:&lt;/h2>
+            &lt;h1 className="game__statementTitle" id="scroll">{parse(qst.statement)}&lt;/h1>
+          &lt;/div>
+          &lt;div className="game--grid">
+            &lt;div className="editor--div">
+              &lt;div className="editor__expected">
+                &lt;div className="game__expectedInput">
+                  &lt;h2>Example input:&lt;/h2>
+                  &lt;h1>{qst.inputs[0].toString()}&lt;/h1>
+                &lt;/div>
+
+                &lt;div className="game__expectedOutput">
+                  &lt;h2>Example output:&lt;/h2>
+                  &lt;h1>{qst.output.toString()}&lt;/h1>
+                &lt;/div>
+              &lt;/div>
+              &lt;form className="editor" onSubmit={handleSubmit}>
+                &lt;CodeMirror id="codemirror" code={code} setCode={setCode}>&lt;/CodeMirror>
+                &lt;div className='result__container'>
+                  &lt;div className="game__result">
+                    &lt;h1>{error !== '' &amp;&amp; &lt;div>{error}&lt;/div>}&lt;/h1>
+                  &lt;/div>
+                  &lt;button
+                    className="pixel-button game__submit"
+                    disabled={code === ''}
+                  >
+                    Submit
+                  &lt;/button>
+                &lt;/div>
+              &lt;/form>
+            &lt;/div>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    )
+  }
+
+}
+
+export default Tutorial</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

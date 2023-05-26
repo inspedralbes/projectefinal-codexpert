@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Settings.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Settings.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import '../styles/index.css'
+
+Settings.propTypes = {
+  fetchSettings: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  saveSettings: PropTypes.number
+}
+
+/**
+ * Componente de configuraciones de una partida.
+ * @function Settings
+ */
+function Settings({ fetchSettings, errorMessage, saveSettings }) {
+  const [overtimeDuration, setOvertimeDuration] = useState(30)
+  const [heartAmount, setHeartAmount] = useState(0)
+  const [questionAmount, setQuestionAmount] = useState(0)
+  const [unlimitedHearts, setUnlimitedHearts] = useState(false)
+  const [willHaveOvertime, setWillHaveOvertime] = useState(false)
+
+  /**
+ * Al clicar pones la opcion de vidas ilimitadas en true o viceversa.
+ * @function handleChangeUnlimitedHearts
+ */
+  function handleChangeUnlimitedHearts() {
+    setUnlimitedHearts(!unlimitedHearts)
+  }
+
+  /**
+ * Al clicar cambia la opcion de si hay prorroga o no.
+ * @function handleChangeWillHaveOvertime
+ */
+  function handleChangeWillHaveOvertime() {
+    setWillHaveOvertime(!willHaveOvertime)
+  }
+
+  /**
+ * Al clicar cambia el tiempo que se haya puesto de prorroga.
+ * @function handleChangeOvertimeDuration
+ */
+  function handleChangeOvertimeDuration(e) {
+    setOvertimeDuration(e.target.value)
+  }
+
+  /**
+ * Al clicar cambia el número de vidas que se le haya establecido en el input de texto.
+ * @function handleChangeHeartAmount
+ */
+  function handleChangeHeartAmount(e) {
+    setHeartAmount(e.target.value)
+  }
+
+  /**
+ * Al clicar cambia el número de preguntas que se le haya indicado en el input de texto.
+ * @function handleChangeQuestionAmount
+ */
+  function handleChangeQuestionAmount(e) {
+    setQuestionAmount(e.target.value)
+  }
+
+  /**
+ * Recibe las configuraciones de la sala que estan guardadas en socket.
+ * @function getSettings
+ */
+  const getSettings = () => {
+    setHeartAmount(window.network.getHeartAmount())
+    setOvertimeDuration(window.network.getOvertimeDuration())
+    setUnlimitedHearts(window.network.getUnlimitedHearts())
+    setQuestionAmount(window.network.getQuestionAmount())
+    setWillHaveOvertime(window.network.getWillHaveOvertime())
+  }
+
+  useEffect(() => {
+    if (fetchSettings) {
+      getSettings()
+    }
+  }, [fetchSettings])
+
+  useEffect(() => {
+    if (saveSettings > 0) {
+      window.network.setUnlimitedHearts(unlimitedHearts)
+      window.network.setWillHaveOvertime(willHaveOvertime)
+      window.network.setOvertimeDuration(overtimeDuration)
+      window.network.setHeartAmount(heartAmount)
+      window.network.setQuestionAmount(questionAmount)
+    }
+  }, [saveSettings])
+
+  return (
+    &lt;>
+      &lt;div className='settings__zone'>
+        {errorMessage !== '' &amp;&amp; &lt;h2 className='lobbies__error'>{errorMessage}&lt;/h2>}
+        &lt;form className='AddCategory' autoComplete='off'>
+          &lt;div className='list__container__text settingCreator__checkbox'>
+            &lt;label htmlFor='check' className="form-control">
+              &lt;input id='check' type="checkbox" name="checkbox" value={willHaveOvertime}
+                onChange={handleChangeWillHaveOvertime}
+                checked={willHaveOvertime} />
+              &lt;span
+                htmlFor='overtime-check'
+                className='settings__zone__title'
+              >You want to have an overtime?&lt;/span>
+            &lt;/label>
+
+          &lt;/div>
+
+          &lt;span className='addCategory__formSpanTA'>
+            &lt;p className='settings__zone__title'>Overtime duration (seconds)&lt;/p>
+            &lt;input className='profile__input' type='number' value={overtimeDuration} onChange={handleChangeOvertimeDuration} disabled={!willHaveOvertime} />
+          &lt;/span>
+
+          &lt;span className='addCategory__formSpanTA'>
+            &lt;p className='settings__zone__title'>Amount of questions:&lt;/p>
+            &lt;input className='profile__input' type='number' value={questionAmount} onChange={handleChangeQuestionAmount} />
+          &lt;/span>
+
+          &lt;span className='addCategory__formSpanTA'>
+            &lt;p className='settings__zone__title'>Amount of hearts per player:&lt;/p>
+            &lt;input className='profile__input' type='number' value={heartAmount} onChange={handleChangeHeartAmount} />
+          &lt;/span>
+
+          &lt;div className='list__container__text settingCreator__checkbox'>
+            &lt;label htmlFor="unl_hearts-check" className="form-control">
+              &lt;input id='unl_hearts-check'
+                className='check'
+                type='checkbox'
+                value={unlimitedHearts}
+                onChange={handleChangeUnlimitedHearts}
+                checked={unlimitedHearts} />
+              &lt;span
+                htmlFor='unl_hearts-check'
+                className='settings__zone__title'
+              >Unlimited hearts&lt;/span>
+            &lt;/label>
+          &lt;/div>
+        &lt;/form>
+      &lt;/div>
+    &lt;/>
+  )
+}
+
+export default Settings
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
