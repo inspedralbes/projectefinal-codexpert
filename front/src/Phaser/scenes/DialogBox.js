@@ -29,7 +29,7 @@ export default class DialogBox extends Phaser.Scene {
         if (this.dialogContainer) {
           this.destroyText = true
           this.dialogContainer.destroy()
-          this.whoAmITalkingToTextWidth.destroy()
+          this.containerInteract.destroy()
         }
         break
 
@@ -40,9 +40,9 @@ export default class DialogBox extends Phaser.Scene {
   }
 
   createDialogs() {
-    const containerInteract = this.add.container(0, window.innerHeight / 2.5)
+    this.containerInteract = this.add.container(0, window.innerHeight / 2.5)
 
-    this.whoAmITalkingToTextWidth = this.sys.game.config.width * 0.95
+    const whoAmITalkingToTextWidth = this.sys.game.config.width * 0.95
 
     // Obtener las dimensiones del lienzo
     const canvasWidth = this.sys.game.config.width
@@ -67,15 +67,15 @@ export default class DialogBox extends Phaser.Scene {
 
     const textWidth = dialogWidth * 0.95
 
-    const whoAmITalkingTo = this.add.text(40, -40, this.npcName, {
+    const whoAmITalkingTo = this.add.text(40, -80, this.npcName, {
       color: '#FFFFFF',
       backgroundColor: '#00000070',
       fontSize: '16px',
       resolution: 2,
       fontFamily: 'pixel_operator',
-      wordWrap: { width: this.whoAmITalkingToTextWidth, useAdvancedWrap: true }
+      wordWrap: { width: whoAmITalkingToTextWidth, useAdvancedWrap: true }
     })
-    containerInteract.add(whoAmITalkingTo)
+    this.containerInteract.add(whoAmITalkingTo)
 
     // Crear el texto del cuadro de diálogo
     const dialogText = this.add.text(10, 15, '', {
@@ -129,6 +129,6 @@ export default class DialogBox extends Phaser.Scene {
     this.dialogContainer.setScale(containerScale)
 
     this.add.existing(this.dialogContainer)
-    this.add.existing(containerInteract)
+    this.add.existing(this.containerInteract)
   }
 }

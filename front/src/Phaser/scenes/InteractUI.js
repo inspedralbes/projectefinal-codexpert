@@ -32,16 +32,7 @@ export default class InteractUI extends Phaser.Scene {
     const textWidth = this.sys.game.config.width * 0.95
 
     let whereToGo
-    if (this.interactData.type === 'npc') {
-      whereToGo = this.add.text(40, -40, this.interactData.name, {
-        color: '#FFFFFF',
-        backgroundColor: '#00000070',
-        fontSize: '16px',
-        resolution: 2,
-        fontFamily: 'pixel_operator',
-        wordWrap: { width: textWidth, useAdvancedWrap: true }
-      })
-    } else if (this.interactData.type === 'location') {
+    if (this.interactData.type === 'location') {
       whereToGo = this.add.text(40, -40, 'Navigate to ' + this.interactData.name, {
         color: '#FFFFFF',
         backgroundColor: '#00000070',
