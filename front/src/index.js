@@ -8,8 +8,6 @@ import LandingPage from './pages/LandingPage'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Game from './pages/Game'
-import ForgotPassword from './pages/ForgotPassword'
-import ResetPassword from './pages/ResetPassword'
 import Lobbies from './pages/Lobbies'
 import reportWebVitals from './reportWebVitals'
 import AvatarMaker from './pages/AvatarMaker'
@@ -44,8 +42,6 @@ root.render(
         <Route path='login' element={<Login />} />
         <Route path='register' element={<Register />} />
         <Route path='game' element={<Game />} />
-        <Route path='forgotPassword' element={<ForgotPassword />} />
-        <Route path='resetPassword' element={<ResetPassword />} />
         <Route path='avatarMaker' element={<AvatarMaker />} />
         <Route path='lobbies' element={<Lobbies />}></Route>
         <Route path='profile' element={<Profile />}></Route>

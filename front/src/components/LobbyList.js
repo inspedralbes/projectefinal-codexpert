@@ -15,7 +15,20 @@ LobbyList.propTypes = {
   setErrorMessage: PropTypes.func
 }
 
+/**
+ * Listado de personas que estan en la lobby
+ * @function LobbyList
+ * @param lobbyName string de nombre de texto a introducir como nombre.
+ * @param setLobbyName useState para cambiar el nombre de la nueva lobby.
+ * @param lobbyList array para mostrar la lista de salas que hay disponibles.
+ * @param errorMessage string de error al poner un nombre igual o al no poder entrar en la lobby.
+ * @param setErrorMessage useState para cambiar el mensaje de error.
+ */
 function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorMessage }) {
+  /**
+ * Al clicar hace las comprovaciones para ver si puede crear un lobby o no, en caso de que si crea la lobby.
+ * @function handleSubmit
+ */
   const handleSubmit = (e) => {
     e.preventDefault()
     if (lobbyName === '') {
@@ -40,6 +53,10 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
     }
   }
 
+  /**
+ * Al clicar hace las comprovaciones de si se puede unir o no, y en caso de que si se une.
+ * @function handleJoin
+ */
   const handleJoin = (e) => {
     e.preventDefault()
     setLobbyName(e.target.id)

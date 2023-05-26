@@ -8,6 +8,10 @@ import { Loading } from '../components/Loading'
 import LobbyList from '../components/LobbyList'
 import JoinedLobby from '../components/JoinedLobby'
 
+/**
+ * Pagina que engloba el componente de lista de usuarios y el componente de usuario unido a la lobby.
+ * @function Lobbies
+ */
 function Lobbies() {
   const [lobbyList, setLobbyList] = useState([])
   const [lobbyName, setLobbyName] = useState('')
@@ -19,6 +23,10 @@ function Lobbies() {
   const navigate = useNavigate()
   const cookies = new Cookies()
 
+  /**
+ * Eventos que recibe o se pasa a node.
+ * @function handleMessage
+ */
   const handleMessage = (event) => {
     const eventData = event.data
     localStorage.setItem('lastPage', 'lobbies')

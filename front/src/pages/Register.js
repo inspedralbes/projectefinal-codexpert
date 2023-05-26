@@ -11,6 +11,10 @@ import Eye from '../components/Eye'
 import parse from 'html-react-parser'
 import '../styles/form.css'
 
+/**
+ * Pagina para que el usuario pueda registrarse.
+ * @function Register
+ */
 function Register() {
   const [errorText, setErrorText] = useState('')
 
@@ -30,12 +34,20 @@ function Register() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  /**
+ * Al clicar la tecla Enter tambien se hará peticion de registro.
+ * @function handleKeyDown
+ */
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       handleSubmit()
     }
   }
 
+  /**
+ * En caso de que el usuario haya hecho el tutorial se guardarán los datos de localstorage de este.
+ * @function sendTutorialLocalStorageData
+ */
   const sendTutorialLocalStorageData = (token) => {
     if (localStorage.getItem('tutorialsAnswered') !== null && localStorage.getItem('userExperience') !== null) {
       const data = new FormData()
@@ -99,6 +111,10 @@ function Register() {
     }
   }, [userData.passwordValidation])
 
+  /**
+ * Al clicar envia la peticiona a Laravel para registrarse.
+ * @function handleSubmit
+ */
   const handleSubmit = () => {
     const user = new FormData()
     user.append('name', userData.username)

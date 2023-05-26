@@ -17,6 +17,10 @@ import heart from '../img/corazon_roto.gif'
 import jose from '../img/jose.gif'
 import Modal from 'react-modal'
 
+/**
+ * Pagina del juego competitivo de codeXpert.
+ * @function Game
+ */
 function Game() {
   const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
@@ -41,6 +45,10 @@ function Game() {
 
   const navigate = useNavigate()
 
+  /**
+ * Funcion que sirve para enviar o recibir datos de node.
+ * @function handleMessage
+ */
   const handleMessage = (event) => {
     const eventData = event.data
 
@@ -80,6 +88,10 @@ function Game() {
     }
   }
 
+  /**
+ * Al clicar envia la respuesta que haya dado el codigo del usuario con todos los test.
+ * @function handleSubmit
+ */
   const handleSubmit = (e) => {
     e.preventDefault()
     if (code !== '') {
@@ -106,10 +118,18 @@ function Game() {
     }
   }
 
+  /**
+ * Funcion que te devuelve a la lobby.
+ * @function goBackToLobby
+ */
   function goBackToLobby() {
     navigate('/lobbies')
   }
 
+  /**
+ * Funcion que envia fuera de la lobby.
+ * @function leaveLobby
+ */
   function leaveLobby() {
     window.postMessage({
       type: 'leave_lobby-emit',
@@ -117,6 +137,10 @@ function Game() {
     }, '*')
   }
 
+  /**
+ * Modal que se abre en caso de que el usuario haya respondido bien o mal a una pregunta y se cierra a los cuatro segundos.
+ * @function handleSubmit
+ */
   function afterOpenModal() {
     setTimeout(() => {
       setCIsOpen(false)
@@ -133,6 +157,10 @@ function Game() {
     setRoundResult(null)
   }, [roundResult])
 
+  /**
+ * Funcion que comprueva si el usuario esta registrado para poder acceder a esta pagina.
+ * @function isUserLogged
+ */
   const isUserLogged = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)

@@ -6,10 +6,17 @@ import routes from '../conn_routes'
 ShareRanking.propTypes = {
   idGame: PropTypes.number
 }
-
+/**
+ * Componente que muestra un ranking que puede ver todo el mundo el qual esta pensado que el usuario lo pueda compartir.
+ * @function ShareRanking
+ */
 function ShareRanking({ idGame }) {
   const [shareUrl, setShareUrl] = useState(routes.frontRoute + `/sharedranking?id=${idGame}`)
 
+  /**
+ * Funcion que sirve para copiar el enlace que se ha creado para el ranking.
+ * @function copyToClipboard
+ */
   function copyToClipboard() {
     navigator.clipboard.writeText(shareUrl)
   }

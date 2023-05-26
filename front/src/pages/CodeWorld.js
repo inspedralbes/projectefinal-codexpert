@@ -13,10 +13,18 @@ import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import DialogBox from '../Phaser/scenes/DialogBox'
 
+/**
+ * Pagina en la que se muestra el contenido de Phaser del mundo de codeXpert.
+ * @function CodeWorld
+ */
 const CodeWorld = () => {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  /**
+ * Al clicar envia mensage de que un usuario ha entrado en el mundo en socket.
+ * @function handleMessage
+ */
   const handleMessage = (event) => {
     const eventData = event.data
 

@@ -7,6 +7,10 @@ import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import arrow from '../img/InputOutputArrow.png'
 
+/**
+ * Pagina para editar las preguntas de la biblioteca de preguntas del usuario.
+ * @function EditQuestion
+ */
 function EditQuestion() {
   const [newQuestionData, setNewQuestionData] = useState({
     title: '',
@@ -26,12 +30,21 @@ function EditQuestion() {
   const location = useLocation()
   const navigate = useNavigate()
 
+  /**
+ * Al clicar añade el número de inputs y outputs a poder poner como tests.
+ * @function handleAddInputOutput
+ */
   const handleAddInputOutput = () => {
     if (inputsOutputs.length <= 10) {
       setInputsOutputs([...inputsOutputs, ''])
       setNewQuestionData({ ...newQuestionData, outputs: [...newQuestionData.inputs, ''], inputs: [...newQuestionData.inputs, ''] })
     }
   }
+
+  /**
+ * Al clicar disminuye la cantidad de inputs y outputs a poder poner como tests.
+ * @function handleRemoveInputOutput
+ */
   const handleRemoveInputOutput = (i) => {
     const array = [...newQuestionData.inputs]
     const arrayInputs = newQuestionData.inputs
@@ -45,6 +58,10 @@ function EditQuestion() {
     setNewQuestionData({ ...newQuestionData, outputs: arrayOutputs, inputs: arrayInputs })
   }
 
+  /**
+ * Al clicar comprueva si puede editar la pregunta a la base de datos y en caso afirmativo la edita.
+ * @function handleEditQuestion
+ */
   const handleEditQuestion = () => {
     const data = new FormData()
     data.append(
@@ -70,6 +87,10 @@ function EditQuestion() {
       })
   }
 
+  /**
+ * Funcion que recibe los datos de la pregunta a editar
+ * @function getLastData
+ */
   const getLastData = () => {
     const lastData = new FormData()
     lastData.append('token', cookies.get('token'))
@@ -88,6 +109,10 @@ function EditQuestion() {
       })
   }
 
+  /**
+ * Funcion que comprueva si el usuario esta registrado para poder acceder a esta pagina.
+ * @function isUserLogged
+ */
   const isUserLogged = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)

@@ -7,6 +7,10 @@ RankingTable.propTypes = {
   rankingData: PropTypes.array
 }
 
+/**
+ * Componente que muestra una tabla de usuarios que se muestra si hay mas de tres usuarios.
+ * @function RankingTable
+ */
 function RankingTable({ rankingData }) {
   const navigate = useNavigate()
   return (

@@ -12,6 +12,10 @@ import { Loading } from '../components/Loading'
 
 Modal.setAppElement('body')
 
+/**
+ * Pagina que sirve como tutorial del juego de nuestra pagina web.
+ * @function Campaign
+ */
 function Campaign() {
   const [modal, setModal] = useState(false)
   const [tutorialList, setTutorialList] = useState([])
@@ -27,6 +31,10 @@ function Campaign() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  /**
+ * Al clicar seleccionas si eres experto o novato para que se te desbloqueen más o menos niveles.
+ * @function handleChoiseOption
+ */
   const handleChoiseOption = (option) => {
     setModal(false)
     if (option === 'beginner') {
@@ -57,6 +65,10 @@ function Campaign() {
       })
   }
 
+  /**
+ * Funcion que recibe
+ * @function getTutorials
+ */
   const getTutorials = () => {
     const data = new FormData()
     data.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)

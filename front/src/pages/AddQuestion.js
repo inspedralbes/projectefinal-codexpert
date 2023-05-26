@@ -7,6 +7,10 @@ import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import arrow from '../img/InputOutputArrow.png'
 
+/**
+ * Pagina para añadir preguntas en la libreria de preguntas del usuario.
+ * @function AddQuestion
+ */
 function AddQuestion() {
   const [questionData, setQuestionData] = useState({
     title: '',
@@ -25,12 +29,21 @@ function AddQuestion() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  /**
+ * Al clicar añade el número de inputs y outputs a poder poner como tests.
+ * @function handleAddInputOutput
+ */
   const handleAddInputOutput = () => {
     if (inputsOutputs.length <= 10) {
       setInputsOutputs([...inputsOutputs, ''])
       setQuestionData({ ...questionData, outputs: [...questionData.outputs, ''], inputs: [...questionData.inputs, ''] })
     }
   }
+
+  /**
+ * Al clicar disminuye la cantidad de inputs y outputs a poder poner como tests.
+ * @function handleRemoveInputOutput
+ */
   const handleRemoveInputOutput = (i) => {
     const array = [...questionData.inputs]
     const arrayInputs = questionData.inputs
@@ -44,6 +57,10 @@ function AddQuestion() {
     setQuestionData({ ...questionData, outputs: arrayOutputs, inputs: arrayInputs })
   }
 
+  /**
+ * Al clicar comprueva si puede añadir la pregunta a la base de datos y en caso afirmativo la añade.
+ * @function handleAddQuestion
+ */
   const handleAddQuestion = () => {
     const data = new FormData()
     data.append(
@@ -72,6 +89,10 @@ function AddQuestion() {
       })
   }
 
+  /**
+ * Funcion que comprueva si el usuario esta registrado para poder acceder a esta pagina.
+ * @function isUserLogged
+ */
   const isUserLogged = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)

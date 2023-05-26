@@ -9,6 +9,10 @@ import { Loading } from '../components/Loading'
 import '../styles/normalize.css'
 import '../styles/rankingStyles.css'
 
+/**
+ * Pagina que se muestra al acabar la partida y engloba los componentes de RankingPodium, Rewards y RankingTable.
+ * @function RankingPage
+ */
 function RankingPage() {
   const [rankingData, setRankingData] = useState(null)
   const [idGame, setIdGame] = useState(0)
@@ -21,6 +25,10 @@ function RankingPage() {
   const [dataLoaded, setDataLoaded] = useState(false)
   const navigate = useNavigate()
 
+  /**
+ * Funcion que manda y recibe todos los eventos de socket.
+ * @function handleMessage
+ */
   const handleMessage = (event) => {
     const eventData = event.data
 
@@ -37,6 +45,10 @@ function RankingPage() {
     }
   }
 
+  /**
+ * Funcion te manda a la pagina de lobbies.
+ * @function goBackToLobby
+ */
   function goBackToLobby() {
     navigate('/lobbies')
   }

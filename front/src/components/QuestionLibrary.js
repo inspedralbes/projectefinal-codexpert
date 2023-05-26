@@ -14,9 +14,17 @@ QuestionLibrary.propTypes = {
   questionsData: PropTypes.object
 }
 
+/**
+ * Componente de configuraciones de que preguntas quieres en tu partida.
+ * @function QuestionLibrary
+ */
 function QuestionLibrary({ questionsData }) {
   const [checked, setChecked] = useState([])
 
+  /**
+ * Guardar las configuraciones hechas de preguntas.
+ * @function handleCheck
+ */
   const handleCheck = (event) => {
     let updatedList = [...checked]
     if (event.target.checked) {

@@ -8,6 +8,10 @@ Settings.propTypes = {
   saveSettings: PropTypes.number
 }
 
+/**
+ * Componente de configuraciones de una partida.
+ * @function Settings
+ */
 function Settings({ fetchSettings, errorMessage, saveSettings }) {
   const [overtimeDuration, setOvertimeDuration] = useState(30)
   const [heartAmount, setHeartAmount] = useState(0)
@@ -15,26 +19,50 @@ function Settings({ fetchSettings, errorMessage, saveSettings }) {
   const [unlimitedHearts, setUnlimitedHearts] = useState(false)
   const [willHaveOvertime, setWillHaveOvertime] = useState(false)
 
+  /**
+ * Al clicar pones la opcion de vidas ilimitadas en true o viceversa.
+ * @function handleChangeUnlimitedHearts
+ */
   function handleChangeUnlimitedHearts() {
     setUnlimitedHearts(!unlimitedHearts)
   }
 
+  /**
+ * Al clicar cambia la opcion de si hay prorroga o no.
+ * @function handleChangeWillHaveOvertime
+ */
   function handleChangeWillHaveOvertime() {
     setWillHaveOvertime(!willHaveOvertime)
   }
 
+  /**
+ * Al clicar cambia el tiempo que se haya puesto de prorroga.
+ * @function handleChangeOvertimeDuration
+ */
   function handleChangeOvertimeDuration(e) {
     setOvertimeDuration(e.target.value)
   }
 
+  /**
+ * Al clicar cambia el número de vidas que se le haya establecido en el input de texto.
+ * @function handleChangeHeartAmount
+ */
   function handleChangeHeartAmount(e) {
     setHeartAmount(e.target.value)
   }
 
+  /**
+ * Al clicar cambia el número de preguntas que se le haya indicado en el input de texto.
+ * @function handleChangeQuestionAmount
+ */
   function handleChangeQuestionAmount(e) {
     setQuestionAmount(e.target.value)
   }
 
+  /**
+ * Recibe las configuraciones de la sala que estan guardadas en socket.
+ * @function getSettings
+ */
   const getSettings = () => {
     setHeartAmount(window.network.getHeartAmount())
     setOvertimeDuration(window.network.getOvertimeDuration())

@@ -7,6 +7,10 @@ RankingPodium.propTypes = {
   rankingData: PropTypes.array
 }
 
+/**
+ * Componente que muestra el podio de los tres usuarios que han quedado mejor en el juego.
+ * @function RankingPodium
+ */
 function RankingPodium({ rankingData }) {
   const navigate = useNavigate()
   return (

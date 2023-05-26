@@ -3,6 +3,11 @@ import React, { useState, useEffect } from 'react'
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import { useNavigate } from 'react-router-dom'
+
+/**
+ * Funcion para mostrar los usuarios conectados en la sala de espera.
+ * @function ConnectedUsers
+ */
 function ConnectedUsers() {
   const cookies = new Cookies()
   const navigate = useNavigate()
@@ -11,7 +16,11 @@ function ConnectedUsers() {
   const [userList, setUserList] = useState([])
   const [firstTime, setFirstTime] = useState(true)
   const [friendNotification, setfriendNotification] = useState(false)
-  const handleClick = (userId) => {
+  /**
+ * Al clickar envia solicitud al usuario de la lista de usuarios conectados que se haya seleccionado.
+ * @function handleClickAddFriend
+ */
+  const handleClickAddFriend = (userId) => {
     setfriendNotification(!friendNotification)
     window.postMessage(
       {
@@ -22,6 +31,7 @@ function ConnectedUsers() {
       },
       '*'
     )
+
     const userInfo = new FormData()
     userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     userInfo.append('otherUserId', userId)
@@ -36,6 +46,10 @@ function ConnectedUsers() {
 
       })
   }
+  /**
+   * Recibe todos los mensages ya escritos por otros usuarios.
+   * @function handleMessage
+   */
   const handleMessage = (event) => {
     const eventData = event.data
 
@@ -49,6 +63,10 @@ function ConnectedUsers() {
     }
   }
 
+  /**
+ * Mira si mostrar el boton de añadir amigo o no, en caso de que ya haya solicitado o que ya estan agregados no deberia salir.
+ * @function checkIfCanAdd
+ */
   const checkIfCanAdd = (currentUserId) => {
     let index = 0
     let userNotFound = true
@@ -113,7 +131,7 @@ function ConnectedUsers() {
                 <div className="connectedUsers__addFriend">
                   <button className='send__button' id={'userId' + index}
                     onClick={() => {
-                      handleClick(`${user.id}`)
+                      handleClickAddFriend(`${user.id}`)
                       document.getElementById('userId' + index).style.display = 'none'
                     }}>Add Friend</button>
                 </div>
