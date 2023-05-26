@@ -224,7 +224,7 @@ function Campaign() {
                 </div>
               )}
               {cookies.get('token') === undefined && (
-                <div className="lobbies-button">
+                <div className="lobbies__button">
                   <button
                     className="pixel-button"
                     onClick={() => navigate('/login')}

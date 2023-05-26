@@ -105,12 +105,12 @@ function Library() {
                     <td>{element.title}</td>
                     <Tippy
                       className='library__tooltip'
-                        theme={'light-border'}
-                        content={element.statement}
-                        placement={'top'}
-                        animation={'shift-away-extreme'}
-                      >
-                        <td>{element.statement}</td>
+                      theme={'light-border'}
+                      content={element.statement}
+                      placement={'top'}
+                      animation={'shift-away-extreme'}
+                    >
+                      <td>{element.statement}</td>
                     </Tippy>
 
                     <td>{element.public === 0 ? 'no' : 'yes'}</td>
