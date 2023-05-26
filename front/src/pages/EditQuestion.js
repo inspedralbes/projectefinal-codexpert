@@ -51,13 +51,13 @@ function EditQuestion() {
       'token',
       cookies.get('token') !== undefined ? cookies.get('token') : null
     )
-
+    data.append('questionId', location.state.questionId)
     data.append('title', newQuestionData.title)
     data.append('statement', newQuestionData.statement)
     data.append('inputs', JSON.stringify(newQuestionData.inputs))
     data.append('outputs', JSON.stringify(newQuestionData.outputs))
     data.append('public', JSON.stringify(newQuestionData.public))
-    data.append('questionId', location.state.questionId)
+
     fetch(routes.fetchLaravel + 'editMyQuestion', {
       method: 'POST',
       mode: 'cors',

@@ -801,8 +801,8 @@ class GameController extends Controller
             }
             
         }
-        
-        return response() -> json($returnObject);
+    
+        return $returnObject;
     }    
     
     /**
@@ -839,8 +839,15 @@ class GameController extends Controller
         if ($userId != null) {
             $myQuestion = Question::where('id', $request -> questionId) -> first();
 
-            $inputs = Test_input::where('question_id', $request -> questionId) -> get();
-            $outputs = Test_output::where('question_id', $request -> questionId) -> get();
+            $inputs = [];
+            $outputs = [];
+            $getInputs = Test_input::where('question_id', $request -> questionId)->get();
+            $getOutputs = Test_output::where('question_id', $request -> questionId)->get();
+
+            for ($j = 0; $j < count($getInputs); $j++) { 
+                $inputs[$j] = unserialize($getInputs[$j] -> input);
+                $outputs[$j] = unserialize($getOutputs[$j] -> output);
+            }
 
             $returnQuestion = (object) [
                 'id' => $request -> questionId,
@@ -891,7 +898,7 @@ class GameController extends Controller
 
         if ($userId != null) {
             $returnObject = $this -> addNewQuestion($request);
-            if ($returnObject -> correct) {
+            if ($returnObject -> created) {
                 $this -> deleteMyQuestion($request);
             }
         }
