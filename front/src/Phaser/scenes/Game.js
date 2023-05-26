@@ -23,7 +23,7 @@ const movimientos = ['up', 'down', 'left', 'right']
 const defaultSpeed = 125
 
 export default class Game extends Phaser.Scene {
-  strawberry
+  main_character
   cursor
   keys
   selector
@@ -159,7 +159,7 @@ export default class Game extends Phaser.Scene {
 
     if (!this.nametags) { this.nametags = this.physics.add.staticGroup() }
 
-    this.createAnims('Strawberry')
+    this.createAnims('Main')
     this.createMobAnims('bunny')
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
@@ -232,33 +232,33 @@ export default class Game extends Phaser.Scene {
     this.aboveBuildingsLayer.setDepth(3)
     this.aboveGroundLayer.setDepth(2)
 
-    this.strawberry = this.add.sprite(PUNTOAPARICION.x, PUNTOAPARICION.y, 'strawberry')
+    this.main_character = this.add.sprite(PUNTOAPARICION.x, PUNTOAPARICION.y, 'main_character')
 
     this.loadObjectLayers()
 
-    this.physics.add.existing(this.strawberry)
-    this.strawberry.setDepth(1)
-    this.strawberry.body.setSize(this.strawberry.width * 0.3, this.strawberry.height * 0.3)
+    this.physics.add.existing(this.main_character)
+    this.main_character.setDepth(1)
+    this.main_character.body.setSize(this.main_character.width * 0.3, this.main_character.height * 0.3)
 
     this.createBox()
 
-    this.strawberry.body.offset.y = 22
+    this.main_character.body.offset.y = 22
     this.selector.body.offset.y = 6
 
-    this.strawberry.anims.play('Strawberry-idle-down')
+    this.main_character.anims.play('Main-idle-down')
 
-    this.physics.add.collider(this.strawberry, this.buildingsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.strawberry, this.groundLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.strawberry, this.groundCollisionsLayer, this.handleCollision, null, this)
-    this.physics.add.collider(this.strawberry, this.cropsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.main_character, this.buildingsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.main_character, this.groundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.main_character, this.groundCollisionsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.main_character, this.cropsLayer, this.handleCollision, null, this)
 
-    this.cameras.main.startFollow(this.strawberry, true)
+    this.cameras.main.startFollow(this.main_character, true)
 
     this.scene.run('dialog-ui')
   }
 
   update(t, dt) {
-    if (!this.cursors || !this.strawberry || !this.keys || !this.othersprites || !this.startGame) {
+    if (!this.cursors || !this.main_character || !this.keys || !this.othersprites || !this.startGame) {
       return
     }
 
@@ -335,8 +335,8 @@ export default class Game extends Phaser.Scene {
       return
     }
 
-    const charX = this.strawberry.x
-    const charY = this.strawberry.y
+    const charX = this.main_character.x
+    const charY = this.main_character.y
     const distance = 16
 
     let speed = 125
@@ -365,55 +365,55 @@ export default class Game extends Phaser.Scene {
 
     if (this.cursors.left?.isDown || this.keys.left?.isDown) {
       moveDataToSend.direction = 'left'
-      this.strawberry.anims.play('Strawberry-walk-left', true)
+      this.main_character.anims.play('Main-walk-left', true)
 
-      this.strawberry.body.velocity.x = -speed
-      this.strawberry.body.velocity.y = 0
+      this.main_character.body.velocity.x = -speed
+      this.main_character.body.velocity.y = 0
 
       this.selector.setPosition(charX - distance, charY)
 
-      this.strawberry.body.offset.x = 11
+      this.main_character.body.offset.x = 11
       moved = true
       this.actualState = 'left'
     } else if (this.cursors.right?.isDown || this.keys.right?.isDown) {
       moveDataToSend.direction = 'right'
-      this.strawberry.anims.play('Strawberry-walk-right', true)
+      this.main_character.anims.play('Main-walk-right', true)
 
-      this.strawberry.body.velocity.x = speed
-      this.strawberry.body.velocity.y = 0
+      this.main_character.body.velocity.x = speed
+      this.main_character.body.velocity.y = 0
 
       this.selector.setPosition(charX + distance, charY)
 
-      this.strawberry.body.offset.x = 11
+      this.main_character.body.offset.x = 11
       moved = true
       this.actualState = 'right'
     } else if (this.cursors.up?.isDown || this.keys.up?.isDown) {
       moveDataToSend.direction = 'up'
-      this.strawberry.anims.play('Strawberry-walk-up', true)
+      this.main_character.anims.play('Main-walk-up', true)
 
-      this.strawberry.body.velocity.x = 0
-      this.strawberry.body.velocity.y = -speed
+      this.main_character.body.velocity.x = 0
+      this.main_character.body.velocity.y = -speed
 
       this.selector.setPosition(charX, charY - distance)
       moved = true
       this.actualState = 'up'
     } else if (this.cursors.down?.isDown || this.keys.down?.isDown) {
       moveDataToSend.direction = 'down'
-      this.strawberry.anims.play('Strawberry-walk-down', true)
+      this.main_character.anims.play('Main-walk-down', true)
 
-      this.strawberry.body.velocity.x = 0
-      this.strawberry.body.velocity.y = speed
+      this.main_character.body.velocity.x = 0
+      this.main_character.body.velocity.y = speed
 
       this.selector.setPosition(charX, charY + distance + 8)
       moved = true
       this.actualState = 'down'
     } else {
-      const parts = this.strawberry.anims.currentAnim.key.split('-')
+      const parts = this.main_character.anims.currentAnim.key.split('-')
       parts[1] = 'idle'
-      this.strawberry.play(parts.join('-'))
+      this.main_character.play(parts.join('-'))
 
-      this.strawberry.body.velocity.x = 0
-      this.strawberry.body.velocity.y = 0
+      this.main_character.body.velocity.x = 0
+      this.main_character.body.velocity.y = 0
     }
     this.nameTagText.x = charX - 10
     this.nameTagText.y = charY - 15
@@ -566,7 +566,7 @@ export default class Game extends Phaser.Scene {
         objct.properties.forEach(prop => {
           objData.set(prop.name, prop.value)
         })
-        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'Strawberry', undefined, false)
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'Main', undefined, false)
         gameObj.properties = objData
         this.overlapGroup.add(gameObj)
       })
@@ -575,7 +575,7 @@ export default class Game extends Phaser.Scene {
       const notLoggedBuildingsLayer = this.map.createLayer('Not-logged-buildings', this.buildingsTileset, 0, 0)
       notLoggedLayer.setCollisionByProperty({ collides: true })
       notLoggedBuildingsLayer.setCollisionByProperty({ collides: true })
-      this.physics.add.collider(this.strawberry, notLoggedLayer, this.handleCollision, null, this)
+      this.physics.add.collider(this.main_character, notLoggedLayer, this.handleCollision, null, this)
     } else {
       this.username = window.network.getUsername()
       overlapObjectLayer.objects.forEach(objct => {
@@ -584,7 +584,7 @@ export default class Game extends Phaser.Scene {
         objct.properties.forEach(prop => {
           objData.set(prop.name, prop.value)
         })
-        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'Strawberry', undefined, false)
+        const gameObj = puntosDeOverlap.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, 'Main', undefined, false)
         gameObj.properties = objData
         this.overlapGroup.add(gameObj)
       })
@@ -614,8 +614,8 @@ export default class Game extends Phaser.Scene {
       this.mobGroup.add(gameObj)
     })
 
-    this.physics.add.overlap(this.strawberry, this.overlapGroup, this.handleOverlap, null, this)
-    this.physics.add.overlap(this.strawberry, this.npcGroup, this.handleOverlap, null, this)
+    this.physics.add.overlap(this.main_character, this.overlapGroup, this.handleOverlap, null, this)
+    this.physics.add.overlap(this.main_character, this.npcGroup, this.handleOverlap, null, this)
     this.physics.add.collider(this.mobGroup, this.buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
@@ -626,8 +626,8 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.npcGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.npcGroup, this.cropsLayer, this.handleCollision, null, this)
 
-    this.physics.add.collider(this.strawberry, this.mobGroup, this.handlePlayerNPCCollision, null, this)
-    this.physics.add.collider(this.strawberry, this.npcGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(this.main_character, this.mobGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(this.main_character, this.npcGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.mobGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.othersprites, this.buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.npcGroup, this.handleCollision, null, this)
@@ -639,8 +639,8 @@ export default class Game extends Phaser.Scene {
   handlePlayerNPCCollision(obj1, colisionado) {
     const mob = colisionado
 
-    const dx = mob.x - this.strawberry.x
-    const dy = mob.y - this.strawberry.y
+    const dx = mob.x - this.main_character.x
+    const dy = mob.y - this.main_character.y
 
     const dir = new Phaser.Math.Vector2(dx, dy).normalize().scale(100)
     mob.body.velocity.x = 0

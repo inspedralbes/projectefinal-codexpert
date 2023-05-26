@@ -23,6 +23,7 @@ export default class Preloader extends Phaser.Scene {
     this.load.audio('worldMusic', 'assets/music/world.mp3')
 
     // Characters
+    this.load.atlas('Main', 'assets/characters/main character/main.png', 'assets/characters/main character/main.json')
     this.load.atlas('Strawberry', 'assets/characters/strawberry/strawberry.png', 'assets/characters/strawberry/strawberry.json')
     this.load.atlas('Gaspa', 'assets/characters/gaspa/gaspa.png', 'assets/characters/gaspa/gaspa.json')
     this.load.atlas('Asselia', 'assets/characters/asselia/asselia.png', 'assets/characters/asselia/asselia.json')
