@@ -8,6 +8,10 @@ Timer.propTypes = {
   setCounter: PropTypes.func
 }
 
+/**
+ * Componente que sirve para mostrar el tiempo restante de la prorroga
+ * @function Timer
+ */
 function Timer({ time, counter, setCounter }) {
   useEffect(() => {
     if (time > 0) {
