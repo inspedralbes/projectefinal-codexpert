@@ -392,7 +392,6 @@ function Profile() {
                   <img className='profile__avatar' src={userData.avatar}></img>
                 </div>
                 {myId === userId
-<<<<<<< HEAD
                   ? <>
                     <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
                     <button className='pixel-button profileBtn' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
@@ -415,14 +414,6 @@ function Profile() {
                       handleClick(`${userId}`)
                       document.getElementById('userId' + userId).style.display = 'none'
                     }}>Add Friend</button> : null
-=======
-                ? <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
-                : checkIfCanAdd(userId) ? <button id={'userId' + userId} className='pixel-button profileBtn'                     
-                onClick={() => {
-                  AddFriend(`${userId}`)
-                  document.getElementById('userId' + userId).style.display = 'none'
-                }}>Add Friend</button>:null
->>>>>>> add-questions
                 }
               </div>
             </div>

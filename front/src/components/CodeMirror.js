@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import CodeMirror from '@uiw/react-codemirror' // Importamos Codemirror
 import { javascript } from '@codemirror/lang-javascript' // Dentro de CodeMirror importamos el lenjuage que queremos utilizar
 import '../styles/avatarMaker.css'
@@ -10,11 +10,9 @@ App.propTypes = {
 }
 
 function App({ code, setCode }) {
-  const [theme] = useState('dark')
   const onChange = React.useCallback((value, viewUpdate) => { // Con esto seteamos el texto que se vaya escribiendo en el CodeMirror a traves del 'value'
     setCode(value)
   }, [])
-
 
   return (
     <div className="codemirror__editor">
