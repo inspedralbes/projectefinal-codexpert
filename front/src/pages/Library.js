@@ -58,8 +58,8 @@ function Library() {
   const handleDelete = (index, quesitonId) => {
     const deleteQuestion = new FormData()
     deleteQuestion.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-    deleteQuestion.append('id', quesitonId)
-    fetch(routes.fetchLaravel + 'isUserLogged', {
+    deleteQuestion.append('questionId', quesitonId)
+    fetch(routes.fetchLaravel + 'deleteMyQuestion', {
       method: 'POST',
       mode: 'cors',
       body: deleteQuestion,
@@ -67,7 +67,7 @@ function Library() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.correct) {
+        if (data.deleted) {
           document.getElementById('questionId' + index).style.display = 'none'
         }
       })

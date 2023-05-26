@@ -116,7 +116,7 @@ function AddQuestion() {
 
         </div>
         <label className='setPublic__label'>
-          <input tabIndex="3" type='checkbox' onChange={(e) => { setQuestionData({ ...questionData, public: e.target.value }) }}></input><p>Set your question public to everyone</p>
+          <input tabIndex="3" type='checkbox' onChange={(e) => { setQuestionData({ ...questionData, public: e.target.checked }) }}></input><p>Set your question public to everyone</p>
         </label>
       </div>
       <div className='statement__container'>

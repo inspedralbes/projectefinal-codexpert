@@ -82,8 +82,9 @@ function EditQuestion() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(JSON.parse(JSON.stringify(data.inputs[0].input)))
-        setNewQuestionData({ ...newQuestionData, title: data.title, statement: data.statement, public: data.public, inputs: data.inputs, outputs: data.outputs })
+        console.log(data)
+        setNewQuestionData({ ...newQuestionData, title: data.title, statement: data.statement, public: data.public === '0', inputs: data.inputs, outputs: data.outputs })
+        setInputsOutputs()
       })
   }
 
@@ -149,7 +150,7 @@ function EditQuestion() {
               const input = newQuestionData.inputs
               input[index] = e.target.value
               setNewQuestionData({ ...newQuestionData, inputs: input })
-            }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} value={newQuestionData.inputs[index].input} key={index} id={'input' + index} type="text"></input>
+            }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} value={newQuestionData.inputs[index]} key={index} id={'input' + index} type="text"></input>
           })}
         </div>
         <div className='inputArrows__conainer'>
@@ -162,7 +163,7 @@ function EditQuestion() {
               const output = newQuestionData.outputs
               output[index] = e.target.value
               setNewQuestionData({ ...newQuestionData, outputs: output })
-            }} tabIndex={index + index + 4} id={'output' + index} value={newQuestionData.outputs[index].output} placeholder={placeholder.output[index]} key={index} type="text"></input>
+            }} tabIndex={index + index + 4} id={'output' + index} value={newQuestionData.outputs[index]} placeholder={placeholder.output[index]} key={index} type="text"></input>
           })}
         </div>
         <div className='removeItem__conainer'>
