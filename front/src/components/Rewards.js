@@ -5,7 +5,10 @@ import PropTypes from 'prop-types'
 Rewards.propTypes = {
   rewards: PropTypes.object
 }
-
+/**
+ * Componente que muestra las recompensas recibidas despues de una partida.
+ * @function Rewards
+ */
 function Rewards({ rewards }) {
   return (
     <p className='rewards__list'>

@@ -3,9 +3,17 @@ import logo from '../img/logo.gif'
 
 import React, { useState, useEffect } from 'react'
 
+/**
+ * Funcion para mostrar los usuarios conectados en el juego.
+ * @function ConnectedUsersInGame
+ */
 function ConnectedUsersInGame() {
   const [userList, setUserList] = useState([])
 
+  /**
+ * Recibe todos los mensages ya escritos por otros usuarios.
+ * @function handleMessage
+ */
   const handleMessage = (event) => {
     const eventData = event.data
 

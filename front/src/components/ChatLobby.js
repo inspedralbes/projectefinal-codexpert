@@ -1,10 +1,18 @@
 import '../styles/normalize.css'
 import React, { useState, useEffect } from 'react'
 
+/**
+ * Componente en el cual puedes ver el chat dentro de la sala de espera del juego, en el qual pueden escribir otros usuarios.
+ * @function ChatLobby
+ */
 function ChatLobby() {
   const [messages, setMessages] = useState([])
   const [msg, setMsg] = useState('')
 
+  /**
+ * Recibe todos los mensages ya escritos por otros usuarios.
+ * @function handleMessage
+ */
   const handleMessage = (event) => {
     const eventData = event.data
 
@@ -18,15 +26,27 @@ function ChatLobby() {
     }
   }
 
+  /**
+ * Mostrar el chat al hacer hover.
+ * @function showChat
+ */
   function showChat() {
     document.getElementById('chat__body').style.display = 'block'
     document.getElementById('chat__body').style.transition = 'all 2s ease-in'
   }
 
+  /**
+ * Dejar de mostrar el chat al no hacer hover.
+ * @function NoFocus
+ */
   function NoFocus() {
     document.getElementById('chat__body').style.display = 'none'
   }
 
+  /**
+ * Envia el mensaje escrito por los usuarios.
+ * @function handleSendMessage
+ */
   const handleSendMessage = (e) => {
     e.preventDefault()
     if (msg !== '') {

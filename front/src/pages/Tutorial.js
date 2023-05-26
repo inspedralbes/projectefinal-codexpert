@@ -20,6 +20,10 @@ import Modal from 'react-modal'
 
 Modal.setAppElement('body')
 
+/**
+ * Pagina que varia segun la id de pregunta que se le pase por la ruta, el objetivo de esta es enseñar al usuario a programar en JavaScript.
+ * @function Tutorial
+ */
 function Tutorial() {
   const [introductionExample, setIntroductionExample] = useState([
     "<p>Hello World!</p>",
@@ -84,6 +88,10 @@ function Tutorial() {
 
   }, [])
 
+  /**
+ * Duración del modal de correcto e incorrecto al submitear una pregunta.
+ * @function afterOpenModal
+ */
   function afterOpenModal() {
     setTimeout(() => {
       setCIsOpen(false)
@@ -91,11 +99,19 @@ function Tutorial() {
     }, 4000)
   }
 
+  /**
+ * Al clicar el icono de la pista se desbloqueara visualmente esta.
+ * @function handleHint
+ */
   const handleHint = () => {
     document.getElementById('hint').style.display = 'none'
     setEnableIntroductionNextButton(prev => ({ ...prev, hint: false }))
   }
 
+  /**
+ * Al clicar en el boton de submit esta función evalua el codigo del usuario con los tests y comprueba si esta bien o si esta mal.
+ * @function sendTutorialLocalStorageData
+ */
   const handleSubmit = async (e) => {
     let tutorialsId = []
     e.preventDefault()

@@ -7,6 +7,10 @@ import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import arrow from '../img/InputOutputArrow.png'
 
+/**
+ * Pagina para añadir preguntas en la libreria de preguntas del usuario.
+ * @function AddQuestion
+ */
 function AddQuestion() {
   const [questionData, setQuestionData] = useState({
     title: '',
@@ -25,12 +29,21 @@ function AddQuestion() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  /**
+ * Al clicar añade el número de inputs y outputs a poder poner como tests.
+ * @function handleAddInputOutput
+ */
   const handleAddInputOutput = () => {
     if (inputsOutputs.length <= 10) {
       setInputsOutputs([...inputsOutputs, ''])
       setQuestionData({ ...questionData, outputs: [...questionData.outputs, ''], inputs: [...questionData.inputs, ''] })
     }
   }
+
+  /**
+ * Al clicar disminuye la cantidad de inputs y outputs a poder poner como tests.
+ * @function handleRemoveInputOutput
+ */
   const handleRemoveInputOutput = (i) => {
     const array = [...questionData.inputs]
     const arrayInputs = questionData.inputs
@@ -44,6 +57,10 @@ function AddQuestion() {
     setQuestionData({ ...questionData, outputs: arrayOutputs, inputs: arrayInputs })
   }
 
+  /**
+ * Al clicar comprueva si puede añadir la pregunta a la base de datos y en caso afirmativo la añade.
+ * @function handleAddQuestion
+ */
   const handleAddQuestion = () => {
     const data = new FormData()
     data.append(
@@ -72,6 +89,10 @@ function AddQuestion() {
       })
   }
 
+  /**
+ * Funcion que comprueva si el usuario esta registrado para poder acceder a esta pagina.
+ * @function isUserLogged
+ */
   const isUserLogged = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
@@ -161,8 +182,59 @@ function AddQuestion() {
           <p className='addQuestionError'>{error}</p>
           <button className='pixel-button' onClick={() => handleAddQuestion()}>Add</button>
         </div>
+<<<<<<< HEAD
         : <Loading />
       }
+=======
+        <label className='setPublic__label'>
+          <input tabIndex="3" type='checkbox' onChange={(e) => { setQuestionData({ ...questionData, public: e.target.checked }) }}></input><p>Set your question public to everyone</p>
+        </label>
+      </div>
+      <div className='statement__container'>
+        <p>Statement:</p>
+        <textarea tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' onChange={(e) => { setQuestionData({ ...questionData, statement: e.target.value }) }}></textarea>
+      </div>
+    </div>
+    <div className='addQuestionPixel__container grid__container'>
+      <div className='inputOutput__container' id='scroll'>
+        <div>
+          <h2>INPUTS</h2>
+          {inputsOutputs.map((element, index) => {
+            return <input onChange={(e) => {
+              const input = questionData.inputs
+              input[index] = e.target.value
+              setQuestionData({ ...questionData, inputs: input })
+            }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} key={index} id={'input' + index} type="text"></input>
+          })}
+        </div>
+        <div className='inputArrows__conainer'>
+          {inputsOutputs.map((element, index) => { return <div key={index}><img src={arrow}></img></div> })}
+        </div>
+        <div>
+          <h2>OUTPUTS</h2>
+          {inputsOutputs.map((element, index) => {
+            return <input onChange={(e) => {
+              const output = questionData.outputs
+              output[index] = e.target.value
+              setQuestionData({ ...questionData, outputs: output })
+            }} tabIndex={index + index + 4} id={'output' + index} placeholder={placeholder.output[index]} key={index} type="text"></input>
+          })}
+        </div>
+        <div className='removeItem__conainer'>
+          {inputsOutputs.map((element, index) => { return <div key={index}><button onClick={() => handleRemoveInputOutput(index)} disabled={inputsOutputs.length <= 3}>delete</button><br></br></div> })}
+        </div>
+      </div>
+      <div>
+        <a className='addInputOutput-link' onClick={() => handleAddInputOutput()}>Add new input & output line</a>
+      </div>
+    </div>
+    <br></br>
+    <p className='addQuestionError'>{error}</p>
+    <button className='pixel-button' onClick={() => handleAddQuestion()}>Add</button>
+  </div>
+      : <Loading/>
+    }
+>>>>>>> add-questions
     </>
   )
 }

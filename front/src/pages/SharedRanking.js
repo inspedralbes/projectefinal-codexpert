@@ -7,6 +7,10 @@ import { LoadingRanking } from '../components/Loading'
 import '../styles/normalize.css'
 import '../styles/rankingStyles.css'
 
+/**
+ * Pagina para mostrar el ranking que el usuario puede compartir al finalizar una partida
+ * @function SharedRanking
+ */
 function SharedRanking() {
   const [rankingData, setRankingData] = useState(null)
 

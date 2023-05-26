@@ -9,6 +9,10 @@ import { Loader } from '../components/Loading'
 import Header from '../components/Header'
 import '../styles/responsive.css'
 
+/**
+ * Pagina principal de codeXpert.
+ * @function LandingPage
+ */
 function LandingPage() {
   const cookies = new Cookies()
   const [isUserLogged, setisUserLogged] = useState('')

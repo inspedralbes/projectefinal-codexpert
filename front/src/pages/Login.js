@@ -7,6 +7,10 @@ import { Link, useNavigate } from 'react-router-dom' // Rutas
 import Eye from '../components/Eye'
 import '../styles/responsive.css'
 
+/**
+ * Pagina que permite al usuario iniciar sessión.
+ * @function Login
+ */
 function Login() {
   const [login, setLogin] = useState(0)
   const [email, setEmail] = useState('')
@@ -15,6 +19,10 @@ function Login() {
   const cookies = new Cookies()
   const navigate = useNavigate()
 
+  /**
+ * En caso de que el usuario haya hecho el tutorial se guardarán los datos de localstorage de este.
+ * @function sendTutorialLocalStorageData
+ */
   const sendTutorialLocalStorageData = (token) => {
     if (
       localStorage.getItem('tutorialsAnswered') !== null &&
@@ -79,6 +87,10 @@ function Login() {
     }
   }, [login])
 
+  /**
+ * Al clicar la tecla Enter tambien se hará peticion de inicio de sessión.
+ * @function handleKeyDown
+ */
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       setLogin(login + 1)

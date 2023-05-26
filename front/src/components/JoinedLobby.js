@@ -22,12 +22,25 @@ JoinedLobby.propTypes = {
   errorMessage: PropTypes.string
 }
 
+/**
+ * Componente que sale al unir-te o crear una lobby.
+ * @function JoinedLobby
+ * @param setJoined Envia a node que has entrado a la lobby.
+ * @param setLobbyName Envia a node el nombre de la lobby.
+ * @param setLobbyList Para añadir el nuevo lobby a la lista.
+ * @param errorMessage En caso de que no pueda unir-se sale un error de texto.
+ */
 function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
   const [sent, setSent] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [fetchSettings, setFetchSettings] = useState(false)
   const [saveSettings, setSaveSettings] = useState(0)
 
+  /**
+ * Para mostrar los mensajes de error.
+ * @function handleMessage
+ * @param event El evento a enviar a node del mensaje.
+ */
   const handleMessage = (event) => {
     const eventData = event.data
 
@@ -53,6 +66,10 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
     }
   }
 
+  /**
+ * Al clicar envia a node que ha empezado el juego.
+ * @function handleStartGame
+ */
   const handleStartGame = (e) => {
     e.preventDefault()
     window.postMessage(
@@ -63,6 +80,10 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
     )
   }
 
+  /**
+ * Al clicar envia a node que se ha ido del juego.
+ * @function handleLeave
+ */
   const handleLeave = (e) => {
     e.preventDefault()
     window.postMessage(
@@ -76,25 +97,25 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
     setLobbyList([])
   }
 
+  /**
+ * Guardar cambios de las configuraciones hechas.
+ * @function saveChangedSettings
+ */
   const saveChangedSettings = () => {
     setSaveSettings(saveSettings + 1)
     setShowModal(false)
   }
 
+  /**
+ * Al clicar en cancelar sale del modal sin guardar las configuraciones.
+ * @function closeModalWithoutSaving
+ */
   const closeModalWithoutSaving = () => {
     setSaveSettings(0)
     setShowModal(false)
   }
 
-  const updateHistory = () => {
-    window.addEventListener('hashchange', function (e) {
-      e.preventDefault()
-      // location.reload()
-    })
-  }
-
   useEffect(() => {
-    updateHistory()
     if (!showModal) setSaveSettings(0)
   }, [showModal])
 

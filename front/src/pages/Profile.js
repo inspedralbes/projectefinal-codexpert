@@ -15,8 +15,16 @@ import { Loading } from '../components/Loading'
 
 Modal.setAppElement('body')
 
+/**
+ * Pagina que muestra los datos del usuario.
+ * @function Profile
+ */
 function Profile() {
 
+  /**
+ * Funcion que devuelve el enlace de la pagina actual.
+ * @function getCurrentURL
+ */
   function getCurrentURL() {
     return window.location.href
   }
@@ -37,6 +45,10 @@ function Profile() {
   })
 
 
+  /**
+ * Funcion que comprueva si se puede añadir el usuario en caso de no ser uno mismo y que no esten agregados o solicitados.
+ * @function getCannotAdd
+ */
   const getCannotAdd = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
@@ -53,6 +65,10 @@ function Profile() {
       })
   }
 
+  /**
+ * Funcion que recibe los datos del usuario a mostrar en el perfil.
+ * @function getUserData
+ */
   const getUserData = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
@@ -93,7 +109,11 @@ function Profile() {
 
   }
 
-  const handleClick = (userId) => {
+  /**
+ * Funcion envia por socket la petición para agregar al usuario.
+ * @function AddFriend
+ */
+  const AddFriend = (userId) => {
     window.postMessage(
       {
         type: 'send_friend_notification-emit',
@@ -117,7 +137,12 @@ function Profile() {
 
       })
   }
-  const getuserFriendList = () => {
+
+  /**
+ * Funcion que recibe la lista de usuarios que ya tiene agregado el usuario.
+ * @function getUserFriendList
+ */
+  const getUserFriendList = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     fetch(routes.fetchLaravel + 'getFriendlist', {
@@ -172,11 +197,15 @@ function Profile() {
   useEffect(() => {
     getCannotAdd()
     getUserData()
-    getuserFriendList()
+    getUserFriendList()
     setEditUser(userData)
     getGameHistory()
   }, [])
 
+  /**
+ * Funcion hace peticiona al Laravel para guardar los nuevos datos introducidos de nombre y/o correo.
+ * @function saveChanges
+ */
   const saveChanges = (type) => {
     const user = new FormData()
     if (type === 'newName') {
@@ -199,6 +228,10 @@ function Profile() {
     setUserData(prev => ({ ...prev, name: editUser.name, email: editUser.email }))
   }
 
+  /**
+ * Funcion que comprueva si el usuario puede agregar al usuario que esta viendo.
+ * @function checkIfCanAdd
+ */
   const checkIfCanAdd = (currentUserId) => {
     let canAdd = true
 
@@ -209,6 +242,10 @@ function Profile() {
     return canAdd
   }
 
+  /**
+ * Funcion que guarda la contraseña que haya cambiado el usuario.
+ * @function savePassword
+ */
   const savePassword = () => {
     const password = new FormData()
     password.append('currentPassword', editUser.password)
@@ -355,6 +392,7 @@ function Profile() {
                   <img className='profile__avatar' src={userData.avatar}></img>
                 </div>
                 {myId === userId
+<<<<<<< HEAD
                   ? <>
                     <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
                     <button className='pixel-button profileBtn' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password</button>
@@ -377,6 +415,14 @@ function Profile() {
                       handleClick(`${userId}`)
                       document.getElementById('userId' + userId).style.display = 'none'
                     }}>Add Friend</button> : null
+=======
+                ? <button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar</button>
+                : checkIfCanAdd(userId) ? <button id={'userId' + userId} className='pixel-button profileBtn'                     
+                onClick={() => {
+                  AddFriend(`${userId}`)
+                  document.getElementById('userId' + userId).style.display = 'none'
+                }}>Add Friend</button>:null
+>>>>>>> add-questions
                 }
               </div>
             </div>

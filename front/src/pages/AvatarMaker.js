@@ -12,6 +12,10 @@ import Accessories from '../components/AvatarMaker/Accessories'
 import Mouth from '../components/AvatarMaker/Mouth'
 import Eyes from '../components/AvatarMaker/Eyes'
 
+/**
+ * Pagina para crear o editar tu avatar.
+ * @function AvatarMaker
+ */
 function AvatarMaker() {
   const cookies = new Cookies()
   const navigate = useNavigate()
@@ -122,6 +126,10 @@ function AvatarMaker() {
     }
   }, [changes])
 
+  /**
+ * Cambia de opción entre los botones de arriba para mostrar el apartado que tenga que mostrar.
+ * @function changeOption
+ */
   function changeOption(option) {
     if (option !== optionCopy) {
       setOptionCopy(option)
@@ -133,6 +141,10 @@ function AvatarMaker() {
     }
   }
 
+  /**
+ * Funcion para recoger el avatar de la API DiceBear.
+ * @function getAvatar
+ */
   function getAvatar(u) {
     const url = new URL(u)
     setChanges({

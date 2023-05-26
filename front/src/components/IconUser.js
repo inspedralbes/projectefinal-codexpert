@@ -6,11 +6,20 @@ import { Loader } from '../components/Loading'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+/**
+ * Este componente sirve para mostrar un dropdown de las opciones a poder navegar en la web.
+ * @function IconUser
+ */
 function IconUser() {
   const navigate = useNavigate()
   const cookies = new Cookies()
   const [state, setState] = useState(false)
   const [avatarURL, setAvatarURL] = useState(null)
+
+  /**
+ * Al clicar muestra el contenedor del dropdown.
+ * @function handleButtonClick
+ */
   const handleButtonClick = () => {
     setState(!state)
   }
@@ -38,6 +47,10 @@ function IconUser() {
     })
   }, [])
 
+  /**
+ * Al clicar te desloguea de la session, borrando la cookie y enviando a la landing page.
+ * @function handleLogOut
+ */
   const handleLogOut = () => {
     const token = new FormData()
     token.append(

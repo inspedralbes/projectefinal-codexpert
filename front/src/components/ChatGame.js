@@ -2,10 +2,18 @@ import '../styles/normalize.css'
 import '../styles/chat.css'
 import React, { useState, useEffect } from 'react'
 
+/**
+ * Componente en el cual puedes ver el chat dentro del juego, en el qual pueden escribir otros usuarios.
+ * @function ChatGame
+ */
 function ChatGame() {
   const [messages, setMessages] = useState([])
   const [msg, setMsg] = useState('')
 
+  /**
+ * Recibe todos los mensages ya escritos por otros usuarios.
+ * @function handleMessage
+ */
   const handleMessage = (event) => {
     const eventData = event.data
 
@@ -19,6 +27,10 @@ function ChatGame() {
     }
   }
 
+  /**
+ * Envia el mensaje escrito por los usuarios.
+ * @function handleSendMessage
+ */
   const handleSendMessage = (e) => {
     e.preventDefault()
     if (msg !== '') {

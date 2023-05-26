@@ -5,6 +5,10 @@ import loading from '../img/Loading.gif'
 import loader from '../img/loader.gif'
 import { Blocks } from 'react-loader-spinner'
 
+/**
+ * Funcion para mostrar loading grande de la pagina.
+ * @function Loading
+ */
 function Loading() {
   return (
     <div className="Loading__container animate__animated animate__bounce">
@@ -22,6 +26,10 @@ function Loading() {
   )
 }
 
+/**
+ * Funcion para mostrar el loading pequeño de la pagina.
+ * @function Loader
+ */
 function Loader() {
   return (
     <>
@@ -30,6 +38,10 @@ function Loader() {
   )
 }
 
+/**
+ * Funcion para mostrar el loading de Ranking.
+ * @function LoadingRanking
+ */
 function LoadingRanking() {
   return (
     <div className="Loading__container Loading__container-ranking">
