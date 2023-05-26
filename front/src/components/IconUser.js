@@ -105,6 +105,13 @@ function IconUser() {
                 </li>
                 <li
                   className="iconUser-list__item"
+                  onClick={() => navigate('/lobbies')}
+                >
+                  {' '}
+                  <button className="iconUser__button">Lobby List</button>
+                </li>
+                <li
+                  className="iconUser-list__item"
                   onClick={() => navigate('/library')}
                 >
                   {' '}

@@ -9,6 +9,7 @@
     background-color: transparent;
     width: 100%;
     cursor: pointer;
+    outline: none;
 }
 
 .bell__button {

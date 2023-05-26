@@ -3,6 +3,7 @@
 }
 
 .iconUser__button {
+    outline: none;
     text-align: left;
     padding: 0;
     border: 0;

@@ -6,6 +6,10 @@ import Cookies from 'universal-cookie'
 import { useNavigate } from 'react-router-dom' // Rutas
 import { Loading } from '../components/Loading'
 import Header from '../components/Header'
+import Tippy from '@tippyjs/react' // Tooltip
+import 'tippy.js/dist/tippy.css' // Tooltip styles
+import 'tippy.js/themes/light-border.css' // Tooltip theme
+import 'tippy.js/animations/shift-away-extreme.css' // Tooltip animation
 
 function Library() {
   const [userLogged, setUserLogged] = useState(false)
@@ -17,7 +21,6 @@ function Library() {
   }])
   const cookies = new Cookies()
   const navigate = useNavigate()
-
   const getQuestions = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
@@ -29,9 +32,7 @@ function Library() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         setQuestionData(data)
-        console.log(data)
       })
   }
   const isUserLogged = () => {
@@ -73,7 +74,7 @@ function Library() {
   }
 
   const handleEdit = (quesitonId) => {
-    console.log(quesitonId)
+    navigate('/editQuestion', { state: { questionId: quesitonId } })
   }
 
   useEffect(() => {
@@ -85,7 +86,8 @@ function Library() {
       <Header></Header>
       {userLogged && (questionData[0].title !== undefined ? questionData[0].title !== '' : questionData.length === 0)
         ? <div className='library'>
-          <h1>Library</h1>
+          <button className='pixel-button library-back' onClick={() => navigate('/codeworld')}>← go back</button>
+          <h1>Questions Library</h1>
           <div className='tableList__container' id='scroll'>
             <table>
               <thead>
@@ -101,16 +103,25 @@ function Library() {
                 {questionData.map((element, index) => {
                   return <tr id={'questionId' + index} key={index}>
                     <td>{element.title}</td>
-                    <td>{element.statement}</td>
-                    <td>{element.public}</td>
-                    <td><button onClick={() => handleEdit(element.id)}>Edit</button></td>
-                    <td><button onClick={() => handleDelete(index, element.id)}>Delete</button></td>
+                    <Tippy
+                      className='library__tooltip'
+                        theme={'light-border'}
+                        content={element.statement}
+                        placement={'top'}
+                        animation={'shift-away-extreme'}
+                      >
+                        <td>{element.statement}</td>
+                    </Tippy>
+
+                    <td>{element.public === 0 ? 'no' : 'yes'}</td>
+                    <td><button className='pixel-button edit-button' onClick={() => handleEdit(element.id)}>Edit</button></td>
+                    <td><button className='pixel-button delete-button' onClick={() => handleDelete(index, element.id)}>Delete</button></td>
                   </tr>
                 })}
               </tbody>
             </table>
           </div>
-          <button className='pixel-button' onClick={() => navigate('/addQuestion')}>Add question</button>
+          <button className='pixel-button' onClick={() => navigate('/addQuestion')}>Add new question</button>
         </div>
         : <Loading></Loading>
       }

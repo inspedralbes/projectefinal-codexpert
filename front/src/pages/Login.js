@@ -86,7 +86,7 @@ function Login() {
   }
   return (
     <div className="form">
-      <h1>LOGIN</h1>
+      <h1 className='login-header'>LOGIN</h1>
       <br />
       <div className="form__form">
         <div className="form__inputGroup">

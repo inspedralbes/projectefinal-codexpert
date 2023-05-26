@@ -56,7 +56,6 @@ function Tutorial() {
 
 
   useEffect(() => {
-    
     if (location.state === null) {
       navigate('/campaign')
     } else {
@@ -83,7 +82,6 @@ function Tutorial() {
         })
     }
 
-
   }, [])
 
   function afterOpenModal() {
@@ -106,9 +104,6 @@ function Tutorial() {
       let evalPassedBoolean = true
       qst.inputs.forEach((inp) => {
         let input = inp
-        let example = Function("input", 'return function yourCode(input){ \n  //code here\n  \n  return input + 3\n}')(input)
-        console.log(Function(example.toString() + '\nyourCode(' + input + ')')())
-
         try {
           const res = eval(code)
           resultsEvalRecieved.push(res)
