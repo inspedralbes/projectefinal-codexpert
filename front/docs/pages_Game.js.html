@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Game.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Game.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* eslint-disable */
+
+import React, { useEffect, useState } from 'react'
+import '../styles/normalize.css'
+import '../styles/game.css'
+import '../styles/Lobbies.css'
+import persiana from '../img/persiana.png'
+import { useNavigate } from 'react-router-dom'
+import ChatGame from '../components/ChatGame'
+import ConnectedUsersInGame from '../components/ConnectedUsersInGame'
+import { Loading } from '../components/Loading'
+import CodeMirror from '../components/CodeMirror'
+import Timer from '../components/Timer'
+import routes from '../conn_routes'
+import Cookies from 'universal-cookie'
+import heart from '../img/corazon_roto.gif'
+import jose from '../img/jose.gif'
+import Modal from 'react-modal'
+
+/**
+ * Pagina del juego competitivo de codeXpert.
+ * @function Game
+ */
+function Game() {
+  const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
+  const [code, setCode] = useState(defaultCode)
+  const [error, setError] = useState('')
+  const [result, setResult] = useState('')
+  const [winnerMessage, setWinnerMessage] = useState('')
+  const [playable, setPlayable] = useState(true)
+  const [counter, setCounter] = useState(0)
+  const [roundResult, setRoundResult] = useState(null)
+  const [CmodalIsOpen, setCIsOpen] = useState(false)
+  const [ImodalIsOpen, setIIsOpen] = useState(false)
+  const [userLogged, setUserLogged] = useState(false)
+
+  const cookies = new Cookies()
+
+  const [qst, setQst] = useState({
+    statement: '',
+    inputs: [''],
+    output: ''
+  })
+  const [overtimeDuration, setOvertimeDuration] = useState(0)
+
+  const navigate = useNavigate()
+
+  /**
+ * Funcion que sirve para enviar o recibir datos de node.
+ * @function handleMessage
+ */
+  const handleMessage = (event) => {
+    const eventData = event.data
+
+    switch (eventData.type) {
+      case 'question_data-event':
+        setQst(window.network.getQuestionData())
+        setCode(defaultCode)
+        break
+
+      case 'game_over-event':
+        setWinnerMessage(window.network.getWinnerMessage())
+        setOvertimeDuration(0)
+        setPlayable(false)
+        navigate('/ranking')
+        break
+
+      case 'user_finished-event':
+        setResult(window.network.getResult())
+        setPlayable(false)
+        break
+
+      case 'answer_correct-event':
+        setRoundResult(eventData.correct)
+
+        break
+
+      case 'overtime_starts-event':
+        setOvertimeDuration(eventData.time)
+        break
+
+      case 'YOU_LEFT_LOBBY-event':
+        navigate('/lobbies')
+        break
+
+      default:
+        break
+    }
+  }
+
+  /**
+ * Al clicar envia la respuesta que haya dado el codigo del usuario con todos los test.
+ * @function handleSubmit
+ */
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (code !== '') {
+      const resultsEvalRecieved = []
+      let evalPassedBoolean = true
+
+      qst.inputs.forEach((inp) => {
+        let input = inp
+        try {
+          const res = eval(code)
+          resultsEvalRecieved.push(res)
+          setError('')
+        } catch (e) {
+          setError(e.message)
+          evalPassedBoolean = false
+        }
+      })
+
+      window.postMessage({
+        type: 'check_answer-emit',
+        resultsEval: resultsEvalRecieved,
+        evalPassed: evalPassedBoolean
+      }, '*')
+    }
+  }
+
+  /**
+ * Funcion que te devuelve a la lobby.
+ * @function goBackToLobby
+ */
+  function goBackToLobby() {
+    navigate('/lobbies')
+  }
+
+  /**
+ * Funcion que envia fuera de la lobby.
+ * @function leaveLobby
+ */
+  function leaveLobby() {
+    window.postMessage({
+      type: 'leave_lobby-emit',
+      lobbyName: window.network.getLobbyName()
+    }, '*')
+  }
+
+  /**
+ * Modal que se abre en caso de que el usuario haya respondido bien o mal a una pregunta y se cierra a los cuatro segundos.
+ * @function handleSubmit
+ */
+  function afterOpenModal() {
+    setTimeout(() => {
+      setCIsOpen(false)
+      setIIsOpen(false)
+    }, 4000)
+  }
+
+  useEffect(() => {
+    if (roundResult) {
+      setCIsOpen(true)
+    } else if (roundResult == false) {
+      setIIsOpen(true)
+    }
+    setRoundResult(null)
+  }, [roundResult])
+
+  /**
+ * Funcion que comprueva si el usuario esta registrado para poder acceder a esta pagina.
+ * @function isUserLogged
+ */
+  const isUserLogged = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'isUserLogged', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.correct) {
+          navigate('/login')
+        }else {
+          setUserLogged(true)
+        }
+      })
+  }
+
+  useEffect(() => {
+    isUserLogged()
+    window.addEventListener('message', handleMessage)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+    }
+  }, [])
+
+  return (
+    &lt;>
+    {userLogged
+      ? &lt;div className='game'>
+      {overtimeDuration > 0 &amp;&amp; playable
+        &amp;&amp; &lt;>
+        &lt;img src={persiana}
+          id='persiana'
+          className='persiana'
+          style={{ animation: `persianaAnim ${(overtimeDuration / 1000)}s cubic-bezier(0.01, 0.01, 0, 0.47) 1` }}
+          alt="">&lt;/img>
+          &lt;div className='game__timer'>
+            {overtimeDuration != 0 ? &lt;h1>TIME LEFT: &lt;Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}>&lt;/Timer>&lt;/h1> : &lt;>&lt;/>}
+          &lt;/div>
+        &lt;/>
+      }
+      &lt;div className='game__container '>
+
+        &lt;div className='container__left'>
+          &lt;Modal
+            className='correctAnsw game__modal'
+            isOpen={CmodalIsOpen}
+            onAfterOpen={afterOpenModal}
+          >
+            YOU DID IT!! :&amp;#42;
+            &lt;img src={jose} alt='' height={'300px'}>&lt;/img>
+          &lt;/Modal>
+          &lt;Modal
+            className='incorrectAnsw game__modal animate__animated animate__tada'
+            isOpen={ImodalIsOpen}
+            onAfterOpen={afterOpenModal}
+          >
+            TRY AGAIN!!
+            &lt;img src={heart} alt='' height={'300px'}>&lt;/img>
+          &lt;/Modal>
+          &lt;div className={playable ? 'started__game' : 'ended__game'}>
+            {overtimeDuration != 0 ? &lt;h1>Overtime duration left: &lt;Timer id="timer" time={overtimeDuration} counter={counter} setCounter={setCounter}>&lt;/Timer>&lt;/h1> : &lt;>&lt;/>}
+          &lt;/div>
+          &lt;ConnectedUsersInGame>&lt;/ConnectedUsersInGame>
+          &lt;ChatGame className='chatGame__chatbox'>&lt;/ChatGame>
+        &lt;/div>
+
+        &lt;div className='container__right'>
+          {playable &amp;&amp; &lt;div className='game__playing' >
+            &lt;div className='game__statement'>
+              &lt;h2>Statement:&lt;/h2>
+              &lt;h1 className='game__statementTitle' id="scroll">{qst.statement}&lt;/h1>
+            &lt;/div>
+            &lt;div>
+              progres bar
+            &lt;/div>
+            &lt;div className='game--grid'>
+              &lt;div className='editor--div'>
+                &lt;div className='pixelart-to-css'>&lt;/div>
+                &lt;div className='editor__expected'>
+                  &lt;div className='game__expectedInput'>
+                    &lt;h2>Example input:&lt;/h2>
+                    &lt;h1>{qst.inputs[0].toString()}&lt;/h1>
+                  &lt;/div>
+                  &lt;div className='game__expectedOutput'>
+                    &lt;h2>Example output:&lt;/h2>
+                    &lt;h1>{qst.output.toString()}&lt;/h1>
+                  &lt;/div>
+                &lt;/div>
+                &lt;form className="editor" onSubmit={handleSubmit}>
+                &lt;CodeMirror id="codemirror" code={code} setCode={setCode}>&lt;/CodeMirror>
+                &lt;div className='result__container'>
+                  &lt;div className="game__result">
+                    &lt;h1>{error !== '' &amp;&amp; &lt;div>{error}&lt;/div>}&lt;/h1>
+                  &lt;/div>
+                  &lt;button
+                    className="pixel-button game__submit"
+                    disabled={code === ''}
+                  >
+                    Submit
+                  &lt;/button>
+                &lt;/div>
+              &lt;/form>
+              &lt;/div>
+            &lt;/div>
+
+        &lt;/div>}
+        {!playable &amp;&amp; &lt;div className='game__results'>
+          &lt;h1 className='game__yourResult'>{result}&lt;/h1>
+          &lt;h2>{winnerMessage}&lt;/h2>
+          &lt;p className='game__buttons'>
+            &lt;button className='pixel-button game__button' onClick={goBackToLobby}>GO BACK TO LOBBY&lt;/button>
+
+            &lt;button className='pixel-button game__button' onClick={leaveLobby}>LOBBY LIST&lt;/button>
+          &lt;/p>
+        &lt;/div>}
+      &lt;/div>
+      &lt;/div>
+      &lt;/div>
+      :&lt;Loading>&lt;/Loading>
+    }
+    &lt;/>
+
+  )
+}
+
+export default Game
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

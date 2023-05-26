@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Lobbies.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Lobbies.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from 'react'
+import '../styles/normalize.css'
+import '../styles/Lobbies.css'
+import { useNavigate } from 'react-router-dom'
+import Cookies from 'universal-cookie'
+import routes from '../conn_routes'
+import { Loading } from '../components/Loading'
+import LobbyList from '../components/LobbyList'
+import JoinedLobby from '../components/JoinedLobby'
+
+/**
+ * Pagina que engloba el componente de lista de usuarios y el componente de usuario unido a la lobby.
+ * @function Lobbies
+ */
+function Lobbies() {
+  const [lobbyList, setLobbyList] = useState([])
+  const [lobbyName, setLobbyName] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [joinedLobby, setJoined] = useState(false)
+  const [firstTime, setFirstTime] = useState(true)
+  const [fetchUser, setFetchUser] = useState(false)
+
+  const navigate = useNavigate()
+  const cookies = new Cookies()
+
+  /**
+ * Eventos que recibe o se pasa a node.
+ * @function handleMessage
+ */
+  const handleMessage = (event) => {
+    const eventData = event.data
+    localStorage.setItem('lastPage', 'lobbies')
+
+    switch (eventData.type) {
+      case 'YOU_ARE_ON_LOBBY-event':
+        setLobbyName(window.network.getLobbyName())
+        setJoined(true)
+        break
+
+      case 'YOU_JOINED_LOBBY-event':
+        setErrorMessage('')
+        setJoined(true)
+        break
+
+      case 'lobby_name-event':
+        setLobbyName(window.network.getLobbyName())
+        break
+
+      case 'lobbies_list-event':
+        setLobbyList(window.network.getLobbyList())
+        break
+
+      case 'game_started-event':
+        navigate('/game')
+        break
+
+      case 'LOBBY_FULL_ERROR-event':
+        setLobbyName('')
+        setErrorMessage(window.network.getMessage())
+        break
+
+      case 'ALREADY_ON_LOBBY-event':
+        setErrorMessage(window.network.getMessage())
+        break
+
+      case 'LOBBY_ALREADY_EXISTS-event':
+        setErrorMessage(window.network.getMessage())
+        break
+
+      case 'ALREADY_STARTED-event':
+        setErrorMessage(window.network.getMessage())
+        break
+
+      case 'LOBBY_NAME_LENGTH_ERROR-event':
+        setErrorMessage(window.network.getMessage())
+        break
+
+      case 'OVERTIME_UNDER_MIN-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'OVERTIME_ABOVE_MAX-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'HEARTS_AMT_UNDER_MIN-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'HEARTS_AMT_ABOVE_MAX-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'QUESTION_AMT_UNDER_MIN-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'QUESTION_AMT_ABOVE_MAX-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      case 'INVALID_SETTINGS-event':
+        setErrorMessage(window.network.getErrorMessage())
+        break
+
+      default:
+        break
+    }
+  }
+
+  useEffect(() => {
+    if (!joinedLobby) {
+      setErrorMessage('')
+    }
+  }, [joinedLobby])
+
+  useEffect(() => {
+    if (document.cookie.indexOf('token' + '=') !== -1) {
+      const token = new FormData()
+      token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+      fetch(routes.fetchLaravel + 'isUserLogged', {
+        method: 'POST',
+        mode: 'cors',
+        body: token,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.correct) {
+            setFetchUser(true)
+          } else {
+            navigate('/login')
+          }
+        })
+    } else {
+      navigate('/login')
+    }
+
+    if (firstTime) {
+      window.postMessage({
+        type: 'hello_firstTime-emit'
+      }, '*')
+      setFirstTime(false)
+    }
+
+    window.addEventListener('message', handleMessage)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+    }
+  }, [])
+
+  if (fetchUser) {
+    return (
+      &lt;div className='lobbies'>
+        {!joinedLobby &amp;&amp; (
+          &lt;>
+            &lt;LobbyList lobbyName={lobbyName} setLobbyName={setLobbyName} lobbyList={lobbyList} setJoined={setJoined} errorMessage={errorMessage} setErrorMessage={setErrorMessage}>&lt;/LobbyList>
+          &lt;/>
+        )}
+
+        {joinedLobby &amp;&amp; (
+          &lt;JoinedLobby setJoined={setJoined} setLobbyName={setLobbyName} setLobbyList={setLobbyList} errorMessage={errorMessage} setErrorMessage={setErrorMessage}>&lt;/JoinedLobby>
+        )
+        }
+      &lt;/div>
+    )
+  } else {
+    return (
+      &lt;Loading>&lt;/Loading>
+    )
+  }
+}
+
+export default Lobbies
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
