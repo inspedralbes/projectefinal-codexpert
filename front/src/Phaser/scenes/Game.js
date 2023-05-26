@@ -14,8 +14,8 @@ const cookies = new Cookies()
 const spriteAnimsCreated = []
 
 const PUNTOAPARICION = {
-  x: 350,
-  y: 350
+  x: 210,
+  y: 690
 }
 
 const movimientos = ['up', 'down', 'left', 'right']
@@ -217,20 +217,29 @@ export default class Game extends Phaser.Scene {
     this.buildingsTileset = this.map.addTilesetImage('cozy-buildings', 'cozy-buildings', 16, 16)
     this.tileset = this.map.addTilesetImage('cozy-tileset', 'cozy-tileset', 16, 16)
     this.cropsTileset = this.map.addTilesetImage('crops', 'crops', 16, 16)
-
+    this.puenteTileset = this.map.addTilesetImage('puente', 'puente', 16, 16)
+    this.cascadeTileset = this.map.addTilesetImage('cascada', 'cascada', 16, 16)
+    
     this.groundLayer = this.map.createLayer('Ground', this.tileset, 0, 0)
     this.groundCollisionsLayer = this.map.createLayer('Ground-collisions', this.tileset, 0, 0)
     this.cropsLayer = this.map.createLayer('Crops', this.cropsTileset, 0, 0)
+    this.bridgeLayer = this.map.createLayer('Bridge', this.puenteTileset, 0, 0)
     this.buildingsLayer = this.map.createLayer('Buildings', this.buildingsTileset, 0, 0)
     this.aboveBuildingsLayer = this.map.createLayer('Above-buildings', this.buildingsTileset, 0, 0)
     this.aboveGroundLayer = this.map.createLayer('Above-ground', this.tileset, 0, 0)
+    this.cascadeLayer = this.map.createLayer('Cascade', this.cascadeTileset, 0, 0)
 
     this.buildingsLayer.setCollisionByProperty({ collides: true })
+    this.bridgeLayer.setCollisionByProperty({ collides: true })
     this.groundLayer.setCollisionByProperty({ collides: true })
     this.cropsLayer.setCollisionByProperty({ collides: true })
     this.groundCollisionsLayer.setCollisionByProperty({ collides: true })
+    this.aboveGroundLayer.setCollisionByProperty({ collides: true })
+    this.cascadeLayer.setDepth(3)
     this.aboveBuildingsLayer.setDepth(3)
-    this.aboveGroundLayer.setDepth(2)
+    this.aboveGroundLayer.setDepth(1)
+    this.groundCollisionsLayer.setDepth(1)
+    this.bridgeLayer.setDepth(0)
 
     this.main_character = this.add.sprite(PUNTOAPARICION.x, PUNTOAPARICION.y, 'main_character')
 
@@ -251,6 +260,7 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.main_character, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.main_character, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.main_character, this.cropsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.main_character, this.aboveGroundLayer, this.handleCollision, null, this)
 
     this.cameras.main.startFollow(this.main_character, true)
 
