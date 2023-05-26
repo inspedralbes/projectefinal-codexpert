@@ -273,10 +273,11 @@ export default class Game extends Phaser.Scene {
       if (this.npcData != null && !this.inDialogue) {
         this.inDialogue = true
 
-        const message = this.getCurrentDialog(this.npcData)
+        const data = this.getCurrentDialog(this.npcData)
+        console.log(data);
 
         window.postMessage({ type: 'end_interaction_with_npc' }, '*')
-        window.postMessage({ type: 'interaction_with_npc', npcData: { message, name: this.npcData.character } }, '*')
+        window.postMessage({ type: 'interaction_with_npc', npcData: { message: data.dialog, name: data.haveMet ? this.npcData.character : '???' } }, '*')
       }
 
       if (!this.inDialogue) {
@@ -476,11 +477,13 @@ export default class Game extends Phaser.Scene {
 
   getCurrentDialog() {
     let dialog = '...'
+    let haveMet = false;
 
     this.npcDialogs?.forEach(npc => {
       if (npc.id === this.npcData.id) {
         console.log(npc)
         if (!npc.haveMet) {
+          haveMet = npc.haveMet
           dialog = npc.introduction
 
           const bodyData = new FormData()
@@ -496,6 +499,7 @@ export default class Game extends Phaser.Scene {
           npc.haveMet = true
           npc.currentIndex = 0
         } else {
+          haveMet = npc.haveMet
           if (!npc.currentIndex)
             npc.currentIndex = 0
 
@@ -505,7 +509,7 @@ export default class Game extends Phaser.Scene {
       }
     })
 
-    return dialog
+    return { dialog, haveMet }
   }
 
   createBox() {

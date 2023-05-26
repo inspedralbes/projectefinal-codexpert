@@ -522,7 +522,7 @@ class DatabaseSeeder extends Seeder
 
                     $newDialogueOption = new Dialogue;
                     $newDialogueOption->npc_id = $newNPC->id;
-                    $newDialogueOption->sentence = "Did you know you could sort arrays with array.sort?";
+                    $newDialogueOption->sentence = "Did you know you could sort arrays with array.sort()?";
                     $newDialogueOption->save();
 
                     $newDialogueOption = new Dialogue;
