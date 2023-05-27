@@ -118,7 +118,7 @@ function IconUser() {
                 </li>
                 <li
                   className="iconUser-list__item"
-                  onClick={() => navigate('/lobbies')}
+                  onClick={() => navigate('/competitive')}
                 >
                   {' '}
                   <button className="iconUser__button">Lobby List</button>

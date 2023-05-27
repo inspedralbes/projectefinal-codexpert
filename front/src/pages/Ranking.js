@@ -50,7 +50,7 @@ function RankingPage() {
  * @function goBackToLobby
  */
   function goBackToLobby() {
-    navigate('/lobbies')
+    navigate('/competitive')
   }
 
   useEffect(() => {

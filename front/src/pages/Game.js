@@ -80,7 +80,7 @@ function Game() {
         break
 
       case 'YOU_LEFT_LOBBY-event':
-        navigate('/lobbies')
+        navigate('/competitive')
         break
 
       default:
@@ -123,7 +123,7 @@ function Game() {
  * @function goBackToLobby
  */
   function goBackToLobby() {
-    navigate('/lobbies')
+    navigate('/competitive')
   }
 
   /**
