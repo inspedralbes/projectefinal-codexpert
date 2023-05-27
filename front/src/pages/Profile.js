@@ -272,7 +272,7 @@ function Profile() {
           <div className='profile--grid'>
             <div className='profile__left'>
               <div className='profile__button'>
-                <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/lobbies')} id='goBack__button'>
+                <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/competitive')} id='goBack__button'>
                   <span className='circle' aria-hidden='true'>
                     <span className='icon arrow'></span>
                   </span>

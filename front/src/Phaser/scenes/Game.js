@@ -233,6 +233,7 @@ export default class Game extends Phaser.Scene {
     this.cropsTileset = this.map.addTilesetImage('crops', 'crops', 16, 16)
     this.puenteTileset = this.map.addTilesetImage('puente', 'puente', 16, 16)
     this.cascadeTileset = this.map.addTilesetImage('cascada', 'cascada', 16, 16)
+    this.competitiveEdTileset = this.map.addTilesetImage('competitive_edification', 'competitive_edification', 16, 16)
 
     this.groundLayer = this.map.createLayer('Ground', this.tileset, 0, 0)
     this.groundCollisionsLayer = this.map.createLayer('Ground-collisions', this.tileset, 0, 0)
@@ -243,15 +244,21 @@ export default class Game extends Phaser.Scene {
     this.aboveGroundLayer = this.map.createLayer('Above-ground', this.tileset, 0, 0)
     this.cascadeLayer = this.map.createLayer('Cascade', this.cascadeTileset, 0, 0)
 
+    this.competitiveBuildingLayer = this.map.createLayer('Competitive-building', this.competitiveEdTileset, 0, 0)
+    this.aboveCompetitiveBuildingLayer = this.map.createLayer('Competitive Above-building', this.competitiveEdTileset, 0, 0)
+
     this.buildingsLayer.setCollisionByProperty({ collides: true })
     this.bridgeLayer.setCollisionByProperty({ collides: true })
     this.groundLayer.setCollisionByProperty({ collides: true })
     this.cropsLayer.setCollisionByProperty({ collides: true })
     this.groundCollisionsLayer.setCollisionByProperty({ collides: true })
     this.aboveGroundLayer.setCollisionByProperty({ collides: true })
+    this.competitiveBuildingLayer.setCollisionByProperty({ collides: true })
     this.cascadeLayer.setDepth(3)
     this.aboveBuildingsLayer.setDepth(3)
     this.aboveGroundLayer.setDepth(1)
+    this.aboveCompetitiveBuildingLayer.setDepth(3)
+    this.buildingsLayer.setDepth(1)
     this.groundCollisionsLayer.setDepth(1)
     this.bridgeLayer.setDepth(0)
 
@@ -275,6 +282,7 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.main_character, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.main_character, this.cropsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.main_character, this.aboveGroundLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.main_character, this.competitiveBuildingLayer, this.handleCollision, null, this)
 
     this.cameras.main.startFollow(this.main_character, true)
 
@@ -300,7 +308,7 @@ export default class Game extends Phaser.Scene {
         const data = this.getCurrentDialog(this.npcData)
 
         window.postMessage({ type: 'end_interaction_with_npc' }, '*')
-        window.postMessage({ type: 'interaction_with_npc', npcData: { message: data.dialog, name: data.haveMet ? this.npcData.character : '???', voice: this.npcData.voice } }, '*')
+        window.postMessage({ type: 'interaction_with_npc', npcData: { message: data.dialog, name: data.haveMet ? data.name : '???', voice: this.npcData.voice } }, '*')
       }
 
       if (!this.inDialogue) {
@@ -502,6 +510,7 @@ export default class Game extends Phaser.Scene {
   getCurrentDialog() {
     let dialog = '...'
     let haveMet = false;
+    let name = '???';
 
     this.npcDialogs?.forEach(npc => {
       if (npc.id === this.npcData.id) {
@@ -523,6 +532,7 @@ export default class Game extends Phaser.Scene {
           npc.haveMet = true
           npc.currentIndex = 0
         } else {
+          name = npc.name
           haveMet = npc.haveMet
           if (!npc.currentIndex)
             npc.currentIndex = 0
@@ -533,7 +543,7 @@ export default class Game extends Phaser.Scene {
       }
     })
 
-    return { dialog, haveMet }
+    return { dialog, haveMet, name }
   }
 
   createBox() {
@@ -672,6 +682,8 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.main_character, this.mobGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.main_character, this.npcGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.mobGroup, this.handlePlayerNPCCollision, null, this)
+    this.physics.add.collider(this.mobGroup, this.competitiveBuildingLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.npcGroup, this.competitiveBuildingLayer, this.handleCollision, null, this)
 
     this.physics.add.collider(this.othersprites, this.buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.npcGroup, this.handleCollision, null, this)

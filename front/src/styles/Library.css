@@ -189,3 +189,19 @@ td {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.library__noLibrary {
+    text-align: center;
+    margin: 50px;
+    margin-bottom: 0;
+    color: #535353;
+}
+
+.library__noLibrary h1 {
+    font-size: 30px;
+    margin: 0 auto;
+}
+
+.library__noLibrary h2 {
+    font-size: 20px;
+}

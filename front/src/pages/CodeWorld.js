@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router'
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import DialogBox from '../Phaser/scenes/DialogBox'
+import { Loading } from '../components/Loading'
 
 /**
  * Pagina en la que se muestra el contenido de Phaser del mundo de codeXpert.
@@ -20,6 +21,7 @@ import DialogBox from '../Phaser/scenes/DialogBox'
 const CodeWorld = () => {
   const cookies = new Cookies()
   const navigate = useNavigate()
+  const dataLoaded = false
 
   /**
  * Al clicar envia mensage de que un usuario ha entrado en el mundo en socket.
@@ -103,6 +105,7 @@ const CodeWorld = () => {
   return (
     <div ref={parentRef}>
       <Header></Header>
+      {dataLoaded && <Loading></Loading>}
     </div>
   )
 }
