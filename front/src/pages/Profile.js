@@ -411,7 +411,7 @@ function Profile() {
 
                   : checkIfCanAdd(userId) ? <button id={'userId' + userId} className='pixel-button profileBtn'
                     onClick={() => {
-                      handleClick(`${userId}`)
+                      AddFriend(`${userId}`)
                       document.getElementById('userId' + userId).style.display = 'none'
                     }}>Add Friend</button> : null
                 }

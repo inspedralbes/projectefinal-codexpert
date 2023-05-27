@@ -789,12 +789,14 @@ class GameController extends Controller
                 if (!$correctTitleStatement -> correct) {
                     $returnObject = (object) [
                         'loggedIn' => true,
-                        'error' => $correctTitleStatement -> error
+                        'error' => $correctTitleStatement -> error,
+                        'created' => false,
                     ];
                 } else {
                     $returnObject = (object) [
                         'loggedIn' => true,
-                        'error' => $correctInputsAndOutputs -> error
+                        'error' => $correctInputsAndOutputs -> error,
+                        'created' => false,
                     ];
                 }
 
@@ -893,19 +895,17 @@ class GameController extends Controller
     public function editMyQuestion(Request $request)
     {  
         $returnObject = (object)[];
-        $willDelete = false;
         //Check if the user is logged in, if not array myQuestions is empty
         $userId = $this->getUserId($request -> token);
 
         if ($userId != null) {
             $returnObject = $this -> addNewQuestion($request);
-            $willDelete = true;
-            if ($willDelete) {
+            if ($returnObject -> created) {
                 $this -> deleteMyQuestion($request);
             }
         }
         
-        return response() -> json($returnObject);
+        return $returnObject;
     }      
      
 }

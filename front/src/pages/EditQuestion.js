@@ -84,9 +84,9 @@ function EditQuestion() {
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {
-          setError(data.error)
+          setError(data.error !== undefined)
         } else {
-          // navigate('/library')
+          navigate('/library')
         }
       })
   }
