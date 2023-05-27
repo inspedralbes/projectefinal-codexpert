@@ -15,13 +15,11 @@ function ConnectedUsers() {
   const myId = parseInt(cookies.get('userId') !== undefined ? cookies.get('userId') : -1)
   const [userList, setUserList] = useState([])
   const [firstTime, setFirstTime] = useState(true)
-  const [friendNotification, setfriendNotification] = useState(false)
   /**
  * Al clickar envia solicitud al usuario de la lista de usuarios conectados que se haya seleccionado.
  * @function handleClickAddFriend
  */
   const handleClickAddFriend = (userId) => {
-    setfriendNotification(!friendNotification)
     window.postMessage(
       {
         type: 'send_friend_notification-emit',

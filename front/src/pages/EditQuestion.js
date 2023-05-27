@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import '../styles/normalize.css'
 import '../styles/addQuestion.css'
 import { Loading } from '../components/Loading'
+import Header from '../components/Header'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import arrow from '../img/InputOutputArrow.png'
@@ -83,7 +84,11 @@ function EditQuestion() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setError(data.error)
+        if (data.error) {
+          setError(data.error !== undefined)
+        } else {
+          navigate('/library')
+        }
       })
   }
 
@@ -105,7 +110,7 @@ function EditQuestion() {
       .then((data) => {
         console.log(data)
         setNewQuestionData({ ...newQuestionData, title: data.title, statement: data.statement, public: data.public === '0', inputs: data.inputs, outputs: data.outputs })
-        setInputsOutputs()
+        setInputsOutputs(newQuestionData.inputs)
       })
   }
 
@@ -139,18 +144,19 @@ function EditQuestion() {
 
   return (
     <>
+    <Header></Header>
     {userLogged
-      ? <div className='addQuestionPixel__container'>
+      ? <div className='addQuestionPixel'>
         <button className='pixel-button addQuestion-back' onClick={() => localStorage.getItem('lastPage') !== null ? navigate('/' + localStorage.getItem('lastPage')) : navigate('/')}>← Go back</button>
         <h1>Edit question</h1>
 
-    <div className='grid-inputs__container'>
-      <div className='titleCheckbox__container'>
+    <div className='addQuestionPixel__container'>
+      <div className='addQuestionPixel__titleCheckbox'>
         <div className="row">
-          <div className="title__container">
+          <div className="addQuestionPixel__title">
             <label>Title:</label>
           </div>
-          <div className="input__container">
+          <div className="addQuestionPixel__input">
             <input tabIndex="1" placeholder='Uppercase' type="text" value={newQuestionData.title} onChange={(e) => setNewQuestionData({ ...newQuestionData, title: e.target.value })}></input>
           </div>
         </div>
@@ -163,13 +169,14 @@ function EditQuestion() {
       </div>
       <div className='statement__container'>
         <p>Statement:</p>
-        <textarea tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' value={newQuestionData.statement} onChange={(e) => { setNewQuestionData({ ...newQuestionData, statement: e.target.value }) }}></textarea>
+        <textarea id='scroll' tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' value={newQuestionData.statement} onChange={(e) => { setNewQuestionData({ ...newQuestionData, statement: e.target.value }) }}></textarea>
       </div>
     </div>
     <div className='addQuestionPixel__container grid__container'>
       <div className='inputOutput__container' id='scroll'>
         <div>
           <h2>INPUTS</h2>
+          {console.log(inputsOutputs)}
           {inputsOutputs.map((element, index) => {
             return <input onChange={(e) => {
               const input = newQuestionData.inputs
@@ -178,7 +185,7 @@ function EditQuestion() {
             }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} value={newQuestionData.inputs[index]} key={index} id={'input' + index} type="text"></input>
           })}
         </div>
-        <div className='inputArrows__conainer'>
+        <div className='inputArrows__container'>
           {inputsOutputs.map((element, index) => { return <div key={index}><img src={arrow}></img></div> })}
         </div>
         <div>

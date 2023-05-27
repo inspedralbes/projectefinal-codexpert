@@ -43,7 +43,7 @@ root.render(
         <Route path='register' element={<Register />} />
         <Route path='game' element={<Game />} />
         <Route path='avatarMaker' element={<AvatarMaker />} />
-        <Route path='lobbies' element={<Lobbies />}></Route>
+        <Route path='competitive' element={<Lobbies />}></Route>
         <Route path='profile' element={<Profile />}></Route>
         <Route path='tutorial' element={<Tutorial />}></Route>
         <Route path='campaign' element={<Campaign />}></Route>

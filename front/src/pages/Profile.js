@@ -123,6 +123,7 @@ function Profile() {
       },
       '*'
     )
+    console.log(userId)
     const userInfo = new FormData()
     userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     userInfo.append('otherUserId', userId)
@@ -272,7 +273,7 @@ function Profile() {
           <div className='profile--grid'>
             <div className='profile__left'>
               <div className='profile__button'>
-                <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/lobbies')} id='goBack__button'>
+                <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/competitive')} id='goBack__button'>
                   <span className='circle' aria-hidden='true'>
                     <span className='icon arrow'></span>
                   </span>
@@ -411,7 +412,7 @@ function Profile() {
 
                   : checkIfCanAdd(userId) ? <button id={'userId' + userId} className='pixel-button profileBtn'
                     onClick={() => {
-                      handleClick(`${userId}`)
+                      AddFriend(`${userId}`)
                       document.getElementById('userId' + userId).style.display = 'none'
                     }}>Add Friend</button> : null
                 }

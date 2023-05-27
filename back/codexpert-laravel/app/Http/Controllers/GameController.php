@@ -789,12 +789,14 @@ class GameController extends Controller
                 if (!$correctTitleStatement -> correct) {
                     $returnObject = (object) [
                         'loggedIn' => true,
-                        'error' => $correctTitleStatement -> error
+                        'error' => $correctTitleStatement -> error,
+                        'created' => false,
                     ];
                 } else {
                     $returnObject = (object) [
                         'loggedIn' => true,
-                        'error' => $correctInputsAndOutputs -> error
+                        'error' => $correctInputsAndOutputs -> error,
+                        'created' => false,
                     ];
                 }
 
@@ -903,7 +905,7 @@ class GameController extends Controller
             }
         }
         
-        return response() -> json($returnObject);
+        return $returnObject;
     }      
      
 }
