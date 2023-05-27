@@ -326,11 +326,10 @@ function Profile() {
                     isOpen={modals.email}
                   >
                     <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
-
                     <h1>Change your email</h1>
-                    <input className='profile__input' value={userData.email} placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
-                    <input className='profile__input' id="passwordEmail" type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
-                    <Eye className="eyeButtonEmail" id={"passwordEmail"}></Eye>
+                    <input className='profile__input' placeholder='email' value={userData.email} onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+                    <input className='profile__input' id="passwordEmail" type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
+                    <Eye id={"passwordEmail"}></Eye>
                     <div className='profile__buttons'>
                       <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
                       <button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save</button>
