@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Profile.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Profile.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* eslint-disable */
+
+import '../styles/normalize.css'
+import '../styles/profile.css'
+import { useNavigate } from 'react-router-dom'
+import Cookies from 'universal-cookie'
+import routes from '../conn_routes'
+import React, { useState, useEffect } from 'react'
+import Modal from 'react-modal'
+import Edit from '../img/Edit.png'
+import cross from '../img/cross.png'
+import Eye from '../components/Eye'
+import Header from '../components/Header'
+import { Loading } from '../components/Loading'
+
+Modal.setAppElement('body')
+
+/**
+ * Pagina que muestra los datos del usuario.
+ * @function Profile
+ */
+function Profile() {
+
+  /**
+ * Funcion que devuelve el enlace de la pagina actual.
+ * @function getCurrentURL
+ */
+  function getCurrentURL() {
+    return window.location.href
+  }
+  const cookies = new Cookies()
+  const url = new URL(getCurrentURL())
+  const myId = parseInt(cookies.get('userId') !== undefined ? cookies.get('userId') : -1)
+  const userId = url.searchParams.get('id') !== null ? parseInt(url.searchParams.get('id')) : myId
+  const navigate = useNavigate()
+  const [cannotAdd, setCannotAdd] = useState()
+  const [userData, setUserData] = useState()
+  const [friendList, setFriendList] = useState([])
+  const [gameHistory, setGameHistory] = useState([])
+  const [editUser, setEditUser] = useState({})
+  const [modals, setModals] = useState({
+    name: false,
+    email: false,
+    password: false
+  })
+
+
+  /**
+ * Funcion que comprueva si se puede añadir el usuario en caso de no ser uno mismo y que no esten agregados o solicitados.
+ * @function getCannotAdd
+ */
+  const getCannotAdd = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+
+    fetch(routes.fetchLaravel + 'getNotAddFriend', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setCannotAdd(data)
+      })
+  }
+
+  /**
+ * Funcion que recibe los datos del usuario a mostrar en el perfil.
+ * @function getUserData
+ */
+  const getUserData = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    console.log(userId)
+    if (userId === -1) {
+      fetch(routes.fetchLaravel + 'getUserData', {
+        method: 'POST',
+        mode: 'cors',
+        body: token,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            navigate('/login')
+          } else {
+            setUserData(data)
+          }
+        })
+    } else {
+      const dataFromUser = new FormData()
+      dataFromUser.append('userId', userId)
+      fetch(routes.fetchLaravel + 'getUserDataFromId', {
+        method: 'POST',
+        mode: 'cors',
+        body: dataFromUser,
+        credentials: 'include'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            navigate('/login')
+          } else {
+            setUserData(data)
+          }
+        })
+    }
+
+  }
+
+  /**
+ * Funcion envia por socket la petición para agregar al usuario.
+ * @function AddFriend
+ */
+  const AddFriend = (userId) => {
+    window.postMessage(
+      {
+        type: 'send_friend_notification-emit',
+        data: {
+          userId
+        }
+      },
+      '*'
+    )
+    const userInfo = new FormData()
+    userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    userInfo.append('otherUserId', userId)
+    fetch(routes.fetchLaravel + 'addFriend', {
+      method: 'POST',
+      mode: 'cors',
+      body: userInfo,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
+
+      })
+  }
+
+  /**
+ * Funcion que recibe la lista de usuarios que ya tiene agregado el usuario.
+ * @function getUserFriendList
+ */
+  const getUserFriendList = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'getFriendlist', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          navigate('/login')
+        } else {
+          setFriendList(data)
+        }
+      })
+  }
+
+  const getGameHistory = () => {
+    const userId = new FormData()
+    userId.append('userId', myId)
+    fetch(routes.fetchLaravel + 'getUserDataFromId', {
+      method: 'POST',
+      mode: 'cors',
+      body: userId,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        setGameHistory(data.games.original)
+      })
+  }
+
+  const getUserDataFromId = (id, friendId) => {
+    const userId = new FormData()
+    userId.append('userId', id)
+    fetch(routes.fetchLaravel + 'getUserDataFromId', {
+      method: 'POST',
+      mode: 'cors',
+      body: userId,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById('friendId' + friendId).innerHTML = `
+        &lt;td>&lt;p class='center'>${data.name}&lt;/p>&lt;/td>
+        &lt;td>&lt;img class='center' width='50px' src="${data.avatar}">&lt;/img>&lt;/td>`
+      })
+  }
+
+  useEffect(() => {
+    getCannotAdd()
+    getUserData()
+    getUserFriendList()
+    setEditUser(userData)
+    getGameHistory()
+  }, [])
+
+  /**
+ * Funcion hace peticiona al Laravel para guardar los nuevos datos introducidos de nombre y/o correo.
+ * @function saveChanges
+ */
+  const saveChanges = (type) => {
+    const user = new FormData()
+    if (type === 'newName') {
+      user.append(type, editUser.name)
+    } else {
+      user.append(type, editUser.email)
+    }
+    user.append('password', editUser.password)
+    user.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + (type === 'newName' ? 'changeUsername' : 'changeEmail'), {
+      method: 'POST',
+      mode: 'cors',
+      body: user,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
+      })
+    setModals(prev => ({ ...prev, name: false }))
+    setUserData(prev => ({ ...prev, name: editUser.name, email: editUser.email }))
+  }
+
+  /**
+ * Funcion que comprueva si el usuario puede agregar al usuario que esta viendo.
+ * @function checkIfCanAdd
+ */
+  const checkIfCanAdd = (currentUserId) => {
+    let canAdd = true
+
+    if (cannotAdd.includes(currentUserId)) {
+      canAdd = false
+    }
+
+    return canAdd
+  }
+
+  /**
+ * Funcion que guarda la contraseña que haya cambiado el usuario.
+ * @function savePassword
+ */
+  const savePassword = () => {
+    const password = new FormData()
+    password.append('currentPassword', editUser.password)
+    password.append('newPassword', editUser.newPassword)
+    password.append('newPassword_confirmation', editUser.rNewPassword)
+    password.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'changePassword', {
+      method: 'POST',
+      mode: 'cors',
+      body: password,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then(() => {
+      })
+    setModals(prev => ({ ...prev, password: false }))
+  }
+
+  if (userData !== undefined) {
+    return (
+      &lt;>
+        &lt;Header>&lt;/Header>
+        &lt;div className='profile'>
+          &lt;div className='profile--grid'>
+            &lt;div className='profile__left'>
+              &lt;div className='profile__button'>
+                &lt;button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/lobbies')} id='goBack__button'>
+                  &lt;span className='circle' aria-hidden='true'>
+                    &lt;span className='icon arrow'>&lt;/span>
+                  &lt;/span>
+                  &lt;span className='button-text'>BACK&lt;/span>
+                &lt;/button>
+              &lt;/div>
+              &lt;div>
+                &lt;table>
+                  &lt;thead>
+                    &lt;tr>
+                      &lt;th>Finished position&lt;/th>
+                      &lt;th>Hearts remaining&lt;/th>
+                      &lt;th>Elo earned&lt;/th>
+                      &lt;th>Completed all questions&lt;/th>
+                      &lt;th>Date&lt;/th>
+                    &lt;/tr>
+                  &lt;/thead>
+                  &lt;tbody>
+                    {gameHistory.map((element, index) => {
+                      return &lt;tr key={index}>
+                        &lt;td>{element.finished_position}&lt;/td>
+                        &lt;td>{element.hearts_remaining}&lt;/td>
+                        &lt;td>{element.eloEarned}&lt;/td>
+                        &lt;td>{element.completedAllQuestions}&lt;/td>
+                        &lt;td>{element.date}&lt;/td>
+                      &lt;/tr>
+                    })}
+                  &lt;/tbody>
+                &lt;/table>
+              &lt;/div>
+              &lt;Modal
+                onRequestClose={() => setModals(prev => ({ ...prev, name: false }))}
+                shouldCloseOnOverlayClick={true}
+                isOpen={modals.name}
+              >
+                &lt;button className='cross' onClick={() => setModals(prev => ({ ...prev, name: false }))}>&lt;img src={cross} alt='X' height={'30px'}>&lt;/img>&lt;/button>
+
+                &lt;input className='profile__input' placeholder='username' onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}>&lt;/input>&lt;br>&lt;/br>
+                &lt;input className='profile__input' type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}>&lt;/input>
+                &lt;Eye id={"passwordUsername"}>&lt;/Eye>
+                &lt;br>&lt;/br>
+                &lt;div className='profile__buttons'>
+                  &lt;button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, name: false }))}>Close&lt;/button>
+                  &lt;button className='pixel-button modalBtn' onClick={() => saveChanges('newName')}>Save&lt;/button>
+                &lt;/div>
+              &lt;/Modal>
+              &lt;div className='profile__settings'>
+                {myId === userId &amp;&amp; (
+                  &lt;Modal
+                    onRequestClose={() => setModals(prev => ({ ...prev, email: false }))}
+                    shouldCloseOnOverlayClick={true}
+                    isOpen={modals.email}
+                  >
+                    &lt;button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} >&lt;img src={cross} alt='X' height={'30px'}>&lt;/img>&lt;/button>
+
+                    &lt;h1>Change your email&lt;/h1>
+                    &lt;input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}>&lt;/input>&lt;br>&lt;/br>
+                    &lt;input className='profile__input' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}>&lt;/input>&lt;br>&lt;/br>
+                    &lt;div className='profile__buttons'>
+                      &lt;button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close&lt;/button>
+                      &lt;button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save&lt;/button>
+                    &lt;/div>
+                  &lt;/Modal>
+                )}
+              &lt;/div>
+
+              &lt;Modal
+                style={{
+                  content: {
+                    top: '50%',
+                    left: '50%',
+                    right: 'auto',
+                    bottom: 'auto',
+                    marginRight: '-50%',
+                    transform: 'translate(-50%, -50%)'
+                  }
+                }}
+                onRequestClose={() => setModals(prev => ({ ...prev, password: false }))}
+                shouldCloseOnOverlayClick={true}
+                isOpen={modals.password}
+              >
+                &lt;button className='cross' onClick={() => setModals(prev => ({ ...prev, password: false }))}>&lt;img src={cross} alt='X' height={'30px'}>&lt;/img>&lt;/button>
+
+                &lt;h1>Update password&lt;/h1>
+                &lt;input className='profile__input' id="passwordUpdate" type='password' placeholder='Current password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}>&lt;/input>
+                &lt;Eye id={"passwordUpdate"}>&lt;/Eye>
+                &lt;br>&lt;/br>
+                &lt;input className='profile__input' id="passwordNew" type='password' placeholder='New password' onChange={(e) => setEditUser(prev => ({ ...prev, newPassword: e.target.value }))}>&lt;/input>
+                &lt;Eye id={"passwordNew"}>&lt;/Eye>
+                &lt;br>&lt;/br>
+                &lt;input className='profile__input' id="passwordConfirm" type='password' placeholder='Repeat new password' onChange={(e) => setEditUser(prev => ({ ...prev, rNewPassword: e.target.value }))}>&lt;/input>
+                &lt;Eye id={"passwordConfirm"}>&lt;/Eye>
+                &lt;br>&lt;/br>
+                &lt;div className='profile__buttons'>
+                  &lt;button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, password: false }))}>Close&lt;/button>
+                  &lt;button className='pixel-button modalBtn' onClick={() => savePassword('newPassword')}>Save&lt;/button>
+                &lt;/div>
+
+              &lt;/Modal >
+            &lt;/div >
+            &lt;div className='profile__right'>
+              &lt;div>
+                &lt;div className='profile__name--div'>
+                  &lt;p className='profile__name'>{userData.name}&lt;/p>
+                  {myId === userId &amp;&amp; (
+                    &lt;button className='editBtn' onClick={() => setModals(prev => ({ ...prev, name: true }))}>&lt;img height='35px' className='edit' src={Edit} alt='EDIT'>&lt;/img>&lt;/button>
+                  )}
+                &lt;/div>
+                &lt;div className='profile__email--div'>
+                  &lt;p className='profile__email'>{userData.email}&lt;/p>
+                  &lt;button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}>&lt;img height='35px' className='edit' src={Edit} alt='EDIT'>&lt;/img>&lt;/button>
+                &lt;/div>
+              &lt;/div>
+
+              &lt;div id='editAvatar' className='profile__editAvatar'>
+                &lt;div className='profile__img'>
+                  &lt;img className='profile__avatar' src={userData.avatar}>&lt;/img>
+                &lt;/div>
+                {myId === userId
+                  ? &lt;>
+                    &lt;button className='pixel-button profileBtn' onClick={() => navigate('/avatarMaker')}>Edit avatar&lt;/button>
+                    &lt;button className='pixel-button profileBtn' onClick={() => setModals(prev => ({ ...prev, password: true }))}>Change password&lt;/button>
+                    &lt;h1>FRIENDS&lt;/h1>
+                    &lt;div className='profile__friends--div' id='scroll'>
+                      &lt;table className='profile__friends'>
+                        &lt;tbody>
+                          {friendList.map((element, index) => {
+                            { getUserDataFromId(element.receiver_id, index) }
+                            return &lt;tr id={'friendId' + index} key={index}>
+                            &lt;/tr>
+                          })}
+                        &lt;/tbody>
+                      &lt;/table>
+                    &lt;/div>
+                  &lt;/>
+
+                  : checkIfCanAdd(userId) ? &lt;button id={'userId' + userId} className='pixel-button profileBtn'
+                    onClick={() => {
+                      handleClick(`${userId}`)
+                      document.getElementById('userId' + userId).style.display = 'none'
+                    }}>Add Friend&lt;/button> : null
+                }
+              &lt;/div>
+            &lt;/div>
+          &lt;/div >
+        &lt;/div >
+      &lt;/>
+    )
+  } else {
+    return (
+      &lt;Loading>&lt;/Loading>
+    )
+  }
+
+}
+export default Profile
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

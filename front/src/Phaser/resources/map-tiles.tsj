@@ -1,0 +1,14 @@
+{ "columns":40,
+ "image":"..\/..\/..\/public\/assets\/tiles\/Overworld.png",
+ "imageheight":576,
+ "imagewidth":640,
+ "margin":0,
+ "name":"map-tiles",
+ "spacing":0,
+ "tilecount":1440,
+ "tiledversion":"1.10.1",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}

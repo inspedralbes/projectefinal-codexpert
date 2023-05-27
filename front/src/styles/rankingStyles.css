@@ -1,0 +1,208 @@
+.ranking {
+    background-color: var(--white);
+    color: #2e5e22;
+    margin: 0 auto;
+    width: 70%;
+    text-align: center;
+    padding: 60px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
+}
+
+.ranking::after {
+    background-color: var(--white);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.ranking::before {
+    background-color: var(--white);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.ShareResults__element {
+    position: absolute;
+    right: 3%;
+    bottom: 3%;
+    z-index: 0;
+    color: white;
+    font-size: medium;
+}
+
+.ShareRanking__button {
+    width: fit-content;
+    height: fit-content;
+}
+
+.ShareResults__copyurl {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.ShareResults__copyurl-icon:hover {
+    cursor: pointer;
+}
+
+.game__yourResults {
+    background-color: var(--white);
+    color: #2e5e22;
+    margin: 1% auto 5px auto;
+    width: fit-content;
+    font-size: 0.75em;
+    text-align: left;
+    padding: 5px 5px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
+    min-height: fit-content;
+}
+
+.game__yourResults::after {
+    background-color: var(--white);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.game__yourResults::before {
+    background-color: var(--white);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.yourResults__result {
+    /* width: 40%; */
+    clear: left;
+    text-align: left;
+    margin: 1% auto;
+    width: fit-content;
+    padding: 30px;
+    color: #000;
+    position: relative;
+    font-size: 2em;
+}
+
+.rewards__element {
+    margin: 1vw
+}
+
+.rankingPodium__content {
+    margin: 0 auto;
+    min-width: 80%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "col1 col2 col3";
+    align-items: end;
+}
+
+.ranking__content {
+    max-height: 55vh;
+    overflow: auto;
+    padding: 10px;
+}
+
+.ranking__winner {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.6fr 1.4fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "."
+        ".";
+    grid-area: col2;
+}
+
+.ranking__second {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "."
+        ".";
+    grid-area: col1;
+}
+
+.ranking__third {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1.3fr 0.7fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "."
+        ".";
+    grid-area: col3;
+}
+
+.winner__trophy {
+    background-color: gold;
+    padding: 5%;
+}
+
+.second__medal {
+    background-color: silver;
+    padding: 5%;
+}
+
+.third__medal {
+    background-color: #cd7f32;
+    padding: 5%;
+}
+
+/* .ranking__table {
+    padding: 2.5vh 0;
+} */
+
+.sharedRanking {
+    margin-top: 8vh;
+}
+
+.sharedRanking__content {
+    max-height: 70vh;
+}
+
+.ranking__button {
+    width: 20%;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+#goBackToLobby__button {
+    top: 20px;
+    right: 20px;
+    position: absolute;
+}

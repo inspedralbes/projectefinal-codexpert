@@ -1,0 +1,10 @@
+.eye {
+    width: 100%;
+}
+
+.eyeBtn {
+    background: transparent;
+    float: right;
+    right: 0;
+    transform: translate(-20px, -42px);
+}

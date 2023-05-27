@@ -1,0 +1,283 @@
+#form {
+    padding: 10px 20px;
+    width: fit-content;
+    position: relative;
+    left: 0;
+    right: 0;
+    bottom: 30px;
+    height: 5rem;
+    box-sizing: border-box;
+
+}
+
+.game_chat--border {
+    width: 27%;
+    display: block;
+    overflow-y: hidden;
+    position: fixed;
+    left: 20px;
+    bottom: 2%;
+    overflow-x: hidden;
+    transition: all 2s;
+    padding: 0 0 3px 0;
+    margin: 0;
+    height: 40%;
+    box-shadow: -4px 0 0 0 #000,
+        4px 0 0 0 #000,
+        0 -4px 0 0 #000,
+        0 4px 0 0 #000;
+}
+
+#form>button {
+    background: #0d6319;
+    border: none;
+    padding: 0 1rem;
+    margin: 0.25rem;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+}
+
+#form>button:disabled {
+    background: #c7face52;
+    border: none;
+    padding: 0 1rem;
+    margin: 0.25rem;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+}
+
+.chatBody {
+    display: block;
+    max-height: 20vh;
+    position: absolute;
+    overflow-y: auto;
+    overflow-x: hidden;
+    bottom: 50px;
+    max-width: 30%;
+    width: 30%;
+    transition: all 2s;
+    margin: 0;
+}
+
+.game__chat--div {
+    width: 100%;
+}
+
+.game__chatBody {
+    width: 100%;
+    display: block;
+    overflow-y: auto;
+    bottom: 13vh;
+    left: 20px;
+    overflow-x: hidden;
+    transition: all 2s;
+    margin: 0 0 35px 0;
+    height: 80%;
+    box-shadow: -3px 0 0 0 green,
+        0 -3px 0 0 green,
+        0 3px 0 0 green;
+}
+
+.game__userImage {
+    margin: 0 20px 0 0;
+}
+
+.chat__title {
+    color: #000
+}
+
+.chat__message,
+.game__chat {
+    font-size: 14px;
+}
+
+.chat__chatbox {
+    bottom: 0;
+}
+
+.game__sendButton {
+    background-color: green;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #ffffff;
+    display: inline-block;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    padding: 10px;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-align: center;
+    justify-content: center;
+    align-self: center;
+    transition: all 0.5s;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.37);
+}
+
+.game__sendButton::after {
+    background-color: green;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.game__sendButton::before {
+    background-color: green;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.game__sendButton:hover {
+    box-shadow: none;
+    background-color: #027202;
+    transform: translate(0, 2px);
+    cursor: pointer;
+}
+
+.game__sendButton:hover::after,
+.game__sendButton:hover::before {
+    background-color: #027202;
+}
+
+.game__form--grid {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.game__inputMsg-div {
+    width: 100%;
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+.buttonMsg-div {
+    grid-area: 1 / 2 / 2 / 3;
+}
+
+
+
+.game__inputMsg-div {
+    margin: 0 1%;
+    font-size: 0.5rem;
+    margin-right: 40px;
+    position: relative;
+    margin-bottom: 45px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 4px 0;
+    color: #000000;
+    position: relative;
+    transition: all 1s;
+}
+
+#input_message:focus,
+#game__inputMessage:focus {
+    transition: all 1s;
+    background-color: #daffc1;
+}
+
+#input_message,
+#game__inputMessage {
+    font-size: 30px;
+    display: block;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    font-size: 1.4rem;
+    border: none;
+}
+
+.game__inputMsg-div::after {
+    background-color: white;
+    box-shadow: 4px 0 0 #000000, 0 -4px #000000, 0 4px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    outline: none;
+}
+
+.game__inputMsg-div::before {
+    background-color: rgb(246, 255, 235);
+    box-shadow: -4px 0 0 #000000, 0 -4px #000000, 0 4px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+#game__chatBody::-webkit-scrollbar-track {
+    border: 2px solid #000000;
+}
+
+#game__chatBody::-webkit-scrollbar {
+    box-shadow: -3px 0 0 0 black,
+        3px 0 0 0 black,
+        0 -3px 0 0 black,
+        0 3px 0 0 black;
+    z-index: 1;
+    width: 15px;
+}
+
+#game__chatBody::-webkit-scrollbar-thumb {
+    background-color: #104400;
+    border: 2px solid #000000;
+}
+
+.lobby__chat{
+    width: 30%;
+    bottom: 0;
+}
+
+.chat__body{
+    display: block !important;
+    position: absolute;
+    margin: 0;
+    max-width: 100%;
+    width: 28%;
+    overflow: auto;
+    height: 20vh;
+    margin: 0 0 30px 0;
+    padding: 0;
+    bottom: 10%;
+}
+
+#chat__body::-webkit-scrollbar-track {
+    border: 2px solid #000000;
+}
+
+#chat__body::-webkit-scrollbar {
+    z-index: 1;
+    width: 15px;
+}
+
+#chat__body::-webkit-scrollbar-thumb {
+    background-color: #104400;
+    border: 2px solid #000000;
+}
