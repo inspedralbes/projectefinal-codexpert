@@ -5,6 +5,7 @@ export default class DialogBox extends Phaser.Scene {
   dialog
   destroyText = false
   npcName
+  voiceType
 
   constructor() {
     super({ key: 'dialog-ui' })
@@ -22,6 +23,7 @@ export default class DialogBox extends Phaser.Scene {
         this.destroyText = true
         this.dialog = eventData.npcData.message
         this.npcName = eventData.npcData.name
+        this.voiceType = eventData.npcData.voice
         this.createDialogs()
         break
 
@@ -40,6 +42,9 @@ export default class DialogBox extends Phaser.Scene {
   }
 
   createDialogs() {
+    this.voiceSound = this.sound.add(this.voiceType)
+    this.voiceSound.play({ mute: false, volume: 1.5, rate: 1, seek: 0, loop: true })
+
     this.containerInteract = this.add.container(0, window.innerHeight / 2.5)
 
     const whoAmITalkingToTextWidth = this.sys.game.config.width * 0.95
@@ -67,7 +72,7 @@ export default class DialogBox extends Phaser.Scene {
 
     const textWidth = dialogWidth * 0.95
 
-    const whoAmITalkingTo = this.add.text(40, -80, this.npcName, {
+    const whoAmITalkingTo = this.add.text(40, -100, this.npcName, {
       color: '#FFFFFF',
       backgroundColor: '#00000070',
       fontSize: '16px',
@@ -102,11 +107,12 @@ export default class DialogBox extends Phaser.Scene {
       // Verifica si se han mostrado todos los caracteres
       if (currentCharIndex < fullText.length) {
         // Agrega un retardo antes de mostrar el siguiente carácter
-        this.time.delayedCall(50, showNextCharacter, null, this)
+        this.time.delayedCall(20, showNextCharacter, null, this)
       }
 
       if (currentCharIndex >= fullText.length) {
         window.postMessage({ type: 'dialog_end-msg' }, '*')
+        this.voiceSound.stop()
       }
     }
 

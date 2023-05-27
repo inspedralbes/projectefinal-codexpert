@@ -38,6 +38,7 @@ export default class Game extends Phaser.Scene {
   nametags
   username
   npcDialogs
+  tutorialPassed = false
 
   constructor() {
     super('game')
@@ -155,12 +156,13 @@ export default class Game extends Phaser.Scene {
   }
 
   preload() {
+    this.loadAnimations()
     if (!this.othersprites) { this.othersprites = this.physics.add.staticGroup() }
 
     if (!this.nametags) { this.nametags = this.physics.add.staticGroup() }
 
-    this.createAnims('Main')
-    this.createMobAnims('bunny')
+    // this.createAnims('Main')
+    // this.createMobAnims('bunny')
     this.cursors = this.input.keyboard.createCursorKeys()
     this.keys = this.input.keyboard.addKeys({
       'up': Phaser.Input.Keyboard.KeyCodes.W,
@@ -171,6 +173,10 @@ export default class Game extends Phaser.Scene {
       'interactEnter': Phaser.Input.Keyboard.KeyCodes.ENTER,
       'run': Phaser.Input.Keyboard.KeyCodes.SHIFT
     })
+
+    this.worldMusic = this.sound.add('worldMusic')
+    this.worldMusic.play({ mute: false, volume: 1, rate: 1, seek: 0, loop: true })
+    
     this.startGame = true;
   }
 
@@ -181,6 +187,17 @@ export default class Game extends Phaser.Scene {
       'token',
       cookies.get('token') !== undefined ? cookies.get('token') : null
     )
+
+    await fetch(routes.fetchLaravel + 'checkTutorialPassed', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.tutorialPassed = data.tutorialPassed
+      })
 
     await fetch(routes.fetchLaravel + 'getAllNPCS', {
       method: 'POST',
@@ -211,15 +228,12 @@ export default class Game extends Phaser.Scene {
 
     this.map = this.make.tilemap({ key: 'map' })
 
-    this.worldMusic = this.sound.add('worldMusic')
-    this.worldMusic.play({ mute: false, volume: 1, rate: 1, seek: 0, loop: true })
-
     this.buildingsTileset = this.map.addTilesetImage('cozy-buildings', 'cozy-buildings', 16, 16)
     this.tileset = this.map.addTilesetImage('cozy-tileset', 'cozy-tileset', 16, 16)
     this.cropsTileset = this.map.addTilesetImage('crops', 'crops', 16, 16)
     this.puenteTileset = this.map.addTilesetImage('puente', 'puente', 16, 16)
     this.cascadeTileset = this.map.addTilesetImage('cascada', 'cascada', 16, 16)
-    
+
     this.groundLayer = this.map.createLayer('Ground', this.tileset, 0, 0)
     this.groundCollisionsLayer = this.map.createLayer('Ground-collisions', this.tileset, 0, 0)
     this.cropsLayer = this.map.createLayer('Crops', this.cropsTileset, 0, 0)
@@ -284,10 +298,9 @@ export default class Game extends Phaser.Scene {
         this.inDialogue = true
 
         const data = this.getCurrentDialog(this.npcData)
-        console.log(data);
 
         window.postMessage({ type: 'end_interaction_with_npc' }, '*')
-        window.postMessage({ type: 'interaction_with_npc', npcData: { message: data.dialog, name: data.haveMet ? this.npcData.character : '???' } }, '*')
+        window.postMessage({ type: 'interaction_with_npc', npcData: { message: data.dialog, name: data.haveMet ? this.npcData.character : '???', voice: this.npcData.voice } }, '*')
       }
 
       if (!this.inDialogue) {
@@ -455,7 +468,8 @@ export default class Game extends Phaser.Scene {
       } else if (overlapObjectData.get('idNPC') > 0) {
         this.npcData = {
           character: overlapObjectData.get('sprite'),
-          id: overlapObjectData.get('idNPC')
+          id: overlapObjectData.get('idNPC'),
+          voice: overlapObjectData.get('voice')
         }
         window.postMessage({ type: 'interaction_with_overlap_object', data: { name: overlapObjectData.get('sprite'), x: colisionado.x, y: colisionado.y, type: 'npc' } }, '*')
       }
@@ -535,6 +549,7 @@ export default class Game extends Phaser.Scene {
     const overlapObjectLayer = this.map.getObjectLayer('Overlap')
     const notLoggedOverlapObjectLayer = this.map.getObjectLayer('Not-Logged overlap')
     const NPCsObjectLayer = this.map.getObjectLayer('NPCs')
+    const notLoggedNPCsObjectLayer = this.map.getObjectLayer('Not-Logged NPCs')
     const mobsObjectLayer = this.map.getObjectLayer('Mobs')
 
     const puntosDeOverlap = this.physics.add.staticGroup({
@@ -573,7 +588,7 @@ export default class Game extends Phaser.Scene {
     this.npcGroup = this.add.group(config)
     this.mobGroup = this.add.group(config)
 
-    if (!window.network.getUserLogged()) {
+    if (!this.tutorialPassed) {
       notLoggedOverlapObjectLayer.objects.forEach(objct => {
         const objData = new Map()
 
@@ -590,6 +605,19 @@ export default class Game extends Phaser.Scene {
       notLoggedLayer.setCollisionByProperty({ collides: true })
       notLoggedBuildingsLayer.setCollisionByProperty({ collides: true })
       this.physics.add.collider(this.main_character, notLoggedLayer, this.handleCollision, null, this)
+      notLoggedLayer.setDepth(1)
+
+      notLoggedNPCsObjectLayer.objects.forEach(objct => {
+        const objData = new Map()
+
+        objct.properties.forEach(prop => {
+          objData.set(prop.name, prop.value)
+        })
+        // this.createAnims(objData.get('sprite'))
+        const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, objData.get('sprite'), undefined, true)
+        gameObj.properties = objData
+        this.npcGroup.add(gameObj)
+      })
     } else {
       this.username = window.network.getUsername()
       overlapObjectLayer.objects.forEach(objct => {
@@ -610,7 +638,7 @@ export default class Game extends Phaser.Scene {
       objct.properties.forEach(prop => {
         objData.set(prop.name, prop.value)
       })
-      this.createAnims(objData.get('sprite'))
+      // this.createAnims(objData.get('sprite'))
       const gameObj = puntosNPCs.get(objct.x + objct.width * 0.5, objct.y - objct.height * 0.5, objData.get('sprite'), undefined, true)
       gameObj.properties = objData
       this.npcGroup.add(gameObj)
@@ -622,7 +650,7 @@ export default class Game extends Phaser.Scene {
       objct.properties.forEach(prop => {
         objData.set(prop.name, prop.value)
       })
-      this.createMobAnims(objData.get('sprite'))
+      // this.createMobAnims(objData.get('sprite'))
       const gameObj = puntosMobs.get(objct.x + objct.width * 0.1, objct.y - objct.height * 0.1, objData.get('sprite'), undefined, true)
       gameObj.properties = objData
       this.mobGroup.add(gameObj)
@@ -630,6 +658,7 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.overlap(this.main_character, this.overlapGroup, this.handleOverlap, null, this)
     this.physics.add.overlap(this.main_character, this.npcGroup, this.handleOverlap, null, this)
+
     this.physics.add.collider(this.mobGroup, this.buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.groundCollisionsLayer, this.handleCollision, null, this)
@@ -643,11 +672,15 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.main_character, this.mobGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.main_character, this.npcGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.mobGroup, this.handlePlayerNPCCollision, null, this)
+
     this.physics.add.collider(this.othersprites, this.buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.npcGroup, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.cropsLayer, this.handleCollision, null, this)
+
+    this.mobGroup.setDepth(1)
+    this.npcGroup.setDepth(1)
   }
 
   handlePlayerNPCCollision(obj1, colisionado) {
@@ -663,108 +696,103 @@ export default class Game extends Phaser.Scene {
     mob.handleDamage(dir)
   }
 
-  createMobAnims(texture) {
-    if (spriteAnimsCreated.some((element) => element === texture)) {
-      return
-    }
-    spriteAnimsCreated.push(texture)
+  loadAnimations = () => {
+    const npcTextures = ['Main', 'Strawberry', 'Gaspa', 'Asselia', 'Martin', 'Amae', 'Farmer', 'Shopkeeper', 'Iris', 'Emo', 'Aitor', 'Paul']
+    const mobTextures = ['chicken', 'chicken_baby', 'bunny', 'cow', 'cow_baby']
 
-    this.anims.create({
-      key: `${texture}-walk-back`,
-      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-back-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 12
+    npcTextures.forEach(texture => {
+      this.anims.create({
+        key: `${texture}-idle-down`,
+        frames: [
+          { key: `${texture}`, frame: 'walk-front-1.png' }
+        ]
+      })
+
+      this.anims.create({
+        key: `${texture}-idle-up`,
+        frames: [
+          { key: `${texture}`, frame: 'walk-back-1.png' }
+        ]
+      })
+
+      this.anims.create({
+        key: `${texture}-idle-right`,
+        frames: [
+          { key: `${texture}`, frame: 'walk-right-1.png' }
+        ]
+      })
+
+      this.anims.create({
+        key: `${texture}-idle-left`,
+        frames: [
+          { key: `${texture}`, frame: 'walk-left-1.png' }
+        ]
+      })
+
+      this.anims.create({
+        key: `${texture}-walk-down`,
+        frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-front-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 12
+      })
+
+      this.anims.create({
+        key: `${texture}-walk-up`,
+        frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-back-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 12
+      })
+
+      this.anims.create({
+        key: `${texture}-walk-right`,
+        frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-right-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 12
+      })
+
+      this.anims.create({
+        key: `${texture}-walk-left`,
+        frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-left-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 12
+      })
     })
 
-    this.anims.create({
-      key: `${texture}-walk-front`,
-      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-front-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 12
-    })
+    mobTextures.forEach(texture => {
+      this.anims.create({
+        key: `${texture}-walk-back`,
+        frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-back-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 12
+      })
 
-    this.anims.create({
-      key: `${texture}-walk-left`,
-      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-left-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 12
-    })
+      this.anims.create({
+        key: `${texture}-walk-front`,
+        frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-front-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 12
+      })
 
-    this.anims.create({
-      key: `${texture}-walk-right`,
-      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-right-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 12
-    })
+      this.anims.create({
+        key: `${texture}-walk-left`,
+        frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-left-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 12
+      })
 
-    this.anims.create({
-      key: `${texture}-sleep`,
-      frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'sleep-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 3
-    })
-  }
+      this.anims.create({
+        key: `${texture}-walk-right`,
+        frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'walk-right-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 12
+      })
 
-  createAnims(texture) {
-    if (spriteAnimsCreated.some((element) => element === texture)) {
-      return
-    }
-
-    spriteAnimsCreated.push(texture)
-    this.anims.create({
-      key: `${texture}-idle-down`,
-      frames: [
-        { key: `${texture}`, frame: 'walk-front-1.png' }
-      ]
-    })
-
-    this.anims.create({
-      key: `${texture}-idle-up`,
-      frames: [
-        { key: `${texture}`, frame: 'walk-back-1.png' }
-      ]
-    })
-
-    this.anims.create({
-      key: `${texture}-idle-right`,
-      frames: [
-        { key: `${texture}`, frame: 'walk-right-1.png' }
-      ]
-    })
-
-    this.anims.create({
-      key: `${texture}-idle-left`,
-      frames: [
-        { key: `${texture}`, frame: 'walk-left-1.png' }
-      ]
-    })
-
-    this.anims.create({
-      key: `${texture}-walk-down`,
-      frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-front-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 12
-    })
-
-    this.anims.create({
-      key: `${texture}-walk-up`,
-      frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-back-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 12
-    })
-
-    this.anims.create({
-      key: `${texture}-walk-right`,
-      frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-right-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 12
-    })
-
-    this.anims.create({
-      key: `${texture}-walk-left`,
-      frames: this.anims.generateFrameNames(`${texture}`, { start: 1, end: 8, prefix: 'walk-left-', suffix: '.png' }),
-      repeat: -1,
-      frameRate: 12
+      this.anims.create({
+        key: `${texture}-sleep`,
+        frames: this.anims.generateFrameNames(texture, { start: 1, end: 4, prefix: 'sleep-', suffix: '.png' }),
+        repeat: -1,
+        frameRate: 3
+      })
     })
   }
 }
