@@ -74,6 +74,15 @@ export default class Game extends Phaser.Scene {
         this.phaserUserId = window.network.getPhaserId()
         break
 
+      case 'sound_enabled-msg':
+        if (eventData.enabled) {
+          this.worldMusic.stop()
+        } else {
+          this.worldMusic.play()
+        }
+        break
+
+
       default:
         // UNKNOWN EVENT
         break
@@ -176,7 +185,6 @@ export default class Game extends Phaser.Scene {
 
     this.worldMusic = this.sound.add('worldMusic')
     this.worldMusic.play({ mute: false, volume: 1, rate: 1, seek: 0, loop: true })
-    
     this.startGame = true;
   }
 
@@ -208,6 +216,7 @@ export default class Game extends Phaser.Scene {
       .then((response) => response.json())
       .then((data) => {
         this.npcDialogs = data
+        window.postMessage({ type: 'data_loaded-msg' }, '*')
       })
 
     this.nameTagContainer = this.add.container(0, 0)

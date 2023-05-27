@@ -6,13 +6,16 @@ import InteractUI from '../Phaser/scenes/InteractUI'
 import Header from '../components/Header'
 
 import '../styles/normalize.css'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
 import DialogBox from '../Phaser/scenes/DialogBox'
 import { Loading } from '../components/Loading'
+
+import '../styles/Phaser.css'
+import MuteSound from '../components/MuteSound'
 
 /**
  * Pagina en la que se muestra el contenido de Phaser del mundo de codeXpert.
@@ -21,7 +24,7 @@ import { Loading } from '../components/Loading'
 const CodeWorld = () => {
   const cookies = new Cookies()
   const navigate = useNavigate()
-  const dataLoaded = false
+  const [dataLoaded, setDataLoaded] = useState(false)
 
   /**
  * Al clicar envia mensage de que un usuario ha entrado en el mundo en socket.
@@ -35,6 +38,10 @@ const CodeWorld = () => {
       case 'navigate_request-msg':
         window.postMessage({ type: 'left_phaser_world-emit' }, '*')
         navigate('/' + eventData.value)
+        break
+      case 'data_loaded-msg':
+        setDataLoaded(true)
+        console.log('loaded' + dataLoaded)
         break
     }
   }
@@ -70,8 +77,8 @@ const CodeWorld = () => {
 
       window.postMessage({
         type: 'connected_phaser_world-emit',
-        x: 350,
-        y: 350
+        x: 210,
+        y: 690
       }, '*')
     }
 
@@ -82,6 +89,7 @@ const CodeWorld = () => {
         // Realizar las tareas de limpieza de Phaser si es necesario
         worldGame.destroy(true, false)
         worldGame = null
+        setDataLoaded(false)
       }
       window.removeEventListener('message', handleMessage)
     }
@@ -104,10 +112,13 @@ const CodeWorld = () => {
   }, [])
 
   return (
-    <div ref={parentRef}>
-      <Header></Header>
-      {dataLoaded && <Loading></Loading>}
-    </div>
+    <main>
+      {dataLoaded ? null : <div className='phaser__loader'><Loading></Loading></div>}
+      <div ref={parentRef}>
+        <Header></Header>
+        <MuteSound></MuteSound>
+      </div>
+    </main>
   )
 }
 
