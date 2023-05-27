@@ -15,6 +15,7 @@ import DialogBox from '../Phaser/scenes/DialogBox'
 import { Loading } from '../components/Loading'
 
 import '../styles/Phaser.css'
+import MuteSound from '../components/MuteSound'
 
 /**
  * Pagina en la que se muestra el contenido de Phaser del mundo de codeXpert.
@@ -115,6 +116,7 @@ const CodeWorld = () => {
       {dataLoaded ? null : <div className='phaser__loader'><Loading></Loading></div>}
       <div ref={parentRef}>
         <Header></Header>
+        <MuteSound></MuteSound>
       </div>
     </main>
   )
