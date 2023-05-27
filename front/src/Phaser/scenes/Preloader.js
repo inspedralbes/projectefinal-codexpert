@@ -9,6 +9,8 @@ export default class Preloader extends Phaser.Scene {
     this.load.image('cozy-tileset', 'assets/tiles/cozy-tileset.png')
     this.load.image('cozy-buildings', 'assets/tiles/cozy-buildings.png')
     this.load.image('crops', 'assets/tiles/crops.png')
+    this.load.image('puente', 'assets/tiles/punte.png')
+    this.load.image('cascada', 'assets/tiles/cascada.png')
     this.load.tilemapTiledJSON('map', 'assets/tiles/cozy-map.json')
 
     // UI
@@ -21,6 +23,10 @@ export default class Preloader extends Phaser.Scene {
 
     // Music
     this.load.audio('worldMusic', 'assets/music/world.mp3')
+    this.load.audio('voice', 'assets/sounds/dialog_sound.wav')
+    this.load.audio('homeless_voice', 'assets/sounds/dialog_sound-homeless.wav')
+    this.load.audio('deep_voice', 'assets/sounds/dialog_sound-deep.wav')
+    this.load.audio('highpitched_voice', 'assets/sounds/dialog_sound-sharp.wav')
 
     // Characters
     this.load.atlas('Main', 'assets/characters/main character/main.png', 'assets/characters/main character/main.json')

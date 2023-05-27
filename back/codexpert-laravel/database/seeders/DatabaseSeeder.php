@@ -516,8 +516,8 @@ class DatabaseSeeder extends Seeder
             { {
                     //Dialogue 1                    
                     $newNPC = new npc;
-                    $newNPC->name = "Gaspa";
-                    $newNPC->introduction = "Hi! (with rizz) My name is Gaspa. I love NodeJS :D";
+                    $newNPC->name = "Gaspar";
+                    $newNPC->introduction = "Hi! My name is Gaspar. I love NodeJS :D";
                     $newNPC->save();
 
                     $newDialogueOption = new Dialogue;
@@ -532,8 +532,8 @@ class DatabaseSeeder extends Seeder
                 } {
                     //Dialogue 2
                     $newNPC = new npc;
-                    $newNPC->name = "Asselia";
-                    $newNPC->introduction = "Welcome to CodeWorld! My name is Asselia, nice to meet you!";
+                    $newNPC->name = "Alessia";
+                    $newNPC->introduction = "Welcome to CodeWorld! My name is Alessia, nice to meet you!";
                     $newNPC->save();
 
                     $newDialogueOption = new Dialogue;
@@ -579,8 +579,8 @@ class DatabaseSeeder extends Seeder
                 } {
                     //Dialogue 4
                     $newNPC = new npc;
-                    $newNPC->name = "Martin";
-                    $newNPC->introduction = "Hey traveler, planning to live here? I'm Martin, nice to meet you!";
+                    $newNPC->name = "Marti";
+                    $newNPC->introduction = "Hey traveler, planning to live here? I'm Marti, nice to meet you!";
                     $newNPC->save();
 
                     $newDialogueOption = new Dialogue;
@@ -601,6 +601,174 @@ class DatabaseSeeder extends Seeder
                     $newDialogueOption = new Dialogue;
                     $newDialogueOption->npc_id = $newNPC->id;
                     $newDialogueOption->sentence = "The old man down there tried to create a tournament all by himself, but he didn't get away with it!";
+                    $newDialogueOption->save();
+                } {
+                    //Dialogue 5
+                    $newNPC = new npc;
+                    $newNPC->name = "Iker";
+                    $newNPC->introduction = "Hey there, I see you're new here! Welcome to my farm, I'm Iker.";
+                    $newNPC->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "As you can see, I produce most part of the energy and supplies in Code World.";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Did you know that the some() method tests whether at least one element in the array passes the test implemented by the provided function?";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "I'm not a switch statement enthusiast, I just prefer using if-else like in my childhood!";
+                    $newDialogueOption->save();
+                } {
+                    //Dialogue 6
+                    $newNPC = new npc;
+                    $newNPC->name = "Kenny";
+                    $newNPC->introduction = "Hi!, I'm Kenny.";
+                    $newNPC->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "You cannot enter the city until you complete the challenges of the house next to me!";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "We will test your programming skills before allowing you to enter.";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Don't worry, you can fail as much as you want, no one will judge you!";
+                    $newDialogueOption->save();
+                } {
+                    //Dialogue 7
+                    $newNPC = new npc;
+                    $newNPC->name = "Lars";
+                    $newNPC->introduction = "Hi!, I'm Lars, the shop keeper.";
+                    $newNPC->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "We're closed until further notice.";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "We used to sell themes for the competitive mode...";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "I'm sorry, come back later!";
+                    $newDialogueOption->save();
+                } {
+                    //Dialogue 8
+                    $newNPC = new npc;
+                    $newNPC->name = "Iris";
+                    $newNPC->introduction = "Hey, I'm Iris, nice to meet you.";
+                    $newNPC->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "You can find your house at the first right turn.";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "You can find the competitive mode in the building located in the city center!";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "I've been waiting for weeks for the market to reopen...";
+                    $newDialogueOption->save();
+                } {
+                    //Dialogue 9
+                    $newNPC = new npc;
+                    $newNPC->name = "Asmae";
+                    $newNPC->introduction = "Hello World,... I mean Hey! I'm Asmae, nice to meet you.";
+                    $newNPC->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "I've been coding for 9 hours straight, can't think properly.";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Be careful with Javascript array sort method... It's tricky.";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Some people like using W3Schools, I personally prefer using Mozilla Developer Network";
+                    $newDialogueOption->save();
+                } {
+                    //Dialogue 10
+                    $newNPC = new npc;
+                    $newNPC->name = "Aitor";
+                    $newNPC->introduction = "Yoo! I'm Aitor!!";
+                    $newNPC->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "I love taking care of the farm with Alessia! :D";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "I barely managed to complete the tutorial before entering, even though I don't like programming...";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Maybe I'll try the competitive mode anyway.";
+                    $newDialogueOption->save();
+                } {
+                    //Dialogue 11
+                    $newNPC = new npc;
+                    $newNPC->name = "???";
+                    $newNPC->introduction = "What are you doing here?";
+                    $newNPC->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Just leave me alone.";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Could you give me some space, please?";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "I would appreciate it if you left me alone.";
+                    $newDialogueOption->save();
+                } {
+                    //Dialogue 12
+                    $newNPC = new npc;
+                    $newNPC->name = "Strawberry";
+                    $newNPC->introduction = "What's up!! I'm Strawberry";
+                    $newNPC->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Happiness is a choice, so choose to be happy!";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "May your day be filled with joy and laughter.";
+                    $newDialogueOption->save();
+
+                    $newDialogueOption = new Dialogue;
+                    $newDialogueOption->npc_id = $newNPC->id;
+                    $newDialogueOption->sentence = "Wishing you a lifetime of happiness and success.";
                     $newDialogueOption->save();
                 }
             }
