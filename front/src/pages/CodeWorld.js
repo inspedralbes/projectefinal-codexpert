@@ -70,8 +70,8 @@ const CodeWorld = () => {
 
       window.postMessage({
         type: 'connected_phaser_world-emit',
-        x: 350,
-        y: 350
+        x: 210,
+        y: 690
       }, '*')
     }
 
