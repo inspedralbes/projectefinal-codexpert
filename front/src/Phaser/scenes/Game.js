@@ -93,7 +93,7 @@ export default class Game extends Phaser.Scene {
 
     if (!sprites.some((sprite) => sprite.properties.id == characterData.id)) {
       const newPlayer = this.physics.add.sprite(characterData.x, characterData.y, 'bunny')
-      newPlayer.setDepth(1)
+      newPlayer.setDepth(2)
       newPlayer.properties = characterData
 
       newPlayer.anims.play('bunny-sleep')
@@ -267,7 +267,7 @@ export default class Game extends Phaser.Scene {
     this.loadObjectLayers()
 
     this.physics.add.existing(this.main_character)
-    this.main_character.setDepth(1)
+    this.main_character.setDepth(2)
     this.main_character.body.setSize(this.main_character.width * 0.3, this.main_character.height * 0.3)
 
     this.createBox()
@@ -610,12 +610,12 @@ export default class Game extends Phaser.Scene {
         this.overlapGroup.add(gameObj)
       })
 
-      const notLoggedLayer = this.map.createLayer('Not-logged', this.tileset, 0, 0)
+      this.notLoggedLayer = this.map.createLayer('Not-logged', this.tileset, 0, 0)
       const notLoggedBuildingsLayer = this.map.createLayer('Not-logged-buildings', this.buildingsTileset, 0, 0)
-      notLoggedLayer.setCollisionByProperty({ collides: true })
+      this.notLoggedLayer.setCollisionByProperty({ collides: true })
       notLoggedBuildingsLayer.setCollisionByProperty({ collides: true })
-      this.physics.add.collider(this.main_character, notLoggedLayer, this.handleCollision, null, this)
-      notLoggedLayer.setDepth(1)
+      this.physics.add.collider(this.main_character, this.notLoggedLayer, this.handleCollision, null, this)
+      this.notLoggedLayer.setDepth(1)
 
       notLoggedNPCsObjectLayer.objects.forEach(objct => {
         const objData = new Map()
@@ -684,15 +684,19 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.mobGroup, this.mobGroup, this.handlePlayerNPCCollision, null, this)
     this.physics.add.collider(this.mobGroup, this.competitiveBuildingLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.npcGroup, this.competitiveBuildingLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.mobGroup, this.notLoggedLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.npcGroup, this.notLoggedLayer, this.handleCollision, null, this)
 
     this.physics.add.collider(this.othersprites, this.buildingsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.npcGroup, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.groundLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.groundCollisionsLayer, this.handleCollision, null, this)
     this.physics.add.collider(this.othersprites, this.cropsLayer, this.handleCollision, null, this)
+    this.physics.add.collider(this.othersprites, this.notLoggedLayer, this.handleCollision, null, this)
 
     this.mobGroup.setDepth(1)
     this.npcGroup.setDepth(1)
+    this.othersprites.setDepth(2)
   }
 
   handlePlayerNPCCollision(obj1, colisionado) {
