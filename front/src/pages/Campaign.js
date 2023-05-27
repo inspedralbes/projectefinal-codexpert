@@ -224,22 +224,22 @@ function Campaign() {
           {localStorage.getItem('tutorialPassed') !== null && (
             <>
               {cookies.get('token') !== undefined && (
-                <div className="lobbies-button">
+                <div className='campaign__button'>
                   <button
                     className="pixel-button"
                     onClick={() => navigate('/codeworld')}
                   >
-                    GO LOBBIES
+                    GO CODEWORLD
                   </button>
                 </div>
               )}
               {cookies.get('token') === undefined && (
-                <div className="lobbies__button">
+                <div className="campaign__button">
                   <button
                     className="pixel-button"
                     onClick={() => navigate('/login')}
                   >
-                    LOGIN/REGISTER
+                    LOGIN / REGISTER
                   </button>
                 </div>
               )}

@@ -293,34 +293,33 @@ class DatabaseSeeder extends Seeder
             //Input 1
             $input = new Tutorial_test_input;
             $input->question_id = 1;
-            $input->input = serialize(3);
+            $input->input = serialize('"Example Input"');
             $input->save();
             //Input 2
             $input = new Tutorial_test_input;
             $input->question_id = 1;
-            $input->input = serialize(5);
+            $input->input = serialize('"Example Input"');
             $input->save();
             //Input 3
             $input = new Tutorial_test_input;
             $input->question_id = 1;
-            $input->input = serialize(1);
+            $input->input = serialize('"Example Input"');
             $input->save();
             //Output 1
             $output = new Tutorial_test_output;
             $output->question_id = 1;
-            $output->output = serialize(2);
+            $output->output = serialize('"Hello World!"');
             $output->save();
             //Output 2
             $output = new Tutorial_test_output;
             $output->question_id = 1;
-            $output->output = serialize(2);
+            $output->output = serialize('"Hello World!"');
             $output->save();
             //Output 3
             $output = new Tutorial_test_output;
             $output->question_id = 1;
-            $output->output = serialize(2);
+            $output->output = serialize('"Hello World!"');
             $output->save();
-
 
             //Level 2
             $tutorial_question = new Tutorial_question;

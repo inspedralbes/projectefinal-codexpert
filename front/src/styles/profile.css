@@ -207,7 +207,16 @@
     outline: none;
     border: none;
     padding: 10px;
+    margin-bottom: 0;
     width: 80%;
+}
+
+.eyeButtonUsername {
+    transform: translate(-5px, -58px);
+}
+
+.eyeButtonEmail {
+    transform: translate(-9px, -58px);
 }
 
 .profile__buttons {
@@ -255,6 +264,10 @@
 .cross:hover {
     cursor: pointer;
     opacity: 1;
+}
+
+.profile__table {
+    border: 3px solid black;
 }
 
 .profile__friends th,
@@ -310,4 +323,9 @@ th {
     justify-content: center;
     flex-wrap: wrap;
     align-content: center;
+}
+
+.profile__friends--div {
+    height: 30vh;
+    border: 1px solid black;
 }

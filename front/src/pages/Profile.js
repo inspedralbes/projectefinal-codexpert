@@ -72,8 +72,7 @@ function Profile() {
   const getUserData = () => {
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
-    console.log(userId)
-    if (userId === -1) {
+    if (userId === myId) {
       fetch(routes.fetchLaravel + 'getUserData', {
         method: 'POST',
         mode: 'cors',
@@ -280,7 +279,7 @@ function Profile() {
                   <span className='button-text'>BACK</span>
                 </button>
               </div>
-              <div>
+              <div className='profile__table'>
                 <table>
                   <thead>
                     <tr>
@@ -310,11 +309,10 @@ function Profile() {
                 isOpen={modals.name}
               >
                 <button className='cross' onClick={() => setModals(prev => ({ ...prev, name: false }))}><img src={cross} alt='X' height={'30px'}></img></button>
-
-                <input className='profile__input' placeholder='username' onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
-                <input className='profile__input' type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
+                <h1>Change your username</h1>
+                <input className='profile__input' placeholder='username' value={userData.name} onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
+                <input className='profile__input' id="passwordUsername" type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
                 <Eye id={"passwordUsername"}></Eye>
-                <br></br>
                 <div className='profile__buttons'>
                   <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, name: false }))}>Close</button>
                   <button className='pixel-button modalBtn' onClick={() => saveChanges('newName')}>Save</button>
@@ -330,8 +328,9 @@ function Profile() {
                     <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
 
                     <h1>Change your email</h1>
-                    <input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
-                    <input className='profile__input' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                    <input className='profile__input' value={userData.email} placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+                    <input className='profile__input' id="passwordEmail" type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input><br></br>
+                    <Eye className="eyeButtonEmail" id={"passwordEmail"}></Eye>
                     <div className='profile__buttons'>
                       <button className='pixel-button modalBtn close' onClick={() => setModals(prev => ({ ...prev, email: false }))}>Close</button>
                       <button className='pixel-button modalBtn' onClick={() => saveChanges('newEmail')}>Save</button>

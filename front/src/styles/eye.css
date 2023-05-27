@@ -3,6 +3,7 @@
 }
 
 .eyeBtn {
+    cursor: pointer;
     background: transparent;
     float: right;
     right: 0;
