@@ -123,6 +123,7 @@ function Profile() {
       },
       '*'
     )
+    console.log(userId)
     const userInfo = new FormData()
     userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     userInfo.append('otherUserId', userId)

@@ -250,12 +250,9 @@ class FriendController extends Controller
 
         if ($currentUserId != null) {
         $friendlist = DB::table('friends')
-            ->where('sender_id', $currentUserId) 
+            ->where('receiver_id', $currentUserId) 
             ->where('status', 'pending')
-            ->orWhere( function ($query) use ($currentUserId) {
-                $query->where('receiver_id', $currentUserId)
-                      ->where('status', 'pending');
-            }) -> get();
+            -> get();
         }
 
         for ($i=0; $i < count($friendlist); $i++) { 
@@ -269,21 +266,17 @@ class FriendController extends Controller
                 "userId" => $otherUserInfo -> id,
                 "name" => $otherUserInfo -> name,
                 "avatar" => $otherUserInfo -> avatar,
-                "status" => $friendlist[$i] -> id,
-                "showNotification" => $friendlist[$i] -> id,
+                "status" => $friendlist[$i] -> status,
+                "showNotification" => $friendlist[$i] -> showNotification,
             ];
             array_push($allFriendNotifications, $friendNotification);
         }
 
         $unreadCount = DB::table('friends')
-            ->where('sender_id', $currentUserId) 
+            ->where('receiver_id', $currentUserId) 
             ->where('status', 'pending')
             ->where('showNotification', true)
-            ->orWhere( function ($query) use ($currentUserId) {
-                $query->where('receiver_id', $currentUserId)
-                      ->where('status', 'pending')
-                      ->where('showNotification', true);
-            }) -> count();
+            -> count();
 
         if ($unreadCount > 0) {
             $notificationUnread = true;
