@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import '../styles/normalize.css'
 import '../styles/addQuestion.css'
 import { Loading } from '../components/Loading'
+import Header from '../components/Header'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import arrow from '../img/InputOutputArrow.png'
@@ -143,6 +144,7 @@ function EditQuestion() {
 
   return (
     <>
+    <Header></Header>
     {userLogged
       ? <div className='addQuestionPixel'>
         <button className='pixel-button addQuestion-back' onClick={() => localStorage.getItem('lastPage') !== null ? navigate('/' + localStorage.getItem('lastPage')) : navigate('/')}>← Go back</button>

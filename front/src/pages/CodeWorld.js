@@ -88,6 +88,7 @@ const CodeWorld = () => {
   }, [])
 
   useEffect(() => {
+    localStorage.setItem('lastPage', 'codeworld')
     const token = new FormData()
     token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     fetch(routes.fetchLaravel + 'isUserLogged', {
