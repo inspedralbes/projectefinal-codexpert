@@ -227,7 +227,7 @@ function Campaign() {
                 <div className="lobbies-button">
                   <button
                     className="pixel-button"
-                    onClick={() => navigate('/competitive')}
+                    onClick={() => navigate('/codeworld')}
                   >
                     GO LOBBIES
                   </button>
