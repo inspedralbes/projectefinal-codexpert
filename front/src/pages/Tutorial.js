@@ -512,7 +512,7 @@ function Tutorial() {
             <h2>Statement:</h2>
             <h1 className="game__statementTitle" id="scroll">{parse(qst.statement)}</h1>
           </div>
-          <div className="game--grid">
+          <div className="game--grid tutorial__game--grid">
             <div className="editor--div">
               <div className="editor__expected">
                 <div className="game__expectedInput">
