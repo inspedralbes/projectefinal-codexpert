@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import '../styles/normalize.css'
 import '../styles/addQuestion.css'
 import { Loading } from '../components/Loading'
+import Header from '../components/Header'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import arrow from '../img/InputOutputArrow.png'
@@ -118,6 +119,7 @@ function AddQuestion() {
 
   return (
     <>
+    <Header></Header>
       {userLogged
         ? <div className='addQuestionPixel'>
           <button className='pixel-button addQuestion-back' onClick={() => localStorage.getItem('lastPage') !== null ? navigate('/' + localStorage.getItem('lastPage')) : navigate('/')}>← Go back</button>
@@ -142,7 +144,7 @@ function AddQuestion() {
             </div>
             <div className='statement__container'>
               <p>Statement:</p>
-              <textarea tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' onChange={(e) => { setQuestionData({ ...questionData, statement: e.target.value }) }}></textarea>
+              <textarea id='scroll' tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' onChange={(e) => { setQuestionData({ ...questionData, statement: e.target.value }) }}></textarea>
             </div>
           </div>
           <div className='addQuestionPixel__container grid__container'>
@@ -157,7 +159,7 @@ function AddQuestion() {
                   }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} key={index} id={'input' + index} type="text"></input>
                 })}
               </div>
-              <div className='inputArrows__conainer'>
+              <div className='inputArrows__container'>
                 {inputsOutputs.map((element, index) => { return <div key={index}><img src={arrow}></img></div> })}
               </div>
               <div>

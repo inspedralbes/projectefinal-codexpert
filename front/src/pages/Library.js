@@ -10,6 +10,7 @@ import Tippy from '@tippyjs/react' // Tooltip
 import 'tippy.js/dist/tippy.css' // Tooltip styles
 import 'tippy.js/themes/light-border.css' // Tooltip theme
 import 'tippy.js/animations/shift-away-extreme.css' // Tooltip animation
+import arrow from '../img/arrow.gif'
 
 /**
  * Biblioteca de preguntas del usuario.
@@ -102,43 +103,52 @@ function Library() {
   return (
     <>
       <Header></Header>
-      {userLogged && (questionData[0].title !== undefined ? questionData[0].title !== '' : questionData.length === 0)
+      {userLogged && (questionData[0]?.title !== undefined ? questionData[0]?.title !== '' : questionData.length === 0)
         ? <div className='library'>
           <button className='pixel-button library-back' onClick={() => navigate('/codeworld')}>← go back</button>
           <h1>Questions Library</h1>
-          <div className='tableList__container' id='scroll'>
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Statement</th>
-                  <th>Public</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {questionData.map((element, index) => {
-                  return <tr id={'questionId' + index} key={index}>
-                    <td>{element.title}</td>
-                    <Tippy
-                      className='library__tooltip'
-                      theme={'light-border'}
-                      content={element.statement}
-                      placement={'top'}
-                      animation={'shift-away-extreme'}
-                    >
-                      <td>{element.statement}</td>
-                    </Tippy>
-
-                    <td>{element.public === 0 ? 'no' : 'yes'}</td>
-                    <td><button className='pixel-button edit-button' onClick={() => handleEdit(element.id)}>Edit</button></td>
-                    <td><button className='pixel-button delete-button' onClick={() => handleDelete(index, element.id)}>Delete</button></td>
+          {questionData.length === 0
+            ? <div className='library__noLibrary'>
+              <h1>There are no questions yet</h1>
+              <h2>You can create one!!</h2>
+              <img
+                src={arrow} alt=' ' height='100px'
+              />
+            </div>
+            : <div className='tableList__container' id='scroll'>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Statement</th>
+                    <th>Public</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                   </tr>
-                })}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {questionData.map((element, index) => {
+                    return <tr id={'questionId' + index} key={index}>
+                      <td>{element.title}</td>
+                      <Tippy
+                        className='library__tooltip'
+                        theme={'light-border'}
+                        content={element.statement}
+                        placement={'top'}
+                        animation={'shift-away-extreme'}
+                      >
+                        <td>{element.statement}</td>
+                      </Tippy>
+
+                      <td>{element.public === 0 ? 'no' : 'yes'}</td>
+                      <td><button className='pixel-button edit-button' onClick={() => handleEdit(element.id)}>Edit</button></td>
+                      <td><button className='pixel-button delete-button' onClick={() => handleDelete(index, element.id)}>Delete</button></td>
+                    </tr>
+                  })}
+                </tbody>
+              </table>
+            </div>
+          }
           <button className='pixel-button' onClick={() => navigate('/addQuestion')}>Add new question</button>
         </div>
         : <Loading></Loading>

@@ -42,7 +42,7 @@ function ConnectedUsersInGame() {
       <div className="game__logo">
         <img src={logo} alt="CONNECTED USERS" height={'100px'}></img>
       </div>
-      <div id="userList" className="connectedUsers__userList userList">
+      <div id="userList" className="gameConnectedUsers__userList userList">
         {userList.map((user, index) => {
           return (
             <div className="userList__user user" key={index}>

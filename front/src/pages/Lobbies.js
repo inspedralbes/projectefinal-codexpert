@@ -29,7 +29,7 @@ function Lobbies() {
  */
   const handleMessage = (event) => {
     const eventData = event.data
-    localStorage.setItem('lastPage', 'lobbies')
+    localStorage.setItem('lastPage', 'competitive')
 
     switch (eventData.type) {
       case 'YOU_ARE_ON_LOBBY-event':

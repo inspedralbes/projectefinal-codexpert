@@ -95,7 +95,6 @@ socketIO.on("connection", (socket) => {
       })
       .then(function (response) {
         socket.data.not_add_ids = response.data;
-        console.log("entra" + socket.data.not_add_ids);
       }
       )
       .catch(function (error) {
@@ -133,6 +132,7 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("friend_notification", (data) => {
+    socket.data.not_add_ids.push(data.userId);
     sendNotificationToUser(data.userId);
   });
 
@@ -837,8 +837,20 @@ function setWinnerId(winnerId, currentLobby) {
 }
 
 async function leaveLobby(socket) {
+  const room = socket.data.current_lobby;
+
+  const sockets = await socketIO.in(room).fetchSockets();
+
+  lobbies.forEach(lobby => {
+    if (lobby.lobby_name === room) {
+      unlimitedHeartsOption = lobby.settings.unlimitedHearts;
+    }
+  });
+  let settings
+
   lobbies.forEach((lobby, indLobby) => {
     if (lobby.lobby_name === socket.data.current_lobby) {
+      settings = lobby.settings
       lobby.members.forEach((member, index) => {
         if (member.nom === socket.data.name) {
           lobby.members.splice(index, 1);
@@ -853,6 +865,21 @@ async function leaveLobby(socket) {
     }
     if (lobby.members.length === 0) {
       lobbies.splice(indLobby, 1);
+    } else {
+      lobby.members[0].rank = "Owner"
+      if (settings != null) {
+        sockets.forEach((socket) => {
+          if (lobby.members[0].idUser === socket.data.userId){
+            socketIO.to(socket.id).emit("show_settings", {
+              show: true
+            });
+    
+            socketIO.to(socket.id).emit("lobby_settings", settings);
+    
+            sendQuestionsToUser(socket);
+          }
+        });
+      }
     }
   });
 
@@ -860,6 +887,7 @@ async function leaveLobby(socket) {
   socket.data.current_lobby = null;
   socketIO.to(socket.id).emit("YOU_LEFT_LOBBY");
   sendLobbyList();
+  sendUserList(room);
 }
 
 function sendMessagesToLobby(lobby) {

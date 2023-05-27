@@ -73,7 +73,7 @@
     color: #000000;
 }
 
-.connectedUsers__userList {
+.gameConnectedUsers__userList {
     display: grid;
     grid-template-columns: repeat(2, 49%);
     grid-template-rows: 1fr;
