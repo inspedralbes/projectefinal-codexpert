@@ -18,7 +18,6 @@ function Timer({ time, counter, setCounter }) {
       let cont
 
       cont = time / 1000
-      console.log(cont)
 
       const timer = setInterval(() => {
         setCounter(cont)

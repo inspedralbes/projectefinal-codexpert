@@ -33,10 +33,8 @@ function LobbyList({ lobbyName, setLobbyName, lobbyList, errorMessage, setErrorM
     e.preventDefault()
     if (lobbyName === '') {
       document.getElementById('lobbyName').setAttribute('class', 'lobbiesForm__inputGroup red animate__animated  animate__shakeX')
-      console.log(e)
       setTimeout(() => {
         document.getElementById('lobbyName').setAttribute('class', 'lobbiesForm__inputGroup red')
-        console.log('color:' + document.getElementById('inputName').style.backgroundColor)
         document.getElementById('lobbyName').before.backgroundColor = document.getElementById('inputName').style.backgroundColor
         document.getElementById('lobbyName').after.backgroundColor = document.getElementById('inputName').style.backgroundColor
       }, 500)

@@ -108,7 +108,6 @@ function EditQuestion() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         setNewQuestionData({ ...newQuestionData, title: data.title, statement: data.statement, public: data.public === '0', inputs: data.inputs, outputs: data.outputs })
         setInputsOutputs(newQuestionData.inputs)
       })
@@ -176,7 +175,6 @@ function EditQuestion() {
       <div className='inputOutput__container' id='scroll'>
         <div>
           <h2>INPUTS</h2>
-          {console.log(inputsOutputs)}
           {inputsOutputs.map((element, index) => {
             return <input onChange={(e) => {
               const input = newQuestionData.inputs
