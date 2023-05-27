@@ -878,8 +878,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":38.3333333333333,
-                 "x":221,
+                 "width":70.6666666666667,
+                 "x":205.333333333333,
                  "y":561.666666666667
                 }, 
                 {
@@ -903,6 +903,28 @@
                  "width":38.3333,
                  "x":326.83335,
                  "y":616.83335
+                }, 
+                {
+                 "height":15.3333,
+                 "id":163,
+                 "name":"landingOverlap",
+                 "properties":[
+                        {
+                         "name":"actionType",
+                         "type":"string",
+                         "value":"navigate"
+                        }, 
+                        {
+                         "name":"route",
+                         "type":"string",
+                         "value":"\/"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":38.3333,
+                 "x":188.83335,
+                 "y":757.33335
                 }],
          "opacity":1,
          "properties":[
@@ -1687,7 +1709,7 @@
          "y":0
         }],
  "nextlayerid":20,
- "nextobjectid":163,
+ "nextobjectid":164,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
