@@ -21,7 +21,6 @@ function Campaign() {
   const [tutorialList, setTutorialList] = useState([])
   const [lastQuestion, setLastQuestion] = useState('')
   const [userExperience, setUserExperience] = useState(true)
-  const [userExpertice, setUserExpertice] = useState('')
   const [tutorialsAnswered, setTutorialsAnswered] = useState([])
   const [lvlUnlocked, setLvlUnlocked] = useState(
     localStorage.getItem('lvlUnlocked') === null
@@ -56,7 +55,6 @@ function Campaign() {
       .then((response) => response.json())
       .then(() => {
         setUserExperience(option)
-        getTutorials()
         if (localStorage.getItem('tutorialsAnswered') !== null) {
           setTutorialsAnswered(
             JSON.parse(localStorage.getItem('tutorialsAnswered'))
@@ -98,7 +96,6 @@ function Campaign() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setUserExpertice(data.chosenExpertise)
         if (data.chosenExpertise) {
           localStorage.setItem('userExperience', '')
         }
@@ -112,6 +109,7 @@ function Campaign() {
 
   useEffect(() => {
     getExpertise()
+    getTutorials()
     if (localStorage.getItem('tutorialsAnswered') !== null) {
       setTutorialsAnswered(
         JSON.parse(localStorage.getItem('tutorialsAnswered'))
@@ -129,7 +127,7 @@ function Campaign() {
 
   return (
     <>
-      {userExpertice !== '' && tutorialList.length > 0
+      {tutorialList.length > 0
         ? <div className="campaign">
           <Modal
             style={{
