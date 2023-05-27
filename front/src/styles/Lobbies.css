@@ -575,7 +575,8 @@
     padding: 10px;
     justify-content: flex-start;
     align-items: center;
-    overflow-x: scroll;
+    overflow-x: auto;
+    gap: 40px;
 }
 
 .item__imgDiv {
@@ -619,6 +620,7 @@
     border-style: solid;
     border-width: 6px 0;
     position: relative;
+    max-width: 15%;
 }
 
 
