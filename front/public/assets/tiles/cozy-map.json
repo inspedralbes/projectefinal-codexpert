@@ -881,6 +881,28 @@
                  "width":38.3333333333333,
                  "x":221,
                  "y":561.666666666667
+                }, 
+                {
+                 "height":15.3333,
+                 "id":162,
+                 "name":"tutorialOverlap",
+                 "properties":[
+                        {
+                         "name":"actionType",
+                         "type":"string",
+                         "value":"navigate"
+                        }, 
+                        {
+                         "name":"route",
+                         "type":"string",
+                         "value":"campaign"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":38.3333,
+                 "x":326.83335,
+                 "y":616.83335
                 }],
          "opacity":1,
          "properties":[
@@ -1006,7 +1028,7 @@
                         {
                          "name":"voice",
                          "type":"string",
-                         "value":"highpitched_voice"
+                         "value":"voice"
                         }],
                  "rotation":0,
                  "type":"NPC",
@@ -1665,7 +1687,7 @@
          "y":0
         }],
  "nextlayerid":20,
- "nextobjectid":162,
+ "nextobjectid":163,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
