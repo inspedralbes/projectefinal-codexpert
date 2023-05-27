@@ -142,7 +142,7 @@ function AddQuestion() {
             </div>
             <div className='statement__container'>
               <p>Statement:</p>
-              <textarea tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' onChange={(e) => { setQuestionData({ ...questionData, statement: e.target.value }) }}></textarea>
+              <textarea id='scroll' tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' onChange={(e) => { setQuestionData({ ...questionData, statement: e.target.value }) }}></textarea>
             </div>
           </div>
           <div className='addQuestionPixel__container grid__container'>
@@ -157,7 +157,7 @@ function AddQuestion() {
                   }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} key={index} id={'input' + index} type="text"></input>
                 })}
               </div>
-              <div className='inputArrows__conainer'>
+              <div className='inputArrows__container'>
                 {inputsOutputs.map((element, index) => { return <div key={index}><img src={arrow}></img></div> })}
               </div>
               <div>

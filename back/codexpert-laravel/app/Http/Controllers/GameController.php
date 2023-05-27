@@ -893,12 +893,14 @@ class GameController extends Controller
     public function editMyQuestion(Request $request)
     {  
         $returnObject = (object)[];
+        $willDelete = false;
         //Check if the user is logged in, if not array myQuestions is empty
         $userId = $this->getUserId($request -> token);
 
         if ($userId != null) {
             $returnObject = $this -> addNewQuestion($request);
-            if ($returnObject -> created) {
+            $willDelete = true;
+            if ($willDelete) {
                 $this -> deleteMyQuestion($request);
             }
         }
