@@ -34,7 +34,6 @@ function ChatGame() {
   const handleSendMessage = (e) => {
     e.preventDefault()
     if (msg !== '') {
-      console.log('Emit msg')
       window.postMessage(
         {
           type: 'chat_message-emit',

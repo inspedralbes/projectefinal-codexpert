@@ -207,7 +207,6 @@ export default class Game extends Phaser.Scene {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         this.npcDialogs = data
       })
 
@@ -514,7 +513,6 @@ export default class Game extends Phaser.Scene {
 
     this.npcDialogs?.forEach(npc => {
       if (npc.id === this.npcData.id) {
-        console.log(npc)
         if (!npc.haveMet) {
           haveMet = npc.haveMet
           dialog = npc.introduction

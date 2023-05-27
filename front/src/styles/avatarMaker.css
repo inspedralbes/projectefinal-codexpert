@@ -44,7 +44,7 @@
     justify-content: center;
     float: left;
     padding: 30px;
-    width: 70%;
+    width: 75%;
 }
 
 .avatar__Buttons--flex {
@@ -88,7 +88,7 @@
     background-color: rgb(255, 255, 255);
     float: right;
     padding: 30px;
-    width: 29%;
+    width: 25%;
     display: flex;
     height: 90%;
     position: relative;
@@ -98,13 +98,14 @@
     align-items: center;
     flex-direction: column;
     margin: 5% auto;
-
 }
 
 .avatar__menu {
     background-color: rgb(255, 255, 255);
-    padding: 10px;
+    padding: 0px;
+    margin: 0;
     margin-bottom: 30px;
+    width: 100%;
 }
 
 .avatar__menu-btn,

@@ -29,7 +29,6 @@ function Bell() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         setUnreadNotification(data.unread)
         setNotificationList(data.list)
       })
@@ -66,7 +65,6 @@ function Bell() {
           getNotifications()
         })
     }
-    console.log(notificationList)
   }
 
   /**

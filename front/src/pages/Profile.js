@@ -34,6 +34,7 @@ function Profile() {
   const userId = url.searchParams.get('id') !== null ? parseInt(url.searchParams.get('id')) : myId
   const navigate = useNavigate()
   const [cannotAdd, setCannotAdd] = useState()
+  const [totalElo, setTotalElo] = useState(0)
   const [userData, setUserData] = useState()
   const [friendList, setFriendList] = useState([])
   const [gameHistory, setGameHistory] = useState([])
@@ -122,7 +123,6 @@ function Profile() {
       },
       '*'
     )
-    console.log(userId)
     const userInfo = new FormData()
     userInfo.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
     userInfo.append('otherUserId', userId)
@@ -172,8 +172,13 @@ function Profile() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         setGameHistory(data.games.original)
+
+        let total = 0
+        for(let i = 0; i < data.games.original.length; i++) {
+          total += data.games.original[i].eloEarned
+        }
+        setTotalElo(total)
       })
   }
 
@@ -271,15 +276,17 @@ function Profile() {
         <div className='profile'>
           <div className='profile--grid'>
             <div className='profile__left'>
-              <div className='profile__button'>
+              <div className='profileBack__button'>
                 <button onClick={() => localStorage.getItem("lastPage") !== undefined ? navigate("/" + localStorage.getItem("lastPage")) : navigate('/competitive')} id='goBack__button'>
                   <span className='circle' aria-hidden='true'>
                     <span className='icon arrow'></span>
                   </span>
                   <span className='button-text'>BACK</span>
                 </button>
+                <h1>Total Elo: {totalElo}</h1>
               </div>
               <div className='profile__table'>
+                <h1>Game History</h1>
                 <table>
                   <thead>
                     <tr>
@@ -293,10 +300,62 @@ function Profile() {
                   <tbody>
                     {gameHistory.map((element, index) => {
                       return <tr key={index}>
-                        <td>{element.finished_position}</td>
-                        <td>{element.hearts_remaining}</td>
-                        <td>{element.eloEarned}</td>
-                        <td>{element.completedAllQuestions}</td>
+                        <td>{element.finished_position === 0 ? 'AFK' : element.finished_position}</td>
+                        <td>
+                        <div>
+                {element.hearts_remaining > 3 && (
+                  <div className="hearts__remaining">
+                    <h1 className="hearts__remaining" style={{fontSize: "25px"}}>
+                      <img
+                        src={require('../img/hearts/one_heart_normal.png')}
+                        width="30px"
+                        className="user__health"
+                        alt={element.hearts_remaining + ' hearts remaining'}
+                      />
+                      {element.unlimitedHearts
+                        ? (
+                        <img
+                          src={require('../img/hearts/infinito.png')}
+                          width="30px"
+                          className="user__health"
+                          alt="infinity"
+                        />)
+                        : (
+                        ` x${element.hearts_remaining}`
+                          )}
+                    </h1>
+                  </div>
+                )}
+                {element.hearts_remaining === 3 && (
+                  <img
+                    src={require('../img/hearts/three_hearts.png')}
+                    height="30px"
+                    className="user__health"
+                    alt={element.hearts_remaining + ' hearts remaining'}
+                  />
+                )}
+
+                {element.hearts_remaining === 2 && (
+                  <img
+                    src={require('../img/hearts/two_hearts.gif')}
+                    height="30px"
+                    className="user__health"
+                    alt={element.hearts_remaining + ' hearts remaining'}
+                  />
+                )}
+
+                {element.hearts_remaining === 1 && (
+                  <img
+                    src={require('../img/hearts/one_heart.gif')}
+                    height="30px"
+                    className="user__health"
+                    alt={element.hearts_remaining + ' hearts remaining'}
+                  />
+                )}
+              </div>
+                        </td>
+                        <td>+{element.eloEarned}</td>
+                        <td>{element.completedAllQuestions === 0 ? 'no' : 'yes'}</td>
                         <td>{element.date}</td>
                       </tr>
                     })}
@@ -374,16 +433,30 @@ function Profile() {
             </div >
             <div className='profile__right'>
               <div>
+              {myId !== userId && (
+                  <div>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                  </div>
+                )}
                 <div className='profile__name--div'>
+                
                   <p className='profile__name'>{userData.name}</p>
                   {myId === userId && (
                     <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, name: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
                   )}
                 </div>
-                <div className='profile__email--div'>
-                  <p className='profile__email'>{userData.email}</p>
-                  <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
-                </div>
+                {myId === userId && (
+                  <div className='profile__email--div'>
+                    <p className='profile__email'>{userData.email}</p>
+                    <button className='editBtn' onClick={() => setModals(prev => ({ ...prev, email: true }))}><img height='35px' className='edit' src={Edit} alt='EDIT'></img></button>
+                  </div>
+                  )}
               </div>
 
               <div id='editAvatar' className='profile__editAvatar'>

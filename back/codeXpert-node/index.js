@@ -58,7 +58,6 @@ app.use(
   cors({
     credentials: true,
     origin: function (origin, callback) {
-      console.log(origin);
       return callback(null, true);
     }
   })
@@ -97,9 +96,6 @@ socketIO.on("connection", (socket) => {
         socket.data.not_add_ids = response.data;
       }
       )
-      .catch(function (error) {
-        console.log(error);
-      });
   }
 
   socket.on("send_token", (data) => {
@@ -126,9 +122,6 @@ socketIO.on("connection", (socket) => {
         }
       }
       )
-      .catch(function (error) {
-        console.log(error);
-      });
   });
 
   socket.on("friend_notification", (data) => {
@@ -139,8 +132,6 @@ socketIO.on("connection", (socket) => {
   async function sendNotificationToUser(userId) {
     const sockets = await socketIO.fetchSockets();
     sockets.forEach((socket) => {
-      console.log("id" + userId);
-      console.log("socketid" + socket.data.userId);
       if (socket.data.userId === userId) {
         sendUserNotifications(socket);
       }
@@ -488,9 +479,6 @@ socketIO.on("connection", (socket) => {
           }
         }
       })
-      .catch(function (error) {
-        console.log(error);
-      });
   });
 
   socket.on("save_settings", (data) => {
@@ -592,9 +580,6 @@ async function sendUserNotifications(socket) {
         showBell: response.data.unread
       });
     })
-    .catch(function (error) {
-      console.log(error);
-    });
 }
 
 async function sendQuestionsToUser(socket) {
@@ -605,9 +590,6 @@ async function sendQuestionsToUser(socket) {
     .then(function (response) {
       socketIO.to(socket.id).emit("questions", response.data);
     })
-    .catch(function (error) {
-      console.log(error);
-    });
 }
 
 function startOverTime(socket, time) {
@@ -710,9 +692,6 @@ async function startGame(room, amount, chosenQuestions) {
         }
       });
     })
-    .catch(function (error) {
-      console.log(error);
-    });
 }
 
 async function enviarDadesGame(room) {
@@ -733,9 +712,6 @@ async function enviarDadesGame(room) {
       idGame: idGameDB,
       heartAmount: gameHeartAmount
     })
-    .catch(function (error) {
-      console.log(error);
-    });
 }
 
 async function updateUserLvl(room) {
@@ -757,9 +733,6 @@ async function updateUserLvl(room) {
       setUserLvl(response.data, room);
       sendUserStats(room);
     })
-    .catch(function (error) {
-      console.log(error);
-    });
 }
 
 async function sendUserStats(room) {

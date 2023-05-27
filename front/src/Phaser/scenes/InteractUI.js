@@ -33,7 +33,6 @@ export default class InteractUI extends Phaser.Scene {
 
     let whereToGo
     if (this.interactData.type === 'location') {
-      console.log(this.interactData.name)
       whereToGo = this.add.text(40, -40, `Navigate to ${this.interactData.name === '/' ? 'home' : this.interactData.name}`, {
         color: '#FFFFFF',
         backgroundColor: '#00000070',

@@ -57,7 +57,7 @@
 .profile__left {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 0.4fr 1.6fr;
+    grid-template-rows: 0.3fr 1.6fr;
 }
 
 .profile__editAvatar {
@@ -70,8 +70,14 @@
     align-items: center;
 }
 
-.profile__button {
+.profileBack__button {
     margin: 20px;
+}
+
+.profileBack__button h1 {
+    display: inline;
+    margin-left: 22vw;
+    font-size: 2vw;
 }
 
 .profileBtn {
@@ -269,6 +275,43 @@
 .profile__table {
     border: 3px solid black;
 }
+
+.profile__table h1 {
+    text-align: center;
+    font-size: 2vw;
+}
+
+.profile__table table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    background-color: white;
+}
+
+.profile__table th, td {
+    overflow: hidden;
+    border: 2px solid black;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    padding: 10px;
+    max-width: 10vw;
+}
+
+.profile__table th {
+    position: sticky;
+    top: 0;
+    border: 2px solid black;
+    background-color: #88D34A;
+    z-index: 2;
+}
+
+.profile__table tr {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
 
 .profile__friends th,
 th {

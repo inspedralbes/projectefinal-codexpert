@@ -235,7 +235,6 @@ function Register() {
               animation={'shift-away-extreme'}
             >
           <label htmlFor="passwd1" className="form__inputlabel" onClick={() => {
-            console.log('focus')
             document.getElementById('password').focus()
           }}>
             Password
