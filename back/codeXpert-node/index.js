@@ -95,7 +95,6 @@ socketIO.on("connection", (socket) => {
       })
       .then(function (response) {
         socket.data.not_add_ids = response.data;
-        console.log("entra" + socket.data.not_add_ids);
       }
       )
       .catch(function (error) {
@@ -133,6 +132,7 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("friend_notification", (data) => {
+    socket.data.not_add_ids.push(data.userId);
     sendNotificationToUser(data.userId);
   });
 
@@ -838,7 +838,7 @@ function setWinnerId(winnerId, currentLobby) {
 
 async function leaveLobby(socket) {
   const room = socket.data.current_lobby;
-  
+
   const sockets = await socketIO.in(room).fetchSockets();
 
   lobbies.forEach(lobby => {
