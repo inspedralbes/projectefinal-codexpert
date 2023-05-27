@@ -209,6 +209,7 @@ export default class Game extends Phaser.Scene {
       .then((data) => {
         console.log(data)
         this.npcDialogs = data
+        window.postMessage({ type: 'data_loaded-msg' }, '*')
       })
 
     this.nameTagContainer = this.add.container(0, 0)
