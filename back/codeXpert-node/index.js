@@ -868,8 +868,6 @@ async function leaveLobby(socket) {
     } else {
       lobby.members[0].rank = "Owner"
       if (settings != null) {
-
-        let socketId;
         sockets.forEach((socket) => {
           if (lobby.members[0].idUser === socket.data.userId){
             socketIO.to(socket.id).emit("show_settings", {
@@ -889,6 +887,7 @@ async function leaveLobby(socket) {
   socket.data.current_lobby = null;
   socketIO.to(socket.id).emit("YOU_LEFT_LOBBY");
   sendLobbyList();
+  sendUserList(room);
 }
 
 function sendMessagesToLobby(lobby) {
