@@ -682,6 +682,28 @@
                  "width":38.3333,
                  "x":204.83335,
                  "y":250.83335
+                }, 
+                {
+                 "height":15.3333,
+                 "id":160,
+                 "name":"landingOverlap",
+                 "properties":[
+                        {
+                         "name":"actionType",
+                         "type":"string",
+                         "value":"navigate"
+                        }, 
+                        {
+                         "name":"route",
+                         "type":"string",
+                         "value":"\/"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":38.3333,
+                 "x":188.500016666667,
+                 "y":756.83335
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1499,7 +1521,7 @@
          "y":0
         }],
  "nextlayerid":18,
- "nextobjectid":160,
+ "nextobjectid":161,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
