@@ -70,39 +70,39 @@ class DatabaseSeeder extends Seeder
 
             //Example 2
             $question = new Question;
-            $question->title = "String reverse";
-            $question->statement = "Reverse the String";
+            $question->title = "Sum Array Values";
+            $question->statement = "Sum the values of the two positions in the array";
             $question->public = true;
             $question->save();
             //Input 1
             $input = new Test_input;
             $input->question_id = 2;
-            $input->input = serialize("Hello");
+            $input->input = serialize(array(1, 2));
             $input->save();
             //Input 2
             $input = new Test_input;
             $input->question_id = 2;
-            $input->input = serialize("Howdy");
+            $input->input = serialize(array(45, 10));
             $input->save();
             //Input 3
             $input = new Test_input;
             $input->question_id = 2;
-            $input->input = serialize("Greetings from Earth");
+            $input->input = serialize(array(90, 90));
             $input->save();
             //Output 1
             $output = new Test_output;
             $output->question_id = 2;
-            $output->output = serialize("olleH");
+            $output->output = serialize(3);
             $output->save();
             //Output 2
             $output = new Test_output;
             $output->question_id = 2;
-            $output->output = serialize("ydwoH");
+            $output->output = serialize(55);
             $output->save();
             //Output 3
             $output = new Test_output;
             $output->question_id = 2;
-            $output->output = serialize("htraE morf sgniteerG");
+            $output->output = serialize(180);
             $output->save();
 
 
@@ -180,7 +180,6 @@ class DatabaseSeeder extends Seeder
             $output->question_id = 4;
             $output->output = serialize(0);
             $output->save();
-
 
             //Example 5
             $question = new Question;
