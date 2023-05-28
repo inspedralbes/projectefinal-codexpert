@@ -183,39 +183,39 @@ class DatabaseSeeder extends Seeder
 
             //Example 5
             $question = new Question;
-            $question->title = "Array sort";
-            $question->statement = "Sort Array in ASCENDING order";
+            $question->title = "Biggest Array Element";
+            $question->statement = "Find the biggest element in the given array.";
             $question->public = true;
             $question->save();
             //Input 1
             $input = new Test_input;
             $input->question_id = 5;
-            $input->input = serialize(array(3, 7, 5));
+            $input->input = serialize(array(1, 14, 6));
             $input->save();
             //Input 2
             $input = new Test_input;
             $input->question_id = 5;
-            $input->input = serialize(array(10, 3, 7));
+            $input->input = serialize(array(78, 111, 39));
             $input->save();
             //Input 3
             $input = new Test_input;
             $input->question_id = 5;
-            $input->input = serialize(array(6, 2, 8));
+            $input->input = serialize(array(1, 2, 3));
             $input->save();
             //Output 1
             $output = new Test_output;
             $output->question_id = 5;
-            $output->output = serialize(array(3, 5, 7));
+            $output->output = serialize(14);
             $output->save();
             //Output 2
             $output = new Test_output;
             $output->question_id = 5;
-            $output->output = serialize(array(3, 7, 10));
+            $output->output = serialize(111);
             $output->save();
             //Output 3
             $output = new Test_output;
             $output->question_id = 5;
-            $output->output = serialize(array(2, 6, 8));
+            $output->output = serialize(3);
             $output->save();
 
             //Example 5
