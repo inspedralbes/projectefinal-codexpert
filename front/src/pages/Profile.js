@@ -435,13 +435,7 @@ function Profile() {
               <div>
               {myId !== userId && (
                   <div>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <br></br>
+                    <br></br><br></br><br></br><br></br><br></br><br></br><br></br>
                   </div>
                 )}
                 <div className='profile__name--div'>
