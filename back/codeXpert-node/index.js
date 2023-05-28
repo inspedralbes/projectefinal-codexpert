@@ -202,7 +202,7 @@ socketIO.on("connection", (socket) => {
         character.y = data.y;
         character.speed = data.speed
         character.direction = data.direction;
-        character.name = socket.data.name 
+        character.name = socket.data.name
         characterSend = character;
       }
     });
@@ -373,7 +373,11 @@ socketIO.on("connection", (socket) => {
 
     const lobby = lobbies.filter(lobby => lobby.lobby_name === socket.data.current_lobby)[0];
     if (lobby != null) {
-      gameNumQuestions = lobby.settings.questionAmount;
+      if (lobby.questions.length > lobby.settings.questionAmount) {
+        gameNumQuestions = lobby.questions.length;
+      } else {
+        gameNumQuestions = lobby.settings.questionAmount;
+      }
       unlimitedHeartsOption = lobby.settings.unlimitedHearts;
       willHaveOvertime = lobby.settings.willHaveOvertime;
       memberLength = lobby.members.length;
@@ -842,13 +846,13 @@ async function leaveLobby(socket) {
       lobby.members[0].rank = "Owner"
       if (settings != null) {
         sockets.forEach((socket) => {
-          if (lobby.members[0].idUser === socket.data.userId){
+          if (lobby.members[0].idUser === socket.data.userId) {
             socketIO.to(socket.id).emit("show_settings", {
               show: true
             });
-    
+
             socketIO.to(socket.id).emit("lobby_settings", settings);
-    
+
             sendQuestionsToUser(socket);
           }
         });

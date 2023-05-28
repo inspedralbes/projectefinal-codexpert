@@ -43,6 +43,20 @@ class GameController extends Controller
                 $question = Question::where("id", $request -> chosenQuestions[$i]) -> first();
                 array_push($questions, $question);
             }
+
+            if (count($request -> chosenQuestions) < $request -> numQuestions) {
+                $amt = $request -> numQuestions - count($request -> chosenQuestions);
+
+                $moreQuestions = Question::inRandomOrder()
+                    ->whereNotIn("id", $request -> chosenQuestions)
+                    ->limit($amt)
+                    ->get();
+                    
+                foreach($moreQuestions as $index => $qst) {
+                    array_push($questions, $qst);
+                } 
+            }
+            
         } else {
             $questions = Question::inRandomOrder()->limit($request -> numQuestions)->get();
         }
