@@ -265,7 +265,7 @@ function AddQuestion() {
                   </div>
                   <div>
                     <h2>OUTPUT</h2>
-                    <input value='["hellow","world","!"]' readOnly></input>
+                    <input value='["hello","world","!"]' readOnly></input>
                   </div>
                 </div>
                 <br></br>
