@@ -33,7 +33,7 @@ function Tutorial() {
   const cookies = new Cookies()
   const navigate = useNavigate()
   const defaultCode =
-    'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
+    'function yourCode(input){ \n  //code here\n  \n  return ???\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
   const [error, setError] = useState('')
   const [CmodalIsOpen, setCIsOpen] = useState(false)

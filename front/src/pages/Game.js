@@ -22,7 +22,7 @@ import Modal from 'react-modal'
  * @function Game
  */
 function Game() {
-  const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return input\n}\nyourCode(input)'
+  const defaultCode = 'function yourCode(input){ \n  //code here\n  \n  return ???\n}\nyourCode(input)'
   const [code, setCode] = useState(defaultCode)
   const [error, setError] = useState('')
   const [result, setResult] = useState('')
