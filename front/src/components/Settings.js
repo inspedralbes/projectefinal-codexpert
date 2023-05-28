@@ -103,26 +103,25 @@ function Settings({ fetchSettings, errorMessage, saveSettings }) {
           document.getElementById('questionsButton').disabled = true
           document.getElementById('settingsButton').disabled = false
           document.getElementById('settings').style.display = 'none'
-        }}>Questions Settings</button>
+        }}>Questions Library</button>
       </div>
-        <div className='settings__zone' id="settings">
+        <div className='optionSettings__container' id="settings">
           {errorMessage !== '' && <h2 className='lobbies__error'>{errorMessage}</h2>}
-          <form className='AddCategory' autoComplete='off'>
-            <div className='list__container__text settingCreator__checkbox'>
+          <form autoComplete='off'>
+            <div>
               <label htmlFor='check' className="form-control">
                 <input id='check' type="checkbox" name="checkbox" value={willHaveOvertime}
                   onChange={handleChangeWillHaveOvertime}
                   checked={willHaveOvertime} />
                 <span
                   htmlFor='overtime-check'
-                  className='settings__zone__title'
                 >You want to have an overtime?</span>
               </label>
 
             </div>
 
             <span className='addCategory__formSpanTA'>
-              <p className='settings__zone__title'>Overtime duration (seconds)</p>
+              <p className='settings__zone__title'>Overtime duration (seconds):</p>
               <input className='profile__input' type='number' value={overtimeDuration} onChange={handleChangeOvertimeDuration} disabled={!willHaveOvertime} />
             </span>
 
@@ -136,8 +135,8 @@ function Settings({ fetchSettings, errorMessage, saveSettings }) {
               <input className='profile__input' type='number' value={heartAmount} onChange={handleChangeHeartAmount} />
             </span>
 
-            <div className='list__container__text settingCreator__checkbox'>
-              <label htmlFor="unl_hearts-check" className="form-control">
+            <div className='settingCreator__checkbox'>
+              <label htmlFor="unl_hearts-check" className='form-control'>
                 <input id='unl_hearts-check'
                   className='check'
                   type='checkbox'
@@ -146,13 +145,12 @@ function Settings({ fetchSettings, errorMessage, saveSettings }) {
                   checked={unlimitedHearts} />
                 <span
                   htmlFor='unl_hearts-check'
-                  className='settings__zone__title'
                 >Unlimited hearts</span>
               </label>
             </div>
           </form>
         </div>
-        <QuestionLibrary></QuestionLibrary>
+        <QuestionLibrary nQuestions={parseInt(questionAmount)}></QuestionLibrary>
     </div>
   )
 }

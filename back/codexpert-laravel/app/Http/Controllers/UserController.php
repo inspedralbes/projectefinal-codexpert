@@ -176,7 +176,8 @@ class UserController extends Controller
         $gameList = [];
 
         $getGames = User_game::where('user_id', $userId)
-        -> get();
+            -> orderBy('created_at', 'desc')
+            -> get();
 
         if ( ($userId != null) && (count($getGames) > 0)) { 
             for ($i=0; $i < count($getGames); $i++) { 
