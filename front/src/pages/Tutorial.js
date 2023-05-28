@@ -224,7 +224,7 @@ function Tutorial() {
             >
               <div>
                 <h1>Introduction</h1>
-                <p>This section only appears in the tutorial and serves to teach you everything you need to learn how to program. <b>Use its arrows <img src={arrowRight} width={30} height={30} style={{ backgroundColor: '#008000' }}></img> to switch pages.</b></p>
+                <p>This section only appears in the tutorial and serves to teach you everything you need to learn how to program. <b>Use its arrows <img src={arrowRight} width={30} height={30} style={{ backgroundColor: '#008000' }}></img> to switch between pages.</b></p>
                 <button className='pixel-button next-carousel' disabled={enableIntroductionNextButton.introduction} onClick={() => {
                   setModal(prev => ({ ...prev, introduction: false }))
                   setModal(prev => ({ ...prev, hint: true }))
@@ -261,7 +261,7 @@ function Tutorial() {
               <div>
                 <h1>hint</h1>
                 <p>A little help never hurts!
-                  <b>Click on the eye
+                  <b> Click on the eye
                     <img src={closedEye} width={30} height={30} style={{ borderRadius: '50%', backgroundColor: 'rgb(214, 214, 214)', border: '2px solid #88D34A' }}></img> to see the hint
                   </b>
                 </p>

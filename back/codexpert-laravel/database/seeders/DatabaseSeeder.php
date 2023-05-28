@@ -70,8 +70,8 @@ class DatabaseSeeder extends Seeder
 
             //Example 2
             $question = new Question;
-            $question->title = "Sum Array Values";
-            $question->statement = "Sum the values of the two positions in the array";
+            $question->title = "Array Addition";
+            $question->statement = "Given an array of integers, find the sum of its elements";
             $question->public = true;
             $question->save();
             //Input 1
