@@ -1,13 +1,16 @@
 .speaker__container {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 50px;
+    left: 30px;
     font-size: 1.2rem;
     background-color: var(--statement-bg);
     border-color: black;
     margin-bottom: 20px;
     margin-top: 20px;
     width: fit-content;
+    padding-top: 6px;
+    padding-right: 6px;
+    padding-left: 3px;
 }
 
 .speaker__container::after {

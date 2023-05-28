@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import '../styles/normalize.css'
 import '../styles/MuteSound.css'
-import enabled from '../img/sound_enabled.png'
-import disabled from '../img/sound_disabled.png'
+import enabled from '../img/music_enabled.png'
+import disabled from '../img/music_disabled.png'
 
 /**
  * Este componente se usa para ver las notificaciones recibidas de otros usuarios como la de solicitud de amistad.
