@@ -64,12 +64,11 @@ function RankingPage() {
   return (
     <>
     <Header></Header>
-      <button id='goBackToLobby__button' onClick={goBackToLobby}>
-        <span className='circle' aria-hidden='true'>
-          <span className='icon arrow'></span>
+      <button id="goBack__button" className='lobbyJoined__goBackButton--width' onClick={goBackToLobby}>
+        <span className="circle" aria-hidden="true">
+          <span className="icon arrow"></span>
         </span>
-        <span className='button-text'>GO BACK TO LOBBY
-        </span>
+        <span className="button-text">GO BACK TO LOBBY</span>
       </button>
       {dataLoaded
         ? <main>
