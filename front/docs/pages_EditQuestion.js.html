@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/EditQuestion.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/EditQuestion.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import '../styles/normalize.css'
+import '../styles/addQuestion.css'
+import { Loading } from '../components/Loading'
+import routes from '../conn_routes'
+import Cookies from 'universal-cookie'
+import arrow from '../img/InputOutputArrow.png'
+
+/**
+ * Pagina para editar las preguntas de la biblioteca de preguntas del usuario.
+ * @function EditQuestion
+ */
+function EditQuestion() {
+  const [newQuestionData, setNewQuestionData] = useState({
+    title: '',
+    statement: '',
+    inputs: ['', '', ''],
+    outputs: ['', '', ''],
+    public: false
+  })
+  const [userLogged, setUserLogged] = useState(false)
+  const [error, setError] = useState(false)
+  const [inputsOutputs, setInputsOutputs] = useState(['', '', ''])
+  const placeholder = {
+    input: ['Input/Output Example!', 'Hello World!', 'lorem ipsum1234'],
+    output: ['INPUT/OUTPUT EXAMPLE!', 'HELLO WORLD!', 'LOREM IPSUM1234']
+  }
+  const cookies = new Cookies()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  /**
+ * Al clicar añade el número de inputs y outputs a poder poner como tests.
+ * @function handleAddInputOutput
+ */
+  const handleAddInputOutput = () => {
+    if (inputsOutputs.length &lt;= 10) {
+      setInputsOutputs([...inputsOutputs, ''])
+      setNewQuestionData({ ...newQuestionData, outputs: [...newQuestionData.inputs, ''], inputs: [...newQuestionData.inputs, ''] })
+    }
+  }
+
+  /**
+ * Al clicar disminuye la cantidad de inputs y outputs a poder poner como tests.
+ * @function handleRemoveInputOutput
+ */
+  const handleRemoveInputOutput = (i) => {
+    const array = [...newQuestionData.inputs]
+    const arrayInputs = newQuestionData.inputs
+    const arrayOutputs = newQuestionData.outputs
+    array.splice(i, 1)
+    arrayInputs.splice(i, 1)
+    arrayOutputs.splice(i, 1)
+    document.getElementById('input' + i).value = arrayInputs[arrayInputs.length - 1]
+    document.getElementById('output' + i).value = arrayOutputs[arrayOutputs.length - 1]
+    setInputsOutputs(array)
+    setNewQuestionData({ ...newQuestionData, outputs: arrayOutputs, inputs: arrayInputs })
+  }
+
+  /**
+ * Al clicar comprueva si puede editar la pregunta a la base de datos y en caso afirmativo la edita.
+ * @function handleEditQuestion
+ */
+  const handleEditQuestion = () => {
+    const data = new FormData()
+    data.append(
+      'token',
+      cookies.get('token') !== undefined ? cookies.get('token') : null
+    )
+    data.append('questionId', location.state.questionId)
+    data.append('title', newQuestionData.title)
+    data.append('statement', newQuestionData.statement)
+    data.append('inputs', JSON.stringify(newQuestionData.inputs))
+    data.append('outputs', JSON.stringify(newQuestionData.outputs))
+    data.append('public', JSON.stringify(newQuestionData.public))
+
+    fetch(routes.fetchLaravel + 'editMyQuestion', {
+      method: 'POST',
+      mode: 'cors',
+      body: data,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setError(data.error)
+      })
+  }
+
+  /**
+ * Funcion que recibe los datos de la pregunta a editar
+ * @function getLastData
+ */
+  const getLastData = () => {
+    const lastData = new FormData()
+    lastData.append('token', cookies.get('token'))
+    lastData.append('questionId', location.state !== null ? location.state.questionId : navigate('/library'))
+    fetch(routes.fetchLaravel + 'getMyQuestionWithId', {
+      method: 'POST',
+      mode: 'cors',
+      body: lastData,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setNewQuestionData({ ...newQuestionData, title: data.title, statement: data.statement, public: data.public === '0', inputs: data.inputs, outputs: data.outputs })
+        setInputsOutputs()
+      })
+  }
+
+  /**
+ * Funcion que comprueva si el usuario esta registrado para poder acceder a esta pagina.
+ * @function isUserLogged
+ */
+  const isUserLogged = () => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'isUserLogged', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.correct) {
+          navigate('/login')
+        } else {
+          setUserLogged(true)
+        }
+      })
+  }
+
+  useEffect(() => {
+    getLastData()
+    isUserLogged()
+  }, [])
+
+  return (
+    &lt;>
+    {userLogged
+      ? &lt;div className='addQuestionPixel__container'>
+        &lt;button className='pixel-button addQuestion-back' onClick={() => localStorage.getItem('lastPage') !== null ? navigate('/' + localStorage.getItem('lastPage')) : navigate('/')}>← Go back&lt;/button>
+        &lt;h1>Edit question&lt;/h1>
+
+    &lt;div className='grid-inputs__container'>
+      &lt;div className='titleCheckbox__container'>
+        &lt;div className="row">
+          &lt;div className="title__container">
+            &lt;label>Title:&lt;/label>
+          &lt;/div>
+          &lt;div className="input__container">
+            &lt;input tabIndex="1" placeholder='Uppercase' type="text" value={newQuestionData.title} onChange={(e) => setNewQuestionData({ ...newQuestionData, title: e.target.value })}>&lt;/input>
+          &lt;/div>
+        &lt;/div>
+        &lt;div>
+
+        &lt;/div>
+        &lt;label className='setPublic__label'>
+          &lt;input tabIndex="3" type='checkbox' value={newQuestionData.public} onChange={(e) => { setNewQuestionData({ ...newQuestionData, public: e.target.value }) }}>&lt;/input>&lt;p>Set your question public to everyone&lt;/p>
+        &lt;/label>
+      &lt;/div>
+      &lt;div className='statement__container'>
+        &lt;p>Statement:&lt;/p>
+        &lt;textarea tabIndex="2" placeholder='Set the string input to Uppercase with str.toUpperCase().' value={newQuestionData.statement} onChange={(e) => { setNewQuestionData({ ...newQuestionData, statement: e.target.value }) }}>&lt;/textarea>
+      &lt;/div>
+    &lt;/div>
+    &lt;div className='addQuestionPixel__container grid__container'>
+      &lt;div className='inputOutput__container' id='scroll'>
+        &lt;div>
+          &lt;h2>INPUTS&lt;/h2>
+          {inputsOutputs.map((element, index) => {
+            return &lt;input onChange={(e) => {
+              const input = newQuestionData.inputs
+              input[index] = e.target.value
+              setNewQuestionData({ ...newQuestionData, inputs: input })
+            }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} value={newQuestionData.inputs[index]} key={index} id={'input' + index} type="text">&lt;/input>
+          })}
+        &lt;/div>
+        &lt;div className='inputArrows__conainer'>
+          {inputsOutputs.map((element, index) => { return &lt;div key={index}>&lt;img src={arrow}>&lt;/img>&lt;/div> })}
+        &lt;/div>
+        &lt;div>
+          &lt;h2>OUTPUTS&lt;/h2>
+          {inputsOutputs.map((element, index) => {
+            return &lt;input onChange={(e) => {
+              const output = newQuestionData.outputs
+              output[index] = e.target.value
+              setNewQuestionData({ ...newQuestionData, outputs: output })
+            }} tabIndex={index + index + 4} id={'output' + index} value={newQuestionData.outputs[index]} placeholder={placeholder.output[index]} key={index} type="text">&lt;/input>
+          })}
+        &lt;/div>
+        &lt;div className='removeItem__conainer'>
+          {inputsOutputs.map((element, index) => { return &lt;div key={index}>&lt;button onClick={() => handleRemoveInputOutput(index)} disabled={inputsOutputs.length &lt;= 3}>delete&lt;/button>&lt;br>&lt;/br>&lt;/div> })}
+        &lt;/div>
+      &lt;/div>
+      &lt;div>
+        &lt;a className='addInputOutput-link' onClick={() => handleAddInputOutput()}>Add new input &amp; output line&lt;/a>
+      &lt;/div>
+    &lt;/div>
+    &lt;br>&lt;/br>
+    &lt;p className='addQuestionError'>{error}&lt;/p>
+    &lt;button className='pixel-button' onClick={() => handleEditQuestion()}>Save&lt;/button>
+  &lt;/div>
+      : &lt;Loading/>
+    }
+
+    &lt;/>
+  )
+}
+
+export default EditQuestion
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

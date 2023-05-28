@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/JoinedLobby.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/JoinedLobby.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import '../styles/normalize.css'
+import '../styles/Lobbies.css'
+import '../styles/form.css'
+import ChatLobby from '../components/ChatLobby'
+import ConnectedUsers from '../components/ConnectedUsers'
+// import QuestionLibrary from '../components/QuestionLibrary'
+import Header from './Header.js'
+import React, { useState, useEffect } from 'react'
+import Settings from './Settings'
+import Modal from 'react-modal'
+import PropTypes from 'prop-types'
+import cross from '../img/cross.png'
+import 'animate.css'
+import settings from '../img/settings.png'
+
+Modal.setAppElement('body')
+
+JoinedLobby.propTypes = {
+  setJoined: PropTypes.func,
+  setLobbyList: PropTypes.func,
+  setLobbyName: PropTypes.func,
+  errorMessage: PropTypes.string
+}
+
+/**
+ * Componente que sale al unir-te o crear una lobby.
+ * @function JoinedLobby
+ * @param setJoined Envia a node que has entrado a la lobby.
+ * @param setLobbyName Envia a node el nombre de la lobby.
+ * @param setLobbyList Para añadir el nuevo lobby a la lista.
+ * @param errorMessage En caso de que no pueda unir-se sale un error de texto.
+ */
+function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
+  const [sent, setSent] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [fetchSettings, setFetchSettings] = useState(false)
+  const [saveSettings, setSaveSettings] = useState(0)
+
+  /**
+ * Para mostrar los mensajes de error.
+ * @function handleMessage
+ * @param event El evento a enviar a node del mensaje.
+ */
+  const handleMessage = (event) => {
+    const eventData = event.data
+
+    switch (eventData.type) {
+      case 'starting_errors-event':
+        if (eventData.valid) {
+          if (!sent) {
+            setFetchSettings(false)
+            window.postMessage(
+              {
+                type: 'start_game-emit'
+              },
+              '*'
+            )
+          }
+          setSent(true)
+        }
+        break
+
+      case 'lobby_settings-event':
+        setFetchSettings(true)
+        break
+    }
+  }
+
+  /**
+ * Al clicar envia a node que ha empezado el juego.
+ * @function handleStartGame
+ */
+  const handleStartGame = (e) => {
+    e.preventDefault()
+    window.postMessage(
+      {
+        type: 'save_settings-emit'
+      },
+      '*'
+    )
+  }
+
+  /**
+ * Al clicar envia a node que se ha ido del juego.
+ * @function handleLeave
+ */
+  const handleLeave = (e) => {
+    e.preventDefault()
+    window.postMessage(
+      {
+        type: 'leave_lobby-emit'
+      },
+      '*'
+    )
+    setJoined(false)
+    setLobbyName('')
+    setLobbyList([])
+  }
+
+  /**
+ * Guardar cambios de las configuraciones hechas.
+ * @function saveChangedSettings
+ */
+  const saveChangedSettings = () => {
+    setSaveSettings(saveSettings + 1)
+    setShowModal(false)
+  }
+
+  /**
+ * Al clicar en cancelar sale del modal sin guardar las configuraciones.
+ * @function closeModalWithoutSaving
+ */
+  const closeModalWithoutSaving = () => {
+    setSaveSettings(0)
+    setShowModal(false)
+  }
+
+  useEffect(() => {
+    if (!showModal) setSaveSettings(0)
+  }, [showModal])
+
+  useEffect(() => {
+    window.addEventListener('message', handleMessage)
+
+    return () => {
+      window.removeEventListener('message', handleMessage)
+    }
+  }, [])
+
+  return (
+    &lt;div id="lobbyJoined" className="lobbies__lobby lobby">
+      &lt;Header>&lt;/Header>
+      &lt;button id="goBack__button" className='lobbyJoined__goBackButton--width' onClick={handleLeave}>
+        &lt;span className="circle" aria-hidden="true">
+          &lt;span className="icon arrow">&lt;/span>
+        &lt;/span>
+        &lt;span className="button-text">LEAVE CURRENT LOBBY&lt;/span>
+      &lt;/button>
+      {window.network.getShowSettings()
+        ? (&lt;div>
+          &lt;button className="noBtn" onClick={() => setShowModal(true)}>&lt;img className="settings" src={settings} alt='SETTINGS' height={'70px'}>&lt;/img>&lt;/button>
+          &lt;Modal
+            style={{
+              content: {
+                top: '50%',
+                left: '50%',
+                right: 'auto',
+                bottom: 'auto',
+                marginRight: '-50%',
+                transform: 'translate(-50%, -50%)',
+                padding: '1%',
+                width: '60%',
+                height: '90%'
+              }
+            }}
+            onRequestClose={() => closeModalWithoutSaving()}
+            shouldCloseOnOverlayClick={true}
+            isOpen={showModal}
+          >
+            &lt;button className="cross" onClick={() => closeModalWithoutSaving()}>
+              &lt;img src={cross} alt="X" height={'30px'}>&lt;/img>
+            &lt;/button>
+
+            &lt;Settings
+              fetchSettings={fetchSettings}
+              errorMessage={errorMessage}
+              saveSettings={saveSettings}
+            >&lt;/Settings>
+            &lt;br>&lt;/br>
+            &lt;div className="lobbyModal__buttons">
+              &lt;button
+                className="pixel-button lobby-modalBtn"
+                onClick={() => saveChangedSettings()}
+              >
+                Save
+              &lt;/button>
+            &lt;/div>
+          &lt;/Modal>
+          {/* &lt;QuestionLibrary questionsData={questionsData}>&lt;/QuestionLibrary> */}
+        &lt;/div>)
+        : (&lt;>&lt;/>)}
+      &lt;ConnectedUsers>&lt;/ConnectedUsers>
+      {window.network.getShowSettings() &amp;&amp; (
+        &lt;div className="button-startGame">
+          &lt;button
+            className="startGame"
+            id="startGame"
+            onClick={handleStartGame}
+          >
+            Start game
+          &lt;/button>
+        &lt;/div>
+      )}
+      {errorMessage !== '' &amp;&amp; (
+        &lt;h2 className="lobbies__error">{errorMessage}&lt;/h2>
+      )}
+      &lt;ChatLobby className="chat__chatbox">&lt;/ChatLobby>
+    &lt;/div>
+  )
+}
+
+export default JoinedLobby
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

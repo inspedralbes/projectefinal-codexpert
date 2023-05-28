@@ -1,0 +1,42 @@
+.speaker__container {
+    position: absolute;
+    top: 50px;
+    left: 30px;
+    font-size: 1.2rem;
+    background-color: var(--statement-bg);
+    border-color: black;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: fit-content;
+    padding-top: 6px;
+    padding-right: 6px;
+    padding-left: 3px;
+}
+
+.speaker__container::after {
+    background-color: inherit;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.speaker__container::before {
+    background-color: inherit;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.speaker-interact {
+    cursor: pointer;
+}

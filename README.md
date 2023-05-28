@@ -1,16 +1,9 @@
-# Projectes finals curs 2022 2023
+# Projecte final de curs 2022-2023
 
-**Tota** la informació del vostre projecte ha de ser accessible a partir d'aquí
-
-Teniu la carpeta /doc per deixar-hi tota la documentació que genereu, preferiblament en format __markdown__
-
-HEU DE MODIFICAR AQUEST DOCUMENT AMB LA VOSTRA INFORMACIÖ:
-* Nom del projecte
-* Petita descripció
-* Nom (o inicials) dels integrants del grup
-* URL del prototip de penpod (penseu a deixar el prototip públic)
-* URL del taiga.io
-* URL de preproducció 
-* URL de producció (amb un domini registrat)
-
-
+* Nom del projecte: codeXpert
+* Petita descripció: Joc interactiu de programació en JavaScript.
+* Nom (o inicials) dels integrants del grup: Asmae Charroud Benaisni, Alessisa Crisafo Norte, Gaspar Gómez Torres, Martí Sala Vallès. 
+* URL del prototip de penpod (penseu a deixar el prototip públic): https://design.penpot.app/#/workspace/2a21f5ae-60ee-8151-8001-eef51eb9aea2/2a21f5ae-60ee-8151-8001-eef5a467e8b3?page-id=2a21f5ae-60ee-8151-8001-eef5a467e8b4
+* URL del taiga.io: https://tree.taiga.io/project/gaspargomez-codexpert/timeline
+* URL de preproducció: 
+* URL de producció (amb un domini registrat): https://codexpert.cat

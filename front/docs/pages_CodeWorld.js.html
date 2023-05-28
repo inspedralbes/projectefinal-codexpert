@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/CodeWorld.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/CodeWorld.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Phaser from 'phaser'
+
+import Preloader from '../Phaser/scenes/Preloader'
+import Game from '../Phaser/scenes/Game'
+import InteractUI from '../Phaser/scenes/InteractUI'
+import Header from '../components/Header'
+
+import '../styles/normalize.css'
+import React, { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router'
+
+import Cookies from 'universal-cookie'
+import routes from '../conn_routes'
+import DialogBox from '../Phaser/scenes/DialogBox'
+
+/**
+ * Pagina en la que se muestra el contenido de Phaser del mundo de codeXpert.
+ * @function CodeWorld
+ */
+const CodeWorld = () => {
+  const cookies = new Cookies()
+  const navigate = useNavigate()
+
+  /**
+ * Al clicar envia mensage de que un usuario ha entrado en el mundo en socket.
+ * @function handleMessage
+ */
+  const handleMessage = (event) => {
+    const eventData = event.data
+
+    // Event handle
+    switch (eventData.type) {
+      case 'navigate_request-msg':
+        window.postMessage({ type: 'left_phaser_world-emit' }, '*')
+        navigate('/' + eventData.value)
+        break
+    }
+  }
+
+  const parentRef = useRef(null)
+  let worldGame = null
+
+  useEffect(() => {
+    if (parentRef.current) {
+      const config = {
+        // Configuración de Phaser
+        type: Phaser.AUTO,
+        parent: parentRef.current,
+        backgroundColor: '#60A0A8',
+        scale: {
+          width: window.innerWidth / 2.5,
+          height: window.innerHeight / 2.5,
+          zoom: 2.5
+        },
+        dom: {
+          createContainer: true
+        },
+        physics: {
+          default: 'arcade',
+          arcade: {
+            gravity: { y: 0 },
+            debug: false
+          }
+        },
+        scene: [Preloader, Game, InteractUI, DialogBox]
+      }
+      worldGame = new Phaser.Game(config)
+
+      window.postMessage({
+        type: 'connected_phaser_world-emit',
+        x: 350,
+        y: 350
+      }, '*')
+    }
+
+    window.addEventListener('message', handleMessage)
+
+    return () => {
+      if (worldGame != null) {
+        // Realizar las tareas de limpieza de Phaser si es necesario
+        worldGame.destroy(true, false)
+        worldGame = null
+      }
+      window.removeEventListener('message', handleMessage)
+    }
+  }, [])
+
+  useEffect(() => {
+    const token = new FormData()
+    token.append('token', cookies.get('token') !== undefined ? cookies.get('token') : null)
+    fetch(routes.fetchLaravel + 'isUserLogged', {
+      method: 'POST',
+      mode: 'cors',
+      body: token,
+      credentials: 'include'
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        window.network.setUserLogged(data.correct)
+      })
+  }, [])
+
+  return (
+    &lt;div ref={parentRef}>
+      &lt;Header>&lt;/Header>
+    &lt;/div>
+  )
+}
+
+export default CodeWorld
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AddFriend">AddFriend</a></li><li><a href="global.html#AddQuestion">AddQuestion</a></li><li><a href="global.html#AvatarMaker">AvatarMaker</a></li><li><a href="global.html#Bell">Bell</a></li><li><a href="global.html#Campaign">Campaign</a></li><li><a href="global.html#ChatGame">ChatGame</a></li><li><a href="global.html#ChatLobby">ChatLobby</a></li><li><a href="global.html#CodeWorld">CodeWorld</a></li><li><a href="global.html#ConnectedUsers">ConnectedUsers</a></li><li><a href="global.html#ConnectedUsersInGame">ConnectedUsersInGame</a></li><li><a href="global.html#E404">E404</a></li><li><a href="global.html#EditQuestion">EditQuestion</a></li><li><a href="global.html#Eye">Eye</a></li><li><a href="global.html#Game">Game</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#IconUser">IconUser</a></li><li><a href="global.html#JoinedLobby">JoinedLobby</a></li><li><a href="global.html#LandingPage">LandingPage</a></li><li><a href="global.html#Library">Library</a></li><li><a href="global.html#Loader">Loader</a></li><li><a href="global.html#Loading">Loading</a></li><li><a href="global.html#LoadingRanking">LoadingRanking</a></li><li><a href="global.html#Lobbies">Lobbies</a></li><li><a href="global.html#LobbyList">LobbyList</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#NoFocus">NoFocus</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#QuestionLibrary">QuestionLibrary</a></li><li><a href="global.html#RankingPage">RankingPage</a></li><li><a href="global.html#RankingPodium">RankingPodium</a></li><li><a href="global.html#RankingTable">RankingTable</a></li><li><a href="global.html#Register">Register</a></li><li><a href="global.html#Rewards">Rewards</a></li><li><a href="global.html#Settings">Settings</a></li><li><a href="global.html#ShareRanking">ShareRanking</a></li><li><a href="global.html#SharedRanking">SharedRanking</a></li><li><a href="global.html#Timer">Timer</a></li><li><a href="global.html#Tutorial">Tutorial</a></li><li><a href="global.html#afterOpenModal">afterOpenModal</a></li><li><a href="global.html#changeOption">changeOption</a></li><li><a href="global.html#checkIfCanAdd">checkIfCanAdd</a></li><li><a href="global.html#closeModalWithoutSaving">closeModalWithoutSaving</a></li><li><a href="global.html#copyToClipboard">copyToClipboard</a></li><li><a href="global.html#getAvatar">getAvatar</a></li><li><a href="global.html#getCannotAdd">getCannotAdd</a></li><li><a href="global.html#getCurrentURL">getCurrentURL</a></li><li><a href="global.html#getLastData">getLastData</a></li><li><a href="global.html#getSettings">getSettings</a></li><li><a href="global.html#getTutorials">getTutorials</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUserFriendList">getUserFriendList</a></li><li><a href="global.html#goBackToLobby">goBackToLobby</a></li><li><a href="global.html#handleAcceptFriend">handleAcceptFriend</a></li><li><a href="global.html#handleAddInputOutput">handleAddInputOutput</a></li><li><a href="global.html#handleAddQuestion">handleAddQuestion</a></li><li><a href="global.html#handleButtonClick">handleButtonClick</a></li><li><a href="global.html#handleChangeHeartAmount">handleChangeHeartAmount</a></li><li><a href="global.html#handleChangeOvertimeDuration">handleChangeOvertimeDuration</a></li><li><a href="global.html#handleChangeQuestionAmount">handleChangeQuestionAmount</a></li><li><a href="global.html#handleChangeUnlimitedHearts">handleChangeUnlimitedHearts</a></li><li><a href="global.html#handleChangeWillHaveOvertime">handleChangeWillHaveOvertime</a></li><li><a href="global.html#handleCheck">handleCheck</a></li><li><a href="global.html#handleChoiseOption">handleChoiseOption</a></li><li><a href="global.html#handleClick">handleClick</a></li><li><a href="global.html#handleClickAddFriend">handleClickAddFriend</a></li><li><a href="global.html#handleDelete">handleDelete</a></li><li><a href="global.html#handleDenyFriend">handleDenyFriend</a></li><li><a href="global.html#handleEditQuestion">handleEditQuestion</a></li><li><a href="global.html#handleEye">handleEye</a></li><li><a href="global.html#handleHint">handleHint</a></li><li><a href="global.html#handleJoin">handleJoin</a></li><li><a href="global.html#handleKeyDown">handleKeyDown</a></li><li><a href="global.html#handleLeave">handleLeave</a></li><li><a href="global.html#handleLogOut">handleLogOut</a></li><li><a href="global.html#handleMessage">handleMessage</a></li><li><a href="global.html#handleRemoveInputOutput">handleRemoveInputOutput</a></li><li><a href="global.html#handleSendMessage">handleSendMessage</a></li><li><a href="global.html#handleStartGame">handleStartGame</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li><li><a href="global.html#isUserLogged">isUserLogged</a></li><li><a href="global.html#leaveLobby">leaveLobby</a></li><li><a href="global.html#saveChangedSettings">saveChangedSettings</a></li><li><a href="global.html#saveChanges">saveChanges</a></li><li><a href="global.html#savePassword">savePassword</a></li><li><a href="global.html#sendTutorialLocalStorageData">sendTutorialLocalStorageData</a></li><li><a href="global.html#showChat">showChat</a></li><li><a href="global.html#updateFriends">updateFriends</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 23:31:38 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

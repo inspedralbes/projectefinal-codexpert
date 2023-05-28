@@ -1,0 +1,270 @@
+
+.tutorial__container {
+    border: 3px solid #fff;
+    background-color: #fff;
+    padding: 0 20px;
+    width: 100%;
+    margin: 0 auto;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 40% 60%;
+    grid-template-rows: 1fr;
+    gap: 0 20px;
+    overflow: hidden;
+    /* height: 20vh; */
+}
+
+.tutorial__statement {
+    height: 20%;
+}
+
+.tutorial__game--grid {
+    /* height: 50%; */
+    margin-top: 10px;
+}
+
+.tutorial__statement h1 {
+    max-height: 200px;
+}
+
+.slider-container {
+    height: 43vh;
+    width: 100%;
+    max-height: 43vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: white;
+    border: 3px solid black;
+    padding: 10px;
+}
+
+.next-carousel:disabled, .next-carousel:disabled::after, .next-carousel:disabled::before, .next-carousel:disabled:hover::after, .next-carousel:disabled:hover::before {
+    background-color: grey;
+}
+
+.next-carousel:hover::after, .next-carousel:hover::before {
+    background-color: #027202;
+}
+
+.introduction-text p {
+    height: -10vw;
+}
+
+.introduction__container h1 {
+    text-align: center;
+}
+.introduction__container p {
+    font-size: 20px;
+    margin-right: 3px;
+}
+
+.word__pink {
+    color: rgb(228, 127, 143)
+}
+.word__green {
+    color: rgb(15, 160, 15);
+}
+.word__blue {
+    color: rgb(79, 79, 243);
+}
+
+.prevButtonCarousel,
+.nextButtonCarousel {
+    width: 100px;
+    background-color: green !important;
+    border: 1px solid black !important;
+    border-width: 6px 0 !important;
+    color: #ffffff;
+    padding: 5px !important;
+    position: fixed;
+    top: 55%;
+    font-size: 100%;
+    color: #ffffff;
+    transition: all 0.5s;
+    height: 90px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.37);
+}
+
+.prevButtonCarousel {
+    left: 3%;
+}
+.nextButtonCarousel {
+    left: 33%;
+}
+
+.nextButtonCarousel::after,
+.prevButtonCarousel::after {
+    background-color: green;
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.nextButtonCarousel::before,
+.prevButtonCarousel::before {
+    background-color: green;
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.containerCarousel {
+    color: white;
+    position: fixed;
+    top: 55%;
+    left: 20%;
+}
+
+.hiddenCarousel {
+    visibility: hidden;
+}
+
+.hint__cover {
+    position: absolute;
+    top: 67.9%;
+    width: 39%;
+    height: 30%;
+    z-index: 1;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid black;
+    border-width: 3px 0;
+    transition: all 0.5s;
+    text-align: center;
+}
+
+.hint__cover::after {
+    background-color: transparent;
+    box-shadow: 3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    height: calc(100% - 3px);
+    position: absolute;
+    right: 0px;
+    top: 2px;
+    width: 3px;
+    transition: all 0.5s;
+}
+
+.hint__cover::before {
+    background-color: transparent;
+    box-shadow: -3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    height: calc(100% - 3px);
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    width: 3px;
+    transition: all 0.5s;
+}
+
+.hint__cover img{
+    position: absolute;
+    padding: 35px;
+    text-align: center;
+    border: 5px solid #88D34A;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    background-color: rgb(214, 214, 214);
+    border-radius: 50%;
+    transition: 0.5;
+    cursor: pointer;
+    margin: -50px 0 0 -40px;
+    background-image: url(../img/closedEye.png);
+    transition: background-image 0.2s ease-in;
+    background-size: cover;
+}
+
+.hint__cover img:hover{
+    background-image: url(../img/openEye.png);
+    background-color: rgb(233, 233, 233);
+}
+
+.hint__container {
+    position: absolute;
+    top: 67.9%;
+    width: 39%;
+    border: 0px;
+}
+
+.hint__container div{
+    padding-left: 15px;
+    padding-top: 15px;
+    height: 30vh;
+    overflow-y: auto;
+    background-color: rgb(226, 226, 226);
+    border: 1px solid black;
+    border-width: 3px 0;
+    margin: 0vh;
+}
+
+.hint__container div::after {
+    box-shadow: 3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 6px);
+    position: absolute;
+    right: 0px;
+    top: 3px;
+    width: 6px;
+}
+
+.hint__container div::before {
+    background-color: transparent;
+    box-shadow: -3px 0 0 #000000, 0 -3px #000000, 0 3px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 6px);
+    position: absolute;
+    left: 0px;
+    top: 3px;
+    width: 6px;
+}
+
+.inputOutputExample {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 1fr;
+}
+.inputOutputExample ul {
+    margin-top: 0;
+    font-size: 1vw;
+    list-style: none;
+    text-align: left;
+}
+
+.goBack-button {
+    font-size: 0.6vw;
+    background-color: #88D34A;
+    padding: 0;
+    margin-left: 3%;
+    width: 15%;
+    height: 4%;
+    box-shadow: none;
+    color: black;
+}
+
+.goBack-button::after, .goBack-button::before {
+    background-color: #88D34A;
+}
+
+.goBack-button:hover, .goBack-button:hover::after, .goBack-button:hover::before {
+    background-color: #6daa3a;
+}
+
+.introduction-title {
+    display: inline-block;
+    margin-left: 13%;
+}

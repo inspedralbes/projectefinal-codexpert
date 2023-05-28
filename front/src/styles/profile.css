@@ -1,0 +1,377 @@
+.profile {
+    background-color: white;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.profile--grid {
+    position: fixed;
+    background-color: white;
+    width: 95%;
+    height: 95vh;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "profile__left profile__right";
+    color: #000000;
+}
+
+
+.profile__avatar {
+    height: 100%;
+    width: 100%;
+}
+
+.profile__img {
+    background: none;
+    color: #000000;
+    box-shadow: -6px 0 0 0 black,
+        6px 0 0 0 black,
+        0 -6px 0 0 black,
+        0 6px 0 0 black;
+}
+
+
+.profile__right {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-rows: 0.3fr 1.6fr;
+    gap: 0px 0px;
+    grid-area: profile__right;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    align-content: space-between;
+}
+
+
+.profile__left {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.3fr 1.6fr;
+}
+
+.profile__editAvatar {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    margin: 0;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.profileBack__button {
+    margin: 20px;
+}
+
+.profileBack__button h1 {
+    display: inline;
+    margin-left: 22vw;
+    font-size: 2vw;
+}
+
+.profileBtn {
+    margin: 13px;
+    font-size: 0.5em;
+    padding: 5px;
+    height: 60px;
+    width: 47%;
+}
+
+.profile__name {
+    font-family: karmatic;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.profile__email {
+    font-weight: normal;
+    font-size: 1.3rem;
+    text-transform: lowercase;
+    text-align: center;
+}
+
+.profile__settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1.8fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        ". .";
+}
+
+.editBtn {
+    border: none;
+    background: none;
+    height: fit-content;
+}
+
+
+.profile__name--div {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: center;
+    align-items: center;
+    transform: translate(20px, 0);
+
+    flex-direction: row;
+}
+
+.profile__email--div {
+    display: flex;
+    transform: translate(20px, 0);
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+
+.editBtn {
+    border: none;
+    background: none;
+    height: fit-content;
+}
+
+.editBtn--name {
+    border: none;
+    background: none;
+    height: fit-content;
+    float: right;
+}
+
+.edit--name {
+    transform: translate(0, 10px);
+    transition: all 0.5s;
+}
+
+.edit {
+    transform: translate(0, -10px);
+    transition: all 0.5s;
+}
+
+.edit:hover {
+    cursor: pointer;
+    transform: translate(0, -5px);
+    opacity: 0.5;
+}
+
+.edit--name:hover {
+    cursor: pointer;
+    transform: translate(0, 15px);
+    opacity: 0.5;
+}
+
+.ReactModal__Content {
+    border-radius: 0 !important;
+    font-family: pixel_operator;
+    width: 50%;
+    height: fit-content;
+    text-align: center;
+    margin: auto;
+    box-shadow: -8px 0 0 0 black,
+        8px 0 0 0 black,
+        0 -8px 0 0 black,
+        0 8px 0 0 black,
+        0px 15px 81px -19px rgba(125, 125, 125, 1),
+        inset -18px -20px 0px -10px rgba(0, 0, 0, 0.11);
+    color: #000;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    background-color: #c3eeb6;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    z-index: 100 !important;
+}
+
+.ReactModal__Content h1 {
+    font-family: karmatic;
+    font-size: 1.7em;
+}
+
+.profile__input {
+    margin: 20px;
+    text-align: center;
+    box-shadow: -4px 0 0 0 black,
+        4px 0 0 0 black,
+        0 -4px 0 0 black,
+        0 4px 0 0 black;
+    outline: none;
+    border: none;
+    padding: 10px;
+    margin-bottom: 0;
+    width: 80%;
+}
+
+.eyeButtonUsername {
+    transform: translate(-5px, -58px);
+}
+
+.eyeButtonEmail {
+    transform: translate(-9px, -58px);
+}
+
+.profile__buttons {
+    display: flex;
+}
+
+.modalBtn {
+    margin: 0 20px;
+}
+
+.profile__password--grid {
+    margin: 10% auto;
+}
+
+.profile__pswd {
+    width: 100%;
+}
+
+.profile__editAvatar {
+    width: 100%;
+}
+
+.close,
+.close::after,
+.close::before {
+    background-color: rgb(211, 16, 16);
+}
+
+.close:hover,
+.close:hover::after,
+.close:hover::before {
+    background-color: rgb(168, 5, 5);
+}
+
+.cross {
+    top: 10px;
+    right: 12px;
+    position: absolute;
+    background: none;
+    border: none;
+    opacity: 0.7;
+    transition: all 0.2s;
+}
+
+.cross:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.profile__table {
+    border: 3px solid black;
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.profile__table h1 {
+    text-align: center;
+    font-size: 2vw;
+}
+
+.profile__table table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    background-color: white;
+}
+
+.profile__table th, td {
+    overflow: hidden;
+    border: 2px solid black;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    padding: 10px;
+    max-width: 10vw;
+}
+
+.profile__table th {
+    position: sticky;
+    top: 0;
+    border: 2px solid black;
+    background-color: #88D34A;
+    z-index: 2;
+}
+
+.profile__table tr {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+
+.profile__friends th,
+th {
+    text-align: center;
+    padding: 20px !important;
+}
+
+.profile__friends th {
+    text-align: center;
+    width: 100%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.profile__friends--div {
+    width: 60%;
+    max-height: 220px;
+    overflow: auto;
+
+}
+
+.profile__friends {
+    width: 100%;
+}
+
+.profile__friends th p {
+    margin: 0 auto;
+}
+
+.profile__friends td {
+    border: none !important;
+    align-items: center;
+}
+
+.profile__friends tr {
+    box-shadow: -6px 0 0 0 black,
+        6px 0 0 0 black,
+        0 -6px 0 0 black,
+        0 6px 0 0 black;
+}
+
+.center {
+    margin: 0 auto;
+    display: flex;
+    align-self: center;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.profile__friends--div {
+    height: 30vh;
+    border: 3px solid black;
+}

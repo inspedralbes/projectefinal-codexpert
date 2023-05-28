@@ -1,0 +1,586 @@
+.form {
+    margin: 10vh auto;
+    width: 30%;
+    background-color: var(--white);
+    padding: 30px;
+    justify-content: center;
+    text-align: center;
+    display: block;
+    align-items: center;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    position: relative;
+}
+
+.login-header {
+    padding-bottom: 10%;
+}
+
+.form::after {
+    background-color: var(--white);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.form::before {
+    background-color: var(--white);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+.form.register {
+    padding-bottom: 60px;
+}
+
+.error-text {
+    color: red;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.form h1 {
+    color: var(--h1-color);
+    text-shadow: 4px 4px 4px 4px var(--shadow-color);
+    font-size: 200%;
+}
+
+.form__buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    align-items: center;
+    justify-content: center;
+}
+
+.form__button--flex {
+    display: block;
+    clear: both;
+}
+
+/* ===================================================================== Go back button =====================================================================*/
+#goBack__button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    vertical-align: middle;
+    text-decoration: none;
+    background: transparent;
+    padding: 0;
+    font-size: 14px;
+    width: 13rem;
+    height: auto;
+    align-items: center;
+}
+
+
+
+#goBack__button .circle {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    display: block;
+    width: 2rem;
+    height: 4rem;
+    float: right;
+    background: var(--primary-color);
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    position: relative;
+    text-align: center;
+}
+
+#goBack__button .circle::after {
+    background-color: var(--primary-color);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+#goBack__button .circle::before {
+    background-color: var(--primary-color);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+#goBack__button .circle .icon {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: var(--white);
+}
+
+#goBack__button .circle .icon.arrow {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    left: 1.1rem;
+    width: 0.9rem;
+    height: 0.125rem;
+    background: none;
+}
+
+#goBack__button .circle .icon.arrow::before {
+    position: absolute;
+    content: "";
+    top: -0.30rem;
+    right: 0.0625rem;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-top: 0.125rem solid var(--white);
+    border-right: 0.125rem solid var(--white);
+    transform: rotate(225deg);
+}
+
+#goBack__button .button-text {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem 0;
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#goBack__button:hover .circle {
+    width: 100%;
+}
+
+#goBack__button:hover .circle .icon.arrow {
+    background: var(--white);
+    transform: translate(1rem, 0);
+}
+
+#goBack__button:hover .button-text {
+    color: var(--white);
+}
+
+/* ============================================================================================================================================================================ */
+.form h1 {
+    margin-bottom: 20px;
+}
+
+.form__form {
+    margin: 0 auto;
+}
+
+.form__inputGroup {
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 45px;
+    justify-self: center;
+}
+
+.form__input {
+    margin: 0 auto;
+    color: var(--labelPlaceholder-color);
+    font-size: 18px;
+    padding: 10px 10px 10px 10px;
+    display: block;
+    width: 90%;
+    border: none;
+    border-bottom: 1px solid #92be95;
+}
+
+.form__tooltip {
+    padding-left: 6px;
+    padding-right: 20px;
+}
+
+.form__input:focus {
+    outline: none;
+}
+
+
+/*============================================================================== LABEL ============================================================================== */
+.form__inputlabel {
+    color: #2e5e22;
+    font-size: 18px;
+    font-weight: normal;
+    position: absolute;
+    pointer-events: auto;
+    left: 5px;
+    top: 10px;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+    margin-left: 20px;
+    padding-left: 20px;
+}
+
+/* active state */
+.form__input:focus~.form__inputlabel,
+.form__input:valid~.form__inputlabel {
+    top: -20px;
+    font-size: 14px;
+    color: #769e70;
+}
+
+
+/*============================================================================== BOTTOM BARS ======================================================================== */
+.form__inputBar {
+    margin: 0 auto;
+    position: relative;
+    display: block;
+    width: 90%;
+}
+
+.form__inputBar:before,
+.form__inputBar:after {
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+    background: var(--primary-color);
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+.form__inputBar:before {
+    left: 50%;
+}
+
+.form__inputBar:after {
+    right: 50%;
+}
+
+/* active state */
+.form__input:focus~.form__inputBar:before,
+.form__input:focus~.form__inputBar:after {
+    width: 50%;
+}
+
+
+/* ============================================================================== submit ============================================================================== */
+
+#submit__button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    vertical-align: middle;
+    text-decoration: none;
+    background: transparent;
+    padding: 0;
+    font-size: 14px;
+    width: 12rem;
+    height: auto;
+}
+
+#submit__button .circle2 {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    display: block;
+    margin: 0;
+    width: 2rem;
+    height: 4rem;
+    background: var(--primary-color);
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    position: relative;
+    text-align: center;
+}
+
+#submit__button .circle2::after {
+    background-color: var(--primary-color);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+#submit__button .circle2::before {
+    background-color: var(--primary-color);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+    transition: all 0.5s;
+}
+
+#submit__button .circle2 .icon2 {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: var(--white);
+}
+
+#submit__button .circle2 .icon2.arrow2 {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    left: 0;
+    width: 0.9rem;
+    height: 0.125rem;
+    background: none;
+}
+
+#submit__button .circle2 .icon2.arrow2::before {
+    position: absolute;
+    content: "";
+    top: -0.30rem;
+    right: 0.0625rem;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-top: 0.125rem solid var(--white);
+    border-right: 0.125rem solid var(--white);
+    transform: rotate(45deg);
+}
+
+#submit__button .button-text {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem 0;
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#submit__button:hover .circle2 {
+    width: 100%;
+}
+
+#submit__button:hover .circle2 .icon2.arrow2 {
+    background: var(--white);
+    transform: translate(10rem, 0);
+}
+
+#submit__button:hover .button-text {
+    color: var(--white);
+}
+
+.form__checkboxLabel {
+    display: flex;
+    font-size: 10px;
+    color: #999;
+    width: 100%;
+    font-weight: 700;
+    text-transform: uppercase;
+    align-items: center;
+}
+
+.form__checboxLabel--flex {
+    display: flex;
+    width: 90%;
+    align-content: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+}
+
+.form__checkboxInput {
+    text-align: left;
+    padding-left: 20px;
+    margin: 5px;
+
+}
+
+.form__inputCheckbox {
+    margin-right: 10px;
+
+}
+
+.form__submit {
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+/* ================================================================================links form================================================================================== */
+
+.form__links {
+    margin-top: 10%;
+}
+
+.link__ForgotPass,
+.link__CreateAcc {
+    text-align: center;
+    margin-top: 30px;
+    text-decoration: none;
+}
+
+.link__ForgotPass p,
+.link__CreateAcc p {
+    font-size: 16px;
+    text-decoration: underline;
+    color: #747474;
+    letter-spacing: 0.2px;
+    font-weight: 500;
+}
+
+.link__ForgotPass p:hover,
+.link__CreateAcc p:hover {
+    transition: all 0.3s;
+    color: var(--primary-color);
+    text-shadow: 4px 4px 11px var(--shadow-color);
+}
+
+#switch {
+    display: inline-block;
+    height: 21px;
+    position: relative;
+    width: 40px;
+    margin-right: 10px;
+}
+
+#switch .form__inputCheckbox {
+    display: none;
+}
+
+.slider {
+    background-color: #747474;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: .4s;
+}
+
+.form__checkboxInput {
+    text-align: left;
+    display: flex;
+    font-size: 11px;
+    color: #555555;
+    font-weight: 700;
+    text-transform: uppercase;
+    align-items: center;
+    padding-left: 20px;
+}
+
+
+.slider:before {
+    background-color: var(--white);
+    bottom: 3px;
+    content: "";
+    height: 15px;
+    left: 4px;
+    position: absolute;
+    transition: .4s;
+    width: 15px;
+}
+
+.form__inputCheckbox:checked+.slider {
+    background-color: var(--shadow-color);
+}
+
+
+
+.form__inputCheckbox:checked+.slider:before {
+    transform: translateX(18px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.form__inputCheckbox:checked::before {
+    transform: scale(1);
+}
+
+.invisible {
+    border: none;
+    background: none;
+}
+
+.form-control {
+    cursor: pointer;
+    line-height: 1.1;
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 20px;
+}
+
+input[type=checkbox] {
+    /* Add if not using autoprefixer */
+    -webkit-appearance: none;
+    /* Remove most all native input styles */
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0 10px;
+    font: inherit;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid black;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
+}
+
+input[type=checkbox]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+
+    transform: scale(0);
+    transform-origin: bottom left;
+    transition: 120ms transform ease-in-out;
+    /* Windows High Contrast Mode */
+    background-color: green;
+}
+
+input[type=checkbox]:checked::before {
+    transform: scale(1);
+}

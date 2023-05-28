@@ -1,0 +1,85 @@
+.E404 {
+    background-color: var(--white);
+    color: #2e5e22;
+    margin: 20vh auto;
+    width: 60%;
+    text-align: center;
+    padding: 60px;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 6px 0;
+    color: #000000;
+    position: relative;
+    min-height: 500px;
+}
+
+.E404::after {
+    background-color: var(--white);
+    box-shadow: 6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    right: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.E404::before {
+    background-color: var(--white);
+    box-shadow: -6px 0 0 #000000, 0 -6px #000000, 0 6px #000000;
+    content: "";
+    display: block;
+    height: calc(100% - 12px);
+    position: absolute;
+    left: -6px;
+    top: 6px;
+    width: 6px;
+}
+
+.E404 img {
+    width: 150px;
+}
+
+.E404 h1 {
+    font-size: 60px;
+    line-height: 15px;
+    margin-top: 50px;
+    margin-bottom: 100px;
+    color: red;
+    animation: glitch 5s infinite;
+}
+
+/* CREDITS: https://codepen.io/ponycorn/details/mdGRLqY */
+@keyframes glitch {
+    0%,50%,100%{
+    transform: skewX(0deg) translateX(0px) scale(1,1);
+      text-shadow: 0px 0 cyan;
+      clip-path: none;
+      
+    }
+    5%,15%,25%{
+    transform: skewX(12deg) translateX(-5px) scale(1,-1);
+       text-shadow: 0px -2rem magenta, -5px 5px #fe0000;
+      
+    }
+    10%,30%{
+    transform: skewX(25deg) translateX(15px) scale(1,1);
+      text-shadow: -1rem 2rem yellow;
+      
+    }
+    35%,45%{
+    transform: skewX(-12deg) translateX(-5px) scale(1,1);
+      text-shadow: -1rem 2rem #fe0000, -10px 0px #ff00fe;
+      
+    }
+    11%, 14% {
+      clip-path: polygon(100% 0, 0 18%, 99% 46%, 0 78%, 100% 100%, 100% 57%, 0 100%, 100% 76%, 0 59%, 100% 35%, 0 37%, 100% 21%);
+    }
+    12%, 16% {
+      clip-path: polygon(0 51%, 0 29%, 100% 0, 0 14%, 99% 57%, 100% 23%, 0 100%, 100% 72%, 0 0, 100% 100%);
+    }
+    13%, 17% {
+      clip-path: polygon(0% 0%, 99% 0%, 99% 8%, 0% 7%, 0% 14%, 99% 15%, 100% 22%, 0% 22%, 0% 30%, 99% 30%, 99% 39%, 0% 37%, 0% 43%, 100% 45%, 100% 50%, 0% 49%, 0% 56%, 99% 57%, 99% 63%, 0% 63%, 0% 68%, 99% 68%, 99% 75%, 0% 76%, 0% 81%, 100% 83%, 100% 89%, 0% 88%, 0% 94%, 100% 95%, 100% 100%, 0% 99%);
+    }
+  }
