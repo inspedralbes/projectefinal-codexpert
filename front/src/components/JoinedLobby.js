@@ -9,7 +9,6 @@ import React, { useState, useEffect } from 'react'
 import Settings from './Settings'
 import Modal from 'react-modal'
 import PropTypes from 'prop-types'
-import cross from '../img/cross.png'
 import 'animate.css'
 import settings from '../img/settings.png'
 
@@ -157,9 +156,6 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
             shouldCloseOnOverlayClick={true}
             isOpen={showModal}
           >
-            <button className="cross" onClick={() => closeModalWithoutSaving()}>
-              <img src={cross} alt="X" height={'30px'}></img>
-            </button>
 
             <Settings
               fetchSettings={fetchSettings}
@@ -170,6 +166,7 @@ function JoinedLobby({ setJoined, setLobbyName, setLobbyList, errorMessage }) {
             <div className="lobbyModal__buttons">
               <button
                 className="pixel-button lobby-modalBtn"
+                id="saveSettings"
                 onClick={() => saveChangedSettings()}
               >
                 Save

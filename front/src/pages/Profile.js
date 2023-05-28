@@ -369,7 +369,7 @@ function Profile() {
               >
                 <button className='cross' onClick={() => setModals(prev => ({ ...prev, name: false }))}><img src={cross} alt='X' height={'30px'}></img></button>
                 <h1>Change your username</h1>
-                <input className='profile__input' placeholder='username' value={userData.name} onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
+                <input className='profile__input' placeholder='username' onChange={(e) => setEditUser(prev => ({ ...prev, name: e.target.value }))}></input><br></br>
                 <input className='profile__input' id="passwordUsername" type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
                 <Eye id={"passwordUsername"}></Eye>
                 <div className='profile__buttons'>
@@ -386,7 +386,7 @@ function Profile() {
                   >
                     <button className='cross' onClick={() => setModals(prev => ({ ...prev, email: false }))} ><img src={cross} alt='X' height={'30px'}></img></button>
                     <h1>Change your email</h1>
-                    <input className='profile__input' placeholder='email' value={userData.email} onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
+                    <input className='profile__input' placeholder='email' onChange={(e) => setEditUser(prev => ({ ...prev, email: e.target.value }))}></input><br></br>
                     <input className='profile__input' id="passwordEmail" type='password' placeholder='password' onChange={(e) => setEditUser(prev => ({ ...prev, password: e.target.value }))}></input>
                     <Eye id={"passwordEmail"}></Eye>
                     <div className='profile__buttons'>

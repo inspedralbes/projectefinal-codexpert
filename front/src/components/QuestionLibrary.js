@@ -7,17 +7,22 @@ import 'tippy.js/themes/light-border.css' // Tooltip theme
 import 'tippy.js/animations/shift-away-extreme.css' // Tooltip animation
 import Cookies from 'universal-cookie'
 import routes from '../conn_routes'
-
+import PropTypes from 'prop-types'
 import informationIcon from '../img/information_icon.gif'
+
+QuestionLibrary.propTypes = {
+  nQuestions: PropTypes.number
+}
 
 /**
  * Componente de configuraciones de que preguntas quieres en tu partida.
  * @function QuestionLibrary
  */
-function QuestionLibrary() {
+function QuestionLibrary(nQuestions) {
   const cookies = new Cookies()
   const [questionsData, setQuestionsData] = useState([])
   const [checked, setChecked] = useState([])
+  const [nChecked, setNChecked] = useState(0)
 
   /**
  * Guardar las configuraciones hechas de preguntas.
@@ -25,11 +30,22 @@ function QuestionLibrary() {
  */
   const handleCheck = (event) => {
     let updatedList = [...checked]
+    let checkedNumber = nChecked
     if (event.target.checked) {
       updatedList = [...checked, event.target.value]
+      checkedNumber += 1
     } else {
       updatedList.splice(checked.indexOf(event.target.value), 1)
+      checkedNumber -= 1
     }
+    if (nQuestions.nQuestions >= checkedNumber) {
+      document.getElementById('saveSettings').disabled = false
+      document.getElementById('settingsWarning').style.color = 'orangered'
+    } else {
+      document.getElementById('saveSettings').disabled = true
+      document.getElementById('settingsWarning').style.color = 'red'
+    }
+    setNChecked(checkedNumber)
     setChecked(updatedList)
   }
 
@@ -48,7 +64,6 @@ function QuestionLibrary() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         setQuestionsData(data)
       })
   }
@@ -76,7 +91,6 @@ function QuestionLibrary() {
                   value={item.id}
                   type='checkbox'
                   id={item.id}
-                  className='check'
                   onChange={handleCheck}
                 />
                 <label
@@ -112,7 +126,7 @@ function QuestionLibrary() {
                     value={item.id}
                     type='checkbox'
                     id={item.id}
-                    className='check'
+
                     onChange={handleCheck}
                   />
                   <label
@@ -123,7 +137,7 @@ function QuestionLibrary() {
                       {`${item.title}`}
                       <i className='icon-info-circle'>
                         <div className='icon-info-circle__content'>
-                          Create By: {item.createdBy}
+                          Create By: {item.createdBy.name}
                         </div>
                       </i>
                     </span>
@@ -145,7 +159,7 @@ function QuestionLibrary() {
                     value={item.id}
                     type='checkbox'
                     id={item.id}
-                    className='check'
+
                     onChange={handleCheck}
                   />
                   <label
@@ -156,7 +170,7 @@ function QuestionLibrary() {
                       {`${item.title}`}
                       <Tippy
                         theme={'light-border'}
-                        content={`Created By: ${item.createdBy}`}
+                        content={`Created By: ${item.createdBy.name}`}
                         placement={'right'}
                         animation={'shift-away-extreme'}
                       >
@@ -170,6 +184,7 @@ function QuestionLibrary() {
           </div>
         </div>
       </div>
+      <p className='warningSettings-text' id="settingsWarning">There must be an equal or lower amount of questions selected from Settings and questions Library!</p>
     </main>
   )
 }
