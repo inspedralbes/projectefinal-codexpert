@@ -25,7 +25,7 @@ function MuteSound() {
 
   return (
     <div className="speaker__container">
-      <img className='speaker-interact' src={soundEnabled ? enabled : disabled} width={40} onClick={() => handleClick()}></img>
+      <img className='speaker-interact' src={soundEnabled ? enabled : disabled} width={30} onClick={() => handleClick()}></img>
     </div>
   )
 }
