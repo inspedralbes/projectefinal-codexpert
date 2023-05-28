@@ -7,6 +7,8 @@ import Header from '../components/Header'
 import routes from '../conn_routes'
 import Cookies from 'universal-cookie'
 import arrow from '../img/InputOutputArrow.png'
+import informationIcon from '../img/information_icon.gif'
+import Modal from 'react-modal'
 
 /**
  * Pagina para añadir preguntas en la libreria de preguntas del usuario.
@@ -20,6 +22,7 @@ function AddQuestion() {
     outputs: ['', '', ''],
     public: false
   })
+  const [exampleModal, setExampleModal] = useState(false)
   const [userLogged, setUserLogged] = useState(false)
   const [error, setError] = useState(false)
   const [inputsOutputs, setInputsOutputs] = useState(['', '', ''])
@@ -155,6 +158,21 @@ function AddQuestion() {
                   return <input onChange={(e) => {
                     const input = questionData.inputs
                     input[index] = e.target.value
+                    for (let i = 0; i < input.length; i++) {
+                      if (input[i].includes('[') && input[i].includes(']')) { // Comprueba si es un array
+                        input[i] = input[i].replace('[', '')
+                        input[i] = input[i].replace(']', '')
+                        input[i] = input[i].split(',')
+                        for (let j = 0; j < input[i].length; j++) { // Mira dentro del array si es string o no.
+                          if (/^-?\d+$/.test(input[i][j])) { // /^-?\d+$/.test Comprueba si és un valor numerico.
+                            input[i][j] = parseInt(input[i][j])
+                          }
+                        }
+                      }
+                      if (/^-?\d+$/.test(input[i])) { // /^-?\d+$/.test Comprueba si és un valor numerico.
+                        input[i] = parseInt(input[i])
+                      }
+                    }
                     setQuestionData({ ...questionData, inputs: input })
                   }} placeholder={placeholder.input[index]} tabIndex={index + index + 3} key={index} id={'input' + index} type="text"></input>
                 })}
@@ -168,11 +186,94 @@ function AddQuestion() {
                   return <input onChange={(e) => {
                     const output = questionData.outputs
                     output[index] = e.target.value
+                    for (let i = 0; i < output.length; i++) {
+                      if (output[i].includes('[') && output[i].includes(']')) { // Comprueba si es un array
+                        output[i] = output[i].replace('[', '')
+                        output[i] = output[i].replace(']', '')
+                        output[i] = output[i].split(',')
+                        for (let j = 0; j < output[i].length; j++) { // Mira dentro del array si es string o no.
+                          if (/^-?\d+$/.test(output[i][j])) { // /^-?\d+$/.test Comprueba si és un valor numerico.
+                            output[i][j] = parseInt(output[i][j])
+                          }
+                        }
+                      }
+                      if (/^-?\d+$/.test(output[i])) { // /^-?\d+$/.test Comprueba si és un valor numerico.
+                        output[i] = parseInt(output[i])
+                      }
+                    }
                     setQuestionData({ ...questionData, outputs: output })
                   }} tabIndex={index + index + 4} id={'output' + index} placeholder={placeholder.output[index]} key={index} type="text"></input>
                 })}
               </div>
               <div className='removeItem__conainer'>
+                <p onClick={() => setExampleModal(true)}>example <img width='20px' src={informationIcon}></img></p>
+                <Modal // Example modal
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                  zIndex: 2
+                },
+                content: {
+                  padding: 0,
+                  height: '85%',
+                  width: '60%',
+                  backgroundColor: '#fff'
+                }
+              }}
+              onRequestClose={() => setExampleModal(false)}
+              shouldCloseOnOverlayClick={true}
+              isOpen={exampleModal}
+            >
+              <div>
+                <h1>ADD QUESTION EXAMPLES</h1>
+                <h3>Numbers:</h3>
+                <div className='inputOutputExample__container' id='scroll'>
+                  <div>
+                    <h2>INPUT</h2>
+                    <input value="53" readOnly></input>
+                  </div>
+                  <div className='inputArrows__container'>
+                    <img src={arrow}></img>
+                  </div>
+                  <div>
+                    <h2>OUTPUT</h2>
+                    <input value="42" readOnly></input>
+                  </div>
+                </div>
+                <h3>Strings:</h3>
+                <div className='inputOutputExample__container' id='scroll'>
+                  <div>
+                    <h2>INPUT</h2>
+                    <input value='"Text example input"' readOnly></input>
+                  </div>
+                  <div className='inputArrows__container'>
+                    <img src={arrow}></img>
+                  </div>
+                  <div>
+                    <h2>OUTPUT</h2>
+                    <input value='"Text example output"' readOnly></input>
+                  </div>
+                </div>
+                <h3>Arrays:</h3>
+                <div className='inputOutputExample__container' id='scroll'>
+                  <div>
+                    <h2>INPUT</h2>
+                    <input value='[1,2,3]' readOnly></input>
+                  </div>
+                  <div className='inputArrows__container'>
+                    <img src={arrow}></img>
+                  </div>
+                  <div>
+                    <h2>OUTPUT</h2>
+                    <input value='["hellow","world","!"]' readOnly></input>
+                  </div>
+                </div>
+                <br></br>
+                <button className='pixel-button' onClick={() => {
+                  setExampleModal(false)
+                }}>CLOSE</button>
+              </div>
+            </Modal>
                 {inputsOutputs.map((element, index) => { return <div key={index}><button onClick={() => handleRemoveInputOutput(index)} disabled={inputsOutputs.length <= 3}>delete</button><br></br></div> })}
               </div>
             </div>

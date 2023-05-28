@@ -274,6 +274,9 @@
 
 .profile__table {
     border: 3px solid black;
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .profile__table h1 {

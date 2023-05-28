@@ -162,12 +162,12 @@ function Profile() {
   }
 
   const getGameHistory = () => {
-    const userId = new FormData()
-    userId.append('userId', myId)
+    const id = new FormData()
+    id.append('userId', userId)
     fetch(routes.fetchLaravel + 'getUserDataFromId', {
       method: 'POST',
       mode: 'cors',
-      body: userId,
+      body: id,
       credentials: 'include'
     })
       .then((response) => response.json())
@@ -285,7 +285,7 @@ function Profile() {
                 </button>
                 <h1>Total Elo: {totalElo}</h1>
               </div>
-              <div className='profile__table'>
+              <div className='profile__table' id="scroll">
                 <h1>Game History</h1>
                 <table>
                   <thead>
